@@ -26,10 +26,10 @@
 
 #include <math.h>
 
-#include "Vector.h"
-#include "gui_config.h"
-#include "debug.h"
-#include "cube.h"
+#include <Vector.h>
+#include <gui_config.h>
+#include <surfdebug.h>
+#include <cube.h>
 
 
 double  cb,cf;

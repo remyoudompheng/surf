@@ -38,7 +38,7 @@
 #include <float_buffer.h>
 #include <RgbBuffer.h>
 
-#include <debug.h>
+#include <surfdebug.h>
 
 
 #define TOLERANZ_LOESCHE_LAY2      0.1

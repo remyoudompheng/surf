@@ -24,48 +24,48 @@
 
 
 
+#ifndef DEBUG_H
+#define DEBUG_H
+
 #include<iostream>
-#include<cstring>
 
-#include <debug.h>
-
-static int level=0;
-int offlevel=0;
-class std::ostream & dos = std::cerr; 
-
-void spaces()
+class FunctionCall
 {
-	for (int i=0; i<level; i++) {
-		dos << "    ";
-	}
-}
+public:
+	FunctionCall(const char* bla);
+	~FunctionCall();
+    
+	FunctionCall();
+    
+protected:
+	char str[256];
+	int off;
+};
 
-FunctionCall::FunctionCall()
-{
-	off = 1;
-	offlevel++;
-}
 
-FunctionCall::FunctionCall(const char *bla)
-{
-	off = 0;
-	std::strcpy(str, bla);
-	if (offlevel == 0) {
-		spaces();
-		dos << "BEGIN: " << str << std::endl;
-	}
-	level++;
-}
+extern void spaces();
+extern std::ostream &dos;
+extern int offlevel;
 
-FunctionCall::~FunctionCall()
-{
-	if (off) {
-		offlevel--;
-		return;
-	}
-	level--;
-	if (offlevel == 0) {
-		spaces();
-		dos << "END: " << str << std::endl;
-	}
-}
+#endif // !DEBUG_H
+
+#undef BEGIN
+#undef DMESS
+#undef TRACE
+#undef FAIL
+#undef OFF
+
+// #undef DEBUG
+#ifdef DEBUG
+#define BEGIN(x) FunctionCall dummyFunctionCall(x)
+#define DMESS(x) {if (offlevel == 0) {spaces(); dos << x << '\n';}}
+#define TRACE(x) {if (offlevel == 0) {spaces(); dos << "TRACE: " << #x << " == " << x << '\n';}}
+#define FAIL     {spaces(); dos << "Bye...\n"; exit(10);};
+#define OFF       FunctionCall dummyFunctionCallOff 
+#else
+#define BEGIN(x) {}
+#define DMESS(x) {}
+#define TRACE(x) {}
+#define FAIL
+#define OFF
+#endif

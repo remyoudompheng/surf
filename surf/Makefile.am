@@ -1,8 +1,10 @@
 include $(top_srcdir)/Makefile.global
 
+AUTOMAKE_OPTIONS = foreign
+
 DITHER_OBJ = dither/dither_brute.o dither/dither_clustered.o dither/dither_dispersed.o dither/dither_floyd_steinberg.o dither/dither_jarvis_judis_ninke.o dither/dither_stucki.o dither/dither_dot_diffusion.o dither/dither_smooth_dot_diffusion.o dither/copy_rgb_to_float.o dither/copy_rgb_to_float_curve.o dither/dither_pixel_radius_adjust.o
 
-DEBUG_OBJ = debug/debug.o
+DEBUG_OBJ = debug/surfdebug.o
 
 MISC_OBJ = misc/mystrdup.o misc/IO.o
 

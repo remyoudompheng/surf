@@ -28,7 +28,7 @@
 #define REFCOUNTER_H
 
 #include <assert.h>
-#include "debug.h"
+#include <surfdebug.h>
 
 
 class RefCounter

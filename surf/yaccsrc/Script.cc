@@ -46,7 +46,7 @@
 #include <SymbolTable.h>
 #include <Triangulator.h>
 #include <IO.h>
-#include <debug.h>
+#include <surfdebug.h>
 
 #include <sys/stat.h>
 #include <assert.h>

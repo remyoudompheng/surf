@@ -101,7 +101,7 @@ public:
 		return root == NIL;
 	}
 
-	void print(class std::ostream& os) const;
+	void print(std::ostream& os) const;
 
 	static TreePolynom* multiply(TreePolynom* tp1, TreePolynom* tp2);
 
@@ -400,7 +400,7 @@ public:
 		poly->withMonomsPerform(action,data);
 	}
 
-	void print(class std::ostream &os) const { os << *poly; }
+	void print(std::ostream &os) const { os << *poly; }
 
 protected:
 	TreePolynom<Monom>* poly;

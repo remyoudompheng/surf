@@ -28,11 +28,11 @@
 
 #include<iostream>
 
-#include "RootFinder2d.h"
-#include "degree.h"
+#include <RootFinder2d.h>
+#include <degree.h>
 
 // #define DEBUG
-#include "debug.h"
+#include <surfdebug.h>
 
 
 

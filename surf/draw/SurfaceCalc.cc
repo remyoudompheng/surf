@@ -34,7 +34,7 @@
 #include <ScriptVar.h>
 #include <float_buffer.h>
 #include <antialiasing_factor.h>
-#include <debug.h>
+#include <surfdebug.h>
 #include <IO.h>
 
 #include <math.h>

@@ -27,7 +27,7 @@
 #  include <config.h>
 #endif
 
-#include <debug.h>
+#include <surfdebug.h>
 #include <Script.h>
 #include <ScriptVar.h>
 #include <float_buffer.h>
