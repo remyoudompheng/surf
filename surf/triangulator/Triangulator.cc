@@ -54,6 +54,32 @@ Triangulator::~Triangulator()
 	}
 }
 
+namespace {
+	void sphere_func(gdouble** f, GtsCartesianGrid g, guint k, gpointer d)
+	{
+		double radius_sq = ScriptVar::clip_numeric.radius;
+		radius_sq *= radius_sq;
+		gdouble z = g.z;
+		gdouble y = g.y;
+		for(guint i = 0; i < g.ny; i++) {
+			gdouble x = g.x;
+			for(guint j = 0; j < g.nx; j++) {
+				f[j][i] = x*x + y*y + z*z - radius_sq;
+				x += g.dx;
+			}
+			y += g.dy;
+		}
+	}
+
+	gint prepend_triangle_bbox(GtsTriangle* t, GSList** bboxes)
+	{
+		*bboxes = g_slist_prepend(*bboxes, 
+					  gts_bbox_triangle(gts_bbox_class(), t));
+		return 0;
+	}
+
+}
+
 void Triangulator::triangulate()
 {
 	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
@@ -63,9 +89,8 @@ void Triangulator::triangulate()
 	GtsCartesianGrid g;
 	g.nx = g.ny = g.nz = ScriptVar::gts_grid_size_data;
 
-	g.x = -10.0; g.dx = 20.0/gdouble(g.nx - 1);
-	g.y = -10.0; g.dy = 20.0/gdouble(g.ny - 1);
-	g.z = -10.0; g.dz = 20.0/gdouble(g.nz - 1);
+	g.x = g.y = g.z = -10.0;
+	g.dx = g.dy = g.dz = 20.0/gdouble(g.nx - 1);
 
 	surface = gts_surface_new(gts_surface_class(),
 				  gts_face_class(),
@@ -73,9 +98,13 @@ void Triangulator::triangulate()
 				  gts_vertex_class());
 	gts_isosurface_cartesian(surface, g, _iso_func, this, 0.0);
 
-	if(ScriptVar::gts_coarsen_data) {
+	if(ScriptVar::gts_coarsen_data == 0) {
 		gts_surface_coarsen(surface, 0, 0, 0, 0, gts_coarsen_stop_cost,
 				    &ScriptVar::gts_max_cost_data, 0);
+	}
+
+	if(ScriptVar::clip_data != ScriptVar::clip_none_data) {
+		clip();
 	}
 
 	delete hf;
@@ -85,10 +114,70 @@ void Triangulator::triangulate()
 	}
 }
 
+void Triangulator::clip()
+{
+	GtsCartesianGrid g;
+	g.nx = g.ny = g.nz = ScriptVar::gts_grid_size_data;
+	g.x = g.y = g.z = -10.0;
+	g.dx = g.dy = g.dz = 20.0/gdouble(g.nx - 1);
+
+	GtsSurface* clipsurf = gts_surface_new(gts_surface_class(),
+					       gts_face_class(),
+					       gts_edge_class(),
+					       gts_vertex_class());
+
+	GtsIsoCartesianFunc f;
+		
+	if(ScriptVar::clip_data == ScriptVar::clip_sphere_data) {
+		f = sphere_func;
+	} else {
+		Misc::print_warning("Unsupported clipping mode in Triangulator::triangulate()!");
+		return;
+	}
+
+	gts_isosurface_cartesian(clipsurf, g, f, this, 0.0);
+
+	GSList* bboxes = 0;
+	gts_surface_foreach_face(surface, prepend_triangle_bbox, &bboxes);
+	GNode* tree1 = gts_bb_tree_new(bboxes);
+	g_slist_free(bboxes);
+
+	bboxes = 0;
+	gts_surface_foreach_face(clipsurf, prepend_triangle_bbox, &bboxes);
+	GNode* tree2 = gts_bb_tree_new(bboxes);
+	g_slist_free(bboxes);
+
+	GtsSurfaceInter* inter = gts_surface_inter_new(gts_surface_inter_class(),
+						       surface, clipsurf,
+						       tree1, tree2);
+
+	GtsSurface* result = gts_surface_new(gts_surface_class(),
+					     gts_face_class(),
+					     gts_edge_class(),
+					     gts_vertex_class());
+
+	gts_surface_inter_boolean(inter, result, GTS_1_IN_2);
+
+	gts_object_destroy(GTS_OBJECT(surface));
+	gts_object_destroy(GTS_OBJECT(clipsurf));
+	gts_object_destroy(GTS_OBJECT(inter));
+	surface = result;
+
+	gts_bb_tree_destroy(tree1, true);
+	gts_bb_tree_destroy(tree2, true);  
+}
+
 void Triangulator::write_data()
 {
 	std::cout << "triangulate_surface\n";
 	std::cout.flush();
+
+	std::cout << ScriptVar::color_slider[0].red << ' '
+		  << ScriptVar::color_slider[0].green << ' '
+		  << ScriptVar::color_slider[0].blue << '\n'
+		  << ScriptVar::color_slider[0].inside_red << ' '
+		  << ScriptVar::color_slider[0].inside_green << ' '
+		  << ScriptVar::color_slider[0].inside_blue << '\n';
 	
 	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
 	polyxyz_sort(&f);

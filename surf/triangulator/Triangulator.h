@@ -55,6 +55,7 @@ public:
 
 private:
 	void write_data();
+	void clip();
 	
 	void vertex_func(GtsVertex* v);
 	static gint _vertex_func(gpointer v, gpointer This) {

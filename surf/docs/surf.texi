@@ -1613,8 +1613,8 @@ they are listed here for the sake of completeness:
 
 @multitable {@code{clustered_dot_ordered_dither}} {@code{string}} {Value} {@code{three_d_file_format }}
 @item Constant           @tab Type        @tab Value    @tab Useful together with
-@item @code{yes}         @tab @code{int}  @tab @code{1} @tab any boolean variable
-@item @code{no}          @tab @code{int}  @tab @code{0} @tab any boolean variable
+@item @code{yes}         @tab @code{int}  @tab @code{0} @tab any boolean variable
+@item @code{no}          @tab @code{int}  @tab @code{1} @tab any boolean variable
 @item @code{translate}   @tab @code{int}  @tab @code{0} @tab @code{first}, @code{second}, @code{third}
 @item @code{rotate}      @tab @code{int}  @tab @code{1} @tab @code{first}, @code{second}, @code{third}
 @item @code{scale}       @tab @code{int}  @tab @code{2} @tab @code{first}, @code{second}, @code{third}
