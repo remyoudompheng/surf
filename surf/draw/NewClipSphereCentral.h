@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef CLIPSPHERECENTRAL_H
 #define CLIPSPHERECENTRAL_H
 

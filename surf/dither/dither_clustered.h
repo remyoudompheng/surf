@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef DITHER_CLUSTERED_H
 #define DITHER_CLUSTERED_H
 

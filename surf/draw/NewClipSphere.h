@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef CLIPSPHERE_H
 #define CLIPSPHERE_H
 

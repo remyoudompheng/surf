@@ -25,6 +25,7 @@
 
 
 
+
 /* ------------------------------------------------------------------------- */
 /* polyarith.h: include polynomial arithmetics                               */
 /* Author:   Stephan Endrass                                                 */

@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef DITHER_FLOYD_STEINBERG_H
 #define DITHER_FLOYD_STEINBERG_H
 

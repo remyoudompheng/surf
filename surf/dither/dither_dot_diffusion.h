@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef DITHER_DOT_DIFFUSION_H
 #define DITHER_DOT_DIFFUSION_H
 

@@ -23,6 +23,7 @@
  */
 
 
+
 #include "RGBToStandard.h"
 
 unsigned long RGBToStandard (float r, float g, float b, XStandardColormap *m)

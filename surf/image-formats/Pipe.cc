@@ -22,6 +22,7 @@
  *
  */
 
+
 #ifndef NO_GUI  // this whole thing makes only sense with GUI-support
 
 

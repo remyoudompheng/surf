@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef CLIPALGEBRAICCUBE_H
 #define CLIPALGEBRAICCUBE_H
 

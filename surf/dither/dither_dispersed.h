@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef DITHER_DISPERSED_H
 #define DITHER_DISPERSED_H
 

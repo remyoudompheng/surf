@@ -22,6 +22,7 @@
  *
  */
 
+
 #ifndef MAINWINDOWCONTROLLER_H
 #define MAINWINDOWCONTROLLER_H
 
@@ -34,6 +35,7 @@
 #include "ConfigurationWindow.h"
 #include "WidgetReadWriter.h"
 #include "SaveImageDialog.h"
+#include "NavigationWindow.h"
 
 enum SaveButtonType {
 	Color, Dithered
@@ -59,7 +61,8 @@ public:
 	void toggleDisplayedState();
 	
 	void enableSaveButton(SaveButtonType which);
-	
+
+	void drawSurfaceWithParams();
 
 protected:
 	MENUCALLBACK(showAbout, MainWindowController);
@@ -96,6 +99,7 @@ protected:
 	VOIDCALL(drawCurve, MainWindowController);
 	VOIDCALL(ditherCurve, MainWindowController);
 
+	VOIDCALL(navigate, MainWindowController);
 
 	VOIDCALL(configuration, MainWindowController)
 		{
@@ -169,6 +173,8 @@ protected:
 	GtkWidget* drawCurve_MenuItem;
 	GtkWidget* ditherCurve_MenuItem;
 	ConfigurationWindow cw;
+
+	NavigationWindow navwin;
 
 	Document *actualDocument;
 	

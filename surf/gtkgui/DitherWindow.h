@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef DITHERWINDOW_H
 #define DITHERWINDOW_H
 

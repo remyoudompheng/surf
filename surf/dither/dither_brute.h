@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef DITHER_BRUTE_H
 #define DITHER_BRUTE_H
 

@@ -23,6 +23,7 @@
  */
 
 
+
 #include "NewSimpleClip.h"
 
 #include "gui_config.h"

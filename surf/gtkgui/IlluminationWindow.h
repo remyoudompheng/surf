@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef ILLUMINATIONWINDOW_H
 #define ILLUMINATIONWINDOW_H
 

@@ -24,6 +24,7 @@
 
 
 
+
 #ifndef IMAGEFORMAT_XWD_H
 #define IMAGEFORMAT_XWD_H
 

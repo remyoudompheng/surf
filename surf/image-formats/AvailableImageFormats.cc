@@ -22,6 +22,7 @@
  *
  */
 
+
 #include "AvailableImageFormats.h"
 
 namespace ImageFormats {

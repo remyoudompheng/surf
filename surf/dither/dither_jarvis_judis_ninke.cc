@@ -23,6 +23,7 @@
  */
 
 
+
 #include <stdlib.h>
 
 #include "dither_jarvis_judis_ninke.h"

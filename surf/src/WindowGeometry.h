@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef WINDOWGEOMETRY_H
 #define WINDOWGEOMETRY_H
 

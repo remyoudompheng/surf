@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef CLIPALGEBRAICDODE_H
 #define CLIPALGEBRAICDODE_H
 

@@ -23,6 +23,7 @@
  */
 
 
+
 #include <math.h>
 #include <stdlib.h>
 #include "dither_pixel_radius_adjust.h"

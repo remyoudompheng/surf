@@ -25,6 +25,7 @@
 
 
 
+
 /* ------------------------------------------------------------------------- */
 /* polyroot.h: include my polynomial root finder                             */
 /* Author:   Stephan Endrass                                                 */

@@ -22,16 +22,62 @@
  *
  */
 
+#ifndef MATRIX33_H
+#define MATRIX33_H
 
+// very simple 3x3 matrix class with
+//   operator= and operator* (matrix multiplication)
 
-#include "mygtk.h"
+class Matrix33 {
+public:
+	Matrix33 () {
+		array = new double[9];
+	}
+	Matrix33 (double* arr) {
+		array = new double[9];
+		setArray (arr);
+	}
+	Matrix33 (const Matrix33 &src) {
+		array = new double[9];
+		setArray (src.array);
+	}
 
-void mygtk_set_tip (GtkWidget *widget, const char *str)
-{
-	static GtkTooltips *tip = 0;
-	if (tip == 0)
-		tip = gtk_tooltips_new();
+	virtual ~Matrix33 () {
+		delete [] array;
+	}
+
+	Matrix33& setArray (double* arr) {
+		for (int i = 0; i != 9; ++i) {
+			array[i] = arr[i];
+		}
+		return *this;
+	}
+
+	Matrix33& operator= (const Matrix33& r) {
+		for (int i = 0; i != 9; ++i) {
+			array[i] = r.array[i];
+		}
+		return *this;
+	}
 	
-	gtk_tooltips_set_tip (tip, widget, str, 0);
-}
+	Matrix33 operator* (const Matrix33& r) const {
+		Matrix33 res;
+		for (int i = 0; i != 3; ++i) {
+			for (int j = 0; j != 3; ++j) {
+				res.array[i*3 + j] = array[i*3]*r.array[j]
+					           + array[i*3+1]*r.array[3+j]
+					           + array[i*3+2]*r.array[6+j];
+			}
+		}
+		return res;
+	}
 
+	double& operator[](const int& i) const {
+		return array[i];
+	}
+
+private:
+	double* array;
+};
+
+#endif // !__MATRIX33_H__

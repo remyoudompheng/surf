@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef CONFIGURATIONWINDOW_H
 #define CONFIGURATIONWINDOW_H
 

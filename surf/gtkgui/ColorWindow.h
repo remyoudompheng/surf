@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef COLORWINDOW_H
 #define COLORWINDOW_H
 

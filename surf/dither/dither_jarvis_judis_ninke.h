@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef DITHER_JARVIS_JUDIS_NINKE_H
 #define DITHER_JARVIS_JUDIS_NINKE_H
 

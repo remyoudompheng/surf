@@ -23,6 +23,7 @@
  */
 
 
+
 // OCT_QUAN.H - Octree Color Quantization Class
 
 #ifndef OCT_QUAN_H

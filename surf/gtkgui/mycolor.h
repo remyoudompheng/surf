@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef MYCOLOR_H
 #define MYCOLOR_H
 

@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef NO_GUI
 
 #include <assert.h>

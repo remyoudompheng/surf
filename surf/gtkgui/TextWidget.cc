@@ -23,6 +23,7 @@
  */
 
 
+
 #include "TextWidget.h"
 
 void TextWidget::setName (const char *name)

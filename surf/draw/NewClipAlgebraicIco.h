@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef CLIPALGEBRAICICO_H
 #define CLIPALGEBRAICICO_H
 

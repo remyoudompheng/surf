@@ -24,6 +24,7 @@
 
 
 
+
 #ifndef IMAGEFORMAT_PPM_H
 #define IMAGEFORMAT_PPM_H
 

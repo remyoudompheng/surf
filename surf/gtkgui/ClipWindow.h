@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef CLIPWINDOW_H
 #define CLIPWINDOW_H
 

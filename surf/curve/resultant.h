@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef RESULTANT_H
 #define RESULTANT_H
 

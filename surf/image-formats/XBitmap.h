@@ -24,6 +24,7 @@
 
 
 
+
 #ifndef IMAGEFORMAT_XBM_H
 #define IMAGEFORMAT_XBM_H
 

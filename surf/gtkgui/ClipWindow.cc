@@ -23,6 +23,7 @@
  */
 
 
+
 #include <string.h>
 #include <iostream.h>
 #include "ClipWindow.h"

@@ -7,7 +7,7 @@ MISC_OBJ = misc/welcomeMessage.o misc/Misc.o misc/mystrdup.o
 DRAW_OBJ = draw/NewClip.o draw/NewClipSphere.o draw/NewClipSphereCentral.o draw/NewClipSphereParallel.o draw/NewClipAlgebraic.o draw/NewClipAlgebraicCube.o draw/NewClipAlgebraicTetra.o draw/NewClipAlgebraicOcta.o draw/NewClipAlgebraicDode.o draw/NewClipAlgebraicIco.o draw/NewClipAlgebraicCyl.o draw/NewClipAlgebraicUser.o draw/NewSimpleClip.o draw/SurfaceCalc.o
 MT_OBJ = mt/GuiThread.o mt/Thread.o mt/TSDrawingArea.o mt/cthread.o
 
-GTKGUI_OBJ = gtkgui/start.o gtkgui/MainWindowController.o gtkgui/mycolor.o gtkgui/TextWidget.o gtkgui/showAbout.o gtkgui/ProgressDialog.o gtkgui/ColorWindow.o gtkgui/DrawingArea.o gtkgui/PositionWindow.o gtkgui/ConfigurationWindow.o gtkgui/NumericWindow.o gtkgui/ColorSelectionButton.o gtkgui/IlluminationWindow.o gtkgui/Requester.o gtkgui/DisplayWindow.o gtkgui/WidgetReadWriter.o gtkgui/DitherWindow.o gtkgui/ClipWindow.o gtkgui/Document.o gtkgui/RGBToStandard.o gtkgui/mygtk.o gtkgui/SaveImageDialog.o
+GTKGUI_OBJ = gtkgui/start.o gtkgui/MainWindowController.o gtkgui/mycolor.o gtkgui/TextWidget.o gtkgui/showAbout.o gtkgui/ProgressDialog.o gtkgui/ColorWindow.o gtkgui/DrawingArea.o gtkgui/PositionWindow.o gtkgui/ConfigurationWindow.o gtkgui/NumericWindow.o gtkgui/ColorSelectionButton.o gtkgui/IlluminationWindow.o gtkgui/Requester.o gtkgui/DisplayWindow.o gtkgui/WidgetReadWriter.o gtkgui/DitherWindow.o gtkgui/ClipWindow.o gtkgui/Document.o gtkgui/RGBToStandard.o gtkgui/mygtk.o gtkgui/SaveImageDialog.o gtkgui/NavigationWindow.o
 
 CURVE_OBJ = curve/RBTree.o curve/resultant.o curve/RootFinder2d.o curve/RootFinder3d.o curve/DrawCurve.o curve/BigInteger.o
 

@@ -25,6 +25,7 @@
 
 
 
+
 /* ------------------------------------------------------------------------- */
 /* polyroot.c: improved polynomial root finder                               */
 /* Author:   Stephan Endrass                                                 */

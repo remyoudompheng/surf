@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef NEWCLIPNONE_H
 #define NEWCLIPNONE_H
 

@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef NUMERICWINDOW_H
 #define NUMERICWINDOW_H
 

@@ -23,6 +23,7 @@
  */
 
 
+
 #include "resultant.h"
 
 #include "Bezout.h"

@@ -24,6 +24,7 @@
 
 
 
+
 #ifdef HAVE_LIBJPEG
 
 #include "Misc.h"

@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef PARAMATERWINDOW_H
 #define PARAMATERWINDOW_H
 

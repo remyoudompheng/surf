@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef NEWCLIP_H
 #define NEWCLIP_H
 

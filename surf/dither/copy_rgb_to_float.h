@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef COPY_RGB_TO_FLOAT_H
 #define COPY_RGB_TO_FLOAT_H
 

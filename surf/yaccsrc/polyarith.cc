@@ -25,6 +25,7 @@
 
 
 
+
 /* ------------------------------------------------------------------------- */
 /* polyarith.c: monomial and polynomial arithmetic                           */
 /* Author:   Stephan Endrass                                                 */

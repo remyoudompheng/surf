@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef NEWSIMPLECLIP_H
 #define NEWSIMPLECLIP_H
 

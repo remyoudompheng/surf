@@ -23,12 +23,13 @@
  */
 
 
+
 #include <assert.h>
 #include <pthread.h>
 
 #include <gtk/gtkitemfactory.h>
 
-#include <strstream.h>
+#include <strstream>
 
 // #define DEBUG
 #include "debug.h"
@@ -41,7 +42,6 @@
 #include "showAbout.h"
 #include "ProgressDialog.h"
 #include "Thread.h"
-#include "ConfigurationWindow.h"
 #include "Requester.h"
 #include "GuiThread.h"
 #include "Misc.h"
@@ -324,6 +324,11 @@ void MainWindowController::ditherCurve()
 }
 
 
+void MainWindowController::navigate()
+{
+	navwin.show ();
+}
+
 void MainWindowController::loadScript()
 {
 	docToSave = 0;
@@ -423,6 +428,7 @@ MainWindowController::~MainWindowController()
 
 MainWindowController::MainWindowController() 
 	: colorWindow (new ColorWindow (this, true)), bitmapWindow(new ColorWindow(this, false)),
+	  navwin(this),
 	  actualDocument(0), docToSave(0),
 	  colorSaveButtonState(false), ditheredSaveButtonState(false)
 {
@@ -537,6 +543,12 @@ MainWindowController::MainWindowController()
 				      "Parses script without running any commands, then calls dither_curve.");
 	VOIDCONNECT (tmpbutton, "clicked", ditherCurve);
 	ditherCurveButton = tmpbutton;
+
+	addCommandSeparator();
+
+	tmpbutton = addCommandButton("navigate",
+				     "adjust rotation, scaling and position");
+	VOIDCONNECT(tmpbutton, "clicked", navigate);
 
 	addCommandSeparator();
 
@@ -693,4 +705,20 @@ void MainWindowController::enableSaveButton(SaveButtonType which)
 		ditheredSaveButtonState = true;
 		break;
 	}
+}
+
+void MainWindowController::drawSurfaceWithParams()
+{
+	ostrstream str;
+	str <<  "rot_x=" <<position_numeric.rot_x 
+	    << ";rot_y=" << position_numeric.rot_y
+	    << ";rot_z=" << position_numeric.rot_z
+	    << ";scale_x=" << position_numeric.scale_x
+	    << ";scale_y=" << position_numeric.scale_y
+	    << ";scale_z=" << position_numeric.scale_z
+	    << ";origin_x=" << position_numeric.orig_x
+	    << ";origin_y=" << position_numeric.orig_y
+	    << ";origin_z=" << position_numeric.orig_z
+	    << ";draw_surface;";
+	internalExecuteScript(0, tw.getContents(), str.str(), false);
 }

@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef CLIPALGEBRAICOCTA_H
 #define CLIPALGEBRAICOCTA_H
 

@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef DOUBLEMATH_H
 #define DOUBLEMATH_H
 

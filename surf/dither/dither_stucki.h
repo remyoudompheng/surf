@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef DITHER_STUCKI_H
 #define DITHER_STUCKI_H
 

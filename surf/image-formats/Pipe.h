@@ -23,6 +23,7 @@
  */
 
 
+
 #ifndef IMAGEFORMAT_PIPE_H
 #define IMAGEFORMAT_PIPE_H
 

@@ -23,6 +23,7 @@
  */
 
 
+
 #include "WindowGeometry.h"
 
 WindowGeometry::WindowGeometry (int w, int h)

@@ -27,6 +27,7 @@ libdummy_a_SOURCES = mycolor.cc mycolor.h			\
 	TableBuilder.h RadioButtonBuilder.h			\
 	RGBToStandard.cc RGBToStandard.h			\
 	SaveImageDialog.cc SaveImageDialog.h			\
-	OptionMenuBuilder.h
+	OptionMenuBuilder.h					\
+	NavigationWindow.cc NavigationWindow.h Matrix33.h
 
 libdummy.a:: $(libdummy_a_OBJECTS) $(libdummy_a_DEPENDENCIES)

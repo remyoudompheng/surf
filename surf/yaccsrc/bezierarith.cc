@@ -25,6 +25,7 @@
 
 
 
+
 /* ------------------------------------------------------------------------- */
 /* bezierarith.c: improved bezier arithmetic                                 */
 /* Author:   Stephan Endrass                                                 */
