@@ -93,7 +93,7 @@ static void replaceCommand (const char *name, void (*func) (void))
 		DMESS("adding new command " << name);
 	}
 	
-	symtab_add_surface_name (name, SYM_COMMAND, 1, func);
+	symtab_add_surface_name (name, SYM_COMMAND, 1, (void*)func);
 }
 
 
