@@ -88,7 +88,8 @@ Kernel::Kernel(const std::string& kernel_path)
 	if(receive_string() != "surf") {
 		Misc::print_error("This isn't a surf kernel on the other side of the pipe, is it?");
 	}
-	std::string version = receive_line();
+	check_version(receive_string());
+	receive_line();
 
 	send("set_kernel_mode;");
 
@@ -134,6 +135,13 @@ Kernel::~Kernel()
         signal(SIGCHLD, SIG_IGN);
 	kernel_input->close();
 	kernel_output->close();
+}
+
+void Kernel::check_version(const std::string& version)
+{
+	if(version == "version") { // output of surf 1.0.x
+		Misc::print_error("You need a newer surf kernel: surf v1.1.0 or later is required!\n");
+	}
 }
 
 void Kernel::reset()

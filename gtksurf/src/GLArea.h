@@ -63,13 +63,16 @@ public:
 
 	void toggle_cross() {
 		showCross = !showCross;
+		display();
 	}
 	void toggle_wireframe() {
 		wireframe = !wireframe;
+		display();
 	}
 	void set_perspective(bool cp) {
 		centralPerspective = cp;
 		reshape(width, height);
+		display();
 	}
 
 

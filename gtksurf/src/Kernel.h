@@ -159,6 +159,8 @@ private:
 	double scale_z;
 	Sequence sequence[3];
 	
+	void check_version(const std::string& v);
+
 	guint handler_id;
 	void process_output();
 	static void _process_output(gpointer This, gint, GdkInputCondition) {
