@@ -270,9 +270,9 @@ void init_main_variables()
 	}
 
 	addNumber("color_file_colormap", &colormap_output_data);
-	addConstant("Netscape", &colormap_output_netscape_data);
-	addConstant("Optimized", &colormap_output_optimized_data);
-	addConstant("TrueColor", &colormap_output_true_color_data);
+	addConstant("netscape", &colormap_output_netscape_data);
+	addConstant("optimized", &colormap_output_optimized_data);
+	addConstant("truecolor", &colormap_output_true_color_data);
 
 
 	//  position variables and constants:

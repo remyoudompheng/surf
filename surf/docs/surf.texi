@@ -1102,9 +1102,9 @@ surf can store color images in one of several file formats. By setting
 Additionally the value of @code{color_file_colormap} can be chosen
 among:
 @multitable {@code{Optimized}} {optimized by an octree algorithm (8 bit) and}
-@item @code{Netscape}  @tab Netscape 216 color cube (8 bit)
-@item @code{Optimized} @tab optimized by an octree algorithm (8 bit)
-@item @code{TrueColor} @tab true color (24 bit)
+@item @code{netscape}  @tab Netscape 216 color cube (8 bit)
+@item @code{optimized} @tab optimized by an octree algorithm (8 bit)
+@item @code{truecolor} @tab true color (24 bit)
 @end multitable
 The first colormap is just the 6x6x6 colormap Netscape uses.  The second
 one results from an octree algorithm which chooses the most used 216
@@ -1148,7 +1148,10 @@ variables are either constant or may be altered.
 * Saving Images::
 * Image Variables::
 * Lighting Variables::
-* Clipping::
+* Dithering Variables::
+* Clipping Variables::
+* Algorithm Variables::
+* Constants::
 @end menu
 
 
@@ -1161,6 +1164,18 @@ variables are either constant or may be altered.
 @multitable {Reserved Word} {@code{string}} {@{64, @dots{}, 3000@}} {Default} {height of surface image}
 @item Reserved Word @tab Type @tab Range @tab Default @tab Description
 @item @code{curve}    @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of curve
+@item @code{curve_red}   @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab curve color
+@item @code{curve_green} @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab
+@item @code{curve_blue}  @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab
+@item @code{curve_width} @tab @code{double} @tab any @tab @code{1} @tab width of curve
+@item @code{curve_gamma} @tab @code{double} @tab ]@code{0},
+@ifnottex
+oo
+@end ifnottex
+@tex
+$\infty$
+@end tex
+[ @tab @code{4.0} @tab gamma value of curve
 @item @code{surface}  @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface
 @item @code{surface2} @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface2
 @item @dots{}         @tab @dots{}  @tab @dots{} @tab @dots{} @tab @dots{}
@@ -1210,10 +1225,10 @@ variables are either constant or may be altered.
 @item @code{scale_x}     @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{1} @tab ratio surface is scaled in direction of the x-axis
 @item @code{scale_y}     @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{1} @tab ratio surface is scaled in direction of the y-axis
 @item @code{scale_z}     @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{1} @tab ratio surface is scaled in direction of the z-axis
-@item @code{perspective} @tab @code{int}    @tab @{@code{parallel}, @code{central}@} @tab @code{parallel} @tab perspective to use
-@item @code{first}       @tab @code{int}    @tab @{@code{translate}, @code{rotate}, @code{scale}@} @tab @code{translate} @tab first performed action
-@item @code{second}      @tab @code{int}    @tab @{@code{translate}, @code{rotate}, @code{scale}@} @tab @code{rotate}  @tab second performed action
-@item @code{third}       @tab @code{int}    @tab @{@code{translate}, @code{rotate}, @code{scale}@} @tab @code{scale} @tab third performed action
+@item @code{perspective} @tab @code{int}    @tab @{@code{parallel},@* @code{central}@} @tab @code{parallel} @tab perspective to use
+@item @code{first}       @tab @code{int}    @tab @{@code{translate},@* @code{rotate},@* @code{scale}@} @tab @code{translate} @tab first performed action
+@item @code{second}      @tab @code{int}    @tab @{@code{translate},@* @code{rotate},@* @code{scale}@} @tab @code{rotate}  @tab second performed action
+@item @code{third}       @tab @code{int}    @tab @{@code{translate},@* @code{rotate},@* @code{scale}@} @tab @code{scale} @tab third performed action
 @end multitable
 
 @c Saving Images
@@ -1222,13 +1237,22 @@ variables are either constant or may be altered.
 @node Saving Images, Image Variables, Positioning, List Of All Reserved Words
 @section Saving Images
 
-@multitable {@code{save_dithered_image}} {@code{string}} {@code{postscript,}} {@code{auto}} {save color image in file defined}
+@multitable {@code{save_dithered_image}} {@code{string}} {@code{postscript,}} {@code{truecolor}} {save color image in file}
 @item Reserved Word              @tab Type          @tab Range @tab Def.     @tab Description
 @item @code{save_color_image}    @tab cmd.          @tab ---   @tab ---       @tab save color image in file defined by the global string @code{filename}
 @item @code{save_dithered_image} @tab cmd.          @tab ---   @tab ---       @tab save dithered black and white image in file defined by the global string @code{filename}
 @item @code{filename}            @tab @code{string} @tab any   @tab @code{""} @tab filename used in @code{save_color_image} and @code{save_dithered_image}
 @item @code{color_file_format}   @tab @code{int}    @tab @{@code{auto},@* @code{jpeg},@* @code{ppm},@* @code{sun},@* @code{xpm}@} @tab @code{auto} @tab file format used in @code{save_color_image}
+@item @code{color_file_colormap} @tab @code{int}    @tab @{@code{netscape},@*
+                                                           @code{optimized},@*
+                                                           @code{truecolor}@} @tab @code{truecolor} @tab colormap type
 @item @code{dither_file_format}  @tab @code{int}    @tab @{@code{auto},@* @code{eps},@* @code{pbm},@* @code{postscript},@* @code{tiff},@* @code{xbm}@} @tab @code{auto} @tab file format used in @code{save_dithered_image}
+@item @code{resolution}          @tab @code{int}    @tab @{@code{res_75dpi},@*
+                                                           @code{res_100dpi},@*
+                                                           @code{res_150dpi},@*
+                                                           @code{res_300dpi},@*
+                                                           @code{res_600dpi},@*
+                                                           @code{res_1200dpi}@} @tab @code{..300dpi} @tab (printer) resolution
 @end multitable
 
 @c Image Variables
@@ -1258,7 +1282,7 @@ variables are either constant or may be altered.
 @c Lighting Variables
 @c ------------------
 
-@node Lighting Variables, Clipping, Image Variables, List Of All Reserved Words
+@node Lighting Variables, Clipping Variables, Image Variables, List Of All Reserved Words
 @section Lighting Variables
 
 @multitable {@code{surface9_green}} {@code{double}} {@code{transmitted_light}} {@code{amb... +}} {volume of 9th light source}
@@ -1304,9 +1328,6 @@ variables are either constant or may be altered.
 @item @code{light1_green}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab
 @item @code{light1_blue}     @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab
 @item @dots{}                @tab @dots{}       @tab @dots{}                                           @tab @dots{}
-@item @code{light9_x}        @tab @code{double} @tab [@code{-9999}, @code{9999}]       @tab @code{100} @tab position of 9th light source
-@item @code{light9_y}        @tab @code{double} @tab [@code{-9999}, @code{9999}]       @tab @code{-100} @tab
-@item @code{light9_z}        @tab @code{double} @tab [@code{-9999}, @code{9999}]       @tab @code{100} @tab
 @item @code{light9_vol}      @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{0}   @tab volume of 9th light source
 @item @code{light9_red}      @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab color of 9th light source
 @item @code{light9_green}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab
@@ -1314,20 +1335,23 @@ variables are either constant or may be altered.
 @end multitable
 
 
-@c Clipping
-@c --------
+@c Clipping Variables
+@c ------------------
 
-@node Clipping, , Lighting Variables, List Of All Reserved Words
-@section Clipping
+@node Clipping Variables, Dithering Variables, Lighting Variables, List Of All Reserved Words
+@section Clipping Variables
 
-@multitable {@code{cylinder_xaxis}} {@code{double}} {@code{cylinder_xaxis, }} {@code{none}} {additional clip region}
+@multitable {@code{clip_front}} {@code{double}} {@code{dodecahedron, }} {@code{sphere}} {additional clip region}
 @item Reserved Word     @tab Type          @tab Range @tab Def.     @tab Description
-@item @code{clip}       @tab @code{int}    @tab @{@code{none},@*
-                                                  @code{sphere},@*
-                                                  @code{cylinder_xaxis},@*
-                                                  @code{cylinder_yaxis},@*
-                                                  @code{cylinder_zaxis},@*
-                                                  @code{cube}@}            @tab @code{none} @tab clipping area shape
+@item @code{clip}       @tab @code{int}    @tab @{@code{sphere},@*
+                                                  @code{tetrahedron},@*
+                                                  @code{cube},@*
+                                                  @code{octahedron},@*
+                                                  @code{dodecahedron},@*
+                                                  @code{icosahedron},@*
+                                                  @code{cylinder},@*
+                                                  @code{user},@*
+                                                  @code{none}@}            @tab @code{sphere} @tab clipping area shape
 @item @code{clip_front} @tab @code{double} @tab [@code{-9999}, @code{9999}] @tab @code{10}  @tab additional clip region
 @item @code{clip_back}  @tab @code{double} @tab [@code{-9999}, @code{9999}] @tab @code{-10} @tab additional clip region
 @item @code{radius}     @tab @code{double} @tab ]@code{0}, @code{9999}]     @tab @code{10}  @tab radius of clip region
@@ -1336,30 +1360,136 @@ variables are either constant or may be altered.
 @item @code{center_z}   @tab @code{double} @tab [@code{-9999}, @code{9999}] @tab @code{0}   @tab center of clip region
 @end multitable
 
+@c Dithering Variables
+@c -------------------
+
+@node Dithering Variables, Algorithm Variables, Clipping Variables, List Of All Reserved Words
+@section Dithering Variables
+
+@multitable {@code{dithering_method}} {@code{clustered_dot_ordered_dither, }} {Default} {size of dithering tile}
+@item Reserved Word           @tab Range                         @tab Default @tab Description
+@item @code{dithering_method} @tab @{@code{floyd_steinberg_filter},@*
+                                                      @code{jarvis_judis_ninke_filter},@*
+                                                      @code{stucki_filter},@*
+                                                      @code{clustered_dot_ordered_dither},@*
+                                                      @code{dispersed_dot_ordered_dither},@*
+                                                      @code{dot_diffusion},@*
+                                                      @code{smooth_dot_diffusion}@} @tab @code{jarv..} @tab dithering method
+@item @code{serpentine_raster} @tab @{@code{yes}, @code{no}@}    @tab @code{yes} @tab use of serpentine raster
+@item @code{random_weights}    @tab @{@code{yes}, @code{no}@}    @tab @code{yes} @tab use of random weights
+@item @code{weight}            @tab [@code{0}, @code{1}]         @tab @code{0.5} @tab amount of random weights
+@item @code{barons}            @tab @{@code{one_baron},@*
+                                                         @code{two_baron}@} @tab @code{two..} @tab number of barons
+@item @code{pattern_size}      @tab @{@code{pattern_4x4},@*
+                                                         @code{pattern_8x8},@*
+                                                         @code{pattern_16x16}@} @tab @code{..8x8} @tab size of dithering tile
+@item @code{enhance_edges}     @tab @{@code{yes}, @code{no}@} @tab @code{yes} @tab enhance edges of b w image
+@item @code{alpha}             @tab [@code{0}, @code{1}] @tab @code{0.9} @tab filter coefficient used for enhancing the edges
+@item @code{background}        @tab [@code{0}, @code{1}] @tab @code{1.0} @tab background intensity of b&w imaeg
+@item @code{tone_scale_adjustment} @tab @{@code{yes}, @code{no}@} @tab @code{yes} @tab perform tone scale adjust.
+@item @code{gamma}             @tab ]@code{0},
+@ifnottex
+oo
+@end ifnottex
+@tex
+$\infty$
+@end tex
+[ @tab @code{1.3} @tab gamma-correction
+@item @code{pixel_size}        @tab ]@code{50}, @code{100}] @tab @code{73} @tab correction for printers that produce too fat pixels
+@end multitable
+
+@c Algorithm Variables
+@c -------------------
+
+@node Algorithm Variables, Constants, Dithering Variables, List Of All Reserved Words
+@section Algorithm Variables
+
+@multitable {@code{root_finder}} {@code{d_chain_anderson_bjoerck, }} {@code{bezier_all_roots }} {used root finder}
+@item Variable @tab Range @tab Def.     @tab Description
+@item @code{root_finder} @tab @{@code{d_chain_bisection},@*
+                                                   @code{d_chain_regula_falsi},@*
+                                                   @code{d_chain_pegasus},@*
+                                                   @code{d_chain_anderson_bjoerck},@*
+                                                   @code{d_chain_newton},@*
+                                                   @code{bezier_all_roots}@} @tab @code{bezier_all_roots} @tab used root finder
+@item @code{epsilon}     @tab ]@code{0}, @code{1}[ @tab @code{1e-4} @tab precision of root finder
+@item @code{terations}   @tab [@code{1}, @code{2000}] @tab @code{200} @tab max. number of iterations
+@end multitable
+
 @c Constants
 @c ---------
 
-@c @node, Constants, , , List Of All Reserved Words
-@c @section Constants
+@node Constants, , Algorithm Variables, List Of All Reserved Words
+@section Constants
 
 These constants all appreared before as values for some variables
 (like @code{first}, @code{second}, @code{third} or @code{color_image_format}),
 but since they're actually just "ordinary" constants and thus reserved words
 they are listed here for the sake of completeness:
 
-@multitable {@code{d_chain_regula_falsi}} {@code{string}} {Value} {@code{first}, @code{second}, @code{third}}
+@multitable {@code{clustered_dot_ordered_dither}} {@code{string}} {Value} {@code{first}, @code{second}, @code{third}}
 @item Constant           @tab Type        @tab Value    @tab Useful together with
-@item @code{yes}         @tab @code{int}  @tab @code{1} @tab for any boolean variable
-@item @code{no}          @tab @code{int}  @tab @code{0} @tab for any boolean variable
+@item @code{yes}         @tab @code{int}  @tab @code{1} @tab any boolean variable
+@item @code{no}          @tab @code{int}  @tab @code{0} @tab any boolean variable
 @item @code{translate}   @tab @code{int}  @tab @code{0} @tab @code{first}, @code{second}, @code{third}
 @item @code{rotate}      @tab @code{int}  @tab @code{1} @tab @code{first}, @code{second}, @code{third}
 @item @code{scale}       @tab @code{int}  @tab @code{2} @tab @code{first}, @code{second}, @code{third}
 @item @code{parallel}    @tab @code{int}  @tab @code{0} @tab @code{perspective}
 @item @code{central}     @tab @code{int}  @tab @code{1} @tab @code{perspective}
-@item @code{ambient_light} @tab @code{int} @tab @code{1} @tab @code{illumination}
-@item @code{diffuse_light} @tab @code{int} @tab @code{2} @tab @code{illumination}
-@item @code{reflected_light} @tab @code{int} @tab @code{4} @tab @code{illumination}
+@item @code{ambient_light}     @tab @code{int} @tab @code{1} @tab @code{illumination}
+@item @code{diffuse_light}     @tab @code{int} @tab @code{2} @tab @code{illumination}
+@item @code{reflected_light}   @tab @code{int} @tab @code{4} @tab @code{illumination}
 @item @code{transmitted_light} @tab @code{int} @tab @code{8} @tab @code{illumination}
+@item @code{sphere}            @tab @code{int} @tab @code{0} @tab @code{clip}
+@item @code{tetrahedron}       @tab @code{int} @tab @code{1} @tab @code{clip}
+@item @code{cube}              @tab @code{int} @tab @code{2} @tab @code{clip}
+@item @code{octahedron}        @tab @code{int} @tab @code{3} @tab @code{clip}
+@item @code{dodecahedron}      @tab @code{int} @tab @code{4} @tab @code{clip}
+@item @code{icosahedron}       @tab @code{int} @tab @code{5} @tab @code{clip}
+@item @code{cylinder}          @tab @code{int} @tab @code{6} @tab @code{clip}
+@item @code{user}              @tab @code{int} @tab @code{7} @tab @code{clip}
+@item @code{none}              @tab @code{int} @tab @code{8} @tab @code{clip}
+@item @code{floyd_steinberg_filter}       @tab @code{int} @tab @code{0} @tab @code{dithering_method}
+@item @code{jarvis_judis_ninke_filter}    @tab @code{int} @tab @code{1} @tab @code{dithering_method}
+@item @code{stucki_filter}                @tab @code{int} @tab @code{2} @tab @code{dithering_method}
+@item @code{clustered_dot_ordered_dither} @tab @code{int} @tab @code{3} @tab @code{dithering_method}
+@item @code{dispersed_dot_ordered_dither} @tab @code{int} @tab @code{4} @tab @code{dithering_method}
+@item @code{dot_diffusion}                @tab @code{int} @tab @code{5} @tab @code{dithering_method}
+@item @code{smooth_dot_diffusion}         @tab @code{int} @tab @code{6} @tab @code{dithering_method}
+@item @code{one_baron}     @tab @code{int} @tab @code{0} @tab @code{barons}
+@item @code{two_baron}     @tab @code{int} @tab @code{1} @tab @code{barons}
+@item @code{pattern_4x4}   @tab @code{int} @tab @code{0} @tab @code{pattern_size}
+@item @code{pattern_8x8}   @tab @code{int} @tab @code{1} @tab @code{pattern_size}
+@item @code{pattern_16x16} @tab @code{int} @tab @code{2} @tab @code{pattern_size}
+@item @code{auto}       @tab @code{int} @tab ? @tab @code{color_file_format},@* @code{dither_file_format}
+@item @code{jpeg}       @tab @code{int} @tab ? @tab @code{color_file_format}
+@item @code{ppm}        @tab @code{int} @tab ? @tab @code{color_file_format}
+@item @code{sun}        @tab @code{int} @tab ? @tab @code{color_file_format}
+@item @code{xpm}        @tab @code{int} @tab ? @tab @code{color_file_format}
+@item @code{eps}        @tab @code{int} @tab ? @tab @code{dither_file_format}
+@item @code{pbm}        @tab @code{int} @tab ? @tab @code{dither_file_format}
+@item @code{postscript} @tab @code{int} @tab ? @tab @code{dither_file_format}
+@item @code{tiff}       @tab @code{int} @tab ? @tab @code{dither_file_format}
+@item @code{xbm}        @tab @code{int} @tab ? @tab @code{dither_file_format}
+@item @code{netscape}   @tab @code{int} @tab @code{0} @tab @code{color_file_colormap}
+@item @code{optimized}  @tab @code{int} @tab @code{1} @tab @code{color_file_colormap}
+@item @code{truecolor}  @tab @code{int} @tab @code{2} @tab @code{color_file_colormap}
+@item @code{res_75dpi}   @tab @code{int} @tab @code{0} @tab @code{resolution}
+@item @code{res_100dpi}  @tab @code{int} @tab @code{1} @tab @code{resolution}
+@item @code{res_150dpi}  @tab @code{int} @tab @code{2} @tab @code{resolution}
+@item @code{res_300dpi}  @tab @code{int} @tab @code{3} @tab @code{resolution}
+@item @code{res_600dpi}  @tab @code{int} @tab @code{4} @tab @code{resolution}
+@item @code{res_1200dpi} @tab @code{int} @tab @code{5} @tab @code{resolution}
+@item @code{d_chain_bisection}        @tab @code{int} @tab @code{0} @tab @code{root_finder}
+@item @code{d_chain_regula_falsi}     @tab @code{int} @tab @code{1} @tab @code{root_finder}
+@item @code{d_chain_pegasus}          @tab @code{int} @tab @code{2} @tab @code{root_finder}
+@item @code{d_chain_anderson_bjoerck} @tab @code{int} @tab @code{3} @tab @code{root_finder}
+@item @code{d_chain_newton}           @tab @code{int} @tab @code{4} @tab @code{root_finder}
+@item @code{bezier_all_roots}         @tab @code{int} @tab @code{5} @tab @code{root_finder}
 @end multitable
+
+Note: Please use these constants, @emph{not} their values, wherever you
+can, because then any changes to the values are automatically
+incorporated to your scripts.
 
 @bye
