@@ -29,126 +29,110 @@
 #include "ProgressDialog.h"
 #include "Thread.h"
 
-void ProgressDialog::tryToStop (GtkWidget *widget, gpointer data)
+void ProgressDialog::tryToStop(GtkWidget* widget, gpointer data)
 {
-	ProgressDialog *pd = (ProgressDialog *)data;
+	ProgressDialog* pd = (ProgressDialog*)data;
 	if (pd->thread) {
 		pd->thread->stop();
 	}
-	
 }
 
 
 ProgressDialog::ProgressDialog()
+	: thread(0), doing(0), done(-1.0), shown(false)
 {
-	thread=0;
-	doing=0;
-	done=-1.0;
-	shown = false;
-	dialog = gtk_dialog_new ();
-	gtk_container_border_width(GTK_CONTAINER(GTK_DIALOG (dialog)->vbox), 10);
+	dialog = gtk_dialog_new();
+	gtk_container_border_width(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 10);
 
 	label = gtk_label_new("");
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    label, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog)->vbox), label, true, true, 0);
 	
 	progress = gtk_progress_bar_new();
-	gtk_progress_set_show_text (GTK_PROGRESS(progress), TRUE);
-	gtk_progress_set_activity_mode (GTK_PROGRESS(progress), TRUE);
+	gtk_progress_set_show_text(GTK_PROGRESS(progress), true);
+	gtk_progress_set_activity_mode(GTK_PROGRESS(progress), true);
 	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    progress, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), progress, false, false, 5);
 	
+	GtkWidget* button = gtk_button_new_with_label("Stop");
+	gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(tryToStop), this);
 
-	GtkWidget *button = gtk_button_new_with_label ("Stop");
-	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(tryToStop), this);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), button, true, true, 0);
 
-	gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog)->action_area), button, TRUE, TRUE, 0);
-
-	gtk_signal_connect (GTK_OBJECT(dialog), "delete_event", GTK_SIGNAL_FUNC(handle_delete), this);
-	timeouttag = gtk_timeout_add (100, timeout, this);
+	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event", GTK_SIGNAL_FUNC(handle_delete), this);
 }
 
 ProgressDialog::~ProgressDialog()
 {
-	gtk_widget_hide(dialog);
+	hide();
 	gtk_widget_destroy(dialog);
 }
 
 void ProgressDialog::updateDisplay()
 {
-	const char *newDoing;
-	double newDone;
-	if (thread) {
+	if(thread) {
 		if (thread->isReady()) {
-			gtk_timeout_remove (timeouttag);
-			delete this;
+			hide();
 			return;
 		}
-		thread->getProgress (newDoing, newDone);
-		if (newDoing != doing) {
+		
+		const char* newDoing = 0;
+		double newDone = 0;
+		
+		thread->getProgress(newDoing, newDone);
+		if(newDoing != doing) {
 			doing = newDoing;
 			gtk_label_set_text(GTK_LABEL(label), doing);
-			show();
 		}
 		if (newDone != done) {
-			if (done < 0 && newDone >= 0) {
-				gtk_progress_set_activity_mode (GTK_PROGRESS(progress), FALSE);
-			} else if (done >= 0.0 && newDone < 0) {
-				gtk_progress_set_activity_mode (GTK_PROGRESS(progress), TRUE);
+			if(done < 0 && newDone >= 0) {
+				gtk_progress_set_activity_mode(GTK_PROGRESS(progress), false);
+			} else if(done >= 0.0 && newDone < 0) {
+				gtk_progress_set_activity_mode(GTK_PROGRESS(progress), true);
 			}
 			done = newDone;
-			if (done >= 0) {
-				gtk_progress_set_percentage (GTK_PROGRESS(progress), done);
+			if(done >= 0) {
+				gtk_progress_set_percentage(GTK_PROGRESS(progress), done);
 			}
-		} else if (done < 0) {
-			gfloat newval;
-			GtkAdjustment *adj;
-			adj = GTK_PROGRESS(progress)->adjustment;
-			newval = adj->value+1;
-			if (newval > adj->upper)
+		} else if(done < 0) {
+			GtkAdjustment* adj = GTK_PROGRESS(progress)->adjustment;
+			gfloat newval = adj->value + 1;
+			if(newval > adj->upper)
 				newval=adj->lower;
-			gtk_progress_set_value(GTK_PROGRESS(progress),newval);
-			
+			gtk_progress_set_value(GTK_PROGRESS(progress), newval);
 		}
 	}
 }
 
 void ProgressDialog::show()
 {
-	if (!shown) {
-		gtk_widget_show_all (dialog);
+	if(!shown) {
+		gtk_widget_show_all(dialog);
+		timeouttag = gtk_timeout_add(100, timeout, this);
 		shown = true;
 	}
-	
 }
 
-
-void ProgressDialog::setDone (double _done)
+void ProgressDialog::hide()
 {
-	done = _done;
+	if(shown) {
+		gtk_widget_hide(dialog);
+		gtk_timeout_remove(timeouttag);
+		shown = false;
+	}
 }
-
-void ProgressDialog::setDoing (const char *_doing)
-{
-	doing = _doing;
-}
-
-
-
 
 //
 // --- Callbacks
 //
 
-gint ProgressDialog::timeout (gpointer data)
+gint ProgressDialog::timeout(gpointer data)
 {
-	((ProgressDialog *)data)->updateDisplay();
-	return TRUE;
+	((ProgressDialog*)data)->updateDisplay();
+	return true;
 }
 
-gint ProgressDialog::handle_delete (GtkWidget *widget, GdkEvent *event, gpointer data)
+gint ProgressDialog::handle_delete(GtkWidget* widget, GdkEvent* event, gpointer data)
 {
-	return TRUE;
+	return true;
 }

@@ -40,7 +40,6 @@
 #include "RgbBuffer.h"
 #include "TSDrawingArea.h"
 #include "showAbout.h"
-#include "ProgressDialog.h"
 #include "Thread.h"
 #include "Requester.h"
 #include "GuiThread.h"
@@ -286,8 +285,7 @@ void MainWindowController::internalExecuteScript (const char *before, const char
 	}
 	allowScriptExecution(false);
 
-	ProgressDialog *pd = new ProgressDialog();
-	pd->setThread(ess->getThread());
+	progress.setThread(ess->getThread());
 }
 
 void MainWindowController::executeScript()
@@ -430,6 +428,9 @@ MainWindowController::MainWindowController()
 	  actualDocument(0), docToSave(0),
 	  colorSaveButtonState(false), ditheredSaveButtonState(false)
 {
+	// create menu:
+	// ------------
+
 	static GtkItemFactoryEntry entries[] = {
 		{(gchar*)"/_File", 0,                              0, 0, (gchar *)"<Branch>"},
 		{(gchar*)"/File/tearoff", 0,                       0, 0, (gchar*)"<Tearoff>"},
@@ -470,7 +471,6 @@ MainWindowController::MainWindowController()
 	GtkItemFactory *fac = gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>",  accel_group);
 	gtk_item_factory_create_items(fac, sizeof(entries)/sizeof(entries[0]), entries, this);
 	
-
 	GtkWidget *wid = gtk_item_factory_get_widget(fac,"<main>");
 
 	loadedScripts = gtk_item_factory_get_widget(fac,"/File/Loaded Scripts");
@@ -492,26 +492,38 @@ MainWindowController::MainWindowController()
 	ditherCurve_MenuItem = gtk_item_factory_get_widget(fac, "/Command/Dither Curve");
 	assert(ditherCurve_MenuItem);
 
+
+	// create window:
+	// --------------
+
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event", GTK_SIGNAL_FUNC(handle_delete_event), this);
+	gtk_window_set_title (GTK_WINDOW(window), PACKAGE " " VERSION);
+	VOIDCONNECT(window, "destroy", destroy);
 
 	gtk_accel_group_attach(accel_group, GTK_OBJECT(window));
+
+
+	// create file selection:
+	// ----------------------
+	
 	filesel = GTK_FILE_SELECTION(gtk_file_selection_new(""));
 	VOIDCONNECT(filesel->ok_button, "clicked", fileSelected);
 	VOIDCONNECT(filesel->cancel_button, "clicked", fileSelectionCancelled);
 	gtk_signal_connect (GTK_OBJECT(filesel), "delete_event", GTK_SIGNAL_FUNC(fileSelectionDelete), this);
 
+
+	// create command buttons:
+	// -----------------------
+
 	buttons = gtk_vbox_new (FALSE, 5);
 	gtk_container_border_width(GTK_CONTAINER(buttons), 5);
-
 
 	GtkWidget *tmpbutton;
 
 	tmpbutton = addCommandButton ("configuration...",
 				      "Opens the configuration window, where you can adjust a lot of parameters.");
 	VOIDCONNECT(tmpbutton, "clicked", configuration);
-	
-
 	
 	addCommandSeparator();
 
@@ -589,24 +601,20 @@ MainWindowController::MainWindowController()
 
 	gtk_container_add (GTK_CONTAINER(frame), buttons);
 
+
+	// group text widget & command buttons together:
+	// ---------------------------------------------
+
 	mainBox = gtk_hbox_new (FALSE,5);
 	gtk_container_border_width(GTK_CONTAINER(tw.getContainer()), 5);
 	gtk_box_pack_start (GTK_BOX(mainBox), tw.getContainer(), TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX(mainBox), handlebox, FALSE, FALSE, 0);
 
-	
 
-	gtk_window_set_title (GTK_WINDOW(window), PACKAGE " " VERSION);
-	VOIDCONNECT(window, "destroy", destroy);
-	
+	// create preview buttons:
+	// -----------------------
+
 	GtkWidget *preview = gtk_hbox_new (TRUE, 5);
-
-//  	RadioButtonBuilder rbb (false);
-//  	rbb.setBox (preview);
-//  	rbb.addButton ("1x1",0);
-//  	rbb.addButton ("3x3",0);
-//  	rbb.addButton ("9x9",0);
-//  	rbb.addButton ("27x27",0);
 
 	previewButtons[0] = gtk_toggle_button_new_with_label ("3x3");
 	previewButtons[1] = gtk_toggle_button_new_with_label ("9x9");
@@ -619,6 +627,9 @@ MainWindowController::MainWindowController()
 	}
 
 
+	// create size spins:
+	// ------------------
+
 	GtkWidget *width = mygtk_new_spin (200, 16, 6000, 1, 5, 0.2, 0);
 	GtkWidget *height = mygtk_new_spin (200, 16, 6000, 1, 5, 0.2, 0);
 
@@ -626,7 +637,6 @@ MainWindowController::MainWindowController()
 	wrw.addWidget (height, "height");
 
 	GtkWidget *sizeContainer = gtk_hbox_new (FALSE, 10);
-// 	gtk_container_border_width(GTK_CONTAINER(sizeContainer), 5);
 
 	gtk_box_pack_start (GTK_BOX(sizeContainer), gtk_label_new("width:") , FALSE, FALSE ,0);
 	gtk_box_pack_start (GTK_BOX(sizeContainer), width, FALSE, FALSE ,0);
@@ -640,21 +650,20 @@ MainWindowController::MainWindowController()
 	gtk_container_border_width(GTK_CONTAINER(previewContainer), 5);
 	mygtk_set_tip (previewContainer, "toller tip");
 
+	gtk_box_pack_start(GTK_BOX(previewContainer), sizeContainer, FALSE, FALSE, 0);
+
+
+	// pack stuff into window:
+	// -----------------------
+
 	GtkWidget* dummy = gtk_vbox_new(false, 0);
 	handlebox = gtk_handle_box_new();
 	gtk_container_add(GTK_CONTAINER(handlebox), wid);
 	gtk_box_pack_start(GTK_BOX(dummy), handlebox, false, false, 0);
 	gtk_box_pack_start(GTK_BOX(dummy), mainBox, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(dummy), previewContainer, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(previewContainer), sizeContainer, FALSE, FALSE, 0);
-
-
-//	gtk_container_border_width(GTK_CONTAINER(mainBox), 5);
-
 	gtk_container_add (GTK_CONTAINER(window), dummy);
 
-//   	bitmapWindow->show();
-//   	colorWindow->show();
 
 
 	editDocument(Document::newUnnamed());
@@ -664,9 +673,6 @@ MainWindowController::MainWindowController()
 	navwin.readSymbols(Script::getDefaultValues());
 	
 	displayedState = false;
-
-//	if (showme)
-//		gtk_widget_show_all(window);
 }
 
 void MainWindowController::show()

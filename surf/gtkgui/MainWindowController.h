@@ -36,6 +36,7 @@
 #include "WidgetReadWriter.h"
 #include "SaveImageDialog.h"
 #include "NavigationWindow.h"
+#include "ProgressDialog.h"
 
 enum SaveButtonType {
 	Color, Dithered
@@ -193,6 +194,7 @@ private:
 	WidgetReadWriter wrw;
 	SaveImageDialog saveImageDialog;
 
+	ProgressDialog progress;
 
 	void addedDocument (Document *doc);
 

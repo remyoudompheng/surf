@@ -38,24 +38,22 @@ public:
 	ProgressDialog();
  	~ProgressDialog();
 
-	void show();
+	void setDone(double _done) { done = _done; }
+	void setDoing(const char* _doing) { doing = _doing; }
 
-	
-	void setDone (double _done);
-	void setDoing (const char *doing);
-
-	void setThread (Thread *aThread) {thread = aThread;};
+	void setThread(Thread* aThread) { thread = aThread; show(); }
 	void updateDisplay();	
-protected:
 
-	static void tryToStop (GtkWidget *, gpointer);
+private:
+	static void tryToStop(GtkWidget *, gpointer);
+	void show();
+	void hide();
 
-protected:
-	GtkWidget *dialog;
-	GtkWidget *label;
-	GtkWidget *progress;
-	Thread *thread;
-	const char *doing;
+	GtkWidget* dialog;
+	GtkWidget* label;
+	GtkWidget* progress;
+	Thread* thread;
+	const char* doing;
 	double done;
 	gint timeouttag;
 	bool shown;
@@ -63,7 +61,8 @@ protected:
 	// 
 	// --- Callbacks
 	//
-	static gint timeout (gpointer data);
-	static gint handle_delete (GtkWidget *widget, GdkEvent *event, gpointer data);
+	static gint timeout(gpointer data);
+	static gint handle_delete(GtkWidget* widget, GdkEvent* event, gpointer data);
 };
+
 #endif
