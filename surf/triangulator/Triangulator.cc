@@ -110,7 +110,8 @@ void Triangulator::triangulate()
 
 	if(ScriptVar::gts_coarsen_data == 0) {
 		Misc::progress("Coarsening surface");
-		gts_surface_coarsen(surface, 0, 0, 0, 0, gts_coarsen_stop_cost,
+		gts_surface_coarsen(surface, 0, 0, 0, 0,
+				    GtsStopFunc(gts_coarsen_stop_cost),
 				    &ScriptVar::gts_max_cost_data, 0);
 		Misc::progress(Misc::done);
 	}
@@ -148,12 +149,12 @@ void Triangulator::clip()
 	gts_isosurface_cartesian(clipsurf, g, f, this, 0.0);
 
 	GSList* bboxes = 0;
-	gts_surface_foreach_face(surface, prepend_triangle_bbox, &bboxes);
+	gts_surface_foreach_face(surface, GtsFunc(prepend_triangle_bbox), &bboxes);
 	GNode* tree1 = gts_bb_tree_new(bboxes);
 	g_slist_free(bboxes);
 
 	bboxes = 0;
-	gts_surface_foreach_face(clipsurf, prepend_triangle_bbox, &bboxes);
+	gts_surface_foreach_face(clipsurf, GtsFunc(prepend_triangle_bbox), &bboxes);
 	GNode* tree2 = gts_bb_tree_new(bboxes);
 	g_slist_free(bboxes);
 

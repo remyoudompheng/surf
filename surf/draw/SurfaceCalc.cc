@@ -502,7 +502,7 @@ void SurfaceCalc::color_of_single_point(Vector& P, Vector& N, colorrgb& I, int o
                         return;
 		}
                 else {
-			fade = min(fade, 1.0);
+			fade = MIN(fade, 1.0);
 		}
 	}
 
@@ -678,7 +678,7 @@ void SurfaceCalc::illumination_of_surface(double wx, double wy,
 		if(ScriptVar::light_settings[best_i].thickness > 0) {
 		        if(N.z > 0) {
 				double tmp = ScriptVar::light_settings[best_i].thickness/(30.0*N.z);
-			     	transfak = pow(transparence, min(tmp, 4.0));
+			     	transfak = pow(transparence, MIN(tmp, 4.0));
 			} else {
 				transfak = pow(transparence, 4.0);
 			}
@@ -798,7 +798,7 @@ void SurfaceCalc::CalculateCurveOnSurface(int xmin, int ymin, int xmax, int ymax
 
         float distf = ScriptVar::display_numeric.stereo_z*ScriptVar::display_numeric.stereo_eye/
 		      ScriptVar::position_numeric.spectator_z;
-	int dist = int(distf*float(min(ScriptVar::main_width_data, ScriptVar::main_height_data))/20.0);
+	int dist = int(distf*float(MIN(ScriptVar::main_width_data, ScriptVar::main_height_data))/20.0);
 
 	initVars();
 	

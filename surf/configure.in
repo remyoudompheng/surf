@@ -147,21 +147,27 @@ JOJO_GMP
 dnl check for readline:
 dnl -------------------
 
-have_termlib=no
-AC_CHECK_LIB(ncurses, tparm,
-  TERMLIB=-lncurses
-    have_termlib=yes,
-  AC_CHECK_LIB(termcap, tgetent,
-    TERMLIB=-ltermcap
-      have_termlib=yes))
+AC_ARG_ENABLE(readline,
+  [  --disable-readline       Do not try to find readline includes and library],
+  , enable_readline=yes)
 
-if test "$have_termlib" = "yes"; then
-  LIBS="$LIBS $TERMLIB"
-  AC_CHECK_LIB(readline, readline,
-    LIBS="-lreadline $LIBS"
-      AC_CHECK_HEADER(readline/readline.h,
-        AC_CHECK_HEADER(readline/history.h,
-          AC_DEFINE(HAVE_READLINE))))
+if test "x$enable_readline" = "xyes" ; then
+  have_termlib=no
+  AC_CHECK_LIB(ncurses, tparm,
+    TERMLIB=-lncurses
+      have_termlib=yes,
+    AC_CHECK_LIB(termcap, tgetent,
+      TERMLIB=-ltermcap
+        have_termlib=yes))
+
+  if test "$have_termlib" = "yes"; then
+    LIBS="$LIBS $TERMLIB"
+    AC_CHECK_LIB(readline, readline,
+      LIBS="-lreadline $LIBS"
+        AC_CHECK_HEADER(readline/readline.h,
+          AC_CHECK_HEADER(readline/history.h,
+            AC_DEFINE(HAVE_READLINE))))
+  fi
 fi
 
 dnl check for GTS:

@@ -106,8 +106,8 @@ bool NewClipSphereCentral::clip_user_xy (double ux, double uy, double &zmin, dou
 	
 	zmin = ( a - discr_b )*b;
 	zmax = ( a + discr_b )*b;
-	zmin = max( zmin,cb  );
-	zmax = min( zmax,cf );
+	zmin = MAX( zmin,cb  );
+	zmax = MIN( zmax,cf );
 	
 	return true;
 }

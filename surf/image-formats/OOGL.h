@@ -30,7 +30,8 @@
 
 #include <gts.h>
 
-#include<fstream>
+#include <stdio.h>
+
 #include<map>
 
 class Triangulator;
@@ -39,7 +40,7 @@ namespace ImageFormats {
 
 	class OOGL : public Format {
 	public:
-		OOGL() : ofs(0), num_vertices(0) {}
+		OOGL() : num_vertices(0) {}
 		virtual ~OOGL() {}
 		
 		std::string getName() const {
@@ -59,8 +60,8 @@ namespace ImageFormats {
 		bool save3DImage(const char* filename, Triangulator& data);
 
 	private:
-		std::ofstream* ofs;
-
+		FILE* file;
+		
 		Triangulator* tritor;
 		int num_vertices;
 		std::map<GtsVertex*, int> vertex_map;

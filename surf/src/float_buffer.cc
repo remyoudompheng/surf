@@ -106,8 +106,8 @@ void float_buffer::NullInit()
 
 void float_buffer::Copy( const float_buffer& alt )
 {
-	int xm = min( width, alt.width );
-	int ym = min( height, alt.height );
+	int xm = MIN( width, alt.width );
+	int ym = MIN( height, alt.height );
 	for( int y = 0; y < ym; y++ )
 		for( int x = 0; x < xm; x++ )
 			b[y*width+x] = alt.Get( x, y );
@@ -120,7 +120,7 @@ void float_buffer::Copy( const float_buffer& alt )
 void float_buffer::CopyLine( const float_buffer& alt, int src, int dest )
 {
 	if( dest >= 0 && dest < height ) {
-		int xm = min( width, alt.width );
+		int xm = MIN( width, alt.width );
 		for( int x = 0; x < xm; x++ )
 			b[dest*width+x]=alt.Get(x,src);
 	}

@@ -403,7 +403,7 @@ void Script::drawSurface()
 			       + 0.114*(float(color_background_data[BLUE])));
 		float distf = display_numeric.stereo_z*display_numeric.stereo_eye/
 			      position_numeric.spectator_z;
-		int dist = int(distf*(float(min(main_width_data,main_height_data)))/20.0);
+		int dist = int(distf*(float(MIN(main_width_data,main_height_data)))/20.0);
 
 		SurfaceCalc sc;
 		sc.surface_calculate(*buffer);

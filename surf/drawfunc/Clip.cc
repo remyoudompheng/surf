@@ -74,8 +74,8 @@ Clip::Clip( const int cm,
 	Center[2] = ClipData.center_z;
 	WinMin[0] = mi;              // uxmin, uxmax, uymin, uymax
 	WinMax[0] = mx;
-	WinMin[1] = min( y1,y2 );
-	WinMax[1] = max( y1,y2 );
+	WinMin[1] = MIN( y1,y2 );
+	WinMax[1] = MAX( y1,y2 );
 }
 
 // ----------------------------------------------------------------------------
@@ -130,8 +130,8 @@ int ClipSphere::ClipXYZ( double ux, double uy, double &min, double &max )
 		return false;
 	}
 	h = sqrt( RadQuad - h );
-	min = max( Center[2] - h, Back );
-	max = min( Center[2] + h, Front );
+	min = MAX( Center[2] - h, Back );
+	max = MIN( Center[2] + h, Front );
 	return true;
 }
 
@@ -168,8 +168,8 @@ int ClipCylH::ClipXYZ( double, double uy, double &min, double &max )
 		return false;
 	}
 	h = sqrt( RadQuad - h );
-	min = max( Center[2] - h, Back );
-	max = min( Center[2] + h, Front );
+	min = MAX( Center[2] - h, Back );
+	max = MIN( Center[2] + h, Front );
 	return true;
 }
 
@@ -206,8 +206,8 @@ int ClipCylV::ClipXYZ( double ux, double, double &min, double &max )
 		return false;
 	}
 	h = sqrt( RadQuad - h );
-	min = max( Center[2] - h, Back );
-	max = min( Center[2] + h, Front );
+	min = MAX( Center[2] - h, Back );
+	max = MIN( Center[2] + h, Front );
 	return true;
 }
 
@@ -294,8 +294,8 @@ int ClipCube::ClipXYZ( double ux, double uy, double &min, double &max )
 			double h1 = CubeVec[i].x * ux + CubeVec[i].y * uy;
 			double h2 = ( h1 + Length[2*i] ) / CubeVec[i].z;
 			double h3 = ( h1 + Length[2*i+1] ) / CubeVec[i].z;
-			min = max( min, min( h2, h3 ) );
-			max = min( max, max( h2, h3 ) );
+			min = MAX( min, MIN( h2, h3 ) );
+			max = MIN( max, MAX( h2, h3 ) );
 		} else {
 			if( ( h1 + Length[2*i] ) * ( h1 + Length[2*i+1] ) > 0.0 ) {
 				min = 1.0;
@@ -402,8 +402,8 @@ int ClipSphereCentral::ClipXY( int dir, double uv, double &min, double &max )
       
 		double hh = sqrt(discr);
 		double h = a[0] * uv + A[dir+dir+dir];
-		min = max( ( h - hh ) / Disc[1-dir], WinMin[1-dir] );
-		max = min( ( h + hh ) / Disc[1-dir], WinMax[1-dir] );
+		min = MAX( ( h - hh ) / Disc[1-dir], WinMin[1-dir] );
+		max = MIN( ( h + hh ) / Disc[1-dir], WinMax[1-dir] );
 	}
 	return true;
 }
@@ -429,8 +429,8 @@ int ClipSphereCentral::ClipXYZ( double ux, double uy,
 	double a = sqsum - ux * Center[0] - uy * Center[1] + SpectatorZ * Center[2];
 	double aa = SpectatorZ / ( sqsum + SpecZSquare );
 	
-	min = max( (a-h)*aa, Back );
-	max = min( (a+h)*aa, Front );
+	min = MAX( (a-h)*aa, Back );
+	max = MIN( (a+h)*aa, Front );
 	return true;
 }
 
@@ -479,8 +479,8 @@ int ClipCylHCentral::ClipXY( int dir, double uv, double &min, double &max )
 		return false;
 	}
 	if( dir == 0 ) {
-		min = max( B[0], WinMin[1] );
-		max = min( B[1], WinMax[1] );
+		min = MAX( B[0], WinMin[1] );
+		max = MIN( B[1], WinMax[1] );
 	}      
 
 	if( dir == 1 ) {
@@ -502,8 +502,8 @@ int ClipCylHCentral::ClipXYZ( double, double uy, double &min, double &max )
 	double discr = SpectatorZ * sqrt( -A[2] * uysq + a[3] * uy + a[4] );
 	double h = a[0] + uysq + a[1] * uy + a[2];
 	double hh = uysq + SpecZSquare;
-	min = max((h-discr)/hh,Back);
-	max = min((h+discr)/hh,Front);
+	min = MAX((h-discr)/hh,Back);
+	max = MIN((h+discr)/hh,Front);
 	return true;
 }
 
@@ -559,8 +559,8 @@ int ClipCylVCentral::ClipXY( int dir, double uv, double &min, double &max )
 		max = WinMax[1];
 	}
 	if( dir == 1 ) {
-		min = max( B[0], WinMin[0] );
-		max = min( B[1], WinMax[0] );
+		min = MAX( B[0], WinMin[0] );
+		max = MIN( B[1], WinMax[0] );
 	}
 	return true;
 }
@@ -576,8 +576,8 @@ int ClipCylVCentral::ClipXYZ( double ux, double, double &min, double &max )
 	discr = sqrt(discr) * SpectatorZ;
 	double h = a[0] * uxsq + a[1] * ux + a[2];
 	double hh = uxsq * SpecZSquare;
-	min = max( (h - discr)/hh, Back );
-	max = min( (h + discr)/hh, Front );
+	min = MAX( (h - discr)/hh, Back );
+	max = MIN( (h + discr)/hh, Front );
 	return true;
 }
 
@@ -661,8 +661,8 @@ int ClipCubeCentral::ClipXYZ( double ux, double uy, double &min, double &max )
 		if( h != 0.0 ) {
 			double h2 = SpectatorZ * ( h1 + Length[2*i] ) / h;
 			double h3 = SpectatorZ * ( h1 + Length[2*i+1] ) / h;
-			min = max( min, min( h2, h3 ) );
-			max = min( max, max( h2, h3 ) );
+			min = MAX( min, MIN( h2, h3 ) );
+			max = MIN( max, MAX( h2, h3 ) );
 		} else {
 			if( ( h1 + Length[2*i] ) * ( h1 + Length[2*i+1] ) > 0.0 ) {
 				min = 1.0;

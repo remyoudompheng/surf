@@ -397,7 +397,7 @@ AC_DEFUN([JOJO_INVENTOR],[
   save_ldflags=$LDFLAGS
 
   AC_ARG_WITH(inventor-prefix,
-    [  --with-Inventor-prefix=PFX Prefix where OpenInventor is installed],
+    [  --with-inventor-prefix=PFX Prefix where OpenInventor is installed],
     inventor_prefix="$withval",
     inventor_prefix="")
   AC_ARG_ENABLE(inventor,

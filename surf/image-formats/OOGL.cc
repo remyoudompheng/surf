@@ -45,26 +45,19 @@ namespace ImageFormats {
 		tritor = &data;
 		
 		FileWriter fw(filename);
-		FILE* file;
 		
 		if((file = fw.openFile()) == 0) {
 		        Misc::print_warning("Could not open file for writing.\n");
 			return false;
 		}
 
-		ofs = new std::ofstream(fileno(file));
-		if(!*ofs) {
-			Misc::print_warning("Couldn't associate C++ stream with output file.\n");
-			return false;
-		}
-
-		GtsSurface* surface = data.getSurface();
+		GtsSurface* surface = data.getSurface();		
 		if(surface == 0) {
 			Misc::print_warning("There was no triangulated data to save.\n");
 			return false;
 		}
 
-		*ofs << "{\n";
+		fputs("{\n", file);
 		
 		// write appearance:
 		float r = ScriptVar::color_slider[0].red/255.0;
@@ -74,29 +67,29 @@ namespace ImageFormats {
 		float bg = ScriptVar::color_slider[0].inside_green/255.0;
 		float bb = ScriptVar::color_slider[0].inside_blue/255.0;
 		int illumination = ScriptVar::light_illumination_data;
-		*ofs << "appearance {\n"
-		     << "  shading smooth\n"
-		     << "  material {\n";
+		fputs("appearance {\n"
+		      "  shading smooth\n"
+		      "  material {\n", file);
 		if(illumination & ScriptVar::light_illumination_ambient_data) {
-			*ofs << "    ka " << ScriptVar::light_settings[0].ambient/100.0 << '\n'
-			     << "    ambient " << r << ' ' << g << ' ' << b << '\n';
+			fprintf(file, "    ka %f\n", ScriptVar::light_settings[0].ambient/100.0);
+			fprintf(file, "    ambient %f %f %f\n", r, g, b);
 		}
 		if(illumination & ScriptVar::light_illumination_diffuse_data) {
-			*ofs << "    kd " << ScriptVar::light_settings[0].diffuse/100.0 << '\n';
+			fprintf(file, "    kd %f\n", ScriptVar::light_settings[0].diffuse/100.0);
 		}
-		*ofs << "    diffuse " << r << ' ' << g << ' ' << b << '\n'
-		     << "    backdiffuse " << br << ' ' << bg << ' ' << bb << '\n';
+		fprintf(file, "    diffuse %f %f %f\n", r, g, b);
+		fprintf(file, "    backdiffuse %f %f %f\n", br, bg, bb);
 		if(illumination & ScriptVar::light_illumination_reflected_data) {
-			*ofs << "    ks " << ScriptVar::light_settings[0].reflected/100.0 << '\n'
-			     << "    specular 1 1 1\n";
+			fprintf(file, "    ks %f\n", ScriptVar::light_settings[0].reflected/100.0);
+			fputs("    specular 1 1 1\n", file);
 		}
 		if(illumination & ScriptVar::light_illumination_transmitted_data) {
-			*ofs << "    alpha " << 1.0 - ScriptVar::light_settings[0].transparence/100.0 << '\n';
+			fprintf(file, "    alpha %f\n", 1.0 - ScriptVar::light_settings[0].transparence/100.0);
 		}
-		*ofs << "  }\n"
-		     << "  lighting {\n"
-		     << "    replacelights\n"
-		     << "    ambient .3 .3 .3\n"; // hm. should we?
+		fputs("  }\n"
+		      "  lighting {\n"
+		      "    replacelights\n"
+		      "    ambient .3 .3 .3\n", file); // hm. should we?
 
 		for(int i = 0; i != LIGHT_SOURCE_MAX_VALUE; i++) {
 			light_data_t& l = ScriptVar::light_data[i];
@@ -104,26 +97,21 @@ namespace ImageFormats {
 			if(vol == 0) {
 				continue;
 			}
-			*ofs << "    light {\n"
-			     << "      color "
-			     << l.getColorValue(0) << ' '
-			     << l.getColorValue(1) << ' '
-			     << l.getColorValue(2) << '\n'
-			     << "      position "
-			     << l.position[0] << ' '
-			     << l.position[1] << ' '
-			     << l.position[2] << " 0\n"
-			     << "    }\n";
+			fputs("    light {\n", file);
+			fprintf(file, "      color %f %f %f\n", l.getColorValue(0), l.getColorValue(1), l.getColorValue(2));
+			fprintf(file, "      position %f %f %f 0\n", l.position[0], l.position[1], l.position[2]);
+			fputs("    }\n", file);
 		}
 		
-		*ofs << "  }\n"
-		     << "}\n";
+		fputs("  }\n"
+		      "}\n", file);
 
 		// write vertices/faces:
-		*ofs <<"NOFF\n"
-		     << gts_surface_vertex_number(surface) << ' '
-		     << gts_surface_face_number(surface) << ' '
-		     << gts_surface_edge_number(surface) << '\n';
+		fputs("NOFF\n", file);
+		fprintf(file, "%d %d %d\n",
+			gts_surface_vertex_number(surface),
+			gts_surface_face_number(surface),
+			gts_surface_edge_number(surface));
 
 		num_vertices = 0;
 		data.initNormals();
@@ -133,9 +121,7 @@ namespace ImageFormats {
 		gts_surface_foreach_face(surface, _face_func, this);
 
 		// end file:
-		*ofs << "}\n";
-
-		delete ofs;
+		fputs("}\n", file);
 
 		vertex_map.erase(vertex_map.begin(), vertex_map.end());
 
@@ -151,8 +137,8 @@ namespace ImageFormats {
 		};
 		Triangulator::Point n = tritor->getNormal(p);
 		
-		*ofs << p.x << ' ' << p.y << ' ' << p.z << ' '
-		     << n.x << ' ' << n.y << ' ' << n.z << '\n';
+		fprintf(file, "%f %f %f %f %f %f\n",
+			p.x, p.y, p.z, n.x, n.y, n.z);
 	}
 
 	void OOGL::face_func(GtsFace* face)
@@ -161,10 +147,7 @@ namespace ImageFormats {
 		GtsVertex* v2;
 		GtsVertex* v3;
 		gts_triangle_vertices(&face->triangle, &v1, &v2, &v3);
-		*ofs << "3 "
-		     << vertex_map[v1] << ' '
-		     << vertex_map[v2] << ' '
-		     << vertex_map[v3] << '\n';
+		fprintf(file, "3 %d %d %d\n", vertex_map[v1], vertex_map[v2], vertex_map[v3]);
 	}
 
 } // namespace ImageFormats

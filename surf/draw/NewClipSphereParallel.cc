@@ -51,8 +51,8 @@ bool NewClipSphereParallel::clip_user_xy (double ux, double uy, double &zmin, do
 		zmax = cz + h;
 		// fixme
                 // mach ich doch ...
-		zmin = max( zmin,cb /*-10.0*/ /*cb*/);
-		zmax = min( zmax,cf /*10.0*/ /*cf*/ );
+		zmin = MAX( zmin,cb /*-10.0*/ /*cb*/);
+		zmax = MIN( zmax,cf /*10.0*/ /*cf*/ );
 		
 		return  true;
 	} else {

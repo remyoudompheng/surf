@@ -298,8 +298,9 @@ int Polyx::ZeroSimplePoly( const double zmin, const double zmax,
 		Root[0] = Root[1]; 
 	}
 	
-	if( !Multiflag ) 
-		result = min( 1 , result);
+	if( !Multiflag ) {
+		result = MIN( 1 , result);
+	}
 
 	return result;
 }
@@ -403,14 +404,16 @@ int Polyx::ZeroBezierMulti( double Left, double Right, double *Root,
 {
 
 	int NumberOfZeroes = 0;
-	if( Right > 0.0 )
-		GetAllZeroesInRange( max( 0.0, Left ), Right,
+	if( Right > 0.0 ) {
+		GetAllZeroesInRange( MAX( 0.0, Left ), Right,
 				     Root, NumberOfZeroes,
 				     OldRoot, NumOld );
-	if( Left < 0.0 )
-		GetAllZeroesInRange( Left, min( 0.0, Right ),
+	}
+	if( Left < 0.0 ) {
+		GetAllZeroesInRange( Left, MIN( 0.0, Right ),
 				     Root, NumberOfZeroes,
 				     OldRoot, NumOld );
+	}
 	return NumberOfZeroes;
 }
 
@@ -422,14 +425,16 @@ int Polyx::ZeroBezierSingle( double Left, double Right, double *Root,
 			     double *OldRoot, int NumOld ) const
 {
 	int NumberOfZeroes = 0;
-	if( Right > 0.0 )
-		GetOneZeroInRange( max( 0.0, Left ) , Right,
+	if( Right > 0.0 ) {
+		GetOneZeroInRange( MAX( 0.0, Left ) , Right,
 				   Root, NumberOfZeroes,
 				   OldRoot, NumOld );
-	if( Left < 0.0 && !NumberOfZeroes )
-		GetOneZeroInRange( Left, min( 0.0, Right ),
+	}
+	if( Left < 0.0 && !NumberOfZeroes ) {
+		GetOneZeroInRange( Left, MIN( 0.0, Right ),
 				   Root, NumberOfZeroes,
 				   OldRoot, NumOld );
+	}
 	return NumberOfZeroes;
 }
 

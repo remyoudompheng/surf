@@ -64,7 +64,7 @@ DrawfuncData::DrawfuncData( RgbBuffer *rgbbuff, float_buffer *zbuff,
 	   PointWidth(PW),                     // curve width
 	   PointDiv(4*PW),                      
 	   MaxDist(pow(PW+1,2.0)/(4.0*PW)),
-	   WinSizeFactor((double)min(ScriptVar::main_width_data,ScriptVar::main_height_data)/20.0),
+	   WinSizeFactor(double(MIN(ScriptVar::main_width_data,ScriptVar::main_height_data)/20.0)),
 	   intensity(rgbbuff),
 	   zbuffer(zbuff)
 {

@@ -22,8 +22,6 @@
  *
  */
 
-
-
 #ifndef WINDOWGEOMETRY_H
 #define WINDOWGEOMETRY_H
 
@@ -94,10 +92,9 @@ public:
 	int getHeight() const
 		{ return height;};
 	
-	double WinSizeFactor() const 
-		{
-			return min(width,height)/20.0;
-		}
+	double WinSizeFactor() const {
+		return MIN(width, height)/20.0;
+	}
 
 private:
 	

@@ -39,12 +39,12 @@ enum {
 	blue
 };
 
-#ifndef min
-#define min(a,b)	( ((a)<(b))?(a):(b) )
+#ifndef MIN
+#define MIN(a,b)	( ((a)<(b))?(a):(b) )
 #endif
 
-#ifndef max
-#define max(a,b)	( ((a)<(b))?(b):(a) )
+#ifndef MAX
+#define MAX(a,b)	( ((a)<(b))?(b):(a) )
 #endif
 
 #endif  //!DEF_H 
