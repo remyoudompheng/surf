@@ -6,6 +6,8 @@
 #undef HAVE_LIBTIFF
 #undef TIFF_HEADER_34
 
+#undef HAVE_READLINE
+
 #undef HAVE_LIBGTS
 
 #undef NO_GETHOSTNAME_PROTO

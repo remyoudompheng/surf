@@ -47,7 +47,7 @@
 #include <Triangulator.h>
 #include <debug.h>
 
-#ifdef HAVE_LIBREADLINE
+#ifdef HAVE_READLINE
 #  include <readline/readline.h>
 #  include <readline/history.h>
 #endif
@@ -238,7 +238,7 @@ void Script::executeScriptFromStdin()
 
 	if(stdin_is_a_tty) {
 
-#ifdef HAVE_LIBREADLINE
+#ifdef HAVE_READLINE
 		rl_bind_key('\t', reinterpret_cast<Function*>(rl_insert));
 		rl_bind_key('^', reinterpret_cast<Function*>(rl_insert));
 		char* l;

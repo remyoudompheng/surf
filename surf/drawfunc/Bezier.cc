@@ -39,36 +39,36 @@
 
 
 Bezier::Bezier( const Polyx &Polynom, double le, double ri ) 
-	: Polyx(Polynom.GetNumber()), Left(le), Right(ri)  // set interval borders
+	: Polyx(Polynom.GetNumber()),
+	  Left(le), Right(ri)  // set interval borders
 {
-	int num = Number - 1, l;
-	double *cf = Coeff, *cf2 = Polynom.GetCoeff();
-	if( le >= 0.0 ) {
-		for( l = 0; l < Number; l++, cf++, cf2++ )
-			*cf = *cf2 / binom_coeff( num, l );   // scale coeffs
+	int num = Number - 1;
+	double* cf = Coeff;
+	double* cf2 = Polynom.GetCoeff();
+
+	if(le >= -ri) {
+		for(int l = 0; l < Number; l++, cf++, cf2++) {
+			*cf = *cf2/binom_coeff(num, l);   // scale coeffs
+		}
       
 		DivideLeft(1.0, ri);   // subdivide at r and keep left
-		if(le > 0.0) {                      // subdivide at l and keep right
+		if(le != 0.0) {        // subdivide at l and keep right
 			DivideRight((ri - le)/ri);
 		}
 	} else {
-		double factor = ( (Number % 2) ? 1.0 : -1.0);
-		for( l = 0, cf2 += num;
-		     l < Number;
-		     cf++, l++, cf2--, factor = -factor )
-			*cf = *cf2 * factor / binom_coeff( num, l ); 
+		double factor = ((Number%2) ? 1.0 : -1.0);
+		cf2 += num;
+		for(int l = 0; l < Number; cf++, l++, cf2--, factor = -factor) {
+			*cf = *cf2*factor/binom_coeff(num, l);
+		}
 		// scale coeffs
 		// store in reverse order and multiply 
 		// with (-1)^(n-i) to swap x and w
 		
 		DivideRight(-le, 1.0); // subdivide at l and keep right
-		if(ri < 0.0) {                    // subdivide at r and keep left
+		if(ri != 0.0) {        // subdivide at r and keep left
 			DivideLeft((le - ri)/le);
 		}
-		if(ri > 0.0) {
-			DivideLeft((le -ri)/le);
-		}
-		
 	}
 }
 

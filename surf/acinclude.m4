@@ -313,13 +313,13 @@ AC_DEFUN(JOJO_GTS, [
     echo "**** feature of surf!"
 
     AM_PATH_GLIB(1.2.0)
-    LIBS="$LIBS $GLIB_LIBS"
+    LIBS="$GLIB_LIBS $LIBS"
     CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
 
     AC_CHECK_HEADER(gts.h,
       AC_CHECK_LIB(gts, main,
         AC_DEFINE(HAVE_LIBGTS)
-         LIBS="$LIBS -lgts"
+         LIBS="-lgts $LIBS"
          have_gts="yes",
         AC_MSG_ERROR([Couldn't find libgts. Please install GTS or try --disable-gts.])),
       AC_MSG_ERROR([Couldn't find gts.h. Please install GTS or try --diasble-gts.]))

@@ -93,6 +93,17 @@ dnl ---------
 
 RS_CHECK_LIB(m, main)
 
+dnl zlib/gzlib:
+dnl -----------
+
+have_libz=no
+AC_CHECK_LIB(z, main,
+  LIBS="$LIBS -lz"
+    have_libz=yes,
+  AC_CHECK_LIB(gz, main,
+    LIBS="$LIBS -lgz"
+      have_libz=yes))
+
 
 dnl checks for image libraries (optional):
 dnl --------------------------------------
@@ -104,8 +115,10 @@ AC_CHECK_HEADER(jpeglib.h,
 
 dnl PNG library and png.h
 
-AC_CHECK_HEADER(png.h,
-  AC_CHECK_LIB(png, png_set_rows))
+if test "$have_libz" = "yes"; then
+  AC_CHECK_HEADER(png.h,
+    AC_CHECK_LIB(png, png_set_rows))
+fi
 
 dnl tiff library and header file:
 
@@ -116,8 +129,7 @@ AC_CHECK_HEADER(tiffio.h,
      AC_DEFINE(HAVE_LIBTIFF)
      LIBS="$LIBS -ltiff"))
 
-if test "$libtifffound" = "no"
-then
+if test "$libtifffound" = "no"; then
 dnl (FreeBSD 3.0 has tiff34.so instead of tiff.so and the header files
 dnl are in /usr/local/lib/tiff34)
   AC_CHECK_HEADER(tiff34/tiffio.h,
@@ -135,8 +147,21 @@ JOJO_GMP
 dnl check for readline:
 dnl -------------------
 
-AC_CHECK_HEADERS(readline/readline.h readline/history.h,
-  AC_CHECK_LIB(readline, main))
+have_termlib=no
+AC_CHECK_LIB(ncurses, tparm,
+  TERMLIB=-lncurses
+    have_termlib=yes,
+  AC_CHECK_LIB(termcap, tgetent,
+    TERMLIB=-ltermcap
+      have_termlib=yes))
+
+if test "$have_termlib" = "yes"; then
+  LIBS="$LIBS $TERMLIB"
+  AC_CHECK_LIB(readline, readline,
+    LIBS="-lreadline $LIBS"
+      AC_CHECK_HEADERS(readline/readline.h readline/history.h,
+        AC_DEFINE(HAVE_READLINE)))
+fi
 
 dnl check for GTS:
 dnl --------------
