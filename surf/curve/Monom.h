@@ -30,6 +30,9 @@
 #include<cstring>
 #include<iostream>
 
+/**
+ * template class for monoms with coefficient and an arbitrary number of variables
+ */
 template<class Coeff, int num> 
 class CMonom
 {
@@ -99,6 +102,7 @@ public:
 	bool isNull() const {
 		return coeff.isNull();
 	}
+
 	CMonom& negate() {
 		coeff.negate();
 		return *this;

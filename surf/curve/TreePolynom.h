@@ -56,7 +56,6 @@ public:
 template<class Monom> 
 class TreePolynom : public RefCounter
 {
-
 public:
 	TreePolynom() : root(NIL) {}
 	~TreePolynom() {

@@ -26,9 +26,17 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include<iostream>
 #include <assert.h>
 
+/**
+ * template square matrix class
+ *
+ * Features:
+ * - range checking
+ * - computing determinant
+ * - get (n-1)x(n-1)-sub-matrix by deleting one row and one column
+ * - get "best" row and column (the one containing most 0's)
+ */
 template<class Type> 
 class Matrix
 {
@@ -37,153 +45,63 @@ private:
 	void operator=(const Matrix&);
 
 public:
+        /**
+         * @param size: size of new matrix (always square matrices)
+         */
 	Matrix(int newSize) : size(newSize), elems(new Type[newSize*newSize]) {}
 	~Matrix() { delete [] elems; }
 
+	/**
+         * Get matrix element w/range check (non-const method)
+         */
 	Type& getElement(int row, int column) {
 		return elems[getIndex(row,column)];
 	}
 
+	/**
+         * Get matrix element w/range check (const method)
+         */
 	const Type& getElement(int row, int column) const {
 		return elems[getIndex(row, column)];
 	}
 
+	/**
+         * computer determinant
+         */
 	Type det() const;
 	
+	/**
+         * @return size of matrix
+         */
 	int getSize() const { return size; }
-	
-	Type threadedDeterminant() const;
 	
 protected:
 	int size;
 	Type* elems;
 
+	/**
+         * compute array index from row/column-pair (w/range check)
+         */
 	int getIndex(int row, int col) const {
 		assert(row >= 0 && col >= 0 && row < size && col < size);
 		return row*size + col;
 	}
 
+	/**
+         * @return (n-1)x(n-1)-sub-matrix with one row and col deleted
+         */
 	void deleteRowAndColumn(int row, int col, Matrix<Type>& m) const;
 
+	/**
+         * @return index of row with most 0's (and # of 0's)
+         */
 	void getBestRow(int& row, int& zeros) const;
+
+	/**
+         * @return index of column with most 0's (and # of 0's)
+         */
 	void getBestColumn (int& col, int& zeros) const;
-
-	static void* computeDeterminant(void* ptr);
 };
-
-template<class Type>
-void* Matrix<Type>::computeDeterminant(void* ptr)
-{
-	Matrix<Type>* matrix = static_cast<Matrix<Type>*>(ptr);
-	Type* retval = new Type(matrix->det());
-	delete matrix;
-	return retval;
-}
-
-
-// well, this function does not work. the problem is that the polynomials in
-// the matrix are not copied and the RefCounter class is not thread safe.
-// protecting RefCounter's release and retain with mutexes leads to poore 
-// performance. This will be fixed. 
-// - Ralf
-
-template<class Type>
-Type Matrix<Type>::threadedDeterminant() const
-{
-	if (size==1)
-		return elems[0];
-	else if (size==2)
-		return elems[0]*elems[3]-elems[1]*elems[2];
-
-	Type result;
-	setNull(result);
-
-	int bestRow;
-	int bestRowZeros;
-	
-	int bestCol=-1;
-	int bestColZeros=-1;
-	
-	getBestRow(bestRow, bestRowZeros);
-	getBestColumn(bestCol, bestColZeros);
-	
-	TRACE(bestRow);
-	TRACE(bestRowZeros);
-	
-	TRACE(bestCol);
-	TRACE(bestColZeros);
-
-	void *subdeterminant;
-	if (bestRowZeros > bestColZeros) {
-		int col;
-		for (col=0; col<getSize(); col++) {
-			if (isNull(getElement(bestRow, col)))
-				continue;
-			Matrix *m = new Matrix (size-1);
-			deleteRowAndColumn(bestRow, col, *m);
-			int err = pthread_create(&threads[col].thread, 0, computeDeterminant, m);
-			assert(err==0);
-			cerr << "started" << endl;
-			threads[col].nonzero=true;
-		}
-
-		cerr << "okay...started some threads" << endl;
-
-		for (col=0; col<getSize(); col++) {
-
-			if (threads[col].nonzero) {
-				int err = pthread_join (threads[col].thread, &subdeterminant);
-				assert(err==0);
-
-				Type *subdet = (Type *) subdeterminant;
-				if ((bestRow+col) % 2 == 0) {
-					result += *subdet*getElement(bestRow, col);
-				} else {
-					result -= *subdet*getElement(bestRow, col);
-				}
-				delete subdet;
-
-				cerr << "joined..." << endl;
-			}
-		}
-
-	} else {
-		int row;
-		for (row=0; row<getSize(); row++) {
-			if (isNull(getElement(row, bestCol)))
-				continue;
-
-			Matrix *m = new Matrix (size-1);
-			deleteRowAndColumn(row, bestCol, *m);
-
-			int err = pthread_create(&threads[row].thread, 0, computeDeterminant, m);
-			assert(err==0);
-			cerr << "started" << endl;
-			threads[row].nonzero=true;
-		}
-
-		for (row=0; row<getSize(); row++) {
-			if (threads[row].nonzero) {
-				int err = pthread_join (threads[row].thread, &subdeterminant);
-				assert(err==0);
-				Type *subdet = (Type *) subdeterminant;
-				if ((bestCol+row) % 2 == 0) {
-					result += *subdet*getElement(row, bestCol);
-				} else {
-					result -= *subdet*getElement(row, bestCol);
-				}
-				delete subdet;
-
-				cerr << "joined..." << endl;
-			}
-		}
-		
-	}
-
-	return result;
-	
-}
-
 
 template<class Type>
 void Matrix<Type>::getBestRow(int& row, int& zeros) const
@@ -220,7 +138,7 @@ void Matrix<Type>::getBestColumn(int& col, int& zeros) const
 		int nonZero=0;
 
 		for(int r = 0; r < getSize() && nonZero < minNonZero; r++) {
-			if (!isNull(getElement(r,c))) {
+			if(!isNull(getElement(r,c))) {
 				nonZero++;
 			}
 		}
@@ -233,18 +151,6 @@ void Matrix<Type>::getBestColumn(int& col, int& zeros) const
 	
 	col = bestCol;
 	zeros = getSize() - minNonZero;
-}
-
-template<class Type> 
-std::ostream& operator<<(std::ostream& os, const Matrix<Type>& m)
-{
-	int size = m.getSize();
-	for(int i = 0; i < size; i++) {
-		os << std::endl << "Zeile " << i << ":";
-		for(int j = 0; j < size; j++)
-			os << m.getElement(i,j) << "    ";
-	}
-	return os;
 }
 
 template<class Type> 
@@ -286,12 +192,12 @@ Type Matrix<Type>::det() const
 	} else if(size == 2) {
 		return elems[0]*elems[3] - elems[1]*elems[2];
 	}
-	// return threadedDeterminant();
+
 	Type result;
 	setNull(result);
 
 	Matrix m(size - 1);
-#if 1
+
 	int bestRow;
 	int bestRowZeros;
 	
@@ -301,14 +207,7 @@ Type Matrix<Type>::det() const
 	getBestRow(bestRow, bestRowZeros);
 	getBestColumn(bestCol, bestColZeros);
 	
-	TRACE(bestRow);
-	TRACE(bestRowZeros);
-	
-	TRACE(bestCol);
-	TRACE(bestColZeros);
-
 	if(bestRowZeros > bestColZeros) {
-		DMESS("enwickle nach Zeile");
 		for(int col = 0; col < getSize(); col++) {
 			if(isNull(getElement(bestRow, col))) {
 				continue;
@@ -321,7 +220,6 @@ Type Matrix<Type>::det() const
 			}
 		}
 	} else {
-		DMESS("entwickle nach Spalte");
 		for(int row = 0; row < getSize(); row++) {
 			if(isNull(getElement(row, bestCol))) {
 				continue;
@@ -338,30 +236,6 @@ Type Matrix<Type>::det() const
 	}
 
 	return result;
-#else
-
-	for(int i = 0; i < size; i++) {
-		// Zeile i loeschen
-		for(int j = 0; j < i; j++) {
-			for(int k = 0; k < size - 1; k++) {
-				m.getElement(j, k) = getElement(j, k + 1);
-			}
-		}
-		
-		for(int j = i + 1; j < size; j++) {
-			for(int k = 0; k < size - 1; k++) {
-				m.getElement(j - 1, k) = getElement(j, k + 1);
-			}
-		}
-
-		if(i % 2 == 0) {
-			result += m.det()*getElement(i, 0);
-		} else {
-			result -= m.det()*getElement(i, 0);
-		}
-	}
-	return result;
-#endif
 }
 
 #endif // !MATRIX_H

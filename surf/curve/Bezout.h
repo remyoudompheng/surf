@@ -117,13 +117,8 @@ public:
 		// This is a little bit simpler:
 		Matrix<Coeff2Poly>* matrix = computeBezoutMatrix(f, g);
 	
-#if 0
-		// threadedDeterminant does not work. See Matrix.h.
-		Coeff2Poly det = matrix->threadedDeterminant();
-#else
 		Coeff2Poly det = matrix->det();
-#endif
-		TRACE(det);
+
 		delete matrix;
 		
 		return det;

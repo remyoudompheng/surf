@@ -23,161 +23,161 @@
  */
 
 
+#include<iostream>
 
-#include <iostream.h>
 #include <assert.h>
 
-#include "RBTree.h"
+#include <RBTree.h>
 
 
 #define RED   RBNode::RED
 #define BLACK RBNode::BLACK
 
-RBNode RBNode::sentinel(1); //; = {NIL,NIL,0,RBNode::BLACK};
+RBNode RBNode::sentinel(1);
 
 
-inline int isLeftChild (RBNode *node)
+inline int isLeftChild (RBNode* node)
 {
 	return node->parent ? node->parent->left == node : 0;
 }
 
-inline int isRightChild (RBNode *node)
+inline int isRightChild (RBNode* node)
 {
 	return node->parent ? node->parent->right == node : 0;
 }
 
-
-
-
-void iteratorNext (RBNode *&iterator)
+void iteratorNext(RBNode*& iterator)
 {
 	assert(iterator);
 	assert(iteratorIsValid(iterator));
 
-	if (iterator->left != NIL) {
-		// There are nodes < *iterator...search for the greates of these nodes
-		iterator=iterator->left;
-		while (iterator->right != NIL)
+	if(iterator->left != NIL) {
+		// There are nodes < *iterator...search for the greatest of these nodes
+		iterator = iterator->left;
+		while (iterator->right != NIL) {
 			iterator=iterator->right;
+		}
 		return;
 	}
 
-
-
-	if (isRightChild(iterator)) {
+	if(isRightChild(iterator)) {
 		iterator=iterator->parent;
 		return;
 	}
 	
-	if (isLeftChild(iterator)) {
+	if(isLeftChild(iterator)) {
 		while (isLeftChild(iterator)) {
 			iterator = iterator->parent;
 		}
-		iterator=iterator->parent;
-		if (iterator==0)
+		iterator = iterator->parent;
+		if(iterator == 0) {
 			iterator=NIL;
+		}
 		return;
 	}
-	iterator=NIL;
+	iterator = NIL;
 }
 
-
-
-RBNode * cloneTree (RBNode *root, RBNode *parent, newNodeFunc newNode, copyNodeFunc copyNode)
+RBNode* cloneTree(RBNode* root, RBNode* parent, newNodeFunc newNode, copyNodeFunc copyNode)
 {
-	if (root == NIL)
+	if(root == NIL) {
 		return NIL;
+	}
 	
-	RBNode *newRoot = newNode();
-	copyNode (newRoot, root);
+	RBNode* newRoot = newNode();
+	copyNode(newRoot, root);
 	newRoot->parent = parent;
 	newRoot->color = root->color;
-	newRoot->left = cloneTree (root->left, newRoot, newNode, copyNode);
-	newRoot->right = cloneTree (root->right, newRoot, newNode, copyNode);
+	newRoot->left = cloneTree(root->left, newRoot, newNode, copyNode);
+	newRoot->right = cloneTree(root->right, newRoot, newNode, copyNode);
 	
 	return newRoot;
 }
 
-
-void rotateLeft (RBNode *x, RBNode* &root)
+/**
+ * rotate node x to left
+ */
+	
+void rotateLeft(RBNode* x, RBNode*& root)
 {
-	
-	/**************************
-	 *  rotate node x to left *
-	 **************************/
-	
-	RBNode *y = x->right;
+	RBNode* y = x->right;
 	
 	/* establish x->right link */
 	x->right = y->left;
-	if (y->left != NIL) 
+	if(y->left != NIL) {
 		y->left->parent = x;
+	}
 	
 	/* establish y->parent link */
-	if (y != NIL) 
+	if(y != NIL) {
 		y->parent = x->parent;
-	if (x->parent) {
-		if (x == x->parent->left)
+	}
+	if(x->parent) {
+		if(x == x->parent->left) {
 			x->parent->left = y;
-		else
+		} else {
 			x->parent->right = y;
+		}
 	} else {
 		root = y;
 	}
 
 	/* link x and y */
 	y->left = x;
-	if (x != NIL) 
+	if(x != NIL) {
 		x->parent = y;
+	}
 }
 
-void rotateRight(RBNode *x, RBNode* &root) 
-{
+/**
+ *  rotate node x to right
+ */
 
-	/****************************
-	 *  rotate node x to right  *
-	 ****************************/
-	
-	RBNode *y = x->left;
+void rotateRight(RBNode* x, RBNode*& root) 
+{
+	RBNode* y = x->left;
 	
 	/* establish x->left link */
 	x->left = y->right;
-	if (y->right != NIL) 
+	if (y->right != NIL) {
 		y->right->parent = x;
+	}
 	
 	/* establish y->parent link */
-	if (y != NIL) 
+	if(y != NIL) {
 		y->parent = x->parent;
-	if (x->parent) {
-		if (x == x->parent->right)
+	}
+	if(x->parent) {
+		if(x == x->parent->right) {
 			x->parent->right = y;
-		else
+		} else {
 			x->parent->left = y;
+		}
 	} else {
 		root = y;
 	}
 	
 	/* link x and y */
 	y->right = x;
-	if (x != NIL) 
+	if(x != NIL) {
 		x->parent = y;
+	}
 }
 
 
-void insertFixup(RBNode *x, RBNode *&root) 
-{
+/**
+ * maintain Red-Black tree balance
+ * after inserting node x
+ */
 
-	/*************************************
-	 *  maintain Red-Black tree balance  *
-	 *  after inserting node x           *
-	 *************************************/
-	
+void insertFixup(RBNode* x, RBNode*& root) 
+{
 	/* check Red-Black properties */
-	while (x != root && x->parent->color == RED) {
+	while(x != root && x->parent->color == RED) {
 		/* we have a violation */
-		if (x->parent == x->parent->parent->left) {
-			RBNode *y = x->parent->parent->right;
-			if (y->color == RED) {
+		if(x->parent == x->parent->parent->left) {
+			RBNode* y = x->parent->parent->right;
+			if(y->color == RED) {
 				
 				/* uncle is RED */
 				x->parent->color = BLACK;
@@ -187,7 +187,7 @@ void insertFixup(RBNode *x, RBNode *&root)
 			} else {
 
 				/* uncle is BLACK */
-				if (x == x->parent->right) {
+				if(x == x->parent->right) {
 					/* make x a left child */
 					x = x->parent;
 					rotateLeft(x, root);
@@ -201,8 +201,8 @@ void insertFixup(RBNode *x, RBNode *&root)
 		} else {
 			
 			/* mirror image of above code */
-			RBNode *y = x->parent->parent->left;
-			if (y->color == RED) {
+			RBNode* y = x->parent->parent->left;
+			if(y->color == RED) {
 
 				/* uncle is RED */
 				x->parent->color = BLACK;
@@ -212,7 +212,7 @@ void insertFixup(RBNode *x, RBNode *&root)
 			} else {
 
 				/* uncle is BLACK */
-				if (x == x->parent->left) {
+				if(x == x->parent->left) {
 					x = x->parent;
 					rotateRight(x, root);
 				}
@@ -225,62 +225,60 @@ void insertFixup(RBNode *x, RBNode *&root)
 	root->color = BLACK;
 }
 
+/**
+ * maintain Red-Black tree balance
+ * after deleting node x
+ */
 
-void deleteFixup(RBNode *x, RBNode *&root) 
+void deleteFixup(RBNode* x, RBNode*& root) 
 {
-
-	/*************************************
-	 *  maintain Red-Black tree balance  *
-	 *  after deleting node x            *
-	 *************************************/
-
-	while (x != root && x->color == BLACK) {
-		if (x == x->parent->left) {
-			RBNode *w = x->parent->right;
-			if (w->color == RED) {
+	while(x != root && x->color == BLACK) {
+		if(x == x->parent->left) {
+			RBNode* w = x->parent->right;
+			if(w->color == RED) {
 				w->color = BLACK;
 				x->parent->color = RED;
-				rotateLeft (x->parent, root);
+				rotateLeft(x->parent, root);
 				w = x->parent->right;
 			}
-			if (w->left->color == BLACK && w->right->color == BLACK) {
+			if(w->left->color == BLACK && w->right->color == BLACK) {
 				w->color = RED;
 				x = x->parent;
 			} else {
-				if (w->right->color == BLACK) {
+				if(w->right->color == BLACK) {
 					w->left->color = BLACK;
 					w->color = RED;
-					rotateRight (w, root);
+					rotateRight(w, root);
 					w = x->parent->right;
 				}
 				w->color = x->parent->color;
 				x->parent->color = BLACK;
 				w->right->color = BLACK;
-				rotateLeft (x->parent, root);
+				rotateLeft(x->parent, root);
 				x = root;
 			}
 		} else {
-			RBNode *w = x->parent->left;
-			if (w->color == RED) {
+			RBNode* w = x->parent->left;
+			if(w->color == RED) {
 				w->color = BLACK;
 				x->parent->color = RED;
-				rotateRight (x->parent, root);
+				rotateRight(x->parent, root);
 				w = x->parent->left;
 			}
-			if (w->right->color == BLACK && w->left->color == BLACK) {
+			if(w->right->color == BLACK && w->left->color == BLACK) {
 				w->color = RED;
 				x = x->parent;
 			} else {
-				if (w->left->color == BLACK) {
+				if(w->left->color == BLACK) {
 					w->right->color = BLACK;
 					w->color = RED;
-					rotateLeft (w, root);
+					rotateLeft(w, root);
 					w = x->parent->left;
 				}
 				w->color = x->parent->color;
 				x->parent->color = BLACK;
 				w->left->color = BLACK;
-				rotateRight (x->parent, root);
+				rotateRight(x->parent, root);
 				x = root;
 			}
 		}
@@ -288,54 +286,59 @@ void deleteFixup(RBNode *x, RBNode *&root)
 	x->color = BLACK;
 }
 
-void deleteNode(RBNode *z, RBNode *&root, copyNodeFunc copyNode, freeNodeFunc freeNode) 
+/**
+ * delete node z from tree
+ */
+	
+void deleteNode(RBNode* z, RBNode*& root, copyNodeFunc copyNode, freeNodeFunc freeNode) 
 {
-	RBNode *x, *y;
+	RBNode* x;
+        RBNode* y;
 	
-	/*****************************
-	 *  delete node z from tree  *
-	 *****************************/
-	
-	if (!z || z == NIL) 
+	if(!z || z == NIL) {
 		return;
-	
+	}
 
-	if (z->left == NIL || z->right == NIL) {
+	if(z->left == NIL || z->right == NIL) {
 		/* y has a NIL node as a child */
 		y = z;
 	} else {
 		/* find tree successor with a NIL node as a child */
 		y = z->right;
-		while (y->left != NIL) 
+		while(y->left != NIL) {
 			y = y->left;
+		}
 	}
 	
 	/* x is y's only child */
-	if (y->left != NIL)
+	if(y->left != NIL) {
 		x = y->left;
-	else
+	} else {
 		x = y->right;
+	}
 	
 	/* remove y from the parent chain */
 	x->parent = y->parent;
-	if (y->parent) {
-		if (y == y->parent->left)
+	if(y->parent) {
+		if(y == y->parent->left) {
 			y->parent->left = x;
-		else
+		} else {
 			y->parent->right = x;
-	} else
+		}
+	} else {
 		root = x;
+	}
 	
-	if (y != z)
+	if(y != z) {
 		copyNode (z, y);
 		//z->data = y->data;
-	
+	}
 
-	if (y->color == BLACK)
+	if(y->color == BLACK) {
 		deleteFixup (x, root);
+	}
 	
 	freeNode(y);
-	// free (y);
 }
 
 

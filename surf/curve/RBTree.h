@@ -23,7 +23,6 @@
  */
 
 
-
 #ifndef RBTREE_H
 #define RBTREE_H
 
@@ -31,15 +30,7 @@
 
 #include<iostream>
 
-class RBNode;
-
-typedef void (*copyNodeFunc)(RBNode* dst, const RBNode* src);
-typedef void (*freeNodeFunc)(RBNode* node);
-typedef RBNode* (*newNodeFunc)();
-
 #define NIL &RBNode::sentinel
-
-// extern void check(RBNode *root);
 
 class RBNode
 {
@@ -60,6 +51,10 @@ public:
 private:
 	RBNode(int) : left(NIL), right(NIL), parent(0), color(BLACK) {}
 };
+
+typedef void (*copyNodeFunc)(RBNode* dst, const RBNode* src);
+typedef void (*freeNodeFunc)(RBNode* node);
+typedef RBNode* (*newNodeFunc)();
 
 inline void iteratorInit(RBNode*& iterator, RBNode* root)
 {
