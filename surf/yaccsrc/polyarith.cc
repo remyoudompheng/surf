@@ -22,42 +22,36 @@
  *
  */
 
+#include <polyarith.h>
+#include <simple.h>
+#include <mymemory.h>
+#include <monomarith.h>
 
-
-
-
-/* ------------------------------------------------------------------------- */
-/* polyarith.c: monomial and polynomial arithmetic                           */
-/* Author:   Stephan Endrass                                                 */
-/* Address:  endrass@mi.uni-erlangen.de                                      */
-/* Date:     14.8.94                                                         */
-/* ------------------------------------------------------------------------- */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-
-#include "mymemory.h"
-#include "simple.h"
-#include "monomarith.h"
-#include "polyarith.h"
-
+#include<cstdio>
+#include<cstdlib>
+#include<cmath>
 
 /*****************************************************************************/
 /* POLYNOMIALS IN X,Y AND Z                                                  */
 /*****************************************************************************/
 
-/* ------------------------------------------------------------------------- */
-/* Global data                                                               */
-/* ------------------------------------------------------------------------- */
 
-polyxyz NULLPOLYXYZ =
+// Global data:
+
+polyxyz NULLPOLYXYZ = { 0, 0, 0 };
+
+
+
+namespace {
+
+const double epsilon = 1e-5;
+
+inline bool double_equal(double s, double t)
 {
-	0,
-	0,
-	(monxyz*)NULL
-};
+	return fabs(s - t) < epsilon;
+}
 
+}
 
 /* ------------------------------------------------------------------------- */
 /* allocate memory for  n  monomials in p                                    */

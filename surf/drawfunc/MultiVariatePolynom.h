@@ -92,7 +92,7 @@ public:
 	void    Norm()
 		{ 
 			double a = MaxabsCoeff(); 
-			if(!(fabs(a) < epsilon)) {
+			if(!(fabs(a) < 1e-5)) {
 				*this *= (10.0/a) ; 
 			}
 		}

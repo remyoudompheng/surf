@@ -22,61 +22,31 @@
  *
  */
 
-
-
-
-#include <stdio.h>
-#include <math.h>
-#include <ctype.h>
-
+#include <Sun.h>
 #include <FileWriter.h>
 #include <RgbBuffer.h>
 
-#include <Sun.h>
-
-#include <errno.h>
-#include <string.h>
 #include <netinet/in.h>
 
+#include<cstdio>
 #include<iostream>
 
 
-#ifdef SUN
-int fread ( char*,int,int,FILE* );
-int fwrite ( char*,int,int,FILE* );
-int fclose ( FILE* );
-#endif /* SUN */
-
-struct RASHDR
-{
-	long ras_magic;
-	long ras_width;
-	long ras_height;
-	long ras_depth;
-	long ras_length;
-	long ras_type;
-	long ras_maptype;
-	long ras_maplength;
-};
-
-#define SUN_MAGIC        0x59a66a95
-#define RT_OLD	         0
-#define RT_STANDARD      1
-#define RT_BYTE_ENCODED  2
-#define RT_RGB_FORMAT    3
-#define RT_TIFF_FORMAT   4
-#define RT_IFF_FORMAT    5
-
-#define RMT_NONE	  0
-#define RMT_EQUAL_RGB	  1
-#define RMT_RAW	  2
-
 namespace {
-	void put_long(uint32_t hostlong, FILE* file)
-	{
-		uint32_t be_long = htonl(hostlong);
-		fwrite(&be_long, 1, sizeof(uint32_t), file);
-	}
+
+// Will be get into trouble if unsigned int isn't 4 bytes?
+typedef unsigned int uint32;
+
+void put_long(uint32 hostlong, FILE* file)
+{
+	uint32 be_long = htonl(hostlong);
+	std::fwrite(&be_long, 1, 4, file);
+}
+
+const uint32 SUN_MAGIC = 0x59a66a95;
+const uint32 RT_STANDARD = 1;
+const uint32 RMT_NONE = 0;
+
 }
 
 namespace ImageFormats {
@@ -93,43 +63,32 @@ namespace ImageFormats {
 			return false;
 		}
 	
+		uint32 width = data.getWidth();
+		uint32 height = data.getHeight();
+		uint32 length = width*height*3;
 		
-		RASHDR rhdr;
-		int width = data.getWidth();
-		int height = data.getHeight();
-		size_t length = width*height;
-		
-		/* Initialize Sun raster header */
-		
-		rhdr.ras_magic     = SUN_MAGIC;
-		rhdr.ras_width     = width;
-		rhdr.ras_height    = height;
-		rhdr.ras_depth     = 24;
-		rhdr.ras_length    = length*3;
-		rhdr.ras_type      = RT_STANDARD;
-		rhdr.ras_maptype   = RMT_NONE;
-		rhdr.ras_maplength = 0;
+		// write rasterfile header:
+                // (note: use Sun byte order == network order)
 
-		/* Write rasterfile header
-                   note: use Sun byte order == network order */
-		
-		put_long(rhdr.ras_magic, file);
-		put_long(rhdr.ras_width, file);
-		put_long(rhdr.ras_height, file);
-		put_long(rhdr.ras_depth, file);
-		put_long(rhdr.ras_length, file);
-		put_long(rhdr.ras_type, file);
-		put_long(rhdr.ras_maptype, file);
-		put_long(rhdr.ras_maplength, file);
+		put_long(SUN_MAGIC, file);   // ras_magic
+		put_long(width, file);       // ras_width
+		put_long(height, file);      // ras_height
+		put_long(24, file);          // ras_depth
+		put_long(length, file);      // ras_length
+		put_long(RT_STANDARD, file); // ras_type
+		put_long(RMT_NONE, file);    // ras_maptype
+		put_long(0, file);           // ras_maplength
+
+		// write RGB data:
 		
 		const byte* rdata = data.getRData();
 		const byte* gdata = data.getGData();
 		const byte* bdata = data.getBData();
 		
 		for(size_t i = 0; i < length; i++) {
-			fputc(bdata[i], file);
-			fputc(gdata[i], file);
-			fputc(rdata[i], file);
+			std::fputc(bdata[i], file);
+			std::fputc(gdata[i], file);
+			std::fputc(rdata[i], file);
 		}
 
 		return true;

@@ -22,223 +22,124 @@
  *
  */
 
+#include <simple.h>
+#include <mymemory.h>
+#include <Misc.h>
 
+#include<cmath>
+#include<cstdlib>
+#include<strstream>
 
+namespace {
 
-
-/* ------------------------------------------------------------------------- */
-/* simple.c                                                                  */
-/* Author:   Stephan Endrass                                                 */
-/* Address:  endrass@mi.uni-erlangen.de                                      */
-/* Date:     14.8.94                                                         */
-/* ------------------------------------------------------------------------- */
-
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-
-#include "simple.h"
-#include "mymemory.h"
-
-
-static int     **new_int_p( int n );
-static int     **renew_int_p( int **i,int n );
-
-double  epsilon = 1e-5;
-
-
-/* ------------------------------------------------------------------------- */
-/*  Here we store binomeal coefficients                                      */
-/* ------------------------------------------------------------------------- */
-
-typedef struct
+// here we store binomail coefficients:
+struct binom_struct
 {
-	int     created;
-	int     **data;
-} binom_struct;
+	int created;
+	int** data;
+};
+binom_struct b_c = { -1, 0 };
 
-
-/* ------------------------------------------------------------------------- */
-/* compare two double's                                                      */
-/* ------------------------------------------------------------------------- */
-
-int     double_equal( double s,double t )
+int** new_int_p(int n)
 {
-	return  fabs( s - t ) < epsilon;
+	if(n > 0) {
+		int** i = static_cast<int**>(malloc(n*sizeof(int*)));
+		if(i == 0) {
+			Misc::print_error("Out of memory!\n");
+		}
+		return i;
+	} else {
+		Misc::print_error("n == 0 in new_int_p()!\n");
+	}
+	return 0; // suppress warnings
 }
 
-
-/* ------------------------------------------------------------------------- */
-/* binomeal coefficient:                                                     */
-/*                                                                           */
-/*     / n \   / n-1 \   / n-1 \                                             */
-/*     |   | = |     | + |     |                                             */
-/*     \ k /   \ k-1 /   \  k  /                                             */
-/*                                                                           */
-/* ------------------------------------------------------------------------- */
-
-static  binom_struct    b_c =
+int** renew_int_p(int** i, int n)
 {
-	-1,
-	(int**)NULL
-};
+	if(i == 0) {
+		return new_int_p(n);
+	} else if(n > 0) {
+		i = static_cast<int**>(realloc(i, n*sizeof(int*)));
+		if(i == 0) {
+			Misc::print_error("Out of memory!\n");
+		}
+		return  i;
+	} else {
+		Misc::print_error("n == 0 in renew_int_p()!\n");
+	}
+	return 0; // suppress warnings
+}
 
-static  void    binom_struct_create_row( int n )
+void binom_struct_create_row(int n)
 {
-	if( n == 0 ) {
+	if(n == 0) {
 		b_c.data[0][0] = 1;
 	} else {
-		int     i;
-		int     j;
-		int     k = n - 1;
-		
+		int k = n - 1;
 		b_c.data[n][0] = 1;
-		
-		for( i = 1, j = 0; i < n; i++, j++ ) {
-			b_c.data[n][i] =
-				b_c.data[k][i] + b_c.data[k][j];
+	
+		for(int i = 1, j = 0; i < n; i++, j++) {
+			b_c.data[n][i] = b_c.data[k][i] + b_c.data[k][j];
 		}
-
 		b_c.data[n][n] = 1;
 	}
 }
 
-static  void    binom_struct_add( int n )
+void binom_struct_add(int n)
 {
-	int     i;
-
-	b_c.data = renew_int_p( b_c.data,n + 1 );
-
-	for( i = b_c.created +1; i <= n; i++ ) {
+	b_c.data = renew_int_p(b_c.data, n + 1);
+	
+	for(int i = b_c.created + 1; i <= n; i++) {
 		b_c.data[i] = new int[i + 1];
-		binom_struct_create_row( i );
+		binom_struct_create_row(i);
 	}
-
+	
 	b_c.created = n;
 }
-    
-int     binom_coeff( int n,int k )
+} // end of anonymous namespace
+
+
+/* binomeal coefficient:
+
+     / n \   / n-1 \   / n-1 \
+     |   | = |     | + |     |
+     \ k /   \ k-1 /   \  k  /
+*/
+
+int binom_coeff(int n, int k)
 {
-	if( n >= k && k >= 0 ) {
-		if( n > b_c.created ) {
-			binom_struct_add( n );
+	if(n >= k && k >= 0) {
+		if(n > b_c.created) {
+			binom_struct_add(n);
 		}
-		return  b_c.data[n][k];
-	} else if( k > n && n >= 0 ) {
+		return b_c.data[n][k];
+	} else if(k > n && n >= 0) {
 		return  0;
 	} else {
-		fprintf( stderr,"can't compute binomeal coefficient of %d and %d\n",n,k );
-		exit( 1 );
+		std::ostrstream os;
+		os << "Can't compute binomial coefficient of"
+		   << n << " and " << k << "!\n";
+		Misc::print_error(os.str());
 	}
+	return 0; // suppress warnings
 }
 
+/* multinomial coefficient: see
+     Donald E. Knuth: The Art of Computer Programming, Volume 1 /
+     Fundamental Algorithms, Addison-Wesley 1973, 2nd edition, p. 64
+   for the recursion formula */
 
-/* ------------------------------------------------------------------------- */
-/* multinomial coefficient: see                                              */
-/*     Donald E. Knuth: The Art of Computer Programming, Volume 1 /          */
-/*     Fundamental Algorithms, Addison-Wesley 1973, 2nd edition, p. 64       */
-/* for the recursion formula                                                 */
-/* ------------------------------------------------------------------------- */
-
-int     multinom_coeff( int n,int *index,int k )
+int multinom_coeff(int n, int* index, int k)
 {
-	int     i;
-	int     j;
-	int     result = 1;
-	int     up     = index[0];
-	int     down   = 0;
+	int result = 1;
+	int up = index[0];
+	int down = 0;
 
-	for( i = 0, j = 1; j < k; i++, j++ ) {
-		up   += index[j];
+	for(int i = 0, j = 1; j < k; i++, j++) {
+		up += index[j];
 		down += index[i];
     
-		result *= binom_coeff( up,down );
+		result *= binom_coeff(up, down);
 	}
 	return  result;
 }
-
-
-
-// static  char    ascii[26]="abcdefghijklmnopqrstuvwxyz";
-
-int    itotexascii( int i,char *s,int l )
-{
-	if( i < 0 || l < 2 || s==(char*)NULL ) {
-		return  0;
-	} else {
-		/*  find length of 26-adic number i  */
-		
-		int     foo    = i;
-		int     length = ( foo==0 ? 1 : 0 );
-		
-		while( foo > 0 ) {
-			foo /= 26;
-			length++;
-		}
-
-		/*  test if s is long enough  */
-
-		if( length >= l ) {
-			return  0;
-		}
-
-		/*  terminate with \0  */
-
-		s[length]='\0';
-
-		while( length > 0 ) {
-			length--;
-// 			s[length]= ascii[i%26];
-			s[length]= 'a'+(i%26);
-			i = i/26;
-		}
-
-		return  1;
-	}
-}
-
-
-
-
-
-static int     **new_int_p( int n )
-{
-	if( n > 0 ) {
-		int     **i;
-		i = (int**)malloc( n*sizeof(int*) );
-		
-		if( i == (int**)NULL ) {
-			(void)fprintf( stderr,"can't allocate %d pointers to int\n",n );
-			exit( 1 );
-		}
-		
-		return  i;
-	} else {
-		(void)fprintf( stderr,"can't allocate %d pointers to int\n",n );
-		exit( 1 );
-	}
-}
-
-
-static int     **renew_int_p( int **i,int n )
-{
-	if( i == (int**)NULL ) {
-		return  new_int_p( n );
-	} else if( n > 0 ) {
-		i = (int**)realloc( (void**)i,n*sizeof(int*) );
-		
-		if( i == (int**)NULL ) {
-			(void)fprintf( stderr,"can't realloc %d pointers to int\n",n );
-			exit( 1 );
-		}
-		
-		return  i;
-	} else {
-		(void)fprintf( stderr,"can't realloc %d pointers to int\n",n );
-		exit( 1 );
-	}
-}
-
-/* ------------------------------------------------------------------------- */
-/* end of file: simple.c                                                     */
-/* ------------------------------------------------------------------------- */

@@ -198,20 +198,22 @@ if test "x$enable_gts" = "xyes" ; then
 	CPPFLAGS="-I$gts_prefix/include $CPPFLAGS"
     fi
 
+    dnl GTS needs glib..:
+    echo "**** If the following test for GLIB fails you may want to install GTS"
+    echo "**** (and GLIB) or re-run configure with the --disable-gts option."
+    echo "**** However, without GTS you won't be able to use the triangulation"
+    echo "**** feature of surf!"
+
+    AM_PATH_GLIB(1.2.0)
+    LIBS="$LIBS $GLIB_LIBS"
+    CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
+
     AC_CHECK_HEADER(gts.h,
       AC_CHECK_LIB(gts, main,
-                   havegts="yes"
-                   AC_DEFINE(HAVE_LIBGTS)
-                     LIBS="$LIBS -lgts",
-                   havegts="no"))
-
-    dnl GTS needs glib..:
-    if test "$havegts" = "yes" ; then
-	AM_PATH_GLIB(1.2.0)
-	LIBS="$LIBS $GLIB_LIBS"
-	CFLAGS="$CFLAGS $GLIB_CFLAGS"
-	CXXFLAGS="$CXXFLAGS $GLIB_CFLAGS"
-    fi
+        AC_DEFINE(HAVE_LIBGTS)
+         LIBS="$LIBS -lgts",
+        AC_MSG_ERROR([Couldn't find libgts. Please install GTS or try --disable-gts.])),
+      AC_MSG_ERROR([Couldn't find gts.h. Please install GTS or try --diable-gts.]))
 fi
 
 

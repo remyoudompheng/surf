@@ -23,15 +23,21 @@
  */
 
 
+#include <Vector.h>
 
+#include<iostream>
+#include<cmath>
 
+namespace {
 
-#include <stdio.h>
-#include <math.h>
+const double epsilon = 1e-5;
 
-#include "simple.h"
+inline bool double_equal(double s, double t)
+{
+	return std::fabs(s - t) < epsilon;
+}
 
-#include "Vector.h"
+}
 
 // ----------------------------------------------------------------------------
 // ---------------- normalize vector length -----------------------------------
@@ -52,7 +58,8 @@ void Vector::Unify()
 
 void Vector::Print() const
 {
-	fprintf(stderr," vector x=%f, y=%f, z=%f, len=%f\n",x,y,z,Length());
+	std::cerr << " vector x=" << x << ", y=" << y << ", z=" << z
+		  << ", len =" << Length() << "\n";
 }
 
 // ----------------------------------------------------------------------------

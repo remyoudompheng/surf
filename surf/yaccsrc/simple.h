@@ -22,45 +22,16 @@
  *
  */
 
-
-
-
-
-/* ------------------------------------------------------------------------- */
-/* simple.h                                                                  */
-/* Author:   Stephan Endrass                                                 */
-/* Address:  endrass@mi.uni-erlangen.de                                      */
-/* Date:     14.8.94                                                         */
-/* ------------------------------------------------------------------------- */
-
 #ifndef SIMPLE_H
 #define SIMPLE_H
 
-extern  double  epsilon;
-
-
-
-/* ------------------------------------------------------------------------- */
-/*  The sun's power function behaves somewhat ugly ...                       */
-/* ------------------------------------------------------------------------- */
+/* The sun's power function behaves somewhat ugly... */
 
 #ifdef SUN
-#define sunpow( x,y )     ( (y) == 0.0 && (x) == 0.0 ? 1.0 : pow( (x),(y) ) )
-#endif  /*  SUN   */
+#define sunpow(x, y)  ( (y) == 0.0 && (x) == 0.0 ? 1.0 : pow((x), (y)) )
+#endif
 
-/* ------------------------------------------------------------------------- */
-/*  Prototypes                                                               */
-/* ------------------------------------------------------------------------- */
-
-int     double_equal( double,double );
-
-int     binom_coeff( int,int );
-int     multinom_coeff( int,int*,int );
-// int     itotexascii( int,char*,int );
-
+int binom_coeff(int, int);
+int multinom_coeff(int, int*, int);
 
 #endif  // SIMPLE_H
-
-/* ------------------------------------------------------------------------- */
-/* end of file: simple.h                                                     */
-/* ------------------------------------------------------------------------- */

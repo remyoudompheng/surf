@@ -97,7 +97,7 @@ public:
 
 	// check equality of monoms
 	int    operator==( const Monom &m ) const 
-		{ return ( *this >= m ) && ( fabs( a - m.a) < epsilon ) ;   }
+		{ return ( *this >= m ) && ( fabs( a - m.a) < 1e-5 ) ;   }
 
 
 	// assignment, copy monomial

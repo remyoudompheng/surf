@@ -23,26 +23,47 @@
  */
 
 
-
-
-
 #ifndef BEZIER_H
 #define BEZIER_H
 
-#include "UniVariatePolynom.h"
-
-//---------------- bezier polynom class derived from polyx -------------------
+#include <UniVariatePolynom.h>
 
 class Bezier : public Polyx 
 {
+public:
+	Bezier() : Polyx(), Left(0), Right(0)
+		{}
+	Bezier(const Bezier &Bez) : Polyx(Bez), Left(Bez.Left), Right(Bez.Right)
+		{}
+	Bezier(const Polyx&, double, double);
+  
+	Bezier& operator=(const Bezier& Bez) {
+		delete [] Coeff;
+		Coeff = new double[Number = Bez.Number]; 
+		CopyCoeffs(Bez);
+		Left = Bez.Left;
+		Right = Bez.Right;
+		return *this;
+	}
+
+	double GetLeft() const {
+		return Left;
+	}
+	
+	int LargestRoot(double* Roots, int& NumberOfRoots) const;
+
+	void DivideBezier(Bezier*, const double) const; // de casteljau
+	void DivideDeflateLeft(const double);
+	// de casteljau with integrated deflation
+
+private:
 	double Left;
 	double Right;
-	// ---------------- internal used functions --------------------------------
 
-	void    DivideBezier( Bezier*, const double, const double ) const;
+	void DivideBezier(Bezier*, const double, const double ) const;
 	// de casteljau
 
-	int     PolygonCrossing(double&) const;
+	int PolygonCrossing(double&) const;
 	// return crossing of bezier polygon in double
 
 	void DivideLeft(const double);  // divide interval and keep left part
@@ -50,27 +71,6 @@ class Bezier : public Polyx
 	void DivideRight(const double); // divide interval and keep right part
 	void DivideRight(const double, const double); // divide interval and keep right part
 
-public:
-	Bezier()                    : Polyx(), Left(0), Right(0)
-		{}
-	Bezier( const Bezier &Bez ) : Polyx(Bez), Left(Bez.Left), Right(Bez.Right)
-		{}
-
-	Bezier( const Polyx&, double, double );
-  
-	Bezier& operator=( const Bezier &Bez )
-		{
-			delete [] Coeff; Coeff = new double[Number=Bez.Number]; 
-			CopyCoeffs( Bez ); Left = Bez.Left; Right = Bez.Right; return *this;
-		}
-
-	double  GetLeft() const { return Left; }
-	
-	int     LargestRoot( double* Roots, int& NumberOfRoots)    const;
-
-	void    DivideBezier( Bezier*, const double  ) const;         // de casteljau
-	void    DivideDeflateLeft( const double );
-	// de casteljau with integrated deflation
 };
 
 #endif // BEZIER_H

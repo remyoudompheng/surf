@@ -22,20 +22,13 @@
  *
  */
 
+#include <Bezier.h>
+#include <def.h>
+#include <simple.h>
+#include <UniVariatePolynom.h>
 
-
-
-
-//-----------------------------------------------------------------------------
-//------------------------------ Bezier.cc ------------------------------------
-//-----------------------------------------------------------------------------
-
-#include <stdio.h>
-#include <math.h>
-#include "def.h"
-#include "simple.h"
-#include "UniVariatePolynom.h"
-#include "Bezier.h"
+#include<cstdio>
+#include<cmath>
 
 //-----------------------------------------------------------------------------
 //-------------------- bezier constructor -------------------------------------
