@@ -99,15 +99,15 @@ int main (int argc, char** argv)
 			    strcmp(argv[i], "--exec") == 0) {
 				execute = true;
 			} else if (strcmp(argv[i], "--help") == 0) {
-				std::cerr << usage_text;
+				cerr << usage_text;
 				exit(0);
 			} else if (strcmp(argv[i], "-n") == 0 ||
 				   strcmp(argv[i], "--no-gui") == 0) {
-				std::cerr << "Error: \'" << argv[i] << "\' must be the only option\n\n"
+				cerr << "Error: \'" << argv[i] << "\' must be the only option\n\n"
 					  << usage_text;
 				exit(1);
 			} else {
-				std::cerr << "Error: unknown option \'" << argv[i] << "\'\n\n"
+				cerr << "Error: unknown option \'" << argv[i] << "\'\n\n"
 					  << usage_text;
 				exit(1);
 			}
@@ -118,13 +118,13 @@ int main (int argc, char** argv)
 	bool nogui = true;
 #endif
 
-	std::cout << welcomeMessage;
+	cout << welcomeMessage;
 
 	init_all();
 
 	if (nogui) {
 		for (int i = fileopts; i < argc; ++i) {
-			std::cerr << "************** executing " << argv[i] << std::endl;
+			cerr << "************** executing " << argv[i] << endl;
 			Script::executeScriptFromFile(argv[i]);
 		}
 	} else {
