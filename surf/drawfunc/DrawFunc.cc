@@ -22,6 +22,11 @@
  *
  */
 
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <debug.h>
 #include <Script.h>
 #include <ScriptVar.h>

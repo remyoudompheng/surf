@@ -24,14 +24,18 @@
 
 
 
-#include <iostream.h>
-#include <iostream.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <iostream>
+
 #include <assert.h>
 #include <stdlib.h>
 
 #include <string.h>
-#include "SymbolTable.h"
-#include "addDefaultSymbols.h"
+#include <SymbolTable.h>
+#include <addDefaultSymbols.h>
 
 
 inline char *copy (const char *str)

@@ -451,14 +451,10 @@ void Script::clearScreen()
 		std::cout.flush();
 	}
 	
-	RgbBuffer* intensity = buffer;
-	float_buffer* zbuffer = getZBuffer();
 
-	*intensity = byte(-print_background_data);
-
-	intensity->NullInit_three();
-	intensity->clearTags();
+	buffer->ClearBuffer();
     
+	float_buffer* zbuffer = getZBuffer();
 	*zbuffer = float(clip_numeric.clip_back);
 }
 

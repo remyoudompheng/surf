@@ -22,6 +22,11 @@
  *
  */
 
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #ifndef RGBBUFFER_H
 #define RGBBUFFER_H
 
@@ -92,13 +97,9 @@ public:
         RgbBuffer& operator=(const RgbBuffer&);
         RgbBuffer& operator=(byte);
   
-        void Set_whole(int, int, int);
+	void ClearBuffer();
 
         void Realloc(int, int);
-        void NullInit();
-        void NullInit_one();
-        void NullInit_two();
-        void NullInit_three();
   
         void Copy(const RgbBuffer&);
         void CopyLine(const RgbBuffer&, int, int);

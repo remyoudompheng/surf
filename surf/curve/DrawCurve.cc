@@ -24,7 +24,11 @@
 
 
 
-#include "DrawCurve.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <DrawCurve.h>
 
 #define TOLERANZ_LOESCHE_LAY2      0.1
 #define TOLERANZ_ZEICHNEN_NEU_LAY2 0.09

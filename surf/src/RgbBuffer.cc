@@ -23,6 +23,10 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include<iostream>
 #include<cstring>
 
@@ -32,6 +36,7 @@
 #include <RgbBuffer.h>
 #include <oct_quan.h>
 #include <RGBToNetscape.h>
+#include <ScriptVar.h>
 
 #include <assert.h>
 
@@ -65,7 +70,6 @@ void RgbBuffer::clearTags()
 {
 	std::memset(tag, 0, n*sizeof(byte));
 }
-
 
 void RgbBuffer::clearCurveTags()
 {
@@ -113,65 +117,22 @@ RgbBuffer& RgbBuffer::operator=(byte f)
 	return *this;
 }
 
-void RgbBuffer::Set_whole(int value0, int value1, int value2)
+void RgbBuffer::ClearBuffer()
 {
-	value0 = (value0 > 255) ? 255 : value0;
-	value1 = (value1 > 255) ? 255 : value1;
-	value2 = (value2 > 255) ? 255 : value2;
-	for(int i = 0; i<n; i++) {
-		r[i] = byte(value0);
-		g[i] = byte(value1);
-		b[i] = byte(value2);
-	}
-}
-
-
-// set the whole buffer equal zero:
-
-void RgbBuffer::NullInit()
-{
-	for(int i = 0; i < n; i++) {
-		r[i] = 0;  			
-		g[i] = 0;
-		b[i] = 0;
-		map[i] = 0;
-		curv[i] = 0;
-		tag[i] = 0;                          
-	}
-}
-
-
-// set only first layer equal zero:
-
-void RgbBuffer::NullInit_one()
-{
-	for(int i = 0; i < n; i++) {
-		r[i] = 0;                       
-		g[i] = 0;                        
-		b[i] = 0;                     
-		tag[i] = 0;             		           
-	}
-}
-
-
-// set only second layer equal zero:
-
-void RgbBuffer::NullInit_two()
-{
-	for(int i = 0; i < n; i++) {
-		curv[i] = 0;                     
-	}
-}
-
-void RgbBuffer::NullInit_three()
-{
-	for(int i = 0; i < n; i++) {
-		r[i] = 0;
-		g[i] = 0;
-		b[i] = 0;
+	std::memset(r, ScriptVar::color_background_data[0], n*sizeof(byte));
+	std::memset(g, ScriptVar::color_background_data[1], n*sizeof(byte));
+	std::memset(b, ScriptVar::color_background_data[2], n*sizeof(byte));
+	std::memset(curv, 0, n*sizeof(byte));
+	std::memset(tag, 0, n*sizeof(byte));
+	
+/*	for(int i = 0; i < n; i++) {
+		r[i] = ScriptVar::color_background_data[0];
+		g[i] = ScriptVar::color_background_data[1];
+		b[i] = ScriptVar::color_background_data[2];
 		curv[i] = 0;
 		tag[i] = 0;
 	}
+*/
 }
 
 

@@ -27,6 +27,10 @@
 #ifndef SCRIPT_H
 #define SCRIPT_H
 
+#ifdef HAVE_CONIFG_H
+#  include <config.h>
+#endif
+
 class RgbBuffer;
 class bit_buffer;
 class Triangulator;
