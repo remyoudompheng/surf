@@ -20,13 +20,8 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * Johannes Gutenberg-Universitaet Mainz, Fachbereich 17 Mathematik,
- * hereby disclaims all copyright interest in the program `surf'
- * (which makes passes at compilers) written by Stephan Endrass,
- * Hans Huelf, Ruediger Oertel, Kai Schneider, Ralf Schmitt and
- * Johannes Beigel
- *
  */
+
 
 #include <iostream.h>
 #include "ColorWindow.h"
