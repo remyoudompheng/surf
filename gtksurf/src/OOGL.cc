@@ -11,6 +11,8 @@
 #include <OOGL.h>
 #include <GLtypes.h>
 
+#include<vector>
+
 namespace {
 void read_header(Kernel& kernel);
 GLuint read_noff(Kernel& kernel);
@@ -170,7 +172,7 @@ GLuint read_noff(Kernel& kernel)
 	kernel.receive_line(); // eat up edges count and '\n'
 
  	// read vertices:
-	GLvertex* vertices = new GLvertex[num_vertices];
+	std::vector<GLvertex> vertices(num_vertices);
 	for(int i = 0; i != num_vertices; i++) {
 		vertices[i].x = kernel.receive_float();
 		vertices[i].y = kernel.receive_float();
@@ -181,7 +183,7 @@ GLuint read_noff(Kernel& kernel)
 	}
 
 	// read faces:
-	GLface* faces = new GLface[num_faces];
+	std::vector<GLface> faces(num_faces);
 	for(int i = 0; i != num_faces; i++) {
 		kernel.receive_int(); // should we check this?
 		faces[i].p1 = kernel.receive_int();
@@ -212,9 +214,6 @@ GLuint read_noff(Kernel& kernel)
 	}
 	glEnd();
 	glEndList();
-
-	delete [] vertices;
-	delete [] faces;
 
 	return display_list;
 }

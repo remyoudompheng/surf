@@ -19,12 +19,10 @@
 #include <Misc.h>
 
 #include<iostream>
-#include<fstream>
-#include<strstream>
 
 namespace {
-	char modified_txt[] = "The current script has been modified.\n"
-                              "Do you want to save it?";
+char modified_txt[] = "The current script has been modified.\n"
+                      "Do you want to save it?";
 };
 
 ScriptWindow::ScriptWindow(Glade& _glade, Kernel& _kernel)

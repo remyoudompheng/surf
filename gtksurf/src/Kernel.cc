@@ -13,8 +13,6 @@
 #  include <config.h>
 #endif
 
-#include<strstream>
-
 #include <Kernel.h>
 #include <Misc.h>
 #include <ScriptWindow.h>
@@ -54,11 +52,9 @@ Kernel::Kernel(const std::string& kernel_path)
 	sigaction(SIGCHLD, &sa, 0);
 
 	kernel_input_fd = to_kernel[1];
-	kernel_input = new std::ofstream;
-	kernel_input->sys_open(kernel_input_fd);
+	kernel_input = fdopen(kernel_input_fd, "w");
 	kernel_output_fd = from_kernel[0];
-	kernel_output = new std::ifstream;
-	kernel_output->sys_open(kernel_output_fd);
+	kernel_output = fdopen(kernel_output_fd, "r");
 	
 	kernel_pid = fork();
 	if(kernel_pid == -1) {
@@ -97,8 +93,7 @@ Kernel::Kernel(const std::string& kernel_path)
 
 	send("print_defaults;");
 	defaults.assign("");
-	std::string line;
-	line = receive_line();
+	std::string line = receive_line();
 	while(line.length() > 0) {
 		defaults += line;
 		defaults += "\n";
@@ -135,8 +130,8 @@ Kernel::Kernel(const std::string& kernel_path)
 Kernel::~Kernel()
 {
         signal(SIGCHLD, SIG_IGN);
-	kernel_input->close();
-	kernel_output->close();
+	fclose(kernel_input);
+	fclose(kernel_output);
 }
 
 void Kernel::check_version(const std::string& version)
@@ -161,7 +156,11 @@ void Kernel::update_position()
 	for(int i = 0; i != 4; i++) {
 		std::string line;
 		line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+		std::istringstream is(line);
+#else
 		std::istrstream is(line.c_str());
+#endif
 		std::string head;
 		is >> head;
 		if(head == "origin:") {
@@ -219,7 +218,11 @@ void Kernel::process_output()
 			scriptwin->progress_mode(false);
 			scriptwin->set_status("Aborted.");
 		} else {
+#ifdef HAVE_STRINGSTREAM
+			std::istringstream iss(s);
+#else
 			std::istrstream iss(s.c_str());
+#endif
 			int percent;
 			iss >> percent;
 			scriptwin->set_progress(percent/100.0);
@@ -237,7 +240,11 @@ void Kernel::process_output()
 		gdk_beep();
 	} else if(s == "error") {
 		std::string errorregion = receive_line();
+#ifdef HAVE_STRINGSTREAM
+		std::istringstream is(errorregion);
+#else
 		std::istrstream is(errorregion.c_str());
+#endif
 		int from, to;
 		is >> from >> to;
 		scriptwin->select_region(from, to);

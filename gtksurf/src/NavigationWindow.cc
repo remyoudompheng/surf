@@ -22,7 +22,12 @@
 
 #include<iostream>
 #include<cmath>
-#include<strstream>
+
+#ifdef HAVE_STRINGSTREAM
+#  include<sstream>
+#else
+#  include<strstream>
+#endif
 
 NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* _scriptwin)
 	: glade(_glade), kernel(_kernel), scriptwin(_scriptwin),
@@ -193,7 +198,11 @@ void NavigationWindow::on_rotz_changed(gfloat val)
 
 void NavigationWindow::on_update_clicked()
 {
+#ifdef HAVE_STRINGSTREAM
+	std::ostringstream os;
+#else
 	std::ostrstream os;
+#endif
 	os << "// the following lines were inserted by gtksurf:\n"
 	   << "origin_x = " << origx << ";\n"
 	   << "origin_y = " << origy << ";\n"

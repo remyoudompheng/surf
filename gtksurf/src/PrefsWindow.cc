@@ -18,7 +18,12 @@
 #include <Misc.h>
 
 #include<iostream>
-#include<strstream>
+
+#ifdef HAVE_STRINGSTREAM
+#  include<sstream>
+#else
+#  include<strstream>
+#endif
 
 PrefsWindow::PrefsWindow(Glade& _glade, ScriptWindow* _scriptwin)
 	: glade(_glade),
@@ -79,7 +84,11 @@ void PrefsWindow::read_prefs()
 		} else if(l.substr(0, posstr.length()) == posstr) {
 			remember_pos = true;
 			std::string value = l.substr(posstr.length());
+#ifdef HAVE_STRINGSTREAM
+			std::istringstream iss(value);
+#else
 			std::istrstream iss(value.c_str());
+#endif
 			int xpos, ypos, width, height;
 			iss >> xpos >> ypos >> width >> height;
 			scriptwin->set_geometry(xpos, ypos, width, height);

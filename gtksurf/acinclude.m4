@@ -224,6 +224,21 @@ AC_DEFUN(JOJO_CXX_STDNAMESPACE, [
 	])
 ])
 
+dnl JOJO_CHECK_STRINGSTREAM
+dnl check if we have <sstream> header an stringstream (instead of strstream)
+
+AC_DEFUN(JOJO_CXX_STRINGSTREAM, [
+  AC_MSG_CHECKING(whether ${CXX} has <sstream>/stringstream)
+  AC_TRY_COMPILE([
+      #include<sstream>
+    ], [
+      std::string s = "test";
+      std::istringstream iss(s);
+    ],
+    AC_DEFINE(HAVE_STRINGSTREAM)
+     AC_MSG_RESULT(yes),
+    AC_MSG_RESULT(no))
+])
 
 dnl JOJO_COMPILE_WARNINGS
 dnl Turn on many useful compiler warnings

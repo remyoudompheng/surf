@@ -20,8 +20,12 @@
 #include <gdk/gdkkeysyms.h>
 
 #include<iostream>
-#include<fstream>
-#include<strstream>
+
+#ifdef HAVE_STRINGSTREAM
+#  include<sstream>
+#else
+#  include<strstream>
+#endif
 
 ImageWindow::ImageWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* _sw)
 	: glade(_glade), kernel(_kernel), scriptwin(_sw),
@@ -112,7 +116,11 @@ void ImageWindow::read_data()
 #endif
 
 	std::string whstring = kernel.receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(whstring);
+#else
 	std::istrstream is(whstring.c_str());
+#endif
 	is >> width >> height;
 
 	kernel.receive_line(); // eat up "255\n" line

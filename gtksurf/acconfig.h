@@ -22,3 +22,7 @@
 
 /* Define as 1 if you have the stpcpy function.  */
 #undef HAVE_STPCPY
+
+#undef HAVE_LIBGDK_PIXBUF
+
+#undef HAVE_STRINGSTREAM

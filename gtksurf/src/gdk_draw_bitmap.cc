@@ -8,6 +8,8 @@
  *
  */
 
+#ifndef HAVE_GDK_DRAW_BITMAP
+
 #include <gdk_draw_bitmap.h>
 
 // This function has been sent to the
@@ -15,7 +17,7 @@
 
 /* temporary implementation of the missing GDK function */
 
-#include "gdk/gdkprivate.h"
+#include <gdk/gdkprivate.h>
 
 void gdk_draw_bitmap     (GdkDrawable  *drawable,
                           GdkGC        *gc,
@@ -54,3 +56,5 @@ void gdk_draw_bitmap     (GdkDrawable  *drawable,
                 xdest, ydest,
                 1 );
 }
+
+#endif

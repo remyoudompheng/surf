@@ -20,38 +20,6 @@ AC_MINIX
 AC_HEADER_STDC
 
 
-dnl check if C++ compiler really works:
-dnl -----------------------------------
-
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
-
-JOJO_CXX_WARNINGS
-JOJO_CXX_NAMESPACES
-JOJO_CXX_STDNAMESPACE
-
-AC_LANG_RESTORE
-
-if test "$GCC" = "no" ; then
-	case `uname` in
-	IRIX*)
-		CXXFLAGS="-LANG:std $CXXFLAGS"
-		;;
-	esac
-fi
-
-
-
-dnl include /usr/local/lib and /usr/local/include in search paths:
-dnl --------------------------------------------------------------
-
-if test -d "/usr/local/lib/"; then
-	LDFLAGS="-L/usr/local/lib/ $LDFLAGS"
-fi
-if test -d "/usr/local/include/"; then
-	CPPFLAGS="-I/usr/local/include/ $CPPFLAGS"
-fi
-
 dnl check for STLport:
 dnl ------------------
 
@@ -84,6 +52,39 @@ if test "x$enable_stlport" = "xyes" ; then
     fi
 fi
 
+dnl check if C++ compiler really works:
+dnl -----------------------------------
+
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+
+JOJO_CXX_WARNINGS
+JOJO_CXX_NAMESPACES
+JOJO_CXX_STDNAMESPACE
+JOJO_CXX_STRINGSTREAM
+
+AC_LANG_RESTORE
+
+if test "$GCC" = "no" ; then
+	case `uname` in
+	IRIX*)
+		CXXFLAGS="-LANG:std $CXXFLAGS"
+		;;
+	esac
+fi
+
+
+
+dnl include /usr/local/lib and /usr/local/include in search paths:
+dnl --------------------------------------------------------------
+
+if test -d "/usr/local/lib/"; then
+	LDFLAGS="-L/usr/local/lib/ $LDFLAGS"
+fi
+if test -d "/usr/local/include/"; then
+	CPPFLAGS="-I/usr/local/include/ $CPPFLAGS"
+fi
+
 dnl standard headers:
 dnl =================
 
@@ -108,12 +109,38 @@ CPPFLAGS="$CPPFLAGS $GTK_CFLAGS"
 LDFLAGS="$LDFLAGS $GTK_LDFLAGS"
 LIBS="$LIBS $GTK_LIBS"
 
-dnl checks for libgdk-pixbuf, libglade, gtkgl
-dnl =========================================
+dnl checks for libgdk-pixbuf:
+dnl =========================
 
 AM_PATH_GDK_PIXBUF
+if test "x$no_gdk_pixbuf" != "xyes"; then
+  CPPFLAGS="$CPPFLAGS $GDK_PIXBUF_CFLAGS"
+  LIBS="$LIBS $GDK_PIXBUF_LIBS"
+  AC_DEFINE(HAVE_LIBGDK_PIXBUF)
+fi
+
+dnl check if we have a gdk_draw_bitmap() function:
+dnl ==============================================
+
+AC_CHECK_FUNCS(gdk_draw_bitmap)
+
+dnl check for libglade:
+dnl ===================
+
 AM_PATH_LIBGLADE
+CPPFLAGS="$CPPFLAGS $LIBGLADE_CFLAGS"
+LIBS="$LIBS $LIBGLADE_LIBS"
+
+dnl check for gtkgl
+dnl ===============
+
 AM_PATH_GTKGL
+if test "x$have_gtkgl" = "xyes"; then
+  LIBS="$LIBS $GTKGL_LIBS"
+  CPPFLAGS="$CPPFLAGS $GTKGL_CFLAGS"
+else
+  AC_MSG_ERROR([You don't have GtkGLArea!])
+fi
 
 
 AM_MISSING_PROG(HELP2MAN, help2man, $missing_dir)

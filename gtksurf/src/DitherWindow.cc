@@ -21,8 +21,12 @@
 #include <gdk/gdkkeysyms.h>
 
 #include<iostream>
-#include<fstream>
-#include<strstream>
+
+#ifdef HAVE_STRINGSTREAM
+#  include<sstream>
+#else
+#  include<strstream>
+#endif
 
 namespace {
 	guint8 change_bits(guint8 b)
@@ -85,7 +89,11 @@ void DitherWindow::read_data()
 	}
 
 	std::string whstring = kernel.receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(whstring);
+#else
 	std::istrstream is(whstring.c_str());
+#endif
 	int width;
 	int height;
 	is >> width >> height;

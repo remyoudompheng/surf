@@ -15,8 +15,18 @@
 #  include <config.h>
 #endif
 
-#include<fstream>
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
 #include<string>
+
+#ifdef HAVE_STRINGSTREAM
+#  include<sstream>
+#else
+#  include<strstream>
+#endif
+
 #include<list>
 
 #include <gtk/gtk.h>
@@ -53,40 +63,65 @@ public:
 	}
 
 	void send(const char* txt) {
-		*kernel_input << txt << "\nexecute;\n";
-		kernel_input->flush();
+		fputs(txt, kernel_input);
+		fputs("\nexecute;\n", kernel_input);
+		fflush(kernel_input);
 	}
 	void send(const std::string& txt) {
-		*kernel_input << txt << "\nexecute;\n";
-		kernel_input->flush();
+		send(txt.c_str());
 	}
 	std::string receive_line() {
+		char buf[1024];
 		std::string s;
-		std::getline(*kernel_output, s);
+		if(fgets(buf, sizeof(buf), kernel_output) != 0) {
+			size_t len = strlen(buf);
+			if(buf[len - 1] == '\n') {
+				buf[len - 1] = 0;
+			}
+			s.assign(buf);
+		}
 		return s;
 	}
 	std::string receive_string() {
+		skip_space();
 		std::string s;
-		*kernel_output >> s;
+		int c;
+		while((c = getc(kernel_output)) != EOF) {
+			if(isspace(c)) {
+				ungetc(c, kernel_output);
+				break;
+			}
+			s.push_back(char(c));
+		}
 		return s;
 	}
 	int receive_int() {
+		std::string s = receive_string();
+#ifdef HAVE_STRINGSTREAM
+		std::istringstream iss(s);
+#else
+		std::istrstream iss(s.c_str());
+#endif
 		int i;
-		*kernel_output >> i;
+		iss >> i;
 		return i;
 	}
 	float receive_float() {
+		std::string s = receive_string();
+#ifdef HAVE_STRINGSTREAM
+		std::istringstream iss(s);
+#else
+		std::istrstream iss(s.c_str());
+#endif
 		float f;
-		*kernel_output >> f;
+		iss >> f;
 		return f;
 	}
 	void receive_bytes(char* buf, size_t len) {
-		kernel_output->read(buf, len);
+		fread(buf, len, 1, kernel_output);
 	}
 	char receive_byte() {
-		char c;
-		kernel_output->get(c);
-		return c;
+		return char(getc(kernel_output));
 	}
 
 	void reset();
@@ -133,9 +168,9 @@ public:
 private:
 	int kernel_pid;
 	int kernel_input_fd;
-	std::ofstream* kernel_input;
+	FILE* kernel_input;
 	int kernel_output_fd;
-	std::ifstream* kernel_output;
+	FILE* kernel_output;
 
 	ScriptWindow* scriptwin;
 	ImageWindow* imagewin;
@@ -159,6 +194,16 @@ private:
 	double scale_z;
 	Sequence sequence[3];
 	
+	void skip_space() {
+		int c;
+		while((c = getc(kernel_output)) != EOF) {
+			if(!isspace(c)) {
+				ungetc(c, kernel_output);
+				break;
+			}
+		}
+	}
+
 	void check_version(const std::string& v);
 
 	guint handler_id;
