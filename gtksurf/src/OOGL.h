@@ -16,7 +16,7 @@
 
 namespace OOGL {
 
-GLuint read(Kernel& kernel);
+	GLuint read();
 
 }
 

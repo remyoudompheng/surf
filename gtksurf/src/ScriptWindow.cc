@@ -25,49 +25,47 @@ char modified_txt[] = "The current script has been modified.\n"
                       "Do you want to save it?";
 };
 
-ScriptWindow::ScriptWindow(Glade& _glade, Kernel& _kernel)
-	: glade(_glade),
-	  prefswin(glade, this),
-	  imagewin(glade, _kernel, this),
-	  navigationwin(glade, _kernel, this),
-	  kernel(_kernel),
+ScriptWindow::ScriptWindow()
+	: prefswin(this),
+	  imagewin(this),
+	  navigationwin(this),
 	  dirty(false)
 {
-	kernel.set_scriptwin(this);
+	Kernel::set_scriptwin(this);
 	
-	window = glade.get_widget("window_script");
-	text_script = glade.get_widget("text_script");
+	window = Glade::get_widget("window_script");
+	text_script = Glade::get_widget("text_script");
 	
-	glade.sig_connect(text_script, "changed", _on_text_script_changed, this);
-	glade.sig_connect(window, "delete_event", _on_delete_event, this);
-	glade.sig_connect("new", "activate", _on_new_activate, this);
-	glade.sig_connect("button_new", "clicked", _on_new_activate, this);
-	glade.sig_connect("open", "activate", _on_open_activate, this);
-	glade.sig_connect("button_open", "clicked", _on_open_activate, this);
-	glade.sig_connect("save", "activate", _on_save_activate, this);
-	glade.sig_connect("button_save", "clicked", _on_save_activate, this);
-	glade.sig_connect("save_as", "activate", _on_save_as_activate, this);
-	glade.sig_connect("preferences", "activate", _on_prefs_activate, this);
-	glade.sig_connect("quit", "activate", _on_quit_activate, this);
-	glade.sig_connect("cut", "activate", _on_cut_activate, this);
-	glade.sig_connect("copy", "activate", _on_copy_activate, this);
-	glade.sig_connect("paste", "activate", _on_paste_activate, this);
-	glade.sig_connect("clear", "activate", _on_clear_activate, this);
-	glade.sig_connect("navigation", "activate", _on_navigation_activate, this);
-	glade.sig_connect("button_navigation", "clicked", _on_navigation_activate, this);
-	glade.sig_connect("render_curve", "activate", _on_render_curve_activate, this);
-	glade.sig_connect("button_render_curve", "clicked", _on_render_curve_activate, this);
-	glade.sig_connect("render_surface", "activate", _on_render_surface_activate, this);
-	glade.sig_connect("button_render_surface", "clicked", _on_render_surface_activate, this);
-	glade.sig_connect("execute", "activate", _on_execute_activate, this);
-	glade.sig_connect("button_execute", "clicked", _on_execute_activate, this);
-	glade.sig_connect("about", "activate", _on_about_activate, this);
-	glade.sig_connect("button_stop", "clicked", _on_stop_clicked, this);
+	Glade::sig_connect(text_script, "changed", _on_text_script_changed, this);
+	Glade::sig_connect(window, "delete_event", _on_delete_event, this);
+	Glade::sig_connect("new", "activate", _on_new_activate, this);
+	Glade::sig_connect("button_new", "clicked", _on_new_activate, this);
+	Glade::sig_connect("open", "activate", _on_open_activate, this);
+	Glade::sig_connect("button_open", "clicked", _on_open_activate, this);
+	Glade::sig_connect("save", "activate", _on_save_activate, this);
+	Glade::sig_connect("button_save", "clicked", _on_save_activate, this);
+	Glade::sig_connect("save_as", "activate", _on_save_as_activate, this);
+	Glade::sig_connect("preferences", "activate", _on_prefs_activate, this);
+	Glade::sig_connect("quit", "activate", _on_quit_activate, this);
+	Glade::sig_connect("cut", "activate", _on_cut_activate, this);
+	Glade::sig_connect("copy", "activate", _on_copy_activate, this);
+	Glade::sig_connect("paste", "activate", _on_paste_activate, this);
+	Glade::sig_connect("clear", "activate", _on_clear_activate, this);
+	Glade::sig_connect("navigation", "activate", _on_navigation_activate, this);
+	Glade::sig_connect("button_navigation", "clicked", _on_navigation_activate, this);
+	Glade::sig_connect("render_curve", "activate", _on_render_curve_activate, this);
+	Glade::sig_connect("button_render_curve", "clicked", _on_render_curve_activate, this);
+	Glade::sig_connect("render_surface", "activate", _on_render_surface_activate, this);
+	Glade::sig_connect("button_render_surface", "clicked", _on_render_surface_activate, this);
+	Glade::sig_connect("execute", "activate", _on_execute_activate, this);
+	Glade::sig_connect("button_execute", "clicked", _on_execute_activate, this);
+	Glade::sig_connect("about", "activate", _on_about_activate, this);
+	Glade::sig_connect("button_stop", "clicked", _on_stop_clicked, this);
 
-	sbar = GTK_STATUSBAR(glade.get_widget("statusbar_script"));
+	sbar = GTK_STATUSBAR(Glade::get_widget("statusbar_script"));
 	sbar_context = gtk_statusbar_get_context_id(sbar, "default context");
 	
-	pbar = glade.get_widget("progressbar_script");
+	pbar = Glade::get_widget("progressbar_script");
 
 	gtk_widget_show(window);
 
@@ -76,7 +74,7 @@ ScriptWindow::ScriptWindow(Glade& _glade, Kernel& _kernel)
 
 void ScriptWindow::get_geometry(int& xpos, int& ypos, int& width, int& height)
 {
-	GtkWidget* window = glade.get_widget("window_script");
+	GtkWidget* window = Glade::get_widget("window_script");
 	int depth;
 	gdk_window_get_geometry(window->window, &xpos, &ypos, &width, &height, &depth);
 
@@ -84,7 +82,7 @@ void ScriptWindow::get_geometry(int& xpos, int& ypos, int& width, int& height)
 
 void ScriptWindow::set_geometry(int xpos, int ypos, int width, int height)
 {
-	GtkWidget* window = glade.get_widget("window_script");
+	GtkWidget* window = Glade::get_widget("window_script");
 	gtk_widget_set_uposition(window, xpos, ypos);
 	gtk_window_set_default_size(GTK_WINDOW(window), width, height);
 }
@@ -95,7 +93,7 @@ void ScriptWindow::set_font(const std::string& font)
 	if(font.length() > 0) {
 		style->font = gdk_font_load(font.c_str());
 	}
-	gtk_widget_set_style(glade.get_widget("text_script"), style);
+	gtk_widget_set_style(Glade::get_widget("text_script"), style);
 }
 
 void ScriptWindow::load_file(const std::string& fname)
@@ -176,7 +174,7 @@ void ScriptWindow::select_region(int from, int to)
 	if(from < 0) {
 		from = 0;
 	}
-	int last_pos = int(glade.get_chars(text_script).length()) - 1;
+	int last_pos = int(Glade::get_chars(text_script).length()) - 1;
 	if(to > last_pos) {
 		to = last_pos;
 	}
@@ -200,7 +198,7 @@ void ScriptWindow::insert(const std::string& str)
 void ScriptWindow::on_new_activate()
 {
 	if(dirty) {
-		if(glade.ask_user(modified_txt)) {
+		if(Glade::ask_user(modified_txt)) {
 			on_save_activate();
 		}
 	}
@@ -217,15 +215,15 @@ void ScriptWindow::on_new_activate()
 void ScriptWindow::on_open_activate()
 {
 	if(dirty) {
-		if(glade.ask_user(modified_txt)) {
+		if(Glade::ask_user(modified_txt)) {
 			on_save_activate();
 		}
 	}
 	
 	set_status("Open Script...");
 	
-	if(glade.fileselect("Open Script")) {
-		load_file(glade.get_filename());
+	if(Glade::fileselect("Open Script")) {
+		load_file(Glade::get_filename());
 	}
 }
 
@@ -259,8 +257,8 @@ void ScriptWindow::on_save_as_activate()
 {
 	set_status("Save Script As...");
 
-	if(glade.fileselect("Save Script As")) {
-		filename = glade.get_filename();
+	if(Glade::fileselect("Save Script As")) {
+		filename = Glade::get_filename();
 		set_title();
 		on_save_activate();
 	}
@@ -274,12 +272,12 @@ void ScriptWindow::on_prefs_activate()
 void ScriptWindow::on_quit_activate()
 {
 	if(dirty) {
-		if(glade.ask_user(modified_txt)) {
+		if(Glade::ask_user(modified_txt)) {
 			on_save_activate();
 		}
 	}
 
-	kernel.disconnect_handler();
+	Kernel::disconnect_handler();
 	gtk_main_quit();
 }
 
@@ -305,57 +303,57 @@ void ScriptWindow::on_clear_activate()
 
 void ScriptWindow::on_navigation_activate()
 {
-	kernel.reset();
+	Kernel::reset();
 	std::string script = "surface_run_commands = 0;\n";
 	prelude_length = script.length();
-	script += glade.get_chars(text_script);
+	script += Glade::get_chars(text_script);
 	script += "surface_run_commands = 1;\n"
 		  "triangulate_surface;\n";
-	kernel.send(script);
+	Kernel::send(script);
 	navigationwin.show();
 }
 
 void ScriptWindow::on_render_curve_activate()
 {
-	kernel.reset();
+	Kernel::reset();
 	std::string script = "surface_run_commands = 0;\n";
 	prelude_length = script.length();
-	script += glade.get_chars(text_script);
+	script += Glade::get_chars(text_script);
 	script += "surface_run_commands = 1;\n"
 		  "clear_screen;\n"
 		  "draw_curve;\n";
 	imagewin.set_mode(ImageWindow::CURVE);
-	kernel.send(script);
+	Kernel::send(script);
 }
 
 void ScriptWindow::on_render_surface_activate()
 {
-	kernel.reset();
+	Kernel::reset();
 	std::string script = "surface_run_commands = 0;\n";
 	prelude_length = script.length();
-	script += glade.get_chars(text_script);
+	script += Glade::get_chars(text_script);
 	script += "surface_run_commands = 1;\n"
 		  "draw_surface;";
 	imagewin.set_mode(ImageWindow::SURFACE);
-	kernel.send(script);
+	Kernel::send(script);
 }
 
 void ScriptWindow::on_execute_activate()
 {
-	kernel.reset();
+	Kernel::reset();
 	std::string script = "surface_run_commands = 1;\n";
 	prelude_length = script.length();
-	script += glade.get_chars(text_script);
-	kernel.send(script);
+	script += Glade::get_chars(text_script);
+	Kernel::send(script);
 }
 
 void ScriptWindow::on_about_activate()
 {
-	About about(glade);
+	About about;
 	about.show();
 }
 
 void ScriptWindow::on_stop_clicked()
 {
-	kernel.stop();
+	Kernel::stop();
 }

@@ -14,23 +14,23 @@
 #include<vector>
 
 namespace {
-void read_header(Kernel& kernel);
-GLuint read_noff(Kernel& kernel);
+void read_header();
+GLuint read_noff();
 }
 
 namespace OOGL {
 
-GLuint read(Kernel& kernel)
+GLuint read()
 {
-        read_header(kernel);
-	return read_noff(kernel);
+        read_header();
+	return read_noff();
 }
 
 }
 
 namespace {
 
-void read_header(Kernel& kernel)
+void read_header()
 {
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
@@ -55,7 +55,7 @@ void read_header(Kernel& kernel)
 	
 	bool end_of_file = false;
 	while(!end_of_file) {
-		std::string token = kernel.receive_string();
+		std::string token = Kernel::receive_string();
 		if(token == "{") {
 			continue;
 		}
@@ -80,39 +80,39 @@ void read_header(Kernel& kernel)
 		case material:
 			if(token == "ka") {
 				// ambient reflection coefficient
-				kernel.receive_float();
+				Kernel::receive_float();
 			} else if(token == "ambient") {
 				GLfloat ambient[4];
 				for(int i = 0; i != 3; i++) {
-					ambient[i] = kernel.receive_float();
+					ambient[i] = Kernel::receive_float();
 				}
 				ambient[3] = 1.0;
 				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
 			} else if(token == "kd") {
 				// diffuse-reflection coefficient
-				kernel.receive_float();
+				Kernel::receive_float();
 		        } else if(token == "diffuse") {
 				for(int i = 0; i != 3; i++) {
-					color[i] = kernel.receive_float();
+					color[i] = Kernel::receive_float();
 				}
 				color[3] = 1.0;
 			} else if(token == "backdiffuse") {
 				for(int i = 0; i != 3; i++) {
-					insidecolor[i] = kernel.receive_float();
+					insidecolor[i] = Kernel::receive_float();
 				}
 			} else if(token == "ks") {
 				// specular reflection coeff
-				kernel.receive_float();
+				Kernel::receive_float();
 			} else if(token == "specular") {
 				GLfloat specular[4];
 				for(int i = 0; i != 3; i++) {
-					specular[i] = kernel.receive_float();
+					specular[i] = Kernel::receive_float();
 				}
 				specular[3] = 1.0;
 				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
 				glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 25.0);
 			} else if(token == "alpha") {
-				GLfloat alpha = kernel.receive_float();
+				GLfloat alpha = Kernel::receive_float();
 				color[3] = insidecolor[3] = alpha;
 				if(alpha != 1.0) {
 					glEnable(GL_BLEND);
@@ -129,7 +129,7 @@ void read_header(Kernel& kernel)
 			if(token == "ambient") {
 				GLfloat ambient[4];
 				for(int i = 0; i != 3; i++) {
-					ambient[i] = kernel.receive_float();
+					ambient[i] = Kernel::receive_float();
 				}
 				ambient[3] = 1.0;
 				glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
@@ -142,15 +142,15 @@ void read_header(Kernel& kernel)
 		case light:
 			if(token == "color") {
 				for(int i = 0; i != 3; i++) {
-					cur_light.col[i] = kernel.receive_float();
+					cur_light.col[i] = Kernel::receive_float();
 				}
 			} else if(token == "position") {
 				for(int i = 0; i != 4; i++) {
-					cur_light.pos[i] = kernel.receive_float();
+					cur_light.pos[i] = Kernel::receive_float();
 				}
 			} else if(token == "location") {
 				// eat up location:
-				kernel.receive_string();
+				Kernel::receive_string();
 			} else if(token == "}") {
 				GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
 				glLightfv(GLenum(GL_LIGHT0 + num_lights), GL_DIFFUSE, cur_light.col);
@@ -165,33 +165,33 @@ void read_header(Kernel& kernel)
 	}
 }
 
-GLuint read_noff(Kernel& kernel)
+GLuint read_noff()
 {
-	int num_vertices = kernel.receive_int();
-	int num_faces = kernel.receive_int();
-	kernel.receive_line(); // eat up edges count and '\n'
+	int num_vertices = Kernel::receive_int();
+	int num_faces = Kernel::receive_int();
+	Kernel::receive_line(); // eat up edges count and '\n'
 
  	// read vertices:
 	std::vector<GLvertex> vertices(num_vertices);
 	for(int i = 0; i != num_vertices; i++) {
-		vertices[i].x = kernel.receive_float();
-		vertices[i].y = kernel.receive_float();
-		vertices[i].z = kernel.receive_float();
-		vertices[i].nx = kernel.receive_float();
-		vertices[i].ny = kernel.receive_float();
-		vertices[i].nz = kernel.receive_float();
+		vertices[i].x = Kernel::receive_float();
+		vertices[i].y = Kernel::receive_float();
+		vertices[i].z = Kernel::receive_float();
+		vertices[i].nx = Kernel::receive_float();
+		vertices[i].ny = Kernel::receive_float();
+		vertices[i].nz = Kernel::receive_float();
 	}
 
 	// read faces:
 	std::vector<GLface> faces(num_faces);
 	for(int i = 0; i != num_faces; i++) {
-		kernel.receive_int(); // should we check this?
-		faces[i].p1 = kernel.receive_int();
-		faces[i].p2 = kernel.receive_int();
-		faces[i].p3 = kernel.receive_int();
+		Kernel::receive_int(); // should we check this?
+		faces[i].p1 = Kernel::receive_int();
+		faces[i].p2 = Kernel::receive_int();
+		faces[i].p3 = Kernel::receive_int();
 	}
 
-	while(kernel.receive_line() != "}") {
+	while(Kernel::receive_line() != "}") {
 		// do nothing
 	}
 

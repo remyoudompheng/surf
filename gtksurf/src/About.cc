@@ -15,18 +15,17 @@
 
 #include <About.h>
 
-About::About(const Glade& _glade)
-	: glade(_glade)
+About::About()
 {
-	win = glade.get_widget("window_about");
+	win = Glade::get_widget("window_about");
 	gtk_widget_add_events(win, GDK_BUTTON_PRESS_MASK);
-	glade.sig_connect(win, "button_press_event", _on_button_press_event, this);
-	glade.sig_connect(win, "delete_event", _on_delete_event, this);
+	Glade::sig_connect(win, "button_press_event", _on_button_press_event, this);
+	Glade::sig_connect(win, "delete_event", _on_delete_event, this);
 
 	gtk_widget_realize(win); // we have to do this do get an win->window
 	gdk_window_set_decorations(win->window, GdkWMDecoration(0));
 
-	GtkWidget* label = glade.get_widget("label_about");
+	GtkWidget* label = Glade::get_widget("label_about");
 	gtk_label_set_text((GtkLabel*)label,
                            PACKAGE " " VERSION "\n"
 			   "a GTK+ based graphical frontend to surf\n"

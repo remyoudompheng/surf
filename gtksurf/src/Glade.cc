@@ -15,7 +15,23 @@
 
 #include <Glade.h>
 
-Glade::Glade(int argc, char* argv[], const std::string& gladefile)
+GladeXML* Glade::gladexml;
+GMainLoop* Glade::gmainloop;
+GtkWidget* Glade::okdlg;
+GtkWidget* Glade::yesnodlg;
+bool Glade::yes_clicked;
+GtkFileSelection* Glade::fsel;
+GtkWidget* Glade::saveopts_frame;
+GtkWidget* Glade::optionmenu;
+bool Glade::fselok_clicked;
+std::string Glade::filename;
+std::string Glade::filetype;
+GtkFontSelectionDialog* Glade::fontsel;
+bool Glade::fontselok_clicked;
+std::string Glade::fontname;
+
+
+void Glade::init(int argc, char* argv[], const std::string& gladefile)
 {
 	gtk_init(&argc, &argv);
 	glade_init();
@@ -25,18 +41,18 @@ Glade::Glade(int argc, char* argv[], const std::string& gladefile)
 	}
 
 	okdlg = get_widget("dialog_ok");
-	sig_connect(okdlg, "delete_event", _on_ok_delete_event, this);
-	sig_connect("button_ok", "clicked", _on_ok_clicked, this);
+	sig_connect(okdlg, "delete_event", on_ok_delete_event);
+	sig_connect("button_ok", "clicked", on_ok_clicked);
 	
 	yesnodlg = get_widget("dialog_yesno");
-	sig_connect(yesnodlg, "delete_event", _on_yesno_delete_event, this);
-	sig_connect("button_yes", "clicked", _on_yes_clicked, this);
-	sig_connect("button_no", "clicked", _on_no_clicked, this);
+	sig_connect(yesnodlg, "delete_event", on_yesno_delete_event);
+	sig_connect("button_yes", "clicked", on_yes_clicked);
+	sig_connect("button_no", "clicked", on_no_clicked);
 
 	fsel = reinterpret_cast<GtkFileSelection*>(get_widget("fileselection"));
-	sig_connect(fsel->ok_button, "clicked", _on_fselok_clicked, this);
-	sig_connect(fsel->cancel_button, "clicked", _on_fselcancel_clicked, this);
-	sig_connect(GTK_WIDGET(fsel), "delete_event", _on_fsel_delete_event, this);
+	sig_connect(fsel->ok_button, "clicked", on_fselok_clicked);
+	sig_connect(fsel->cancel_button, "clicked", on_fselcancel_clicked);
+	sig_connect(GTK_WIDGET(fsel), "delete_event", on_fsel_delete_event);
 	saveopts_frame = gtk_frame_new("Save Options");
 	GtkWidget* hbox = gtk_hbox_new(false, 4);
 	gtk_container_add(GTK_CONTAINER(saveopts_frame), hbox);
@@ -49,21 +65,21 @@ Glade::Glade(int argc, char* argv[], const std::string& gladefile)
 	gtk_widget_show_all(saveopts_frame);
 	
 	fontsel = reinterpret_cast<GtkFontSelectionDialog*>(get_widget("fontselectiondialog"));
-	sig_connect(fontsel->ok_button, "clicked", _on_fontselok_clicked, this);
-	sig_connect(fontsel->cancel_button, "clicked", _on_fontselcancel_clicked, this);
-	sig_connect(GTK_WIDGET(fontsel), "delete_event", _on_fontsel_delete_event, this);
+	sig_connect(fontsel->ok_button, "clicked", on_fontselok_clicked);
+	sig_connect(fontsel->cancel_button, "clicked", on_fontselcancel_clicked);
+	sig_connect(GTK_WIDGET(fontsel), "delete_event", on_fontsel_delete_event);
 
 	gmainloop = g_main_new(false);
 }
 
-Glade::~Glade()
+void Glade::deinit()
 {
 	g_main_destroy(gmainloop);
 	
 	gtk_object_unref(GTK_OBJECT(gladexml));
 }
 
-bool Glade::ask_user(const char* txt) const
+bool Glade::ask_user(const char* txt)
 {
 	gtk_label_set_text(GTK_LABEL(get_widget("label_yesno")), txt);
 	gtk_widget_grab_focus(get_widget("button_yes"));
@@ -75,7 +91,7 @@ bool Glade::ask_user(const char* txt) const
 	return yes_clicked;
 }
 
-void Glade::show_message(const std::string& txt) const
+void Glade::show_message(const std::string& txt)
 {
 	gtk_label_set_text(GTK_LABEL(get_widget("label_ok")), txt.c_str());
 	gtk_widget_grab_focus(get_widget("button_ok"));

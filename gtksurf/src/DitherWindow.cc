@@ -42,25 +42,25 @@ namespace {
 	}
 }
 
-DitherWindow::DitherWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* sw)
-	: glade(_glade), kernel(_kernel), scriptwin(sw),
+DitherWindow::DitherWindow(ScriptWindow* sw)
+	: scriptwin(sw),
 	  bitmap(0)
 {
-	kernel.set_ditherwin(this);
+	Kernel::set_ditherwin(this);
 	
-	window = glade.get_widget("window_dither");
-	drawingarea = glade.get_widget("drawingarea_dither");
+	window = Glade::get_widget("window_dither");
+	drawingarea = Glade::get_widget("drawingarea_dither");
 	
-	glade.sig_connect(window, "delete_event", _on_delete_event, this);
-	glade.sig_connect(window, "key_press_event", _on_key_press_event, this);
-	glade.sig_connect(drawingarea, "expose_event", _on_expose_event, this);
-	glade.sig_connect(drawingarea, "button_press_event", _on_button_press_event, this);
+	Glade::sig_connect(window, "delete_event", _on_delete_event, this);
+	Glade::sig_connect(window, "key_press_event", _on_key_press_event, this);
+	Glade::sig_connect(drawingarea, "expose_event", _on_expose_event, this);
+	Glade::sig_connect(drawingarea, "button_press_event", _on_button_press_event, this);
 	gtk_widget_add_events(drawingarea, GDK_BUTTON_PRESS_MASK);
-	glade.sig_connect("save_dither", "activate", _on_save_activate, this);
-	glade.sig_connect("save_dither_as", "activate", _on_save_as_activate, this);
-	glade.sig_connect("close_dither", "activate", _on_close_activate, this);
+	Glade::sig_connect("save_dither", "activate", _on_save_activate, this);
+	Glade::sig_connect("save_dither_as", "activate", _on_save_as_activate, this);
+	Glade::sig_connect("close_dither", "activate", _on_close_activate, this);
 	
-	popupmenu = glade.get_widget("menu_dither");
+	popupmenu = Glade::get_widget("menu_dither");
 	
 	set_title();
 
@@ -88,7 +88,7 @@ void DitherWindow::read_data()
 		gdk_bitmap_unref(bitmap);
 	}
 
-	std::string whstring = kernel.receive_line();
+	std::string whstring = Kernel::receive_line();
 #ifdef HAVE_STRINGSTREAM
 	std::istringstream is(whstring);
 #else
@@ -101,7 +101,7 @@ void DitherWindow::read_data()
 	size_t length = height*bytesPerRow;
 	guint8* data = new guint8[length];
 	for(size_t i = 0; i != length; i++) {
-		data[i] = change_bits(kernel.receive_byte());
+		data[i] = change_bits(Kernel::receive_byte());
 	}
 
 	bitmap = gdk_bitmap_create_from_data(drawingarea->window,
@@ -165,7 +165,7 @@ void DitherWindow::on_save_activate(GtkWidget*)
 		s += filetype + ";\n";
 	}
 	s += "save_dithered_image;\n";
-	kernel.send(s);
+	Kernel::send(s);
 }
 
 void DitherWindow::on_save_as_activate(GtkWidget*)
@@ -174,7 +174,7 @@ void DitherWindow::on_save_as_activate(GtkWidget*)
 	
 	GtkWidget* menu = gtk_menu_new();
 
-	std::list<std::string> fmts = kernel.get_dither_image_formats();
+	std::list<std::string> fmts = Kernel::get_dither_image_formats();
 	std::list<std::string>::iterator i;
 	for(i = fmts.begin(); i != fmts.end(); ) {
 		GtkWidget* item = gtk_menu_item_new_with_label((*i).c_str());
@@ -182,13 +182,13 @@ void DitherWindow::on_save_as_activate(GtkWidget*)
 		gtk_object_set_user_data(GTK_OBJECT(item), const_cast<char*>((*i).c_str()));
 		i++;
 		gtk_menu_append(GTK_MENU(menu), item);
-		glade.sig_connect(item, "activate", _on_filetype_activate, this);
+		Glade::sig_connect(item, "activate", _on_filetype_activate, this);
 	}
 	filetype.assign("auto");
 	gtk_widget_show_all(menu);
 
-	if(glade.fileselect("Save Dither Image As", menu)) {
-		filename = glade.get_filename();
+	if(Glade::fileselect("Save Dither Image As", menu)) {
+		filename = Glade::get_filename();
 		set_title();
 		on_save_activate();
 	}

@@ -27,7 +27,7 @@ class ScriptWindow;
 
 class PrefsWindow : public GladeWindow {
 public:
-	PrefsWindow(Glade& glade, ScriptWindow* scriptwin);
+	PrefsWindow(ScriptWindow* scriptwin);
 	virtual ~PrefsWindow();
 
 	void show();
@@ -46,7 +46,6 @@ public:
 private:
 	std::string filename;
 
-	Glade& glade;
 	ScriptWindow* scriptwin;
 
 	GtkToolbarStyle toolbar;

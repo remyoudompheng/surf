@@ -27,31 +27,31 @@
 #  include<strstream>
 #endif
 
-ImageWindow::ImageWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* _sw)
-	: glade(_glade), kernel(_kernel), scriptwin(_sw),
-	  ditherwin(glade, kernel, _sw), pixdata(0)
+ImageWindow::ImageWindow(ScriptWindow* _sw)
+	: scriptwin(_sw),
+	  ditherwin(_sw), pixdata(0)
 #ifdef HAVE_LIBGDK_PIXBUF
 	  , pixbuf(0)
 #endif
 {
-	kernel.set_imagewin(this);
+	Kernel::set_imagewin(this);
 
 	gdk_rgb_init();
 
-	window = glade.get_widget("window_image");
-	drawingarea = glade.get_widget("drawingarea");
+	window = Glade::get_widget("window_image");
+	drawingarea = Glade::get_widget("drawingarea");
 	
-	glade.sig_connect(window, "delete_event", _on_delete_event, this);
-	glade.sig_connect(window, "key_press_event", _on_key_press_event, this);
-	glade.sig_connect(drawingarea, "expose_event", _on_expose_event, this);
-	glade.sig_connect(drawingarea, "button_press_event", _on_button_press_event, this);
+	Glade::sig_connect(window, "delete_event", _on_delete_event, this);
+	Glade::sig_connect(window, "key_press_event", _on_key_press_event, this);
+	Glade::sig_connect(drawingarea, "expose_event", _on_expose_event, this);
+	Glade::sig_connect(drawingarea, "button_press_event", _on_button_press_event, this);
 	gtk_widget_add_events(drawingarea, GDK_BUTTON_PRESS_MASK);
-	glade.sig_connect("save_image", "activate", _on_save_activate, this);
-	glade.sig_connect("save_image_as", "activate", _on_save_as_activate, this);
-	glade.sig_connect("close_image", "activate", _on_close_activate, this);
-	glade.sig_connect("dither_image", "activate", _on_dither_activate, this);
+	Glade::sig_connect("save_image", "activate", _on_save_activate, this);
+	Glade::sig_connect("save_image_as", "activate", _on_save_as_activate, this);
+	Glade::sig_connect("close_image", "activate", _on_close_activate, this);
+	Glade::sig_connect("dither_image", "activate", _on_dither_activate, this);
 	
-	popupmenu = glade.get_widget("menu_image");
+	popupmenu = Glade::get_widget("menu_image");
 	
 	set_title();
 }
@@ -113,7 +113,7 @@ void ImageWindow::read_data()
 	}
 #endif
 
-	std::string whstring = kernel.receive_line();
+	std::string whstring = Kernel::receive_line();
 #ifdef HAVE_STRINGSTREAM
 	std::istringstream is(whstring);
 #else
@@ -121,13 +121,13 @@ void ImageWindow::read_data()
 #endif
 	is >> width >> height;
 
-	kernel.receive_line(); // eat up "255\n" line
+	Kernel::receive_line(); // eat up "255\n" line
 
 	rowstride = 3*width;
 	int length = rowstride*height;
 	pixdata = new char[length];
 	for(int y = 0; y != height; y++) {
-		kernel.receive_bytes(pixdata + y*rowstride, rowstride);
+		Kernel::receive_bytes(pixdata + y*rowstride, rowstride);
 		gtk_main_iteration_do(false);
 	}
 	
@@ -210,7 +210,7 @@ void ImageWindow::on_save_activate(GtkWidget*)
 		s += filetype + ";\n";
 	}
 	s += "save_color_image;\n";
-	kernel.send(s);
+	Kernel::send(s);
 }
 
 void ImageWindow::on_save_as_activate(GtkWidget*)
@@ -219,7 +219,7 @@ void ImageWindow::on_save_as_activate(GtkWidget*)
 	
 	GtkWidget* menu = gtk_menu_new();
 
-	std::list<std::string> fmts = kernel.get_color_image_formats();
+	std::list<std::string> fmts = Kernel::get_color_image_formats();
 	std::list<std::string>::iterator i;
 	for(i = fmts.begin(); i != fmts.end(); ) {
 		GtkWidget* item = gtk_menu_item_new_with_label((*i).c_str());
@@ -227,13 +227,13 @@ void ImageWindow::on_save_as_activate(GtkWidget*)
 		gtk_object_set_user_data(GTK_OBJECT(item), const_cast<char*>((*i).c_str()));
 		i++;
 		gtk_menu_append(GTK_MENU(menu), item);
-		glade.sig_connect(item, "activate", _on_filetype_activate, this);
+		Glade::sig_connect(item, "activate", _on_filetype_activate, this);
 	}
 	filetype.assign("auto");
 	gtk_widget_show_all(menu);
 
-	if(glade.fileselect("Save Color Image As", menu)) {
-		filename = glade.get_filename();
+	if(Glade::fileselect("Save Color Image As", menu)) {
+		filename = Glade::get_filename();
 		set_title();
 		on_save_activate();
 	}
@@ -264,7 +264,7 @@ void ImageWindow::on_dither_activate(GtkWidget*)
 	script += "filename = \"-\";\n"
                   "dither_file_format = pbm;\n"
 		  "save_dithered_image;\n";
-	kernel.send(script);
+	Kernel::send(script);
 }
 
 void ImageWindow::on_filetype_activate(GtkWidget* wid)

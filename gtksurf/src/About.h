@@ -20,13 +20,12 @@
 
 class About : public GladeWindow {
 public:
-	About(const Glade& _glade);
+	About();
 	virtual ~About();
 
 	void show();
 
 private:
-	const Glade& glade;
 	GtkWidget* win;
 	GtkStyle* style;
 	GMainLoop* gmainloop;

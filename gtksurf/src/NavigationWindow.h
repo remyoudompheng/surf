@@ -40,7 +40,7 @@ class ScriptWindow;
 
 class NavigationWindow : public GladeWindow {
 public:
-	NavigationWindow(Glade& glade, Kernel& kernel, ScriptWindow* scriptwin);
+	NavigationWindow(ScriptWindow* scriptwin);
 	virtual ~NavigationWindow() {}
 
 	void show();
@@ -53,8 +53,6 @@ public:
 	void on_button_press_event(GdkEventButton* event = 0);
 	
 private:
-	Glade& glade;
-	Kernel& kernel;
 	ScriptWindow* scriptwin;
 
 	GLArea glarea;

@@ -33,7 +33,7 @@
 
 class ScriptWindow : public GladeWindow {
 public:
-	ScriptWindow(Glade& glade, Kernel& kernel);
+	ScriptWindow();
 	virtual ~ScriptWindow() {}
 
 	void load_file(const std::string& fname);
@@ -50,18 +50,14 @@ public:
 	void set_geometry(int xpos, int ypos, int width, int height);
 	void set_font(const std::string& font);
 	void set_toolbar_style(GtkToolbarStyle style) {
-		gtk_toolbar_set_style(GTK_TOOLBAR(glade.get_widget("toolbar")),
+		gtk_toolbar_set_style(GTK_TOOLBAR(Glade::get_widget("toolbar")),
 				      prefswin.getToolbarStyle());
 	}
 
 private:
-	Glade& glade;
-
 	PrefsWindow prefswin;
 	ImageWindow imagewin;
 	NavigationWindow navigationwin;
-
-	Kernel& kernel;
 
 	bool dirty; // was script changed since last save?
 	std::string filename;

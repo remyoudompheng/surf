@@ -38,7 +38,7 @@ class ScriptWindow;
 
 class ImageWindow : public GladeWindow {
 public:
-	ImageWindow(Glade& glade, Kernel& kernel, ScriptWindow* sw);
+	ImageWindow(ScriptWindow* sw);
 	virtual ~ImageWindow() {}
 
 	void show() {
@@ -63,8 +63,6 @@ public:
 	void read_data();
 	
 private:
-	Glade& glade;
-	Kernel& kernel;
 	ScriptWindow* scriptwin;
 	DitherWindow ditherwin;
 

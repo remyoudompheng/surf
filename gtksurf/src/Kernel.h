@@ -38,39 +38,39 @@ class GLArea;
 
 class Kernel {
 public:
-	Kernel(const std::string& kernel_path);
-	virtual ~Kernel();
+	static void init(const std::string& kernel_path);
+	static void deinit();
 
-	void set_scriptwin(ScriptWindow* sw) {
+	static void set_scriptwin(ScriptWindow* sw) {
 		scriptwin = sw;
 	}
-	void set_imagewin(ImageWindow* iw) {
+	static void set_imagewin(ImageWindow* iw) {
 		imagewin = iw;
 	}
-	void set_ditherwin(DitherWindow* dw) {
+	static void set_ditherwin(DitherWindow* dw) {
 		ditherwin = dw;
 	}
-	void set_glarea(GLArea* gl) {
+	static void set_glarea(GLArea* gl) {
 		glarea = gl;
 	}
 
-	void connect_handler() {
+	static void connect_handler() {
 		handler_id = gtk_input_add_full(kernel_output_fd, GDK_INPUT_READ,
-						_process_output, 0, this, 0);
+						_process_output, 0, 0, 0);
 	}
-	void disconnect_handler() {
+	static void disconnect_handler() {
 		gtk_input_remove(handler_id);
 	}
 
-	void send(const char* txt) {
+	static void send(const char* txt) {
 		fputs(txt, kernel_input);
 		fputs("\nexecute;\n", kernel_input);
 		fflush(kernel_input);
 	}
-	void send(const std::string& txt) {
+	static void send(const std::string& txt) {
 		send(txt.c_str());
 	}
-	std::string receive_line() {
+	static std::string receive_line() {
 		char buf[1024];
 		std::string s;
 		if(fgets(buf, sizeof(buf), kernel_output) != 0) {
@@ -82,7 +82,7 @@ public:
 		}
 		return s;
 	}
-	std::string receive_string() {
+	static std::string receive_string() {
 		skip_space();
 		std::string s;
 		int c;
@@ -95,7 +95,7 @@ public:
 		}
 		return s;
 	}
-	int receive_int() {
+	static int receive_int() {
 		std::string s = receive_string();
 #ifdef HAVE_STRINGSTREAM
 		std::istringstream iss(s);
@@ -106,7 +106,7 @@ public:
 		iss >> i;
 		return i;
 	}
-	float receive_float() {
+	static float receive_float() {
 		std::string s = receive_string();
 #ifdef HAVE_STRINGSTREAM
 		std::istringstream iss(s);
@@ -117,39 +117,39 @@ public:
 		iss >> f;
 		return f;
 	}
-	void receive_bytes(char* buf, size_t len) {
+	static void receive_bytes(char* buf, size_t len) {
 		fread(buf, len, 1, kernel_output);
 	}
-	char receive_byte() {
+	static char receive_byte() {
 		return char(getc(kernel_output));
 	}
 
-	void reset();
+	static void reset();
 
-	void stop();
+	static void stop();
 
-	std::list<std::string>& get_color_image_formats() {
+	static std::list<std::string>& get_color_image_formats() {
 		return color_image_formats;
 	}
-	std::list<std::string>& get_dither_image_formats() {
+	static std::list<std::string>& get_dither_image_formats() {
 		return dither_image_formats;
 	}
-	std::list<std::string>& get_three_d_image_formats() {
+	static std::list<std::string>& get_three_d_image_formats() {
 		return three_d_image_formats;
 	}
 
-	void update_position();
-	void get_orig(double& x, double& y, double& z) const {
+	static void update_position();
+	static void get_orig(double& x, double& y, double& z) {
 		x = orig_x;
 		y = orig_y;
 		z = orig_z;
 	}
-	void get_rotation(double& x, double& y, double& z) const {
+	static void get_rotation(double& x, double& y, double& z) {
 		x = rot_x;
 		y = rot_y;
 		z = rot_z;
 	}
-	void get_scale(double& x, double& y, double& z) const {
+	static void get_scale(double& x, double& y, double& z) {
 		x = scale_x;
 		y = scale_y;
 		z = scale_z;
@@ -159,42 +159,42 @@ public:
 		translate,
 		scale
 	};
-	void get_sequence(Sequence& first, Sequence& second, Sequence& third) const {
+	static void get_sequence(Sequence& first, Sequence& second, Sequence& third) {
 		first = sequence[0];
 		second = sequence[1];
 		third = sequence[2];
 	}
 
 private:
-	int kernel_pid;
-	int kernel_input_fd;
-	FILE* kernel_input;
-	int kernel_output_fd;
-	FILE* kernel_output;
+	static int kernel_pid;
+	static int kernel_input_fd;
+	static FILE* kernel_input;
+	static int kernel_output_fd;
+	static FILE* kernel_output;
 
-	ScriptWindow* scriptwin;
-	ImageWindow* imagewin;
-	DitherWindow* ditherwin;
-	GLArea* glarea;
+	static ScriptWindow* scriptwin;
+	static ImageWindow* imagewin;
+	static DitherWindow* ditherwin;
+	static GLArea* glarea;
 
-	std::string defaults;
+	static std::string defaults;
 
-	std::list<std::string> color_image_formats;
-	std::list<std::string> dither_image_formats;
-	std::list<std::string> three_d_image_formats;
+	static std::list<std::string> color_image_formats;
+	static std::list<std::string> dither_image_formats;
+	static std::list<std::string> three_d_image_formats;
 
-	double orig_x;
-	double orig_y;
-	double orig_z;
-	double rot_x;
-	double rot_y;
-	double rot_z;
-	double scale_x;
-	double scale_y;
-	double scale_z;
-	Sequence sequence[3];
+	static double orig_x;
+	static double orig_y;
+	static double orig_z;
+	static double rot_x;
+	static double rot_y;
+	static double rot_z;
+	static double scale_x;
+	static double scale_y;
+	static double scale_z;
+	static Sequence sequence[3];
 	
-	void skip_space() {
+	static void skip_space() {
 		int c;
 		while((c = getc(kernel_output)) != EOF) {
 			if(!isspace(c)) {
@@ -204,12 +204,12 @@ private:
 		}
 	}
 
-	void check_version(const std::string& v);
+	static void check_version(const std::string& v);
 
-	guint handler_id;
-	void process_output();
-	static void _process_output(gpointer This, gint, GdkInputCondition) {
-		static_cast<Kernel*>(This)->process_output();
+	static guint handler_id;
+	static void process_output();
+	static void _process_output(gpointer d, gint, GdkInputCondition) {
+		process_output();
 	}
 };
 

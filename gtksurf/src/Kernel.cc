@@ -27,6 +27,37 @@
 #include <signal.h>
 #include <fcntl.h>
 
+int Kernel::kernel_pid;
+int Kernel::kernel_input_fd;
+FILE* Kernel::kernel_input;
+int Kernel::kernel_output_fd;
+FILE* Kernel::kernel_output;
+
+ScriptWindow* Kernel::scriptwin;
+ImageWindow* Kernel::imagewin;
+DitherWindow* Kernel::ditherwin;
+GLArea* Kernel::glarea;
+
+std::string Kernel::defaults;
+
+std::list<std::string> Kernel::color_image_formats;
+std::list<std::string> Kernel::dither_image_formats;
+std::list<std::string> Kernel::three_d_image_formats;
+
+double Kernel::orig_x;
+double Kernel::orig_y;
+double Kernel::orig_z;
+double Kernel::rot_x;
+double Kernel::rot_y;
+double Kernel::rot_z;
+double Kernel::scale_x;
+double Kernel::scale_y;
+double Kernel::scale_z;
+Kernel::Sequence Kernel::sequence[3];
+	
+guint Kernel::handler_id;
+
+
 namespace {
 void sigchild_handler(int sig)
 {
@@ -35,7 +66,7 @@ void sigchild_handler(int sig)
 }
 }
 
-Kernel::Kernel(const std::string& kernel_path)
+void Kernel::init(const std::string& kernel_path)
 {
 	int to_kernel[2];
 	int from_kernel[2];
@@ -127,7 +158,7 @@ Kernel::Kernel(const std::string& kernel_path)
 	connect_handler();
 }
 
-Kernel::~Kernel()
+void Kernel::deinit()
 {
         signal(SIGCHLD, SIG_IGN);
 	fclose(kernel_input);

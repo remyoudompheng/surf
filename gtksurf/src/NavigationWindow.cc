@@ -29,50 +29,50 @@
 #  include<strstream>
 #endif
 
-NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* _scriptwin)
-	: glade(_glade), kernel(_kernel), scriptwin(_scriptwin),
-	  glarea(glade, kernel, this, scriptwin),
+NavigationWindow::NavigationWindow(ScriptWindow* _scriptwin)
+	: scriptwin(_scriptwin),
+	  glarea(this, scriptwin),
 	  origx(0.0), origy(0.0), origz(0.0),
 	  scalex(1.0), scaley(1.0), scalez(1.0), keep_scaleratio(true),
 	  rotx(0.0), roty(0.0), rotz(0.0), updatingRot(false)
 {
 	pi = std::acos(-1.0);
 	
-	window = glade.get_widget("window_navigation");
-	gtk_box_pack_start_defaults(GTK_BOX(glade.get_widget("vbox_glarea")),
+	window = Glade::get_widget("window_navigation");
+	gtk_box_pack_start_defaults(GTK_BOX(Glade::get_widget("vbox_glarea")),
 				    glarea.getWidget());
-	glade.sig_connect(window, "delete_event", _on_delete_event, this);
+	Glade::sig_connect(window, "delete_event", _on_delete_event, this);
 
 	gtk_widget_set_events(window, GDK_BUTTON_PRESS_MASK);
 	gtk_signal_connect(GTK_OBJECT(window), "button_press_event",
 			   GTK_SIGNAL_FUNC(_on_button_press_event), (gpointer)this);
 	
 	
-	sp_origx = glade.spin_connect("spinbutton_origx", _on_origx_changed, this);
-	sp_origy = glade.spin_connect("spinbutton_origy", _on_origy_changed, this);
-	sp_origz = glade.spin_connect("spinbutton_origz", _on_origz_changed, this);
-	sp_scalex = glade.spin_connect("spinbutton_scalex", _on_scalex_changed, this);
-	sp_scaley = glade.spin_connect("spinbutton_scaley", _on_scaley_changed, this);
-	sp_scalez = glade.spin_connect("spinbutton_scalez", _on_scalez_changed, this);
-	sp_rotx = glade.spin_connect("spinbutton_rotx", _on_rotx_changed, this);
-	sp_roty = glade.spin_connect("spinbutton_roty", _on_roty_changed, this);
-	sp_rotz = glade.spin_connect("spinbutton_rotz", _on_rotz_changed, this);
+	sp_origx = Glade::spin_connect("spinbutton_origx", _on_origx_changed, this);
+	sp_origy = Glade::spin_connect("spinbutton_origy", _on_origy_changed, this);
+	sp_origz = Glade::spin_connect("spinbutton_origz", _on_origz_changed, this);
+	sp_scalex = Glade::spin_connect("spinbutton_scalex", _on_scalex_changed, this);
+	sp_scaley = Glade::spin_connect("spinbutton_scaley", _on_scaley_changed, this);
+	sp_scalez = Glade::spin_connect("spinbutton_scalez", _on_scalez_changed, this);
+	sp_rotx = Glade::spin_connect("spinbutton_rotx", _on_rotx_changed, this);
+	sp_roty = Glade::spin_connect("spinbutton_roty", _on_roty_changed, this);
+	sp_rotz = Glade::spin_connect("spinbutton_rotz", _on_rotz_changed, this);
 
-	GtkToggleButton* w = reinterpret_cast<GtkToggleButton*>(glade.get_widget("togglebutton_scaleratio"));
-	glade.toggle_connect(w, _on_scaleratio_toggled, this);
+	GtkToggleButton* w = reinterpret_cast<GtkToggleButton*>(Glade::get_widget("togglebutton_scaleratio"));
+	Glade::toggle_connect(w, _on_scaleratio_toggled, this);
 	gtk_toggle_button_set_active(w, true); // libglade bug?
 
-	glade.sig_connect("button_updatescript", "clicked", _on_update_clicked, this);
-	glade.sig_connect("button_reset", "clicked", _on_reset_clicked, this);
+	Glade::sig_connect("button_updatescript", "clicked", _on_update_clicked, this);
+	Glade::sig_connect("button_reset", "clicked", _on_reset_clicked, this);
 
-	glade.sig_connect("togglecross", "activate", _on_togglecross_activate, this);
-	glade.sig_connect("togglewireframe", "activate", _on_togglewireframe_activate, this);
-	glade.sig_connect("central_perspective", "activate", _on_perspective_activate, this);
-	glade.sig_connect("parallel_perspective", "activate", _on_perspective_activate, this);
-	glade.sig_connect("save_3d_file", "activate", _on_save_activate, this);
-	glade.sig_connect("save_3d_file_as", "activate", _on_save_as_activate, this);
-	glade.sig_connect("close_navigation", "activate", _on_close_activate, this);
-	popupmenu = glade.get_widget("menu_navigation");
+	Glade::sig_connect("togglecross", "activate", _on_togglecross_activate, this);
+	Glade::sig_connect("togglewireframe", "activate", _on_togglewireframe_activate, this);
+	Glade::sig_connect("central_perspective", "activate", _on_perspective_activate, this);
+	Glade::sig_connect("parallel_perspective", "activate", _on_perspective_activate, this);
+	Glade::sig_connect("save_3d_file", "activate", _on_save_activate, this);
+	Glade::sig_connect("save_3d_file_as", "activate", _on_save_as_activate, this);
+	Glade::sig_connect("close_navigation", "activate", _on_close_activate, this);
+	popupmenu = Glade::get_widget("menu_navigation");
 }
 
 void NavigationWindow::show()
@@ -219,22 +219,22 @@ void NavigationWindow::on_update_clicked()
 
 void NavigationWindow::on_reset_clicked()
 {
-	kernel.update_position();
+	Kernel::update_position();
 
 	double x, y, z;
 
-	kernel.get_orig(x, y, z);
+	Kernel::get_orig(x, y, z);
 	set_orig(x, y, z);
 
-	kernel.get_rotation(x, y, z);
+	Kernel::get_rotation(x, y, z);
 	x = rad_to_deg(x);
 	y = rad_to_deg(y);
 	z = rad_to_deg(z);
 	set_rot(x, y, z);
 	glarea.set_rot(x, y, z); // because of the updatingRot stuff
 
-	kernel.get_scale(x, y, z);
-	GtkToggleButton* w = reinterpret_cast<GtkToggleButton*>(glade.get_widget("togglebutton_scaleratio"));
+	Kernel::get_scale(x, y, z);
+	GtkToggleButton* w = reinterpret_cast<GtkToggleButton*>(Glade::get_widget("togglebutton_scaleratio"));
 	if(x == y && y == z) {
 		gtk_toggle_button_set_active(w, true);
 	} else {
@@ -243,7 +243,7 @@ void NavigationWindow::on_reset_clicked()
 	set_scale(x, y, z);
 
 	Kernel::Sequence a, b, c;
-	kernel.get_sequence(a, b, c);
+	Kernel::get_sequence(a, b, c);
 	glarea.set_sequence(a, b, c);
 }
 
@@ -270,7 +270,7 @@ void NavigationWindow::on_togglewireframe_activate(GtkWidget*)
 
 void NavigationWindow::on_perspective_activate(GtkWidget*)
 {
-	GtkCheckMenuItem* item = GTK_CHECK_MENU_ITEM(glade.get_widget("central_perspective"));
+	GtkCheckMenuItem* item = GTK_CHECK_MENU_ITEM(Glade::get_widget("central_perspective"));
 	glarea.set_perspective(item->active);
 }
 
@@ -288,7 +288,7 @@ void NavigationWindow::on_save_activate(GtkWidget*)
 		s += filetype + ";\n";
 	}
 	s += "save_three_d_image;\n";
-	kernel.send(s);
+	Kernel::send(s);
 }
 
 void NavigationWindow::on_save_as_activate(GtkWidget*)
@@ -297,7 +297,7 @@ void NavigationWindow::on_save_as_activate(GtkWidget*)
 	
 	GtkWidget* menu = gtk_menu_new();
 
-	std::list<std::string> fmts = kernel.get_three_d_image_formats();
+	std::list<std::string> fmts = Kernel::get_three_d_image_formats();
 	std::list<std::string>::iterator i;
 	for(i = fmts.begin(); i != fmts.end(); ) {
 		GtkWidget* item = gtk_menu_item_new_with_label((*i).c_str());
@@ -305,13 +305,13 @@ void NavigationWindow::on_save_as_activate(GtkWidget*)
 		gtk_object_set_user_data(GTK_OBJECT(item), const_cast<char*>((*i).c_str()));
 		i++;
 		gtk_menu_append(GTK_MENU(menu), item);
-		glade.sig_connect(item, "activate", _on_filetype_activate, this);
+		Glade::sig_connect(item, "activate", _on_filetype_activate, this);
 	}
 	filetype.assign("auto");
 	gtk_widget_show_all(menu);
 
-	if(glade.fileselect("Save 3D Image As", menu)) {
-		filename = glade.get_filename();
+	if(Glade::fileselect("Save 3D Image As", menu)) {
+		filename = Glade::get_filename();
 		on_save_activate();
 	}
 	

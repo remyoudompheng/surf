@@ -32,7 +32,7 @@ class ScriptWindow;
 
 class DitherWindow : public GladeWindow {
 public:
-	DitherWindow(Glade& glade, Kernel& kernel, ScriptWindow* sw);
+	DitherWindow(ScriptWindow* sw);
 	virtual ~DitherWindow() {}
 
 	void show() {
@@ -46,8 +46,6 @@ public:
 	void read_data();
 
 private:
-	Glade& glade;
-	Kernel& kernel;
 	ScriptWindow* scriptwin;
 
 	GdkGCValues gcval;

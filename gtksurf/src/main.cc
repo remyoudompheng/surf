@@ -116,17 +116,18 @@ PACKAGE " " VERSION "\n"
 		}
 	}
 
-	Kernel kernel(kernel_path);
+	Kernel::init(kernel_path);
+	Glade::init(argc, argv, gladefile);
 
-	Glade glade(argc, argv, gladefile);
-
-	ScriptWindow script(glade, kernel);
+	ScriptWindow script;
 
 	if(optind < argc) {
 		script.load_file(argv[optind]);
 	}
 	
-	glade.main_loop();
+	Glade::main_loop();
+
+	Kernel::deinit();
 
 	return 0;
 }

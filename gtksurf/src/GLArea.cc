@@ -16,9 +16,8 @@
 
 #include<iostream>
 
-GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin,
-	       ScriptWindow* sw)
-	: glade(_glade), kernel(_kernel), navigationwin(navwin), scriptwin(sw),
+GLArea::GLArea(NavigationWindow* navwin, ScriptWindow* sw)
+	: navigationwin(navwin), scriptwin(sw),
 	  pi(std::acos(-1.0)),
 	  dragging(false),
 	  rotMat(4), deltaRotMat(4), rotating(false),
@@ -28,14 +27,14 @@ GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin,
 	  shown(false),
 	  display_list(0)
 {
-	kernel.set_glarea(this);
+	Kernel::set_glarea(this);
 
 	sequence[0] = Kernel::translate;
 	sequence[1] = Kernel::rotate;
 	sequence[2] = Kernel::scale;
 	
 	if(!gdk_gl_query()) {
-		glade.show_message("ERROR: OpenGL not supported!\n");
+		Glade::show_message("ERROR: OpenGL not supported!\n");
 		abort();
 	}
 
@@ -82,7 +81,7 @@ void GLArea::read_data()
 	if(display_list != 0) {
 		glDeleteLists(display_list, 1);
 	}
-	display_list = OOGL::read(kernel);
+	display_list = OOGL::read();
 	display();
 }
 

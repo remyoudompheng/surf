@@ -25,9 +25,8 @@
 #  include<strstream>
 #endif
 
-PrefsWindow::PrefsWindow(Glade& _glade, ScriptWindow* _scriptwin)
-	: glade(_glade),
-	  scriptwin(_scriptwin),
+PrefsWindow::PrefsWindow(ScriptWindow* _scriptwin)
+	: scriptwin(_scriptwin),
 	  toolbar(GTK_TOOLBAR_ICONS), remember_pos(false),
 	  shown(false)
 {
@@ -35,20 +34,20 @@ PrefsWindow::PrefsWindow(Glade& _glade, ScriptWindow* _scriptwin)
 	filename += "/.gtksurf";
 	read_prefs();
 
-	window = glade.get_widget("window_prefs");
-	glade.sig_connect(window, "delete_event", _on_delete_event, this);
-	glade.sig_connect("button_prefs_ok", "clicked", _on_okay_clicked, this);
-	glade.sig_connect("button_prefs_cancel", "clicked", _on_cancel_clicked, this);
-	radiobutton_default_font = GTK_TOGGLE_BUTTON(glade.get_widget("radiobutton_default_font"));
-	radiobutton_custom_font = GTK_TOGGLE_BUTTON(glade.get_widget("radiobutton_custom_font"));
-	glade.sig_connect(GTK_WIDGET(radiobutton_default_font), "toggled", _on_font_toggled, this);
-	radiobutton_icons = GTK_TOGGLE_BUTTON(glade.get_widget("radiobutton_icons"));
-	radiobutton_text = GTK_TOGGLE_BUTTON(glade.get_widget("radiobutton_text"));
-	radiobutton_both = GTK_TOGGLE_BUTTON(glade.get_widget("radiobutton_both"));
-	hbox_font = glade.get_widget("hbox_font");
-	entry_font = GTK_ENTRY(glade.get_widget("entry_font"));
-	glade.sig_connect("button_font", "clicked", _on_font_clicked, this);
-	checkbutton_pos = GTK_TOGGLE_BUTTON(glade.get_widget("checkbutton_pos"));
+	window = Glade::get_widget("window_prefs");
+	Glade::sig_connect(window, "delete_event", _on_delete_event, this);
+	Glade::sig_connect("button_prefs_ok", "clicked", _on_okay_clicked, this);
+	Glade::sig_connect("button_prefs_cancel", "clicked", _on_cancel_clicked, this);
+	radiobutton_default_font = GTK_TOGGLE_BUTTON(Glade::get_widget("radiobutton_default_font"));
+	radiobutton_custom_font = GTK_TOGGLE_BUTTON(Glade::get_widget("radiobutton_custom_font"));
+	Glade::sig_connect(GTK_WIDGET(radiobutton_default_font), "toggled", _on_font_toggled, this);
+	radiobutton_icons = GTK_TOGGLE_BUTTON(Glade::get_widget("radiobutton_icons"));
+	radiobutton_text = GTK_TOGGLE_BUTTON(Glade::get_widget("radiobutton_text"));
+	radiobutton_both = GTK_TOGGLE_BUTTON(Glade::get_widget("radiobutton_both"));
+	hbox_font = Glade::get_widget("hbox_font");
+	entry_font = GTK_ENTRY(Glade::get_widget("entry_font"));
+	Glade::sig_connect("button_font", "clicked", _on_font_clicked, this);
+	checkbutton_pos = GTK_TOGGLE_BUTTON(Glade::get_widget("checkbutton_pos"));
 }
 
 PrefsWindow::~PrefsWindow()
@@ -157,7 +156,7 @@ void PrefsWindow::show()
 	gtk_widget_show(window);
 	gdk_window_raise(window->window);
 	
-	gtk_widget_grab_focus(glade.get_widget("button_prefs_ok"));
+	gtk_widget_grab_focus(Glade::get_widget("button_prefs_ok"));
 }
 
 void PrefsWindow::on_okay_clicked()
@@ -203,7 +202,7 @@ void PrefsWindow::on_font_toggled()
 
 void PrefsWindow::on_font_clicked()
 {
-	if(glade.fontselect()) {
-		gtk_entry_set_text(entry_font, glade.get_fontname().c_str());
+	if(Glade::fontselect()) {
+		gtk_entry_set_text(entry_font, Glade::get_fontname().c_str());
 	}
 }
