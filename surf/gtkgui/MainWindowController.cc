@@ -23,6 +23,8 @@
  */
 
 
+
+
 #include <assert.h>
 #include <pthread.h>
 
@@ -375,25 +377,14 @@ void MainWindowController::fileSelectionCancelled()
 
 void MainWindowController::saveDitheredImage()
 {
-	saveImageDialog.show(SaveImageDialog::dithered);
+	saveImageDialog.show(ImageFormats::dithered);
 }
 
 void MainWindowController::saveColorImage()
 {
-	saveImageDialog.show(SaveImageDialog::color);
+	saveImageDialog.show(ImageFormats::color);
 }
 
-
-void MainWindowController::saveImageDialogOkay()
-{
-	saveImageDialog.hide();
-	internalExecuteScript(0, saveImageDialog.generateScript(), 0, true);
-}
-
-void MainWindowController::saveImageDialogCancel()
-{
-	saveImageDialog.hide();
-}
 
 // struct _GtkItemFactoryEntry
 // {
@@ -473,11 +464,6 @@ MainWindowController::MainWindowController()
 	VOIDCONNECT(filesel->cancel_button, "clicked", fileSelectionCancelled);
 	gtk_signal_connect (GTK_OBJECT(filesel), "delete_event", GTK_SIGNAL_FUNC(fileSelectionDelete), this);
 
-
-	VOIDCONNECT(saveImageDialog.getGtkFileSelection()->ok_button, "clicked", saveImageDialogOkay);
-	VOIDCONNECT(saveImageDialog.getGtkFileSelection()->cancel_button, "clicked", saveImageDialogCancel);
-
-	
 
 	buttons = gtk_vbox_new (FALSE, 5);
 	gtk_container_border_width(GTK_CONTAINER(buttons), 5);

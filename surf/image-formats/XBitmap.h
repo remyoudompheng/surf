@@ -24,19 +24,39 @@
 
 
 
+#ifndef IMAGEFORMAT_XBM_H
+#define IMAGEFORMAT_XBM_H
 
-// ============================================================================
-// File      tiff.h
-// Author:   Stephan Endrass
-// Address:  endrass@mi.uni-erlangen.de
-// Date:     27.5.96
-// ============================================================================
+#include "ImageFormats.h"
 
-#ifndef TIFF_H
-#define TIFF_H
+#include <cstring>
 
-bool tiffprint (class bit_buffer &pixel, const char *tiffilename,
-		int paper_width, int paper_height,
-		int resolution);
+namespace ImageFormats {
 
-#endif  /* TIFF_H */
+	class XBitmap : public Format {
+	public:
+		const char* getName() {
+			return "XBitmap";
+		}
+		
+		ColorType getColorType() {
+			return dithered;
+		}
+
+		bool isExtension(const char* ext) {
+			if (std::strcasecmp(ext, "xbm") == 0) {
+				return true;
+			}
+			return false;
+		}
+
+		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg) {
+			return false;
+		}
+		
+		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+	};
+
+}
+
+#endif //!IMAGEFORMAT_XBM_H

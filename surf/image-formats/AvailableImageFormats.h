@@ -22,9 +22,60 @@
  *
  */
 
-// $Id$
-//
-// Author: Johannes Beigel <jojo@beigel.de>
 
-bool write_jpeg_file (byte *rdata, byte *gdata, byte *bdata,
-		      int width, int height, FILE *file);
+
+#ifndef AVAILABLEIMAGEFMTS_H
+#define AVAILABLEIMAGEFMTS_H
+
+#include "ByExtension.h"
+#include "JPEG.h"
+#include "TIFF.h"
+#include "Postscript.h"
+#include "Sun.h"
+#include "EPS.h"
+#include "XWD.h"
+#include "XBitmap.h"
+#include "PPM.h"
+#include "PBM.h"
+#include "Pipe.h"
+
+namespace ImageFormats {
+	extern ByExtension imgFmt_ByExtension;
+	extern JPEG imgFmt_JPEG;
+	extern Tiff imgFmt_TIFF;
+	extern Postscript imgFmt_Postscript;
+	extern Sun imgFmt_Sun;
+	extern EPS imgFmt_EPS;
+	extern XWD imgFmt_XWD;
+	extern XBitmap imgFmt_XBitmap;
+	extern PPM imgFmt_PPM;
+	extern PBM imgFmt_PBM;
+	extern Pipe imgFmt_Pipe;
+
+	Format* availableFormats[] = {
+		&imgFmt_ByExtension,
+		&imgFmt_PPM,
+		&imgFmt_PBM,
+		&imgFmt_Postscript,
+		&imgFmt_EPS,
+
+#ifdef HAVE_LIBJPEG
+		&imgFmt_JPEG,
+#endif
+
+#ifdef HAVE_LIBTIFF
+		&imgFmt_TIFF,
+#endif
+		
+		&imgFmt_XBitmap,
+		&imgFmt_XWD,
+		&imgFmt_Sun,
+		&imgFmt_Pipe,
+		0 // last element is 0
+	};
+
+	int numAvailableFormats = sizeof(availableFormats) / sizeof(Format) - 1;
+
+}
+
+#endif //AVAILABLEIMAGEFMTS_H

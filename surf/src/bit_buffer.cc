@@ -23,29 +23,19 @@
  */
 
 
+
+
 #include <limits.h>
 #include <iostream.h>
 
 #include "bit_buffer.h"
 
-void bit_buffer::write_as_pbm (FILE *f)
+void bit_buffer::write_image(const char* filename, ImageFormats::Format* fmt,
+			     int paper_width, int paper_height, int resolution, bool fromDlg)
 {
-	cerr << "bit_buffer::write_as_pbm" << endl;
-	fprintf (f, "P4\n%d %d\n", width, height);
-	fwrite (b, 1, n_bytes, f);
+	fmt->saveDitheredImage(filename, *this, paper_width, paper_height, resolution, fromDlg);
 }
 
-void bit_buffer::write_as_pgm (FILE *f)
-{
-	fprintf (f, "P5\n%d %d\n1\n", width, height);
-	int y;
-	for (y=0; y<height; y++) {
-		int x;
-		for (x=0; x<width; x++) {
-			fputc (getPixel(x,y), f);
-		}
-	}
-}
 
 void bit_buffer::setSize (int w, int h)
 {
@@ -59,7 +49,7 @@ void bit_buffer::setSize (int w, int h)
 	delete []b;
 
 	if (n_bytes > 0)
-		b = new unsigned char[n_bytes];
+		b = new guint8[n_bytes];
 	else {
 		b = 0;
 	}
@@ -95,7 +85,7 @@ bool bit_buffer::getPixel (int x, int y)
 	if( x < 0 || x >= width || y < 0 || y >= height ) {
 		return  PIXEL_WHITE;
 	} else {
-		unsigned char c = b[x / CHAR_BIT + y*bytesPerRow];
+		guint8 c = b[x / CHAR_BIT + y*bytesPerRow];
 		return c & ( (1 << (CHAR_BIT-1)) >> x % CHAR_BIT) ? PIXEL_BLACK : PIXEL_WHITE;
 	}
 }
@@ -103,7 +93,7 @@ bool bit_buffer::getPixel (int x, int y)
 void bit_buffer::setPixel (int x, int y, int value)
 {
 	if( x >= 0 && x < width && y >= 0 && y < height ) {
-		unsigned char &c = b[x / CHAR_BIT + y*bytesPerRow];
+		guint8 &c = b[x / CHAR_BIT + y*bytesPerRow];
 
 		if (value == PIXEL_BLACK)
 			c |= ( (1 << (CHAR_BIT-1)) >> x % CHAR_BIT);

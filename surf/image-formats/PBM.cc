@@ -23,17 +23,35 @@
  */
 
 
+#include "Misc.h"
+#include "FileWriter.h"
+#include "bit_buffer.h"
 
+#include "PBM.h"
 
-#ifndef XWD_H
-#define XWD_H
+namespace ImageFormats {
 
-#include "mytypes.h"
+	PBM imgFmt_PBM;
+	
+	
+	bool PBM::saveDitheredImage(const char* filename,
+				    bit_buffer& pixel,
+				    int paper_width, int paper_height, int resolution,
+				    bool fromDlg)
+	{
+		FileWriter fw(filename);
+		FILE* file;
+		
+		if ((file = fw.openFile()) == 0) {
+			Misc::alert("Couldn't open file for writing.");
+			return false;
+		}
+		
+		fprintf (file, "P4\n%d %d\n", pixel.getWidth(), pixel.getHeight());
+		fwrite (pixel.getBuffer(), 1, pixel.getSize(), file);
 
-extern bool write_xwd8_file (byte *data, int width, int height,
-		      byte *rmap, byte *gmap, byte *bmap,
-		      int nmap, FILE *xwdfile);
-extern bool write_xwd24_file (byte *rdata, byte *gdata, byte *bdata,
-		       int width, int height, FILE *xwdfile);
+		return true;
+	}
 
-#endif
+} // namespace ImageFormats
+

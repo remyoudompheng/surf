@@ -24,19 +24,39 @@
 
 
 
+#ifndef IMAGEFORMAT_PBM_H
+#define IMAGEFORMAT_PBM_H
 
-// ============================================================================
-// File      eps.h
-// Author:   Stephan Endrass
-// Address:  endrass@mi.uni-erlangen.de
-// Date:     3.2.95
-// ============================================================================
+#include "ImageFormats.h"
 
-#ifndef EPS_H
-#define EPS_H
+#include <cstring>
 
-extern bool epsprint (class bit_buffer &pixel, FILE *epsfile,
-		      int paper_width, int paper_height,
-		      int resolution);
+namespace ImageFormats {
 
-#endif  /* EPS_H */
+	class PBM : public Format {
+	public:
+		const char* getName() {
+			return "Portable Bitmap (PBM)";
+		}
+		
+		ColorType getColorType() {
+			return dithered;
+		}
+
+		bool isExtension(const char* ext) {
+			if (std::strcasecmp(ext, "pbm") == 0) {
+				return true;
+			}
+			return false;
+		}
+
+		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg) {
+			return false;
+		}
+		
+		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+	};
+
+}
+
+#endif //!IMAGEFORMAT_PBM_H

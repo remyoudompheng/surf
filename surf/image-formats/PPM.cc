@@ -24,40 +24,35 @@
 
 
 
+#include "Misc.h"
+#include "FileWriter.h"
 
-#ifndef SAVEIMAGEDIALOG_H
-#define SAVEIMAGEDIALOG_H
+#include "PPM.h"
 
-#include "ImageFormats.h"
+namespace ImageFormats {
 
-#include "mygtk.h"
+	PPM imgFmt_PPM;
 
-class SaveImageDialog
-{
-private:
-	SaveImageDialog(const SaveImageDialog &);
-	void operator=(const SaveImageDialog &);
-public:
-	SaveImageDialog();
+
+	bool PPM::saveColorImage(const char* filename,
+				 guint8* rdata, guint8* gdata, guint8* bdata,
+				 int width, int height, bool fromDlg)
+	{
+		FileWriter fw(filename);
+		FILE *file;
+
+		if((file = fw.openFile()) == 0) {
+			Misc::alert ("Could not open file for writing...");
+			return false;
+		}
 	
-	void show(ImageFormats::ColorType t);
-	
-	void hide() {
-		gtk_widget_hide(fileselectiondialog);
-		gtk_option_menu_remove_menu(GTK_OPTION_MENU(optionMenu));
+		fprintf (file, "P6\n%d %d\n255\n", width, height);
+		int n = width*height;
+		for (int i = 0; i < n; i++) {
+			fprintf (file, "%c%c%c", rdata[i], gdata[i], bdata[i]);
+		}
+		
+		return true;
 	}
-	
-private:
-	GtkWidget *fileselectiondialog;
-	GtkWidget* optionMenu;
 
-	ImageFormats::ColorType type;
-
-	static gint handle_delete (GtkWidget *widget, GdkEvent *event, gpointer data);
-	VOIDCALL(handle_okay, SaveImageDialog);
-	VOIDCALL(handle_cancel, SaveImageDialog) {
-		hide();
-	}
-};
-
-#endif
+} // namespace ImageFormats

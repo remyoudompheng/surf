@@ -24,19 +24,39 @@
 
 
 
+#ifndef IMAGEFORMAT_PPM_H
+#define IMAGEFORMAT_PPM_H
 
-// ============================================================================
-// File      ps.h
-// Author:   Stephan Endrass
-// Address:  endrass@mi.uni-erlangen.de
-// Date:     3.2.95
-// ============================================================================
+#include "ImageFormats.h"
 
-#ifndef PS_H
-#define PS_H
+#include <cstring>
 
-bool psprint (class bit_buffer &pixel, FILE *psfile,
-	      int paper_width, int paper_height,
-	      int resolution);
+namespace ImageFormats {
 
-#endif  /* PS_H */
+	class PPM : public Format {
+	public:
+		const char* getName() {
+			return "Portable Pixmap (PPM)";
+		}
+		
+		ColorType getColorType() {
+			return color;
+		}
+
+		bool isExtension(const char* ext) {
+			if (std::strcasecmp(ext, "ppm") == 0) {
+				return true;
+			}
+			return false;
+		}
+
+		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg);
+		
+		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) {
+			return false;
+		}
+	};
+
+}
+
+#endif //!IMAGEFORMAT_PPM_H

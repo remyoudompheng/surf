@@ -23,6 +23,8 @@
  */
 
 
+
+
 #ifndef BITBUFFER_H
 #define BITBUFFER_H
 
@@ -30,6 +32,7 @@
 #include <limits.h>
 #include <stdio.h>
 
+#include "ImageFormats.h"
 
 #define PIXEL_BLACK     0
 #define PIXEL_WHITE     1
@@ -46,8 +49,10 @@ public:
 	void setSize(int w, int h);
 	void setBlack();
 
-	int getWidth()  {return width;};
-	int getHeight() {return height;};
+	int getWidth()  { return width; }
+	int getHeight() { return height; }
+	int getSize() { return n_bytes; }
+	guint8* getBuffer() { return b; }
 	
 	bool getPixel (int x, int y);
 	void setPixel (int x, int y, int val);
@@ -63,8 +68,8 @@ public:
 		}
 
 
-	void write_as_pgm (FILE *f);
-	void write_as_pbm (FILE *f);
+	void write_image(const char* filename, ImageFormats::Format* fmt, int paper_width,
+			 int paper_height, int resolution, bool fromDlg);
 
 private:
 	int     width;                      // Width of image
@@ -74,7 +79,7 @@ private:
 
 	int bytesPerRow;
 
-	unsigned char *b;             // Image buffer
+	guint8* b;             // Image buffer
 
 };
 

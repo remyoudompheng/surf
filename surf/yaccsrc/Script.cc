@@ -23,6 +23,8 @@
  */
 
 
+
+
 #include <assert.h>
 #include <stdio.h>
 #include <errno.h>
@@ -35,6 +37,7 @@
 
 
 #include "FileWriter.h"
+#include "ImageFormats.h"
 #include "TreePolynom.h"
 #include "Misc.h"
 #include "Script.h"
@@ -52,10 +55,6 @@
 #include "float_buffer.h"
 #include "dither.h"
 
-#include "ps.h"
-#include "eps.h"
-#include "xbitmap.h"
-#include "tiffprint.h"
 #include "Thread.h"
 
 #include "MultiVariatePolynom.h"
@@ -316,7 +315,6 @@ void Script::addNewCommands()
 	replaceCommand("set_size", setSize);
 	replaceCommand("draw_surface", drawSurface);
 	replaceCommand("save_color_image", saveColorImage);
-
 	replaceCommand("clear_screen", clearScreen);
 	replaceCommand("save_dithered_image", saveDitheredImage);
 	replaceCommand("dither_surface", ditherSurface);
@@ -411,49 +409,20 @@ void Script::saveColorImage ()
 	checkVariables();
 
 	BEGIN("Script::saveColorImage");
-	Thread::setDoing ("saving color image...");
+	Thread::setDoing("saving color image...");
 
-	if (!surface_filename_data) {
-		Misc::alert ("no filename given.");
-	}
-
-// 	const char *name = surface_filename_data;
-
-	/* Fuck, fuck, fuck...why can´t I just have working exceptions with
-	 * every every version of gcc I can think of  (especially 2.7.x)...
-	 * I got internal compiler errors when trying to use them.
-	 * I could have just thrown an exception in FileWriter if the file couldn´t
-	 * be opened. But now I´ve got to open the file too early...
-	 */
-	
-	FileWriter fw (surface_filename_data);
-	FILE *f = fw.openFile();
-	if (f==0) {
-		Misc::alert ("Could not open file for writing...");
+	if (surface_filename_data == 0) {
+		Misc::alert("no filename given.");
 		return;
 	}
-
-	if (color_output_data == color_output_xwd_data) {
-		if (colormap_output_data == colormap_output_true_color_data) {
-			buffer->write_as_xwd24 (fw.openFile());
-		} else if (colormap_output_data==colormap_output_optimized_data) {
-			buffer->write_as_xwd8_optimized (fw.openFile(), !display_color_dither_data, display_dither_value_data);
-		} else {
-			buffer->write_as_xwd8_netscape (fw.openFile());
-		}
-	} else if (color_output_data == color_output_sun_data) {
-		if (colormap_output_data == colormap_output_true_color_data) {
-			buffer->write_as_sun24 (fw.openFile());
-		} else if (colormap_output_data==colormap_output_optimized_data) {
-			buffer->write_as_sun8_optimized (fw.openFile(), !display_color_dither_data, display_dither_value_data);
-		} else {
-			buffer->write_as_sun8_netscape (fw.openFile());
-		}
-	} else if (color_output_data == color_output_ppm_data) {
-		buffer->write_as_ppm (fw.openFile());
-	} else if (color_output_data == color_output_jpeg_data) {
-		buffer->write_as_jpeg (fw.openFile());
+	
+	ImageFormats::Format* fmt = ImageFormats::guessFormat(surface_filename_data, ImageFormats::color);
+	if (!fmt) {
+		Misc::alert("couldn't determine file format by extension");
+		return;
 	}
+	
+	buffer->write_image(surface_filename_data, fmt, false);
 }
 
 
@@ -528,60 +497,21 @@ void Script::saveDitheredImage()
 
 	BEGIN("Script::saveDitheredImage");
 	Thread::setDoing ("saving dithered image...");
-	bit_buffer *pixel = getBitBuffer();
-	char *name = surface_filename_data;
+	bit_buffer* pixel = getBitBuffer();
 
-	if (name == 0)
+	if (surface_filename_data == 0) {
+		Misc::alert("no filename given.");
 		return;
-	FileWriter fw (name);
+	}
 
-	// see comments above in saveColorImage
-	FILE *f=fw.openFile();   
-	if (f==0) {
-		Misc::alert ("Could not open file for writing...");
+	ImageFormats::Format* fmt = ImageFormats::guessFormat(surface_filename_data, ImageFormats::dithered);
+	if (fmt == 0) {
+		Misc::alert("couldn't determine file format by extension");
 		return;
 	}
 	
-	switch( print_output_data ) {
-	case  0 :
-		psprint (*pixel, fw.openFile(),
-			 main_width_data, main_height_data,
-			 print_resolution_array_data[print_resolution_data]);
-		break;
- 
-	case  1 :
-		epsprint (*pixel, fw.openFile(),
-			  main_width_data,main_height_data,
-			  print_resolution_array_data[print_resolution_data] );
-		break;
-		
-	case  2 :
-		bitmapprint (*pixel, fw.openFile(), fw.getName(),
-                             main_width_data, main_height_data);
-		break;
-		
-	case  3 :
-		if (fw.isWritingToPipe()) {
-			Misc::alert ("Tiff images can only be written to a file.");
-			return;
-		}
-		tiffprint (*pixel, name,
-			   main_width_data, main_height_data,
-			   print_resolution_array_data[print_resolution_data]);
-		break;
- 
-	case 5:
-		pixel->write_as_pgm (fw.openFile());
-		break;
-		
-	case 6:
-		pixel->write_as_pbm (fw.openFile());
-		break;
-		
-	default :
-		Misc::alert ("dither_file_format out of range. no saving done.");
-		break;
-	}
+	pixel->write_image(surface_filename_data, fmt, main_width_data, main_height_data,
+			   print_resolution_array_data[print_resolution_data], false);
 }
 
 void Script::ditherSurface()
@@ -738,7 +668,7 @@ void Script::cutWithSurface()
 	dc.setGeometry (wingeo);
 	dc.setPolys (p1,p2);
 
-	for (int i=1; i<sizeof(sym_cutsurfaces)/sizeof(sym_cutsurfaces[0]); i++) {
+	for (unsigned int i = 1; i < sizeof(sym_cutsurfaces)/sizeof(sym_cutsurfaces[0]); i++) {
 		if (sym_cutsurfaces[i].n > 0) {
 			CanvasDataStruct cds;
 			cds.initWith_polyxyz (&sym_cutsurfaces[i]); 
@@ -787,7 +717,7 @@ void Script::cutWithSurface()
 	        dc.setGeometry (wingeo);
 	        dc.setPolys (p1,p2);
 
-	        for (int i=1; i<sizeof(sym_cutsurfaces)/sizeof(sym_cutsurfaces[0]); i++) {
+	        for (unsigned int i = 1; i < sizeof(sym_cutsurfaces)/sizeof(sym_cutsurfaces[0]); i++) {
 		        if (sym_cutsurfaces[i].n > 0) {
 			        CanvasDataStruct cds;
 			        cds.initWith_polyxyz (&sym_cutsurfaces[i]); 

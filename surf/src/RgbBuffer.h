@@ -25,6 +25,8 @@
 
 
 
+
+
 // ----------------------------------------------------------------------------
 //  File                rgb_buffer.H
 //  implementation by kai
@@ -54,6 +56,8 @@
 
 #include "color.h"
 #include "gui_enum.h"
+
+#include "ImageFormats.h"
 
 #include "mytypes.h"
 
@@ -193,21 +197,7 @@ public:
         void    StereoLeft( void );
         void    StereoRight( float,float,float,int,int );
 
-
-	void write_as_xwd24 (FILE *f);
-	void write_as_sun24 (FILE *f);
-
-	void write_as_xwd8_netscape (FILE *f);
-	void write_as_xwd8_optimized (FILE *f, bool dither, double ditherval);
-
-	void write_as_sun8_netscape (FILE *f);
-	void write_as_sun8_optimized (FILE *f, bool dither, double ditherval);
-	
-	void write_as_ppm (FILE *f);
-
-	void write_as_jpeg (FILE* f);
-
-
+	void write_image(const char* filename, ImageFormats::Format* fmt, bool fromDlg);
 	
 
 protected:

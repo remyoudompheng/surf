@@ -25,6 +25,8 @@
 
 
 
+
+
 // ----------------------------------------------------------------------------
 // file                rgb_buffer.cc
 // implementation by kai
@@ -47,9 +49,6 @@
 
 #include "RgbBuffer.h"
 #include "oct_quan.h"
-#include "xwd.h"
-#include "sun.h"
-#include "jpeg.h"
 
 #include "RGBToNetscape.h"
 
@@ -619,60 +618,10 @@ void    RgbBuffer::StereoRight( float rm,float gm,float bm,int dist,int back )
 }
 
 
-void RgbBuffer::write_as_xwd24 (FILE *f)
+void RgbBuffer::write_image(const char* filename, ImageFormats::Format* fmt, bool fromDlg)
 {
-	write_xwd24_file (r, g, b, width, height, f);
+	fmt->saveColorImage(filename, r, g, b, width, height, fromDlg);
 }
-
-void RgbBuffer::write_as_sun24 (FILE *f)
-{
-	write_sun24_file (r, g, b, width, height, f);
-}
-
-void RgbBuffer::write_as_jpeg (FILE* f)
-{
-	write_jpeg_file (r, g, b, width, height, f);
-}
-
-void RgbBuffer::write_as_xwd8_netscape (FILE *f)
-{
-	NetscapeColor();
-	write_xwd8_file (map, width, height,
-			 rmap, gmap, bmap, nmap, f);
-}
-
-
-void RgbBuffer::write_as_xwd8_optimized (FILE *f, bool dither, double ditherval)
-{
-	OptimizedColor (dither, ditherval);
-	write_xwd8_file (map, width, height,
-			 rmap, gmap, bmap, nmap, f);
-}
-
-void RgbBuffer::write_as_sun8_netscape (FILE *f)
-{
-	NetscapeColor();
-	write_sun8_file (map, width, height,
-			 rmap, gmap, bmap, nmap, f);
-}
-
-void RgbBuffer::write_as_sun8_optimized (FILE *f, bool dither, double ditherval)
-{
-	OptimizedColor (dither, ditherval);
-	write_sun8_file (map, width, height,
-			 rmap, gmap, bmap, nmap, f);
-}
-
-
-void RgbBuffer::write_as_ppm (FILE *f)
-{
-	fprintf (f, "P6\n%d %d\n255\n", width, height);
-	int i;
-	for (i=0; i<n; i++) {
-		fprintf (f, "%c%c%c", r[i], g[i], b[i]);
-	}
-}
-
 
 void RgbBuffer::AddCurve (int curve_r, int curve_g, int curve_b)
 {

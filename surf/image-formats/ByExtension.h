@@ -24,40 +24,34 @@
 
 
 
-
-#ifndef SAVEIMAGEDIALOG_H
-#define SAVEIMAGEDIALOG_H
+#ifndef IMAGEFORMAT_BYEXTENSION_H
+#define IMAGEFORMAT_BYEXTENSION_H
 
 #include "ImageFormats.h"
 
-#include "mygtk.h"
+#include <cstring>
 
-class SaveImageDialog
-{
-private:
-	SaveImageDialog(const SaveImageDialog &);
-	void operator=(const SaveImageDialog &);
-public:
-	SaveImageDialog();
-	
-	void show(ImageFormats::ColorType t);
-	
-	void hide() {
-		gtk_widget_hide(fileselectiondialog);
-		gtk_option_menu_remove_menu(GTK_OPTION_MENU(optionMenu));
-	}
-	
-private:
-	GtkWidget *fileselectiondialog;
-	GtkWidget* optionMenu;
+namespace ImageFormats {
 
-	ImageFormats::ColorType type;
+	class ByExtension : public Format {
+	public:
+		const char* getName() {
+			return "By Extension";
+		}
+		
+		ColorType getColorType() {
+			return both;
+		}
 
-	static gint handle_delete (GtkWidget *widget, GdkEvent *event, gpointer data);
-	VOIDCALL(handle_okay, SaveImageDialog);
-	VOIDCALL(handle_cancel, SaveImageDialog) {
-		hide();
-	}
-};
+		bool isExtension(const char* ext) {
+			return false;
+		}
 
-#endif
+		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg);
+		
+		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+	};
+
+}
+
+#endif //!IMAGEFORMAT_BYEXTENSION_H

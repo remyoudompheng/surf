@@ -24,17 +24,40 @@
 
 
 
+#ifndef IMAGEFORMAT_XWD_H
+#define IMAGEFORMAT_XWD_H
 
-#ifndef SUN_H
-#define SUN_H
+#include "ImageFormats.h"
 
-#include "mytypes.h"
+#include <cstring>
 
-extern bool write_sun8_file (byte *data, int width, int height,
-			     byte *rmap, byte *gmap, byte *bmap,
-			     int nmap, FILE *sunfile);
+namespace ImageFormats {
 
-extern bool write_sun24_file (byte *rdata, byte *gdata, byte *bdata,
-			      int width, int height, FILE *sunfile);
+	class XWD : public Format {
+	public:
+		const char* getName() {
+			return "XWD";
+		}
+		
+		ColorType getColorType() {
+			return color;
+		}
 
-#endif
+		bool isExtension(const char* ext) {
+			if (std::strcasecmp(ext, "xwd") == 0) {
+				return true;
+			}
+			return false;
+		}
+
+		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg);
+		
+		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) {
+			return false;
+		}
+	};
+
+}
+
+
+#endif //!IMAGEFORMAT_XWD_H

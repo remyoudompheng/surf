@@ -23,6 +23,8 @@
  */
 
 
+
+
 #ifndef MAINWINDOWCONTROLLER_H
 #define MAINWINDOWCONTROLLER_H
 
@@ -122,11 +124,6 @@ protected:
 
 	VOIDCALL (fileSelected, MainWindowController);
 	VOIDCALL (fileSelectionCancelled, MainWindowController);
-
-
-	VOIDCALL (saveImageDialogOkay, MainWindowController);
-	VOIDCALL (saveImageDialogCancel, MainWindowController);
-
 
 
 	static gint fileSelectionDelete (GtkWidget *widget, GdkEvent *event, gpointer data);

@@ -24,18 +24,39 @@
 
 
 
+#ifndef IMAGEFORMAT_POSTSCRIPT_H
+#define IMAGEFORMAT_POSTSCRIPT_H
 
-// ============================================================================
-// File      xbitmap.h
-// Author:   Stephan Endrass
-// Address:  endrass@mi.uni-erlangen.de
-// Date:     3.2.95
-// ============================================================================
+#include "ImageFormats.h"
 
-#ifndef XBITMAP_H
-#define XBITMAP_H
+#include <cstring>
 
-bool bitmapprint (class bit_buffer &pixel, FILE *bitmapfile, const char *bitmapfilename,
-		  int paper_width, int paper_height);
+namespace ImageFormats {
 
-#endif  /* XBITMAP_H */
+	class Postscript : public Format {
+	public:
+		const char* getName() {
+			return "Postscript";
+		}
+		
+		ColorType getColorType() {
+			return dithered;
+		}
+
+		bool isExtension(const char* ext) {
+			if (std::strcasecmp(ext, "ps") == 0) {
+				return true;
+			}
+			return false;
+		}
+
+		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg) {
+			return false;
+		}
+		
+		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+	};
+
+}
+
+#endif //!IMAGEFORMAT_POSTSCRIPT_H

@@ -24,40 +24,39 @@
 
 
 
-
-#ifndef SAVEIMAGEDIALOG_H
-#define SAVEIMAGEDIALOG_H
+#ifndef IMAGEFORMAT_SUN_H
+#define IMAGEFORMAT_SUN_H
 
 #include "ImageFormats.h"
 
-#include "mygtk.h"
+#include <cstring>
 
-class SaveImageDialog
-{
-private:
-	SaveImageDialog(const SaveImageDialog &);
-	void operator=(const SaveImageDialog &);
-public:
-	SaveImageDialog();
-	
-	void show(ImageFormats::ColorType t);
-	
-	void hide() {
-		gtk_widget_hide(fileselectiondialog);
-		gtk_option_menu_remove_menu(GTK_OPTION_MENU(optionMenu));
-	}
-	
-private:
-	GtkWidget *fileselectiondialog;
-	GtkWidget* optionMenu;
+namespace ImageFormats {
 
-	ImageFormats::ColorType type;
+	class Sun : public Format {
+	public:
+		const char* getName() {
+			return "Sun Rasterfile";
+		}
+		
+		ColorType getColorType() {
+			return color;
+		}
 
-	static gint handle_delete (GtkWidget *widget, GdkEvent *event, gpointer data);
-	VOIDCALL(handle_okay, SaveImageDialog);
-	VOIDCALL(handle_cancel, SaveImageDialog) {
-		hide();
-	}
-};
+		bool isExtension(const char* ext) {
+			if (std::strcasecmp(ext, "ras") == 0) {
+				return true;
+			}
+			return false;
+		}
 
-#endif
+		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg);
+		
+		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) {
+			return false;
+		}
+	};
+
+}
+
+#endif //!IMAGEFORMAT_SUN_H

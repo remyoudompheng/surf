@@ -23,10 +23,13 @@
  */
 
 
+
+
 #ifndef FILEWRITER_H
 #define FILEWRITER_H
 
 #include <stdio.h>
+#include <assert.h>
 
 class FileWriter
 {
