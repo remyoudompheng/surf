@@ -62,7 +62,7 @@ public:
 			return i==num ? 0 : exponent[i]-m.exponent[i];
 		};
 
-	void print(class ostream &os) const 
+	void print(class std::ostream &os) const 
 		{
 			static const char vars[]="xyzabcdefg";
 			os << "(" << coeff << ")";

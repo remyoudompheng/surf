@@ -46,7 +46,7 @@ public:
 			return;
 		}
 		if(name[0]=='|') {
-			std::pclose(f);
+		        pclose(f);
 		} else {
 			std::fclose(f);
 		}
@@ -61,7 +61,7 @@ public:
 		}
 		assert(name);
 		if (name[0] == '|') {
-			f = std::popen(name + 1, "w");
+			f = popen(name + 1, "w");
 		} else {
 			f = std::fopen(name, "w");
 		}

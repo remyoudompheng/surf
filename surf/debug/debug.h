@@ -44,7 +44,7 @@ protected:
 
 
 extern void spaces();
-extern class ostream &dos;
+extern class std::ostream &dos;
 extern int offlevel;
 
 #endif // !DEBUG_H

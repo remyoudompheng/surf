@@ -292,7 +292,8 @@ void pbm_to_stdout(bool isSurface)
 	
 	std::cout << "P4\n"
 		  << width << ' ' << height << '\n';
-	std::cout.write(buffer->getBuffer(), buffer->getSize());
+	std::cout.write(reinterpret_cast<char*>(buffer->getBuffer()),
+			buffer->getSize());
 	std::cout.flush();
 }
 }

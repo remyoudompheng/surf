@@ -70,6 +70,6 @@ public:
 	double  *a;
 };
 
-ostream & operator << (ostream &os, const polyx &p);
+std::ostream& operator << (std::ostream& os, const polyx& p);
 
 #endif

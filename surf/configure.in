@@ -85,7 +85,7 @@ if test "x$enable_stlport" = "xyes" ; then
         fi
     fi
     if test x$stlportinclude != x ; then
-        CPPFLAGS="-I$stlportinclude $CPPFLAGS"
+        CPPFLAGS="$stlportinclude $CPPFLAGS"
         AC_MSG_RESULT($stlportinclude)
         AC_CHECK_LIB(stlport, main)
     else

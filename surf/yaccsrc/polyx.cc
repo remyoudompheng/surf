@@ -108,7 +108,7 @@ double  polyx::dx_horner (double x ) const
 /* polynomial output		                                             */
 /* ------------------------------------------------------------------------- */
 
-ostream & operator << (ostream &os, const polyx &p)
+std::ostream& operator << (std::ostream& os, const polyx& p)
 {
 	int     i;
 
@@ -118,6 +118,6 @@ ostream & operator << (ostream &os, const polyx &p)
 		}
 		os << p.a[i] << "x^" << i;
 	}
-	os << endl;
+	os << std::endl;
 	return os;
 }
