@@ -137,7 +137,14 @@ fi
 
 
 dnl RS_CHECK_LIB(z,main)
+
+
+dnl Check for jpeg library and jpeglib.h
+dnl ------------------------------------
+
 RS_CHECK_LIB(jpeg,main)
+RS_CHECK_HEADER(jpeglib.h)
+
 
 dnl ----------------------------------------------------------------------
 dnl --- CHECK FOR TIFF LIBRARY AND HEADER FILES
