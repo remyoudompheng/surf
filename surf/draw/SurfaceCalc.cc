@@ -37,6 +37,8 @@
 #include <debug.h>
 #include <Misc.h>
 
+#include <math.h>
+
 extern double Y_AXIS_LR_ROTATE;
 
 namespace {

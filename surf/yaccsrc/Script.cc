@@ -74,6 +74,7 @@ bool Script::quiet = false;
 bool Script::stdin_is_a_tty = false;
 bool Script::stdout_is_a_tty = false;
 bool Script::stop_flag = false;
+bool Script::kernel_mode= false;
 RgbBuffer* Script::buffer = 0;
 bit_buffer* Script::bitbuffer = 0;
 float_buffer* Script::zbuffer = 0;
@@ -315,10 +316,11 @@ void Script::deinit()
 
 void Script::addNewCommands()
 {
+	replaceCommand("set_kernel_mode", setKernelMode);
 	replaceCommand("set_size", setSize);
 	replaceCommand("draw_curve", drawCurve);
 	replaceCommand("dither_curve", ditherCurve);
-	replaceCommand("cut_with_plane", draw_func_cut);
+	replaceCommand("cut_with_plane", cutWithPlane);
 	replaceCommand("cut_with_surface", cutWithSurface);
 	replaceCommand("draw_surface", drawSurface);
 	replaceCommand("dither_surface", ditherSurface);
@@ -341,17 +343,29 @@ void Script::addNewCommands()
 // --- Commands
 //
 
+void Script::setKernelMode()
+{
+	kernel_mode = true;
+}
+
 void Script::setSize()
 {
 	checkVariables();
-	buffer->Realloc(main_width_data, main_height_data);
+	if(buffer->getWidth() != main_width_data ||
+	   buffer->getHeight() != main_height_data) {
+		buffer->Realloc(main_width_data, main_height_data);
+	}
 }
 
 
 void Script::drawCurve()
 {
 	setSize();
-	draw_func_draw();	
+	draw_func_draw();
+
+	if(kernel_mode) {
+		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
+	}
 }
 
 void Script::drawSurface()
@@ -361,16 +375,20 @@ void Script::drawSurface()
 	Y_AXIS_LR_ROTATE = 0.0;
 	SurfaceCalc sc;
 
-	getBuffer()->clearTags();
+	buffer->clearTags();
 
-	*getZBuffer() = -10.0;
-	sc.surface_calculate(*getBuffer());
+	*zbuffer = -10.0;
+	sc.surface_calculate(*buffer);
+
+	if(kernel_mode) {
+		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
+	}
 
 	if(display_numeric.stereo_eye) {
 		// -----------------
 		//  Draw a 3D image
 		// -----------------
-		RgbBuffer* intensity = getBuffer();
+		RgbBuffer* intensity = buffer;
 		*Script::getZBuffer3d() = -10.0;
 
 		Y_AXIS_LR_ROTATE= 2*atan(display_numeric.stereo_eye/
@@ -386,10 +404,14 @@ void Script::drawSurface()
 		int dist = int(distf*(float(min(main_width_data,main_height_data)))/20.0);
 
 		SurfaceCalc sc;
-		sc.surface_calculate(*getBuffer());
+		sc.surface_calculate(*buffer);
 
 		intensity->StereoRight(display_numeric.stereo_red, display_numeric.stereo_green,
                                        display_numeric.stereo_blue, dist, back);
+
+		if(kernel_mode) {
+			ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
+		}
 	}
 }
 
@@ -410,12 +432,12 @@ void Script::clearScreen()
 {
 	checkVariables();
 
-	if(!stdout_is_a_tty) {
+	if(kernel_mode) {
 		std::cout << "clear_screen\n";
 		std::cout.flush();
 	}
 	
-	RgbBuffer* intensity = getBuffer();
+	RgbBuffer* intensity = buffer;
 	float_buffer* zbuffer = getZBuffer();
 
 	*intensity = byte(-print_background_data);
@@ -430,14 +452,12 @@ void Script::saveDitheredImage()
 {
 	checkVariables();
 
-	bit_buffer* pixel = getBitBuffer();
-
 	if(surface_filename_data == 0) {
 		std::cerr << "No filename given.\n";
 		return;
 	}
 
-	ImageFormats::saveDitheredImage(surface_filename_data, *pixel);
+	ImageFormats::saveDitheredImage(surface_filename_data, *bitbuffer);
 }
 
 void Script::save3DImage()
@@ -460,11 +480,10 @@ void Script::ditherSurface()
 
 	float_buffer fbuffer(main_width_data, main_height_data);    
 	
-	bit_buffer* pixel = getBitBuffer();
-	pixel->setSize(main_width_data, main_height_data);
+	bitbuffer->setSize(main_width_data, main_height_data);
 
 	// sk: copy gray_values from rgb_buffer to buffer(float_buffer) 
-	copy_rgb_to_float(*getBuffer(), fbuffer, print_background_data);
+	copy_rgb_to_float(*buffer, fbuffer, print_background_data);
 	
 	if(print_enhance_data == 0) {
 		fbuffer.EnhanceEdges(print_alpha_data);
@@ -481,36 +500,44 @@ void Script::ditherSurface()
 	dither_pixel_radius_adjust(fbuffer, float(print_p_radius_data)/100.0);
 
 	if(print_dither_data == print_dither_floyd_steinberg_data) {
-		dither_floyd_steinberg(fbuffer, *pixel, print_random_weights_data, print_weight_data, print_serpentine_raster_data);
+		dither_floyd_steinberg(fbuffer, *bitbuffer, print_random_weights_data, print_weight_data, print_serpentine_raster_data);
 	} else if(print_dither_data == print_dither_jarvis_judis_ninke_data) {
-		dither_jarvis_judis_ninke(fbuffer, *pixel, print_random_weights_data, print_weight_data, print_serpentine_raster_data);
+		dither_jarvis_judis_ninke(fbuffer, *bitbuffer, print_random_weights_data, print_weight_data, print_serpentine_raster_data);
 	} else if (print_dither_data == print_dither_stucki_data) {
-		dither_stucki (fbuffer, *pixel, print_random_weights_data, print_weight_data, print_serpentine_raster_data);
+		dither_stucki (fbuffer, *bitbuffer, print_random_weights_data, print_weight_data, print_serpentine_raster_data);
 	} else if (print_dither_data == print_dither_ordered_dither_data) {
-  		dither_clustered (fbuffer, *pixel, print_pattern_size_data);
+  		dither_clustered (fbuffer, *bitbuffer, print_pattern_size_data);
 	} else if (print_dither_data == print_dither_dispersed_dither_data) {
-  		dither_dispersed (fbuffer, *pixel, print_pattern_size_data);
+  		dither_dispersed (fbuffer, *bitbuffer, print_pattern_size_data);
 	} else if (print_dither_data == print_dither_dot_diffusion_data) {
-  		dither_dot_diffusion (fbuffer, *pixel, print_barons_data);
+  		dither_dot_diffusion (fbuffer, *bitbuffer, print_barons_data);
 	} else if (print_dither_data == print_dither_smooth_dot_diffusion_data) {
-  		dither_smooth_dot_diffusion (fbuffer, *pixel, print_barons_data);
+  		dither_smooth_dot_diffusion (fbuffer, *bitbuffer, print_barons_data);
 	} else {
   		std::cerr << "dithering_method out of range. No dithering done.\n";
+	}
+
+	if(kernel_mode) {
+		ImageFormats::imgFmt_PBM.saveDitheredImage("-", *bitbuffer);
 	}
 }
 
 
 void Script::ditherCurve()
 {
-	int width = getBuffer()->getWidth();
-	int height = getBuffer()->getHeight();
+	int width = buffer->getWidth();
+	int height = buffer->getHeight();
 
-	float_buffer buffer(width, height);           
+	float_buffer fbuffer(width, height);           
 
 	// copy gray_values from rgb_buffer to float_buffer
-	copy_rgb_to_float_curve(*getBuffer(), buffer);
+	copy_rgb_to_float_curve(*buffer, fbuffer);
     
-	dither_brute(buffer, *getBitBuffer());
+	dither_brute(fbuffer, *bitbuffer);
+
+	if(kernel_mode) {
+		ImageFormats::imgFmt_PBM.saveDitheredImage("-", *bitbuffer);
+	}
 }
 
 void Script::checkVariables()
@@ -546,13 +573,23 @@ void Script::computeResultant()
 	return;
 }
 
+void Script::cutWithPlane()
+{
+	draw_func_cut();
+
+	if(Script::isKernelMode()) {
+		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
+	}
+	
+}
+
 void Script::cutWithSurface()
 {
 	WindowGeometry wingeo = WindowGeometry(main_width_data, main_height_data);
 
         Y_AXIS_LR_ROTATE = 0.0;
 	checkVariables();
-  	Script::getBuffer()->clearCurveTags();
+  	buffer->clearCurveTags();
  	Polyx::SetStatics(numeric_epsilon_data, numeric_iterations_data,
  			  numeric_root_finder_data, true);
 
@@ -584,18 +621,21 @@ void Script::cutWithSurface()
 		}
 	}
 
-	dc.setBuffers(Script::getBuffer(), Script::getZBuffer());
+	dc.setBuffers(buffer, Script::getZBuffer());
 	dc.drawCurve(0, 0, main_width_data, main_height_data, sym_cut_distance);
-	sc.CalculateCurveOnSurface(0, 0, main_width_data, main_height_data, *Script::getBuffer(), *Script::getZBuffer());
+	sc.CalculateCurveOnSurface(0, 0, main_width_data, main_height_data, *buffer, *Script::getZBuffer());
 
 	delete clip;
 
+	if(kernel_mode) {
+		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
+	}
 
 	if( display_numeric.stereo_eye ) {
 		// -----------------
 		//  Draw a 3D image
 		// -----------------
-  		Script::getBuffer()->clearCurveTags();
+  		buffer->clearCurveTags();
 		Y_AXIS_LR_ROTATE= 2*atan(display_numeric.stereo_eye/
 					 (2*position_numeric.spectator_z) );
 
@@ -627,11 +667,15 @@ void Script::cutWithSurface()
 		Script::getZBuffer3d()->Realloc(main_width_data, main_height_data);
 		
 
-		dc.setBuffers(Script::getBuffer(), Script::getZBuffer3d());
+		dc.setBuffers(buffer, Script::getZBuffer3d());
 	        dc.drawCurve(0, 0, main_width_data, main_height_data,sym_cut_distance);
-	        sc.CalculateCurveOnSurface(0, 0, main_width_data,main_height_data,*Script::getBuffer(), *Script::getZBuffer3d());
+	        sc.CalculateCurveOnSurface(0, 0, main_width_data,main_height_data, *buffer, *Script::getZBuffer3d());
 
 	        delete clip;
+
+		if(kernel_mode) {
+			ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
+		}
 	}
 }
 
@@ -649,6 +693,9 @@ void Script::triangulateSurface()
 {
 #ifdef HAVE_LIBGTS
 	tritor->triangulate();
+	if(kernel_mode) {
+		ImageFormats::imgFmt_OOGL.save3DImage("-", *tritor);
+	}
 #else
 	std::cout << "not_implemented\n";
 	std::cout.flush();

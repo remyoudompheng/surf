@@ -75,6 +75,9 @@ public:
 	static bool isStopped() {
 		return stop_flag;
 	}
+	static bool isKernelMode() {
+		return kernel_mode;
+	}
 
 private:
 	static bool quiet;
@@ -82,6 +85,7 @@ private:
 	static bool stdout_is_a_tty;
 	
 	static bool stop_flag;
+	static bool kernel_mode;
 
 	static RgbBuffer* buffer;
 	static bit_buffer* bitbuffer;
@@ -95,16 +99,18 @@ private:
 
 	static void addNewCommands();
 
-
 	static void beforeScriptExecution();
 	static void internalExecuteScript(const char* str);
 
 	// Commands....
+	static void setKernelMode();
+
 	static void setSize();
 	static void drawCurve();
 	static void drawSurface();
 	static void saveColorImage();
 
+	static void cutWithPlane();
 	static void cutWithSurface();
 	static void computeResultant();
 	

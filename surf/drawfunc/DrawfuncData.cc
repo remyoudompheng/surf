@@ -91,7 +91,7 @@ void DrawfuncData::PrintCurve( int direction )
 
 	double Root[100];                 // array to store roots
 	double Estimate[100];             // array to store estimates
-	int    NumberOfEstimates = 0;     // counter
+	int NumberOfEstimates = 0;     // counter
 	int NumberOfRoots = 0;
 	double Coord[2];
 	double minimal = 0.0;   	    // coordinate range for current line/col clip
@@ -101,39 +101,41 @@ void DrawfuncData::PrintCurve( int direction )
 	GetBorders( direction, min, max );
 
 	// go through all lines resp. columns
-	for( int Pixel = min; Pixel < max; Pixel++ ) {
+	for(int Pixel = min; Pixel < max; Pixel++) {
 
 		// transform pixel y to y coordinate
-		Coord[direction] = ToUser( direction, Pixel );
+		Coord[direction] = ToUser(direction, Pixel);
 
 		// get minimum and maximum x coordinate from clipping
-		if( clip->ClipXY( direction, Coord[direction], minimal, maximal ) ) {
+		if(clip->ClipXY(direction, Coord[direction], minimal, maximal)) {
 			// set value in function
-			Curve->SetVar( direction, Coord[direction] );
+			Curve->SetVar(direction, Coord[direction]);
 	  
 			// find all roots of function in min...max
 			// with estimates at estimate(0)...estimate(NumberOfEstimates-1)
-			if( ( NumberOfRoots = Curve->Zero( direction,
-							   maximal,
-							   minimal,
-							   Root,
-							   Estimate,
-							   NumberOfEstimates ) ) ) {
+			if((NumberOfRoots = Curve->Zero(direction,
+							maximal,
+							minimal,
+							Root,
+							Estimate,
+							NumberOfEstimates))) {
 				// reset number of estimates
 				NumberOfEstimates = 0;
 				// go through all roots found
-				for( int RootNumber = 0;
-				     RootNumber < NumberOfRoots;
-				     RootNumber++ ) {
-					Coord[1-direction] = Root[RootNumber];
-					PaintPoint( Coord[0], Coord[1] );
+				for(int RootNumber = 0;
+				    RootNumber < NumberOfRoots;
+				    RootNumber++) {
+					Coord[1 - direction] = Root[RootNumber];
+					PaintPoint(Coord[0], Coord[1]);
 					// set estimate at old root
 					Estimate[NumberOfEstimates] = Root[RootNumber]
 						+ Delta[direction] * Curve->EstimateDelta( direction, Root[RootNumber] );
 					
 					// only use estimate if smaller than previous
-					if( NumberOfEstimates == 0 || Estimate[NumberOfEstimates] < Estimate[NumberOfEstimates-1] )
+					if(NumberOfEstimates == 0
+					   || Estimate[NumberOfEstimates] < Estimate[NumberOfEstimates-1]) {
 						NumberOfEstimates++;
+					}
 				}
 			}
 		}
@@ -142,128 +144,105 @@ void DrawfuncData::PrintCurve( int direction )
 
 
 
-// ----------------------------------------------------------------------------
-// (sk :) PAINT - POINT  
-//  sk1:lösche HiddenLine flag, nicht mehr nötig, da nun möglich durch transparence
-// ----------------------------------------------------------------------------
-
-void DrawfuncData::PaintPoint( double CoordX, double CoordY )
+void DrawfuncData::PaintPoint(double CoordX, double CoordY)
 {
 	double CoordZ = -100000.0;
 	double zMinimal = 0.0;
 	double zMaximal = 0.0;
-	double PixelX = ToPixel( VARIABLE_X, CoordX );
-	double PixelY = ToPixel( VARIABLE_Y, CoordY );
-	int PXRound = (int)( PixelX + 0.5 );
-	int PYRound = (int)( PixelY + 0.5 );
+	double PixelX = ToPixel(VARIABLE_X, CoordX);
+	double PixelY = ToPixel(VARIABLE_Y, CoordY);
+	int PXRound = int(PixelX + 0.5);
+	int PYRound = int(PixelY + 0.5);
 	double ZDelta[2];
 
 	// get z range and clip
-	if( !clip->ClipXYZ( CoordX, CoordY, zMinimal, zMaximal ) )
+	if(!clip->ClipXYZ(CoordX, CoordY, zMinimal, zMaximal)) {
 		return;
+	}
   
 	// surface clipping for mid pixel(s)
 	// if drawing curve on a surface and hidden line enabled
-	if( Surface ) {							/* sk1*/
+	if(Surface) {
 
 		// get z of point and clip
-		CoordZ = Plane->ZValue( CoordX, CoordY );
+		CoordZ = Plane->ZValue(CoordX, CoordY);
 		
-		// printf("z-Plane = %f at x %f, y %f\n",CoordZ, CoordX, CoordY );
-
-		if( CoordZ < zMinimal )
+		if(CoordZ < zMinimal) {
 			return;
-		if( CoordZ > zMaximal )
+		}
+		if(CoordZ > zMaximal) {
 			return;
+		}
 
 		// see if surface or ball is in front
-		Surface->SetRow( CoordY );
-		Surface->SetVar( CoordX );
-
-		// sk1: "if (surface in front)" : nicht sinnvoll, da alle NUS gefunden werden sollen 
+		Surface->SetRow(CoordY);
+		Surface->SetVar(CoordX);
 
 		// estimate deltas according to surface derivatives
-		ZDelta[VARIABLE_X] = Surface->EstimateDelta( VARIABLE_X, CoordZ ) * Delta[VARIABLE_X];
-		ZDelta[VARIABLE_Y] = Surface->EstimateDelta( VARIABLE_Y, CoordZ ) * Delta[VARIABLE_Y];
+		ZDelta[VARIABLE_X] = Surface->EstimateDelta(VARIABLE_X, CoordZ)*Delta[VARIABLE_X];
+		ZDelta[VARIABLE_Y] = Surface->EstimateDelta(VARIABLE_Y, CoordZ)*Delta[VARIABLE_Y];
 		// no one is really interested in ZDelta...[RS]
 		
 		// get max surface z of closest pixel and compare with z buffer
-		Surface->SetRow( ToUser( VARIABLE_Y, PYRound ) );
-		Surface->SetVar( ToUser( VARIABLE_X, PXRound ) );
+		Surface->SetRow(ToUser(VARIABLE_Y, PYRound));
+		Surface->SetVar(ToUser(VARIABLE_X, PXRound));
        
 	}
 
 
-	int px = (int)PixelX;
-	int py = (int)PixelY;
+	int px = int(PixelX);
+	int py = int(PixelY);
 
-	double MantX = PixelX - (double)px;
-	double MantY = PixelY - (double)py;
-  
-
+	double MantX = PixelX - double(px);
+	double MantY = PixelY - double(py);
   
 	// starting with the mid row do all pixel rows
 	// that are touched by the circular brush at position (PixelX,PixelY)
 	// do mid row
-	DoRow( px, py, CoordZ, 0, MantX, MantY, ZDelta );
+	DoRow(px, py, CoordZ, 0, MantX, MantY, ZDelta);
 	
 	// do other rows
 	bool active = true;
-	int DistY = 1;
-	
-	while( active ) {
-		active = ( DoRow( px, py, CoordZ, -DistY, MantX, MantY, ZDelta ) +
-			   DoRow( px, py, CoordZ, +DistY, MantX, MantY, ZDelta ) );
-		DistY++;
+	for(int DistY = 1; active; DistY++) {
+		active = (DoRow(px, py, CoordZ, -DistY, MantX, MantY, ZDelta)
+			  + DoRow(px, py, CoordZ, +DistY, MantX, MantY, ZDelta));
 	}
 }
-// ----------------------------------------------------------------------------
-// (sk :) DoRow     
-//  sk1:lösche HiddenLine flag, nicht mehr nötig, da nun möglich durch transparence
-// ----------------------------------------------------------------------------
 
 bool DrawfuncData::DoRow(int px, int py, double CoordZ, int DistY,
-			 double MantX, double MantY, double *ZDelta)
+			 double MantX, double MantY, double* ZDelta)
 {
 	int ay = py + DistY;
-	double DistanceY = MantY - (double)DistY;
-	double uy = ToUser( VARIABLE_Y, ay );
+	double DistanceY = MantY - double(DistY);
+	double uy = ToUser(VARIABLE_Y, ay);
 
   
 	// if drawing on surface with hidden line enabled
 	// set variable y in surface polynom
-	if( Surface ) {
-		Surface->SetRow( uy );
+	if(Surface) {
+		Surface->SetRow(uy);
 	}
 
 	// starting with the mid pixel do all pixels in this row
 	// that are touched by the brush
 	// do mid pixel
-	bool active = DoPixel( px, ay, uy, CoordZ, 0, MantX, DistanceY, ZDelta );
+	bool active = DoPixel(px, ay, uy, CoordZ, 0, MantX, DistanceY, ZDelta);
 
 	// do rest of row
 	bool working = true;
 	int DistX = 1;
-
-	while( working ) {
+	while(working) {
 		// Ahh, changing "+" into "||" in the next statement will not work,
 		// because then the second DoPixel won´t get executed 
 		// Really nice trap :)
-		working = ( DoPixel( px, ay, uy, CoordZ,
-				     -DistX, MantX, DistanceY, ZDelta ) + 
-			    DoPixel( px, ay, uy, CoordZ,
-				     +DistX, MantX, DistanceY, ZDelta ) );	 
+		working = (DoPixel(px, ay, uy, CoordZ, -DistX, MantX, DistanceY, ZDelta)
+			   + DoPixel(px, ay, uy, CoordZ, DistX, MantX, DistanceY, ZDelta));
 		DistX++;
 	}
 	// return true if any pixel in this row was modified
-	return ( active || DistX > 2 );
+	return (active || DistX > 2);
 }
 
-// ----------------------------------------------------------------------------
-// (sk :) DoPixel 
-//  sk1:lösche HiddenLine flag, nicht mehr nötig, da nun möglich durch transparence
-// ----------------------------------------------------------------------------
-  
 bool DrawfuncData::DoPixel(int px,
 			   int ay,
 			   double uy,
@@ -271,7 +250,7 @@ bool DrawfuncData::DoPixel(int px,
 			   int DistX,
 			   double MantX,
 			   double DistanceY,
-			   double *ZDelta)
+			   double* ZDelta)
 {
 	int ax = px + DistX;
 

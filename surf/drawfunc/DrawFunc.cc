@@ -60,7 +60,7 @@ void draw_func_draw()
       
 	Position* position = GetPosition();
 	
-	Clip *clip = GetClip(position);
+	Clip* clip = GetClip(position);
 	
 	Polyx::SetStatics(ScriptVar::numeric_epsilon_data,
 			  ScriptVar::numeric_iterations_data,
@@ -99,7 +99,7 @@ void draw_func_draw()
 // sk2:calculate curve, like drawing it on the surface
 // ----------------------------------------------------------------------------
 
-void draw_func_cut( void )
+void draw_func_cut()
 {
 	SurfaceCalc sc;
 	Script::getZBuffer()->Realloc(ScriptVar::main_width_data, ScriptVar::main_height_data);
