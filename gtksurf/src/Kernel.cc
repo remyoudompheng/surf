@@ -29,6 +29,14 @@
 
 #include<strstream>
 
+namespace {
+void sigchild_handler(int sig)
+{
+	std::cerr << "BUG ALERT: Kernel has just crashed!!\n"
+		  << "You better save your script and exit quickly..\n";
+}
+}
+
 Kernel::Kernel(const std::string& kernel_path)
 {
 	int to_kernel[2];
@@ -37,6 +45,13 @@ Kernel::Kernel(const std::string& kernel_path)
 	   pipe(from_kernel) != 0) {
 		Misc::syscall_failed("pipe()");
 	}
+
+	
+	// catch SIGCHILDs:
+	struct sigaction sa;
+	std::memset(static_cast<void*>(&sa), 0, sizeof(sa));
+	sa.sa_handler = sigchild_handler;
+	sigaction(SIGCHLD, &sa, 0);
 
 	kernel_input_fd = to_kernel[1];
 	kernel_input = new std::ofstream(kernel_input_fd);
@@ -191,11 +206,8 @@ void Kernel::process_output()
 		scriptwin->select_region(from, to);
 		
 		gdk_beep();
-	} else {
+	} else if(s.length() > 0) {
 		std::string w = "Unrecognized line from kernel: ";
-		if(s.length() == 0) {
-			s.assign("<empty line>");
-		}
 		Misc::print_warning(w + s);
 	}
 

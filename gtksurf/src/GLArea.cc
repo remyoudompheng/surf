@@ -86,19 +86,29 @@ void GLArea::read_data()
 	scriptwin->progress_mode(true);
 	scriptwin->set_progress(0);
 
-	// read surface & inside colors:
+	// read transparence and surface & inside colors:
 	GLfloat color[4];
+	color[3] = kernel.receive_float();
+	kernel.receive_line();
 	color[0] = kernel.receive_float();
 	color[1] = kernel.receive_float();
 	color[2] = kernel.receive_float();
 	kernel.receive_line();
-	color[3] = 1.0;
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
 	color[0] = kernel.receive_float();
 	color[1] = kernel.receive_float();
 	color[2] = kernel.receive_float();
 	kernel.receive_line();
 	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+
+	if(color[3] != 1.0) {
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE); //GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+//		glDepthMask(GL_FALSE);
+	} else {
+		glDisable(GL_BLEND);
+//		glDepthMask(GL_TRUE);
+	}
 
 	// read light sources:
 	int num_lights = kernel.receive_int();
@@ -131,6 +141,7 @@ void GLArea::read_data()
 
 	if(nv == 0 || nf == 0) {
 		Misc::print_warning("There were no vertices/no faces at all!\n");
+		kernel.receive_line(); // eat up "end\n"
 		return;
 	}
 
