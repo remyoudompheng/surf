@@ -44,6 +44,13 @@ static void _ ## method (GtkWidget *widget, gpointer data)			\
 }										\
 void method ()
 
+#define EVENTCALL(method,klass)							\
+static gint _ ## method (GtkWidget* widget, GdkEvent* evt, gpointer data)			\
+{										\
+	return ((klass*)data)->method();						\
+}										\
+gint method ()
+
 
 #define MENUCALLBACK(method,klass)							\
 static void m_ ## method (gpointer data, guint action, GtkWidget *widget)	\
@@ -54,6 +61,9 @@ static void m_ ## method (gpointer data, guint action, GtkWidget *widget)	\
 #define MENUCALL(method) (GtkItemFactoryCallback) m_ ## method
 
 #define VOIDCONNECT(obj, signal, method) \
+ gtk_signal_connect(GTK_OBJECT(obj), signal, (GtkSignalFunc) & _ ## method, this)
+
+#define EVENTCONNECT(obj, signal, method) \
  gtk_signal_connect(GTK_OBJECT(obj), signal, (GtkSignalFunc) & _ ## method, this)
 
 

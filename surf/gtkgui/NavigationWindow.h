@@ -57,6 +57,9 @@ private:
 	bool updating;
 
 	GtkWidget* window;
+	GtkObject* xRotScaleAdj;
+	GtkObject* yRotScaleAdj;
+	GtkObject* zRotScaleAdj;
 	GtkObject* xRotSpinAdj;
 	GtkObject* yRotSpinAdj;
 	GtkObject* zRotSpinAdj;
@@ -70,9 +73,6 @@ private:
 
 	const Matrix33 getRotMat();
 	void rotate(Matrix33 add);
-	void rotateX(double rad);
-	void rotateY(double rad);
-	void rotateZ(double rad);
 	void updateAngles();
 	void updateScales();
 	void updateOrigin();
@@ -81,13 +81,13 @@ private:
 	double trimOrig(double orig);
 
 	// Gtk callbacks:
-	static gint handle_delete(GtkWidget* w, GdkEvent* e, gpointer d);
-	VOIDCALL(xDec, NavigationWindow);
-	VOIDCALL(xInc, NavigationWindow);
-	VOIDCALL(yDec, NavigationWindow);
-	VOIDCALL(yInc, NavigationWindow);
-	VOIDCALL(zDec, NavigationWindow);
-	VOIDCALL(zInc, NavigationWindow);
+	EVENTCALL(handle_delete, NavigationWindow);
+	VOIDCALL(xRotScale, NavigationWindow);
+	VOIDCALL(yRotScale, NavigationWindow);
+	VOIDCALL(zRotScale, NavigationWindow);
+	EVENTCALL(xRotDone, NavigationWindow);
+	EVENTCALL(yRotDone, NavigationWindow);
+	EVENTCALL(zRotDone, NavigationWindow);
 	VOIDCALL(xRotSpin, NavigationWindow);
 	VOIDCALL(yRotSpin, NavigationWindow);
 	VOIDCALL(zRotSpin, NavigationWindow);
@@ -100,6 +100,7 @@ private:
 	VOIDCALL(getScriptValues, NavigationWindow);
 
 	double rotX, rotY, rotZ;
+	double tmpRotX, tmpRotY, tmpRotZ;
 	double scaleX, scaleY, scaleZ;
 	double origX, origY, origZ;
 

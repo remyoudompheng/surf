@@ -32,12 +32,10 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 	: mwc(winctrl), shown(false), updating(false)
 {
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);	
-	gtk_signal_connect(GTK_OBJECT (window), "delete_event",
-			   GTK_SIGNAL_FUNC (handle_delete), this);
+	EVENTCONNECT(window, "delete_event", handle_delete);
 	gtk_window_set_title(GTK_WINDOW (window), PACKAGE " Navigation Window");
 	gtk_container_border_width(GTK_CONTAINER (window), 5);
 	gtk_widget_set_usize(window, 320, 0);
-
 
 	GtkWidget* mainbox;
 	mainbox = gtk_vbox_new(false, 5);
@@ -45,7 +43,6 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 
 	GtkWidget* notebook;
 	notebook = gtk_notebook_new();
-	//gtk_container_add(GTK_CONTAINER(window), notebook);
 	gtk_box_pack_start(GTK_BOX(mainbox), notebook, false, false, 0);
 
 
@@ -57,8 +54,7 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 	GtkWidget* vbox;
 	vbox = gtk_vbox_new(false, 5);
 	gtk_container_border_width(GTK_CONTAINER(vbox), 4);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox,
-				 gtk_label_new("Rotation"));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new("Rotation"));
 
 	GtkWidget* frame;
 	frame = gtk_frame_new("relative:");
@@ -66,37 +62,41 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 	gtk_container_border_width(GTK_CONTAINER(frame), 4);
 
 	GtkWidget* table;
-	table = gtk_table_new(3, 3, false);
+	table = gtk_table_new(3, 2, false);
 	gtk_container_add(GTK_CONTAINER(frame), table);
 	gtk_container_border_width(GTK_CONTAINER(table), 4);
 
 	GtkWidget* widget;
 	widget = gtk_label_new("X:");
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_NONE, GTK_NONE, 0, 0);
-	widget = gtk_button_new_with_label("-");
-	VOIDCONNECT(widget, "clicked", xDec);
+	xRotScaleAdj = gtk_adjustment_new(0, -M_PI, M_PI, M_PI/50, 1, 0);
+	VOIDCONNECT(xRotScaleAdj, "value_changed", xRotScale);
+	widget = gtk_hscale_new(GTK_ADJUSTMENT(xRotScaleAdj));
+	EVENTCONNECT(widget, "button-release-event", xRotDone);
+	gtk_scale_set_value_pos(GTK_SCALE(widget), GTK_POS_RIGHT);
+	gtk_scale_set_digits(GTK_SCALE(widget), 2);
 	gtk_table_attach_defaults(GTK_TABLE(table), widget, 1, 2, 0, 1);
-	widget = gtk_button_new_with_label("+");
-	VOIDCONNECT(widget, "clicked", xInc);
-	gtk_table_attach_defaults(GTK_TABLE(table), widget, 2, 3, 0, 1);
 
 	widget = gtk_label_new("Y:");
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_NONE, GTK_NONE, 0, 0);
-	widget = gtk_button_new_with_label ("-");
-	VOIDCONNECT (widget, "clicked", yDec);
+	yRotScaleAdj = gtk_adjustment_new(0, -M_PI, M_PI, M_PI/50, 1, 0);
+	VOIDCONNECT(yRotScaleAdj, "value_changed", yRotScale);
+	widget = gtk_hscale_new(GTK_ADJUSTMENT(yRotScaleAdj));
+	EVENTCONNECT(widget, "button-release-event", yRotDone);
+	gtk_scale_set_value_pos(GTK_SCALE(widget), GTK_POS_RIGHT);
+	gtk_scale_set_digits(GTK_SCALE(widget), 2);
 	gtk_table_attach_defaults(GTK_TABLE(table), widget, 1, 2, 1, 2);
-	widget = gtk_button_new_with_label("+");
-	VOIDCONNECT (widget, "clicked", yInc);
-	gtk_table_attach_defaults(GTK_TABLE(table), widget, 2, 3, 1, 2);
 
 	widget = gtk_label_new("Z:");
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 2, 3, GTK_NONE, GTK_NONE, 0, 0);
-	widget = gtk_button_new_with_label("-");
-	VOIDCONNECT(widget, "clicked", zDec);
+	zRotScaleAdj = gtk_adjustment_new(0, -M_PI, M_PI, M_PI/50, 1, 0);
+	VOIDCONNECT(zRotScaleAdj, "value_changed", zRotScale);
+	widget = gtk_hscale_new(GTK_ADJUSTMENT(zRotScaleAdj));
+	EVENTCONNECT(widget, "button-release-event", zRotDone);
+	gtk_scale_set_value_pos(GTK_SCALE(widget), GTK_POS_RIGHT);
+	gtk_scale_set_digits(GTK_SCALE(widget), 2);
 	gtk_table_attach_defaults(GTK_TABLE(table), widget, 1, 2, 2, 3);
-	widget = gtk_button_new_with_label("+");
-	VOIDCONNECT(widget, "clicked", zInc);
-	gtk_table_attach_defaults(GTK_TABLE(table), widget, 2, 3, 2, 3);
+
 
 	frame = gtk_frame_new("absolute:");
 	gtk_box_pack_start(GTK_BOX(vbox), frame, false, false, 0);
@@ -136,8 +136,7 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 
 	vbox = gtk_vbox_new(false, 5);
 	gtk_container_border_width(GTK_CONTAINER(vbox), 4);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox,
-				 gtk_label_new("Scale"));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new("Scale"));
 	
 	table = gtk_table_new(3, 2, false);
 	gtk_box_pack_start(GTK_BOX(vbox), table, false, false, 0);
@@ -175,8 +174,7 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 
 	vbox = gtk_vbox_new(false, 5);
 	gtk_container_border_width(GTK_CONTAINER(vbox), 4);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox,
-				 gtk_label_new("Origin"));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new("Origin"));
 	
 	table = gtk_table_new(3, 2, false);
 	gtk_box_pack_start(GTK_BOX(vbox), table, false, false, 0);
@@ -205,8 +203,8 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 	gtk_table_attach_defaults(GTK_TABLE(table), widget, 1, 2, 2, 3);
 	wrw.addWidget(widget, "origin_z");
 
+
 	// get script values button:
-	// -------------------------
 
 	hbox = gtk_hbox_new(false, 5);
 	gtk_box_pack_start(GTK_BOX(mainbox), hbox, false, false, 0);
@@ -223,49 +221,89 @@ void NavigationWindow::show()
 	shown = true;
 }
 
-
-gint NavigationWindow::handle_delete(GtkWidget* w, GdkEvent* e, gpointer d)
+gint NavigationWindow::handle_delete()
 {
-	NavigationWindow *rw = (NavigationWindow*)d;
-	gtk_widget_hide(rw->window);
-	rw->shown = false;
+	gtk_widget_hide(window);
+	shown = false;
 	return true;
 }
 
-void NavigationWindow::xDec()
+void NavigationWindow::xRotScale()
 {
-	rotateX(-0.1);
+	if(shown && !updating) {
+		double offset = ((GtkAdjustment*)xRotScaleAdj)->value;
+		double sinx = std::sin(offset), cosx = std::cos(offset);
+		double rotXArr[] = {
+			1,   0,    0,
+			0,  cosx, sinx,
+			0, -sinx, cosx
+		};
+		rotate(Matrix33(rotXArr));
+	}
 }
 
-void NavigationWindow::xInc()
+void NavigationWindow::yRotScale()
 {
-	rotateX(0.1);
+	if(shown && !updating) {
+		double offset = ((GtkAdjustment*)yRotScaleAdj)->value;
+		double siny = std::sin(offset), cosy = std::cos(offset);
+		double rotYArr[] = {
+			cosy, 0, -siny,
+			  0,  1,   0,
+			siny, 0,  cosy
+		};
+		rotate(Matrix33(rotYArr));
+	}
 }
 
-void NavigationWindow::yDec()
+void NavigationWindow::zRotScale()
 {
-	rotateY(-0.1);
+	if(shown && !updating) {
+		double offset = ((GtkAdjustment*)zRotScaleAdj)->value;
+		double sinz = std::sin(offset), cosz = std::cos(offset);
+		double rotZArr[] = {
+			 cosz, sinz, 0,
+			-sinz, cosz, 0,
+			   0,    0,  1
+		};
+		rotate(Matrix33(rotZArr));
+	}
 }
 
-void NavigationWindow::yInc()
+gint NavigationWindow::xRotDone()
 {
-	rotateY(0.1);
+	updating = true;
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(xRotScaleAdj), 0);
+	updating = false;
+	rotX = tmpRotX;
+	updateAngles();
+	return 0;
 }
 
-void NavigationWindow::zDec()
+gint NavigationWindow::yRotDone()
 {
-	rotateZ(-0.1);
+	updating = true;
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(yRotScaleAdj), 0);
+	updating = false;
+	rotY = tmpRotY;
+	updateAngles();
+	return 0;
 }
 
-void NavigationWindow::zInc()
+gint NavigationWindow::zRotDone()
 {
-	rotateZ(0.1);
+	updating = true;
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(zRotScaleAdj), 0);
+	updating = false;
+	rotZ = tmpRotZ;
+	updateAngles();
+	return 0;
 }
 
 void NavigationWindow::xRotSpin()
 {
 	if(shown && !updating) {
-		rotX = ((GtkAdjustment*)xRotSpinAdj)->value;
+		tmpRotX = rotX = ((GtkAdjustment*)xRotSpinAdj)->value;
 		mwc->drawSurfaceWithParams();
 	}
 }
@@ -273,7 +311,7 @@ void NavigationWindow::xRotSpin()
 void NavigationWindow::yRotSpin()
 {
 	if(shown && !updating) {
-		rotY = ((GtkAdjustment*)yRotSpinAdj)->value;
+		tmpRotY = rotY = ((GtkAdjustment*)yRotSpinAdj)->value;
 		mwc->drawSurfaceWithParams();
 	}
 }
@@ -281,43 +319,9 @@ void NavigationWindow::yRotSpin()
 void NavigationWindow::zRotSpin()
 {
 	if(shown && !updating) {
-		rotZ = ((GtkAdjustment*)zRotSpinAdj)->value;
+		tmpRotZ = rotZ = ((GtkAdjustment*)zRotSpinAdj)->value;
 		mwc->drawSurfaceWithParams();
 	}
-}
-
-
-void NavigationWindow::rotateX(double rad)
-{
-	double sinx = std::sin(rad), cosx = std::cos(rad);
-	double rotXArr[] = {
-		1,   0,    0,
-                0,  cosx, sinx,
-                0, -sinx, cosx
-	};
-	rotate(Matrix33(rotXArr));
-}
-
-void NavigationWindow::rotateY(double rad)
-{
-	double siny = std::sin(rad), cosy = std::cos(rad);
-	double rotYArr[] = {
-		cosy, 0, -siny,
-                  0,  1,   0,
-                siny, 0,  cosy
-	};
-	rotate(Matrix33(rotYArr));
-}
-
-void NavigationWindow::rotateZ(double rad)
-{
-	double sinz = std::sin(rad), cosz = std::cos(rad);
-	double rotZArr[] = {
-		 cosz, sinz, 0,
-                -sinz, cosz, 0,
-                   0,    0,  1
-	};
-	rotate(Matrix33(rotZArr));
 }
 
 inline const Matrix33 NavigationWindow::getRotMat()
@@ -365,12 +369,9 @@ void NavigationWindow::rotate(Matrix33 add)
 	if(cos_z > 1) cos_z = 1;
 	else if(cos_z < -1) cos_z = -1;
 
-	rotX = std::atan2(sin_x, cos_x);
-	rotY = std::atan2(sin_y, cos_y);
-	rotZ = std::atan2(sin_z, cos_z);
-	rotX = trimAngle(rotX);
-	rotY = trimAngle(rotY);
-	rotZ = trimAngle(rotZ);
+	tmpRotX = trimAngle(std::atan2(sin_x, cos_x));
+	tmpRotY = trimAngle(std::atan2(sin_y, cos_y));
+	tmpRotZ = trimAngle(std::atan2(sin_z, cos_z));
 
 	updateAngles();
 
@@ -411,9 +412,9 @@ double NavigationWindow::trimOrig(double orig)
 void NavigationWindow::updateAngles()
 {
 	updating = true;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(xRotSpinAdj), rotX);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(yRotSpinAdj), rotY);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(zRotSpinAdj), rotZ);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(xRotSpinAdj), tmpRotX);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(yRotSpinAdj), tmpRotY);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(zRotSpinAdj), tmpRotZ);
 	updating = false;
 }
 
@@ -540,9 +541,9 @@ void NavigationWindow::getScriptValues()
 	// position_numeric is a highly deprecated and obsolete
         // global variable!
 
-	rotX = trimAngle(ScriptVar::position_numeric.rot_x);
-	rotY = trimAngle(ScriptVar::position_numeric.rot_y);
-	rotZ = trimAngle(ScriptVar::position_numeric.rot_z);
+	tmpRotX = rotX = trimAngle(ScriptVar::position_numeric.rot_x);
+	tmpRotY = rotY = trimAngle(ScriptVar::position_numeric.rot_y);
+	tmpRotZ = rotZ = trimAngle(ScriptVar::position_numeric.rot_z);
 	updateAngles();
 	scaleX = trimScale(ScriptVar::position_numeric.scale_x);
 	scaleY = trimScale(ScriptVar::position_numeric.scale_y);
