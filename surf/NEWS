@@ -8,9 +8,10 @@ Separation of Kernel and GUI
 ============================
 
 The biggest change: From now on, the binary "surf" is just a kernel
-which reads script files and executes them. The whole GUI work is now
-done by "gtksurf", the separated new GTK+/Glade based graphical frontend
-to surf.
+which reads its input from script files or from stdin (via readline if
+it's available) and executes them. The whole GUI work is now done by
+"gtksurf", the separated new GTK+/Glade based graphical frontend to
+surf.
 
 
 Triangulation Support
