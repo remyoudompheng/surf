@@ -121,6 +121,7 @@ Kernel::Kernel(const std::string& kernel_path)
 
 Kernel::~Kernel()
 {
+        signal(SIGCHLD, SIG_IGN);
 	kernel_input->close();
 	kernel_output->close();
 }

@@ -173,9 +173,9 @@ void DitherWindow::on_save_as_activate(GtkWidget*)
 	std::list<std::string> fmts = kernel.get_dither_image_formats();
 	std::list<std::string>::iterator i;
 	for(i = fmts.begin(); i != fmts.end(); ) {
-		GtkWidget* item = gtk_menu_item_new_with_label(i->c_str());
+		GtkWidget* item = gtk_menu_item_new_with_label((*i).c_str());
 		i++;
-		gtk_object_set_user_data(GTK_OBJECT(item), const_cast<char*>(i->c_str()));
+		gtk_object_set_user_data(GTK_OBJECT(item), const_cast<char*>((*i).c_str()));
 		i++;
 		gtk_menu_append(GTK_MENU(menu), item);
 		glade.sig_connect(item, "activate", _on_filetype_activate, this);

@@ -113,14 +113,19 @@ dnl =======================
 
 AC_ARG_WITH(gdkpixbuf-prefix,[  --with-gdkpixbuf-prefix=PFX   Prefix where gdk-pixbuf is installed],
             gdkpixbuf_prefix="$withval", gdkpixbuf_prefix="")
+AC_ARG_ENABLE(gdkpixbuf, [  --disable-gdkpixbuf       Do not try to find gdk-pixbuf includes and library],
+                    , enable_gdkpixbuf=yes)
 
-if test x"$gdkpixbuf_prefix" != x ; then
-	LDFLAGS="-L$gdkpixbuf_prefix/lib $LDFLAGS"
-	CPPFLAGS="-I$gdkpixbuf_prefix/include $CPPFLAGS"
+if test "x$enable_gdkpixbuf" = "xyes" ; then
+
+  if test x"$gdkpixbuf_prefix" != x ; then
+    LDFLAGS="-L$gdkpixbuf_prefix/lib $LDFLAGS"
+    CPPFLAGS="-I$gdkpixbuf_prefix/include $CPPFLAGS"
+  fi
+
+  AC_CHECK_HEADER(gdk-pixbuf/gdk-pixbuf.h,
+    AC_CHECK_LIB(gdk_pixbuf, main))
 fi
-
-AC_CHECK_HEADER(gdk-pixbuf/gdk-pixbuf.h,
-  AC_CHECK_LIB(gdk_pixbuf, main))
 
 dnl check for libglade
 dnl ==================
