@@ -52,7 +52,7 @@ private:
 	GtkWidget *notebook;
 
 	ParameterWindow * children[16];
-	int childrenCount;
+	unsigned int childrenCount;
 
 	void addWindow (ParameterWindow *pw);
 

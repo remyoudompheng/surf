@@ -408,7 +408,7 @@ char    yyerrorstring[1024];
 
 void    yyerror( const char *s )
 {
-	sprintf( yyerrorstring,"%.1000s at line number %ld at '%.16s'",
+	sprintf( yyerrorstring,"%.900s at line number %ld at '%.16s'",
 		 s, line_number, yytext );
 	error_begin_char = char_number-strlen(yytext);
 }

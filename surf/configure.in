@@ -1,9 +1,15 @@
+dnl ---------------------
+dnl configure.in for surf
+dnl ---------------------
+
 AC_PREREQ(2.13)
 AC_INIT(yaccsrc/degree.h)
-AM_INIT_AUTOMAKE(surf, 1.1.0pre1)
+AM_INIT_AUTOMAKE(surf, 1.0.2)
 CF_VERBOSE
 
-dnl AM_WITH_DMALLOC
+
+dnl check options:
+dnl --------------
 
 AC_ARG_ENABLE(gui,
 [  --disable-gui           disable graphical user interface],
@@ -11,33 +17,56 @@ AC_ARG_ENABLE(gui,
 
 AC_ARG_ENABLE(pthread-test, 
 [  --disable-pthread-test  do not determine how to compile multithreaded 
-			  programs (You´ll have to specify the necessary 
+			  programs (You'll have to specify the necessary 
 			  flags)],
 	pthread_test="$enableval", pthread_test="yes")
 
 
+dnl some standard checks:
+dnl ---------------------
 
 AC_PROG_CC
 AC_PROG_CXX
 AC_AIX
 AC_ISC_POSIX
 AC_MINIX
-dnl LF_HOST_TYPE
+AC_HEADER_STDC
+AM_PROG_LEX
+AC_PROG_YACC
+AC_PROG_RANLIB
 
+
+dnl check if C++ compiler really works:
+dnl -----------------------------------
+
+AC_LANG_CPLUSPLUS
 LF_CHECK_CC_FLAG(-Wall -W -Wwrite-strings -Wpointer-arith -Wconversion -Wno-unused -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs)
+
 RS_CHECK_HAVE_BOOL
+if test "$rs_cv_have_bool" = "no"
+then
+	AC_DEFINE(bool, int)
+	AC_DEFINE(true, 1)
+	AC_DEFINE(false,0)
+fi
+
 LF_CHECK_CXX_FLAG(-fno-rtti -fno-exceptions)
 LF_CHECK_CXX_FLAG(-Wall -W -Wwrite-strings -Wpointer-arith -Wconversion -Wno-unused  -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Woverloaded-virtual -Wnested-externs)
-dnl LF_CHECK_CXX_FLAG(-ffast-math -fomit-frame-pointer -fforce-mem)
-
-dnl -finline-functions  -funroll-loops
-
 
 ICE_CXX_EXPLICIT_TEMPLATE_INSTANTIATION
+
 AC_CXX_FUNCTION_NONTYPE_PARAMETERS
 if test "$ac_cv_cxx_function_nontype_parameters" = "no"; then
 	AC_MSG_ERROR(["Sorry, your compiler is not smart enough to build surf"])
 fi
+
+JB_CXX_NAMESPACES
+JB_CXX_STDNAMESPACE
+
+
+
+dnl pthread stuff:
+dnl --------------
 
 if test "$pthread_test" = "yes"
 then
@@ -45,74 +74,49 @@ then
 	case "$host_os" in
 		*irix* | *linux* |*solaris*) try_threads="linux";;
 		*freebsd*)	try_threads="freebsd";;
-		*)		try_threads="other"; AC_MSG_WARN([Unknown os $host_os. Maybe it´s better to configure with --disable-pthread-test]);;
+		*)		try_threads="other"; AC_MSG_WARN([Unknown os $host_os. Maybe it's better to configure with --disable-pthread-test]);;
 	esac
 fi
 
 if test "$try_threads" = "linux"
 then
-	AC_CHECK_LIB(pthread, pthread_create,[LIBS="-lpthread $LIBS"], AC_MSG_ERROR("Sorry: can´t link with pthread library"))
-
-	CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+	RS_CHECK_LIB(pthread)
+	AC_DEFINE(_REENTRANT)
 fi
 
 if test "$try_threads" = "freebsd"
 then
 	CPPFLAGS="$CPPFLAGS -pthread"
 	LDFLAGS="$LDFLAGS -pthread"
-	RS_CHECK_PTHREADS
 fi
 
-#if test "$try_threads" = "freebsd"
-#then
-#fi
-
-AC_CHECK_HEADER(pthread.h,,"Sorry: Can´t find header file pthread.h")
-
-
-AC_HEADER_STDC
-
-dnl check for some c++ headers
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
-AC_CHECK_HEADER(iostream.h,,"Sorry: Can´t find header file iostream.h")
-AC_CHECK_HEADER(strstream.h,,"Sorry: Can´t find header file strstream.h")
-AC_LANG_RESTORE
-
-
-AM_PROG_LEX
-AC_PROG_YACC
-AC_PROG_RANLIB
-AC_PROG_INSTALL
+RS_CHECK_HEADER(pthread.h)
 
 RS_CHECK_PTHREADS
 
-dnl ----------------------------------------------------------------------
-dnl --- CHECK FOR GETHOSTNAME PROTOTYPE IN UNISTD.H
-dnl ---
+
+dnl check for gethostname prototype in unistd.h:
+dnl --------------------------------------------
 
 AC_CACHE_CHECK(whether there is a prototype for gethostname in unistd.h,
 ac_cv_gethostname_has_prototype,
 AC_EGREP_HEADER(gethostname, unistd.h,
 		ac_cv_gethostname_has_prototype=yes,
-		ac_cv_gethostname_has_prototype=no))
+		ac_cv_gethostname_has_prototype=no
+	        AC_DEFINE(NO_GETHOSTNAME_PROTO)))
 
-if test $ac_cv_gethostname_has_prototype = no
-then
-    AC_DEFINE(NO_GETHOSTNAME_PROTO)
-fi
-dnl ----------------------------------------------------------------------
 
-dnl	CPPFLAGS="$CPPFLAGS -DUSE_GTK"
+
+dnl check for libraries:
+dnl --------------------
+
+dnl when compiling with GUI support check for GTK >= 1.2.0 and X:
 
 if test "$gui" = "yes"
 then
-AM_PATH_GTK(1.2.0)
-
-CFLAGS="$CFLAGS $GTK_CFLAGS"
-CXXFLAGS="$CXXFLAGS $GTK_CFLAGS"
-
-
+	AM_PATH_GTK(1.2.0)
+	CFLAGS="$CFLAGS $GTK_CFLAGS"
+	CXXFLAGS="$CXXFLAGS $GTK_CFLAGS"
 else
 	AC_DEFINE(NO_GUI)
 fi
@@ -122,122 +126,57 @@ AC_PATH_XTRA
 CFLAGS="$CFLAGS $X_CFLAGS"
 CXXFLAGS="$CXXFLAGS $X_CFLAGS"
 
-
 AM_CONDITIONAL(GUI, test "x$gui" = "xyes");
 
 
-RS_CHECK_LIB(m,main)
+dnl math lib, power function and (g)zlib:
+
+RS_CHECK_LIB(m, main)
 RS_CHECK_POW()
-AC_CHECK_LIB(z,  main, [LIBS="-lz $LIBS"], have_libz="no")
-if test "x$have_libz" = "xno"
-then
-AC_CHECK_LIB(gz, main, [LIBS="-lgz $LIBS"], AC_MSG_ERROR("Can\'t link with -lgz or -lz"))
-fi
+AC_CHECK_LIB(z,  main,,
+	     AC_CHECK_LIB(gz, main,,
+                          AC_MSG_ERROR([Sorry: can't find libz/libgz.])))
+
+dnl jpeg library and jpeglib.h:
+
+RS_CHECK_LIB(jpeg, main)
+RS_CHECK_HEADER(jpeglib.h)
+
+dnl check for tiff library and header file (FreeBSD 3.0 has tiff34.so
+dnl instead of tiff.so and the header files are in /usr/local/lib/tiff34):
+
+AC_CHECK_LIB(tiff, main,,
+             AC_CHECK_LIB(tiff34, main,,
+                          AC_MSG_ERROR([Sorry: can't find libtiff])))
+
+AC_CHECK_HEADER(tiffio.h,,
+                AC_CHECK_HEADER(tiff34/tiffio.h,
+                AC_DEFINE(TIFF_HEADER_34),
+                AC_MSG_ERROR([Sorry: can't find header file tiffio.h])))
 
 
+dnl gmp library and header file:
 
-dnl RS_CHECK_LIB(z,main)
+AC_CHECK_LIB(gmp, main,,
+             AC_CHECK_LIB(gmp2, main,,
+			  AC_MSG_ERROR([Sorry: can't find gmp])))
 
-
-dnl Check for JPEG library and jpeglib.h
-dnl ------------------------------------
-
-AC_CHECK_LIB(jpeg, main)
-AC_CHECK_HEADER(jpeglib.h)
-
-
-dnl Check for TIFF library and tiff.h
-dnl ---------------------------------
-
-AC_CHECK_LIB(tiff, main)
-AC_CHECK_HEADER(tiffio.h)
-
-dnl ----------------------------------------------------------------------
-dnl --- CHECK FOR GMP LIBRARAY AND HEADER FILES
-dnl 
-
-HAVE_GMP="no"
-AC_CHECK_LIB(gmp, mpq_sub, [HAVE_GMP=""; LIBS="-lgmp $LIBS"])
-
-if test "$HAVE_GMP" = "no"; then 
-	AC_CHECK_LIB(gmp2, mpq_sub, [HAVE_GMP="2"; LIBS="-lgmp2 $LIBS"])
-fi
-
-if test "$HAVE_GMP" = "no"; then
-	AC_MSG_ERROR("Sorry: can´t find gmp")
-fi
+AC_CHECK_HEADER(gmp.h,,
+		AC_CHECK_HEADER(gmp2/gmp.h,
+				AC_DEFINE(GMP2_PREFIX),
+				AC_MSG_ERROR([Sorry: can't find header file gmp.h])))
 
 
-dnl test "$HAVE_GMP" = "2" && 	RS_CHECK_HEADER(gmp2/gmp.h)
-
-if test "$HAVE_GMP" = "2"; 
-then
-	RS_CHECK_HEADER(gmp2/gmp.h)
-	AC_DEFINE(GMP2_PREFIX)
-else
-	RS_CHECK_HEADER(gmp.h)
-fi
-
-
-
-
-dnl ----------------------------------------------------------------------
-RS_CHECK_HEADER(pthread.h)
-
-
-
-
-
-
-dnl ----------------------------------------------------------------------
-dnl --- CHECK FOR TIFF LIBRARY HEADER FILES
-dnl ---
-dnl ---    	Suse puts tiffio.h/tiff.h in /usr/X11R6/include
-dnl --- 	We need the "extended" CPPFLAGS to find these headers
-
-SAVE_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-
-TIFF_HEADER="no"
-if test "$TIFF_LIB" = "34"
-then
-	AC_CHECK_HEADER(tiff34/tiffio.h, TIFF_HEADER="34")
-fi
-
-if test "$TIFF_HEADER" = "no"
-then
-	AC_CHECK_HEADER(tiffio.h,TIFF_HEADER="")
-fi
-
-if test "$TIFF_HEADER" = "34"
-then
-	AC_DEFINE(TIFF_HEADER_34)
-fi
-
-if test "$TIFF_HEADER" = "no" 
-then
-	AC_MSG_ERROR("Sorry: can´t find tiff library header file tiffio.h")
-fi
-
-CPPFLAGS="$SAVE_CPPFLAGS"
-
-dnl ----------------------------------------------------------------------
-
-
-if test "$rs_cv_have_bool" = "no"
-then
-	AC_DEFINE(bool, int)
-	AC_DEFINE(true, 1)
-	AC_DEFINE(false,0)
-fi
-
-
-
-dnl is there a another way to quote this...sometimes 
-dnl sometimes "/bin/sh ./config.status --recheck" complains
-dnl about a non working c compiler 
+dnl set DATADIR variable:
+dnl ---------------------
+dnl (Is there a another way to quote this...sometimes
+dnl "/bin/sh ./config.status --recheck" complains about a non working 
+dnl C compiler)
 
 CPPFLAGS="$CPPFLAGS -DDATADIR=\\\"$datadir\\\""
+
+
+
 
 AC_OUTPUT(	Makefile
 		src/Makefile

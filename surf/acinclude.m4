@@ -83,7 +83,8 @@ AC_DEFUN([RS_CHECK_POW],
 	AC_MSG_CHECKING(if pow(0,0)!=1)
 	AC_TRY_RUN(
 		[#include <math.h>
-		int main() { if (pow(0.0,0.0)==1.0) return 0; else return 10;}],POW_IS_BROKEN=no,POW_IS_BROKEN=yes, POW_IS_BROKEN=yes)
+		int main() { if (pow(0.0,0.0)==1.0) return 0; else return 10;}],
+                POW_IS_BROKEN=no, POW_IS_BROKEN=yes, POW_IS_BROKEN=yes)
 	AC_MSG_RESULT("$POW_IS_BROKEN")
 	test "$POW_IS_BROKEN" = "yes" &&
 		AC_DEFINE(POW_IS_BROKEN)
@@ -91,12 +92,12 @@ AC_DEFUN([RS_CHECK_POW],
 
 AC_DEFUN([RS_CHECK_LIB], 
 [
-	AC_CHECK_LIB($1, main,[LIBS="-l$1 $LIBS"],[AC_MSG_ERROR("Sorry: can´t link with library lib$1.\(a\|so\).")])
+	AC_CHECK_LIB($1, main,, AC_MSG_ERROR([Sorry: can't link with library lib$1.\(a\|so\).]))
 ])
 
 AC_DEFUN([RS_CHECK_HEADER],
 [
-	AC_CHECK_HEADER($1,, [AC_MSG_ERROR("Sorry: can´t find header file $1")])
+	AC_CHECK_HEADER($1,, AC_MSG_ERROR([Sorry: can't find header file $1]))
 ])
 
 
@@ -200,7 +201,7 @@ dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN(AC_CXX_FUNCTION_NONTYPE_PARAMETERS,
-[AC_CACHE_CHECK(whether the compiler supports function templates with non-type parameters,
+[AC_CACHE_CHECK(whether ${CXX} supports function templates with non-type parameters,
 ac_cv_cxx_function_nontype_parameters,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
@@ -215,4 +216,50 @@ dnl if test "$ac_cv_cxx_function_nontype_parameters" = yes; then
 dnl  AC_DEFINE(HAVE_FUNCTION_NONTYPE_PARAMETERS,,
 dnl             [define if the compiler supports function templates with non-type parameters])
 dnl fi
+])
+
+
+dnl check if C++ compiler supports namespaces:
+dnl (inspired by Gtk-- 1.2.1 configure.in)
+dnl ------------------------------------------
+
+AC_DEFUN(JB_CXX_NAMESPACES, [
+	AC_MSG_CHECKING(whether ${CXX} supports namespaces)
+	AC_TRY_COMPILE([
+		namespace Foo { struct A {}; }
+		using namespace Foo;
+	],[
+		A a;
+	],[
+		AC_MSG_RESULT(yes)
+	],[
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Sorry: C++ compiler doesn't support namespaces])
+	])
+])
+
+AC_DEFUN(JB_CXX_STDNAMESPACE, [
+	AC_MSG_CHECKING(whether ${CXX} uses std namespace)
+	AC_TRY_COMPILE([
+		#include <iostream>
+		namespace std{}
+		using namespace std;
+	],[
+		cout << "test" << endl;
+	],[
+		AC_MSG_RESULT(yes)
+	],[
+		AC_TRY_COMPILE([
+			#include <iostream.h>
+			namespace std{}
+			using namespace std;
+		],[
+			cout << "test" << endl;
+		],[
+			AC_MSG_RESULT(yes)
+		],[
+			AC_MSG_RESULT(no)
+			AC_MSG_ERROR([Sorry: C++ compiler doesn't use namepsace std])
+		])
+	])
 ])

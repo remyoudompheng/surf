@@ -311,7 +311,7 @@ void    init_surface_main_variables( void )
 	addNumber ("cut_distance", &sym_cut_distance);
 
 
-	int    i;
+	unsigned int i;
 	int    j;
 
 	// -------------------------

@@ -85,7 +85,7 @@ ConfigurationWindow::ConfigurationWindow()
 
 ConfigurationWindow::~ConfigurationWindow()
 {
-	int i;
+	unsigned int i;
 	for (i=0; i<childrenCount; i++) {
 		delete children[i];
 	}
@@ -100,7 +100,7 @@ void ConfigurationWindow::show ()
 
 void ConfigurationWindow::writeSymbols (SymbolTable &st)
 {
-	int i;
+	unsigned int i;
 	for (i=0; i<childrenCount; i++) {
 		children[i]->wrw_writeSymbols(st);
 		children[i]->writeSymbols(st);
@@ -109,7 +109,7 @@ void ConfigurationWindow::writeSymbols (SymbolTable &st)
 
 void ConfigurationWindow::readSymbols (SymbolTable &st)
 {
-	int i;
+	unsigned int i;
 	for (i=0; i<childrenCount; i++) {
 		children[i]->wrw_readSymbols(st);
 		children[i]->readSymbols(st);
