@@ -208,7 +208,7 @@ void ScriptWindow::on_save_activate()
 	
 	gchar* scr = gtk_editable_get_chars(GTK_EDITABLE(text_script), 0, -1);
 	{
-		ofstream file(filename.c_str());
+		std::ofstream file(filename.c_str());
 		if(!file) {
 			set_status("Saving failed: Couldn't open file!\n");
 			gdk_beep();
@@ -247,6 +247,7 @@ void ScriptWindow::on_quit_activate()
 		}
 	}
 
+	kernel.disconnect_handler();
 	gtk_main_quit();
 }
 

@@ -50,6 +50,9 @@
 /* Define if you have the gtkgl library (-lgtkgl).  */
 #undef HAVE_LIBGTKGL
 
+/* Define if you have the stlport library (-lstlport).  */
+#undef HAVE_LIBSTLPORT
+
 /* Name of package */
 #undef PACKAGE
 

@@ -56,6 +56,9 @@
 /* Define if you have the png library (-lpng).  */
 #undef HAVE_LIBPNG
 
+/* Define if you have the stlport library (-lstlport).  */
+#undef HAVE_LIBSTLPORT
+
 /* Define if you have the z library (-lz).  */
 #undef HAVE_LIBZ
 

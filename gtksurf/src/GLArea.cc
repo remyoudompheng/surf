@@ -18,7 +18,7 @@
 
 GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin)
 	: glade(_glade), kernel(_kernel), navigationwin(navwin),
-	  pi(std::acos(-1)),
+	  pi(std::acos(-1.0)),
 	  dragging(false),
 	  rotMat(4), deltaRotMat(4), rotating(false),
 	  showCross(true), wireframe(false),

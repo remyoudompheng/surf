@@ -235,7 +235,7 @@ void Kernel::process_output()
 		if(image.mod == 0) {
 			image.mod = 1;
 		}
-		image.pixdata = new guchar[image.length];
+		image.pixdata = new char[image.length];
 		image.y = 0;
 		state = COLOR_IMAGE_DATA;
 		break;
@@ -252,7 +252,8 @@ void Kernel::process_output()
 			scriptwin->set_status("");
 			scriptwin->progress_mode(false);
 
-			imagewin->set_image(image.pixdata, image.width, image.height, image.rowstride);
+			imagewin->set_image(reinterpret_cast<guint8*>(image.pixdata),
+					    image.width, image.height, image.rowstride);
 		} else {
 			// I don't really know why should we need this,
                         // but sometimes I do here!

@@ -70,11 +70,11 @@ public:
 		*kernel_output >> i;
 		return i;
 	}
-	void receive_bytes(guint8* buf, size_t len) {
+	void receive_bytes(char* buf, size_t len) {
 		kernel_output->read(buf, len);
 	}
-	guint8 receive_byte() {
-		guint8 c;
+	char receive_byte() {
+		char c;
 		kernel_output->get(c);
 		return c;
 	}
@@ -148,7 +148,7 @@ private:
 		int height;
 		size_t length;
 		size_t rowstride;
-		guchar* pixdata;
+		char* pixdata;
 		int mod;
 		int y;
 	} image;

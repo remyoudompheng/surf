@@ -185,8 +185,9 @@ typedef Matrix<GLfloat> GLmatrix;
 // implementation begins here:
 // ------------------------------------------------------------------------------
 
-#include<iostream>
-#include<algo.h>
+#ifndef HAVE_LIBSTL
+#  include<algo.h>
+#endif
 
 #ifndef MAX
 #  define MAX(a, b) ( ((a) > (b)) ? (a) : (b) )
@@ -458,13 +459,6 @@ T Matrix<T>::det() const
 			}
 		} // go back to the next column in reduction.
 
-		for(size_t i = 1; i <= rows; ++i) {
-			for(size_t j = 1; j <= cols; ++j) {
-				std::cout << a.at(i, j) << " ";
-			}
-			std::cout << '\n';
-		}
-	
 		// Determinant is product of diagonal elements (d holds the parity):
 		for(size_t i = 1; i <= rows; ++i) {
 			d *= a.at(i, i);

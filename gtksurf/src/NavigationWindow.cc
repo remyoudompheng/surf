@@ -31,7 +31,7 @@ NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel, ScriptWindow*
 	  scalex(1.0), scaley(1.0), scalez(1.0), keep_scaleratio(true),
 	  rotx(0.0), roty(0.0), rotz(0.0), updatingRot(false)
 {
-	pi = std::acos(-1);
+	pi = std::acos(-1.0);
 	
 	window = glade.get_widget("window_navigation");
 	gtk_box_pack_start_defaults(GTK_BOX(glade.get_widget("vbox_glarea")),

@@ -1693,6 +1693,40 @@
     <active>False</active>
     <always_show_toggle>False</always_show_toggle>
   </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>separator8</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkRadioMenuItem</class>
+    <name>central_perspective</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_central_perspective_activate</handler>
+      <last_modification_time>Tue, 13 Mar 2001 09:22:28 GMT</last_modification_time>
+    </signal>
+    <label>Central Perspective</label>
+    <active>False</active>
+    <always_show_toggle>False</always_show_toggle>
+    <group>perspective</group>
+  </widget>
+
+  <widget>
+    <class>GtkRadioMenuItem</class>
+    <name>parallel_perspective</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_parallel_perspective_activate</handler>
+      <last_modification_time>Tue, 13 Mar 2001 09:22:28 GMT</last_modification_time>
+    </signal>
+    <label>Parallel Perspective</label>
+    <active>True</active>
+    <always_show_toggle>False</always_show_toggle>
+    <group>perspective</group>
+  </widget>
 </widget>
 
 <widget>

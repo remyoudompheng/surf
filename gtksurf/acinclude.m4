@@ -228,7 +228,7 @@ AC_DEFUN(JOJO_CXX_STDNAMESPACE, [
 dnl JOJO_COMPILE_WARNINGS
 dnl Turn on many useful compiler warnings
 dnl For now, only works on GCC
-dnl (this is almost entirely GNOME_COMPILE_WARNINGS..)
+dnl (this is copied from GNOME_COMPILE_WARNINGS..)
 
 AC_DEFUN([JOJO_COMPILE_WARNINGS],[
   if test "x$GCC" = xyes; then
@@ -240,26 +240,9 @@ AC_DEFUN([JOJO_COMPILE_WARNINGS],[
       *) warnCFLAGS="-Wall" ;;
     esac
 
-    warnCFLAGS="$warnCFLAGS -Wmissing-prototypes -Wmissing-declarations"
-    
     AC_MSG_RESULT($warnCFLAGS)
 
-    AC_MSG_CHECKING(what language compliance flags to pass to the C compiler)
-
-dnl    complCFLAGS=
-dnl    case " $CFLAGS " in
-dnl      *[\ \	]-ansi[\ \	]*) ;;
-dnl      *) complCFLAGS="$complCFLAGS -ansi" ;;
-dnl    esac
-
-    case " $CFLAGS " in
-      *[\ \	]-pedantic[\ \	]*) ;;
-      *) complCFLAGS="$complCFLAGS -pedantic" ;;
-    esac
-    
-    AC_MSG_RESULT($complCFLAGS)
-    
-    CFLAGS="$CFLAGS $warnCFLAGS $complCFLAGS"
+    CFLAGS="$CFLAGS $warnCFLAGS"
   fi
 ])
 
@@ -276,27 +259,9 @@ AC_DEFUN([JOJO_CXX_WARNINGS],[
       *) warnCXXFLAGS="-Wall" ;;
     esac
 
-    warnCXXFLAGS="$warnCXXFLAGS -Wmissing-prototypes -Wmissing-declarations -Woverloaded-virtual"
-
     AC_MSG_RESULT($warnCXXFLAGS)
 
-    AC_MSG_CHECKING(what language compliance flags to pass to the C++ compiler)
-   
-    complCXXFLAGS=
-
-dnl    case " $CXXFLAGS " in
-dnl      *[\ \	]-ansi[\ \	]*) ;;
-dnl      *) complCXXFLAGS="$complCXXFLAGS -ansi" ;;
-dnl    esac
-
-    case " $CXXFLAGS " in
-      *[\ \	]-pedantic[\ \	]*) ;;
-      *) complCXXFLAGS="$complCXXFLAGS -pedantic" ;;
-    esac
- 
-    AC_MSG_RESULT($complCXXFLAGS)
-
-    CXXFLAGS="$CXXFLAGS $warnCXXFLAGS $complCXXFLAGS"
+    CXXFLAGS="$CXXFLAGS $warnCXXFLAGS"
   fi
 ])
 
