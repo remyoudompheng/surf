@@ -1,10 +1,10 @@
 <!doctype linuxdoc system>
 <article>
-<title> <em>surf</em> version 1.0.0
+<title> <em>surf</em> version 1.0.1
 <author> Stephan Endrass
          <htmlurl url="mailto:endrass@mathematik.uni-mainz.de"
          name="&lt;endrass@mathematik.uni-mainz.de&gt;" >
-<date> April 15, 2000
+<date> May 28, 2000
 <abstract>
 The aim was to have a tool to visualize some real algebraic geometry:
 plane algebraic curves given as zero
@@ -728,8 +728,7 @@ series of images to the movie format of your choice.
     // the 4-nodal cubic rotating
     // --------------------------
     width=200;
-    height=200;
-    set_size;                    // set image size
+    height=200;                  // set image size
     double sf=0.3;
     scale_x=sf;
     scale_y=sf;
@@ -964,17 +963,12 @@ items.
                         |         | black and white image
     dither_curve        | command | convert color image to a dithered
                         |         | black and white image (for curves only)
-    create_movie        | command | call fbm2fli to create a movie
-    optimize_colormap   | command | display image with an optimized 8 bit
-                        |         | colormap (useful for 256-color X servers)
     save_color_image    | command | save color image in file defined by the
                         |         | global string filename
     save_dithered_image | command | save dithered black and white image in
                         |         | file defined by the global string filename
-    quit                | command | quit surf
-    set_size            | command | set image width and height equal to
-                        |         | values defined by the global integers
-                        |         | width and height
+    set_size            | command | not needed any more (still there for
+                        |         | compatibility issues)
 </verb>
 <p>
 <verb>
@@ -991,16 +985,14 @@ items.
     filename  | string  |           any |      "" | filename used in 
               |         |               |         | save_color_image,
               |         |               |         | save_dithered_image
-              |         |               |         | create_movie
     surf_nr   | int     |     {1,...,9} |       1 | surface which is used
               |         |               |         | for cut_with_plane
 </verb>
 <sect2>Examples
 <p>
 <code>
-    width=400;                // Set global variable width
-    height=300;               // Set global variable height
-    set_size;                 // Set image width and height
+    width=400;                // Set image width
+    height=300;               //  and height
     surface=x^2+y^2+z^2-81;   // Set global variable surface to a sphere
     draw_surface;             // Draw the sphere onto the screen
     plane=x+y+z;              // Choose a hyperplane
@@ -1069,7 +1061,6 @@ items.
 <verb>
     res. word              | type   | range       | def.  | description
     -------------------------------------------------------------------------
-    optimize_colors        | int    |    {yes,no} |    no | use opt. colormap
     dither_colors          | int    |    {yes,no} |   yes | color dithering
     dither_steps           | double | [5,...,255] |  20.0 | steps of dithering
     normalize              | int    |    {yes,no} |    no | normalize image
@@ -1089,7 +1080,6 @@ items.
 <sect2>Examples
 <p>
 <code>
-    optimize_colors        = yes;  // display with optimized colormap
     dither_colors          = yes;  // perform color dithering
     dither_steps           = 60.0; // use soft dithering
     normalize              = yes;  

@@ -197,7 +197,6 @@ dnl
 dnl If the compiler supports function templates with non-type parameters,
 dnl define HAVE_FUNCTION_NONTYPE_PARAMETERS.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN(AC_CXX_FUNCTION_NONTYPE_PARAMETERS,

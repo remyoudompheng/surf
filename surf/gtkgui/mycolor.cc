@@ -90,6 +90,9 @@ GdkVisual *my_get_best_visual ()
 {
 	GdkVisual *visual;
 	
+	if ((visual = gdk_visual_get_best_with_both(32, GDK_VISUAL_TRUE_COLOR)))
+		return visual;
+
 	if ((visual = gdk_visual_get_best_with_both(24, GDK_VISUAL_TRUE_COLOR)))
 		return visual;
 
