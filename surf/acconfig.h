@@ -17,3 +17,5 @@
 #undef HAVE_OPENGL
 
 #undef HAVE_INVENTOR
+
+#undef HAVE_STRINGSTREAM

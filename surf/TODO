@@ -1,3 +1,7 @@
 - readline-input: tab-completion would be cool
 
 - abs() function
+
+- It would be nice to save/restore the state of surf (at least one level)
+  This could reduce the amount of CPU time needed to generate some
+  animations (e.g. a standing still surface cutted by a moving one).

@@ -25,11 +25,13 @@ AC_PROG_RANLIB
 dnl check if C++ compiler really works:
 dnl -----------------------------------
 
+JOJO_STLPORT
 AC_CXX_FUNCTION_NONTYPE_PARAMETERS
 ICE_CXX_EXPLICIT_TEMPLATE_INSTANTIATION
 LF_CHECK_CXX_FLAG(-Wall)
 JOJO_CXX_NAMESPACES
 JOJO_CXX_STDNAMESPACE
+JOJO_CXX_STRINGSTREAM
 
 if test "$GCC" = "no" ; then
   case `uname` in
@@ -52,7 +54,6 @@ fi
 dnl checks for header files:
 dnl ------------------------
 
-JOJO_STLPORT
 AC_CHECK_HEADERS(unistd.h)
 
 dnl FeeBSD doesn't define htonl() in netinet/in.h but in sys/param.h
