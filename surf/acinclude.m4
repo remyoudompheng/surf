@@ -365,11 +365,11 @@ AC_DEFUN(JOJO_OPENGL, [
     [  --with-gl-prefix=PFX    Prefix where OpenGL/Mesa & GLU are installed],
     gl_prefix="$withval",
     gl_prefix="")
-dnl  AC_ARG_ENABLE(opengl,
-dnl    [  --disable-opengl        Do not try to find any GL/GLU includes and libraries],
-dnl    , enable_opengl=yes)
+  AC_ARG_ENABLE(opengl,
+    [  --disable-opengl        Do not try to find any GL/GLU includes and libraries],
+    , enable_opengl=yes)
 
-dnl  if test "x$enable_opengl" = "xyes" ; then
+  if test "x$enable_opengl" = "xyes" ; then
 
     if test "x$gl_prefix" != "x" ; then
       GL_CPPFLAGS="-I$gl_prefix/include"
@@ -404,7 +404,7 @@ dnl  if test "x$enable_opengl" = "xyes" ; then
         AC_DEFINE(HAVE_OPENGL),
         have_opengl=no)
     fi
-dnl  fi
+  fi
 
   CPPFLAGS=$save_cppflags
   LIBS=$save_libs
@@ -434,8 +434,6 @@ AC_DEFUN([JOJO_INVENTOR],[
       if test "x$inventor_prefix" != "x" ; then
         INVENTOR_CPPFLAGS="-I$inventor_prefix/include"
         INVENTOR_LDFLAGS="-L$inventor_prefix/lib"
-        CPPFLAGS="$CPPFLAGS $GL_CPPFLAGS"
-        LDFLAGS="$LDFLAGS $GL_LDFLAGS"
       fi
 
       dnl X
@@ -467,7 +465,7 @@ AC_DEFUN([JOJO_INVENTOR],[
 
       if test x"$have_inventor" = "xno"; then
         CPPFLAGS=$save_cppflags
-        LDFLAGS=$save_ld_flags
+        LDFLAGS=$save_ldflags
         LIBS=$save_libs
       else
         AC_DEFINE(HAVE_INVENTOR)
