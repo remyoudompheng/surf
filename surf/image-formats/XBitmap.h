@@ -57,6 +57,8 @@ namespace ImageFormats {
 		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
 	};
 
+	extern XBitmap imgFmt_XBitmap;
+
 }
 
 #endif //!IMAGEFORMAT_XBM_H

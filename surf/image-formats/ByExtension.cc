@@ -23,9 +23,7 @@
  */
 
 
-
-#include "ByExtension.h"
-
+#include "AvailableImageFormats.h"
 #include "Misc.h"
 
 namespace ImageFormats {
@@ -34,17 +32,13 @@ namespace ImageFormats {
 
 	bool ByExtension::saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg)
 	{
-		Format* fmt = guessFormat(filename, color);
+		const char* newfilename;
+		Format* fmt = guessFormat(filename, color, &newfilename);
 
 		if (fmt == 0) {
-			Misc::alert("Couldn't determine file type by extension.");
 			return false;
 		}
-		if (fmt->getColorType() == dithered) {
-			Misc::alert("You must choose a color image file format.");
-			return false;
-		}
-		return fmt->saveColorImage(filename, data, fromDlg);
+		return fmt->saveColorImage(newfilename, data, fromDlg);
 	}
 
 	bool ByExtension::saveDitheredImage(const char* filename,
@@ -52,17 +46,81 @@ namespace ImageFormats {
 					    int paper_width, int paper_height, int resolution,
 					    bool fromDlg)
 	{
-		Format* fmt = guessFormat(filename, dithered);
+		const char* newfilename;
+		Format* fmt = guessFormat(filename, dithered, &newfilename);
 
 		if (fmt == 0) {
-			Misc::alert("Couldn't determine file type by extension.");
 			return false;
 		}
-		if (fmt->getColorType() == color) {
-			Misc::alert("You must choose a dithered image file format.");
-			return false;
-		}
-		return fmt->saveDitheredImage(filename, pixel, paper_width, paper_height, resolution, fromDlg);
+		return fmt->saveDitheredImage(newfilename, pixel, paper_width, paper_height, resolution, fromDlg);
 	}
 
+	Format* ByExtension::guessFormat(const char* filename, ColorType type,
+					 const char** newfilename)
+	{
+		// check if it's saving to a pipe:
+		
+		if (filename[0] == '|') {
+			*newfilename = filename;
+			switch (type) {
+			case color:
+				return &imgFmt_PPM;
+			case dithered:
+				return &imgFmt_PBM;
+			default: // suppress warning
+				return 0;
+			}
+		}
+		
+		// check if filename is of type "<fmt>|<command>"
+		
+		const int maxExtLen = 32;
+		int len = strlen(filename);
+		
+		if (len > maxExtLen) {
+			len = maxExtLen;
+		}
+		
+		bool pipe = false;
+		char ext[maxExtLen];
+		
+		for (int i = 0; i != len; ++i) {
+			if (filename[i] == '|') {
+				pipe = true;
+				std::strncpy(ext, filename, i);
+				ext[i] = 0;
+				*newfilename = filename + i;
+				break;
+			}
+		}
+		
+		if (!pipe) { // just look for "*.extension"
+			char* extPtr = strrchr(filename, '.');
+			if (extPtr == 0) {
+				return 0;
+			}
+			strncpy(ext, extPtr + 1, maxExtLen);
+			*newfilename = filename;
+		}
+
+		return findFormatByExt(ext, type);
+	}
+
+	Format* ByExtension::findFormatByExt(const char* ext, ColorType type)
+	{
+		for (int i = 0; i != numAvailableFormats; ++i) {
+			if (availableFormats[i]->isExtension(ext)) {
+				ColorType fmtType = availableFormats[i]->getColorType();
+				if (fmtType == both || fmtType == type) {
+					return availableFormats[i];
+				} else {
+					Misc::alert("You chose the wrong extension.");
+					return 0;
+				}
+			}
+		}
+		Misc::alert("Couldn't determine file type by extension.");
+		return 0;
+	}
+	
 } // namespace ImageFormats

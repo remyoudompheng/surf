@@ -416,13 +416,8 @@ void Script::saveColorImage ()
 		return;
 	}
 	
-	ImageFormats::Format* fmt = ImageFormats::guessFormat(surface_filename_data, ImageFormats::color);
-	if (!fmt) {
-		Misc::alert("couldn't determine file format by extension");
-		return;
-	}
-	
-	fmt->saveColorImage(surface_filename_data, *buffer, false);
+	ImageFormats::saveColorImage(surface_filename_data,
+				     *buffer, false);
 }
 
 
@@ -504,16 +499,10 @@ void Script::saveDitheredImage()
 		return;
 	}
 
-	ImageFormats::Format* fmt = ImageFormats::guessFormat(surface_filename_data, ImageFormats::dithered);
-	if (fmt == 0) {
-		Misc::alert("couldn't determine file format by extension");
-		return;
-	}
-
-	fmt->saveDitheredImage(surface_filename_data, *pixel,
-			       main_width_data, main_height_data,
-			       print_resolution_array_data[print_resolution_data],
-			       false);
+	ImageFormats::saveDitheredImage(surface_filename_data, *pixel,
+					main_width_data, main_height_data,
+					print_resolution_array_data[print_resolution_data],
+					false);
 }
 
 void Script::ditherSurface()

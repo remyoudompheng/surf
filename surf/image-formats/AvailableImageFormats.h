@@ -22,8 +22,6 @@
  *
  */
 
-
-
 #ifndef AVAILABLEIMAGEFMTS_H
 #define AVAILABLEIMAGEFMTS_H
 
@@ -43,47 +41,8 @@
 #endif
 
 namespace ImageFormats {
-	extern ByExtension imgFmt_ByExtension;
-	extern JPEG imgFmt_JPEG;
-	extern Tiff imgFmt_TIFF;
-	extern Postscript imgFmt_Postscript;
-	extern Sun imgFmt_Sun;
-	extern EPS imgFmt_EPS;
-	extern XWD imgFmt_XWD;
-	extern XBitmap imgFmt_XBitmap;
-	extern PPM imgFmt_PPM;
-	extern PBM imgFmt_PBM;
-
-#ifndef NO_GUI
-	extern Pipe imgFmt_Pipe;
-#endif
-
-	Format* availableFormats[] = {
-		&imgFmt_ByExtension,
-		&imgFmt_PPM,
-		&imgFmt_PBM,
-		&imgFmt_Postscript,
-		&imgFmt_EPS,
-
-#ifdef HAVE_LIBJPEG
-		&imgFmt_JPEG,
-#endif
-
-#ifdef HAVE_LIBTIFF
-		&imgFmt_TIFF,
-#endif
-		
-		&imgFmt_XBitmap,
-		&imgFmt_XWD,
-		&imgFmt_Sun,
-#ifndef NO_GUI
-		&imgFmt_Pipe,
-#endif
-		0 // last element is 0
-	};
-
-	int numAvailableFormats = sizeof(availableFormats) / sizeof(Format) - 1;
-
+	extern Format* availableFormats[];
+	extern int numAvailableFormats;
 }
 
 #endif //AVAILABLEIMAGEFMTS_H

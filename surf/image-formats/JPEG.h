@@ -92,6 +92,8 @@ namespace ImageFormats {
 #ifndef NO_GUI
 	gint JPEG_handle_delete(GtkWidget*, GdkEvent*, gpointer data);
 #endif
+
+	extern JPEG imgFmt_JPEG;
 }
 
 #endif //!IMAGEFORMAT_JPEG_H

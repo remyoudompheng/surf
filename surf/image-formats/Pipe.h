@@ -87,6 +87,8 @@ namespace ImageFormats {
 	};
 
 	gint Pipe_handle_delete(GtkWidget*, GdkEvent*, gpointer data);
+
+	extern Pipe imgFmt_Pipe;
 }
 
 

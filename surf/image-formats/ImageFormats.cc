@@ -30,8 +30,6 @@
 #include <iostream>
 #include <endian.h>
 
-#include "ImageFormats.h"
-
 namespace ImageFormats {
 
 #ifndef NO_GUI
@@ -60,41 +58,16 @@ namespace ImageFormats {
 		return (Format*)gtk_object_get_user_data(GTK_OBJECT(actItem));
 	}
 #endif // !NO_GUI
-	
-	Format* guessFormat(const char* filename, ColorType type)
+	bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg)
 	{
-		if (filename[0] == '|') { // saving to pipe
-			switch (type) {
-			case color:
-				return &imgFmt_PPM;
-			case dithered:
-				return &imgFmt_PBM;
-			default: ; // we don't like warnings..
-			}
-		}
-
-		char* ext = strrchr(filename, '.');
-
-		if (ext == 0) {
-			return 0;
-		}
-
-		ext += 1;
-		
-		for (int i = 0; i != numAvailableFormats; ++i) {
-			if (availableFormats[i]->isExtension(ext)) {
-				ColorType fmtType = availableFormats[i]->getColorType();
-				if (fmtType == both || fmtType == type) {
-					return availableFormats[i];
-				} else {
-					Misc::alert("You chose the wrong extension.");
-					return 0;
-				}
-			}
-		}
-		return 0;
+		return imgFmt_ByExtension.saveColorImage(filename, data, fromDlg);
 	}
-	
+
+	bool saveDitheredImage(const char* filename, bit_buffer& data, int pw, int ph, int res, bool fromDlg)
+	{
+		return imgFmt_ByExtension.saveDitheredImage(filename, data, pw, ph, res, fromDlg);
+	}
+
 	
 	// some file format implementations could use this utility function:
 	// Write a long word to a file respecting endianess:

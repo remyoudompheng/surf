@@ -57,6 +57,8 @@ namespace ImageFormats {
 		}
 	};
 
+	extern Sun imgFmt_Sun;
+
 }
 
 #endif //!IMAGEFORMAT_SUN_H

@@ -57,6 +57,8 @@ namespace ImageFormats {
 		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
 	};
 
+	extern Postscript imgFmt_Postscript;
+
 }
 
 #endif //!IMAGEFORMAT_POSTSCRIPT_H

@@ -61,6 +61,7 @@ namespace ImageFormats {
 
 	};
 
+	extern Tiff imgFmt_TIFF;
 }
 
 #endif //!IMAGEFORMAT_TIFF_H

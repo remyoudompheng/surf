@@ -62,7 +62,8 @@ namespace ImageFormats {
 	GtkWidget* makeFormatMenu(ColorType type);
 	Format* getSelection(GtkWidget* menu);
 #endif
-	Format* guessFormat(const char* filename, ColorType type);
+	bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
+	bool saveDitheredImage(const char* filename, bit_buffer& data, int pw, int ph, int res, bool fromDlg);
 	void put_long(long word, FILE* f, int order);
 	void swapshort(char* bp, unsigned int n);
 	void swaplong(char*bp, unsigned int n);

@@ -114,6 +114,9 @@ namespace ImageFormats {
 #ifndef NO_GUI
 	gint XWD_handle_delete(GtkWidget*, GdkEvent*, gpointer data);
 #endif
+
+	extern XWD imgFmt_XWD;
+
 }
 
 

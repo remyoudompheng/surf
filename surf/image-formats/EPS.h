@@ -57,6 +57,8 @@ namespace ImageFormats {
 		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
 	};
 
+	extern EPS imgFmt_EPS;
+
 }
 
 #endif //!IMAGEFORMAT_EPS_H

@@ -50,7 +50,13 @@ namespace ImageFormats {
 		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
 		
 		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+
+	private:
+		Format* guessFormat(const char* filename, ColorType type, const char** newfilename);
+		Format* findFormatByExt(const char* ext, ColorType type);
 	};
+
+	extern ByExtension imgFmt_ByExtension;
 
 }
 

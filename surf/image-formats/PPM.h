@@ -57,6 +57,8 @@ namespace ImageFormats {
 		}
 	};
 
+	extern PPM imgFmt_PPM;
+
 }
 
 #endif //!IMAGEFORMAT_PPM_H
