@@ -106,7 +106,6 @@ void Triangulator::triangulate()
 
 	if(ScriptVar::gts_coarsen_data == 0) {
 		Misc::progress("Coarsening surface");
-		Misc::progress(0);
 		gts_surface_coarsen(surface, 0, 0, 0, 0, gts_coarsen_stop_cost,
 				    &ScriptVar::gts_max_cost_data, 0);
 		Misc::progress(Misc::done);
@@ -114,7 +113,6 @@ void Triangulator::triangulate()
 
 	if(ScriptVar::clip_data != ScriptVar::clip_none_data) {
 		Misc::progress("Clipping surface");
-		Misc::progress(0);
 		clip();
 		Misc::progress(Misc::done);
 	}

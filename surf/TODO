@@ -1,3 +1,5 @@
+- triangulation crashes if surface is not set
+
 - readline-input: tab-completion would be cool
 
 - slightly rotate around y-axis to prevent vanishing of surface/plane

@@ -56,8 +56,12 @@ void Misc::print_warning(const std::string& txt)
 void Misc::progress(const std::string& _action)
 {
 	action = _action;
-	if(!Script::isQuiet() && !Script::stdout_is_tty()) {
-		std::cout << "status " << action << '\n';
+	if(!Script::isQuiet()) {
+		if(Script::stdout_is_tty()) {
+			std::cout << action << ": ";
+		} else {
+			std::cout << "status " << action << '\n';
+		}
 		std::cout.flush();
 	}
 }

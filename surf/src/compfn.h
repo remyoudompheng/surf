@@ -23,74 +23,46 @@
  */
 
 
-
-
-
-// ===========================================================================
-// File      compfn.h
-// Author:   Stephan Endrass
-// Address:  endrass@mi.uni-erlangen.de
-// Date:     3.2.95
-// ============================================================================
-
 #ifndef COMPFN_H
 #define COMPFN_H
 
+//  Information for dot diffusion:
 
-// -------------------------------
-//  Information for dot diffusion
-// -------------------------------
-
-typedef struct
-{
-	int     x;
-	int     y;
+struct dot_diffusion_struct {
+	int x;
+	int y;
+	double err[8];
+};
  
-	double  err[8];
+//  Information for smooth dot diffusion:
+
+struct  smooth_dot_diffusion_struct {
+	int x;
+	int y;
  
-} dot_diffusion_struct;
- 
-// --------------------------------------
-//  Information for smooth dot diffusion
-// --------------------------------------
+	int n;
+	int* err_x;
+	int* err_y;
+	double* err;
+};
 
-typedef struct
-{
-	int     x;
-	int     y;
- 
-	int     n;
-	int     *err_x;
-	int     *err_y;
-	double  *err;
- 
-} smooth_dot_diffusion_struct;
+//  Function prototypes:
 
-// ----------------------------------------------------------------------------
-//  Function prototypes
-// ----------------------------------------------------------------------------
+void init_pattern();
+void init_dot_diffusion();
+void deinit_dot_diffusion();
 
-void    init_pattern( void );
-void    init_dot_diffusion( void );
-void    deinit_dot_diffusion();
+//  Global variables:
 
-// ----------------------------------------------------------------------------
-//  Global variables
-// ----------------------------------------------------------------------------
+extern  int d_d_n_x[8];
+extern  int d_d_n_y[8];
+extern  int d_d_w[8];
+extern  int d_d_n_n_x[9];
+extern  int d_d_n_n_y[9];
 
-extern  int     d_d_n_x[8];
-extern  int     d_d_n_y[8];
-extern  int     d_d_w[8];
-extern  int     d_d_n_n_x[9];
-extern  int     d_d_n_n_y[9];
-
-extern  dot_diffusion_struct        (*d_d_s[2])[64];    
+extern  dot_diffusion_struct (*d_d_s[2])[64];    
 extern  smooth_dot_diffusion_struct (*s_d_d_s[2])[64];
 
-extern  float   (*compare_function[2][3])( int,int );
+extern  float (*compare_function[2][3])(int, int);
 
-#endif  /* COMPFN_H */
-
-// ============================================================================
-// End of compfn.h
-// ============================================================================
+#endif  // !COMPFN_H

@@ -26,11 +26,10 @@
 // Octree Color Quantization Class
 
 #include <oct_quan.h>
-#include <def.h>
-#include <compfn.h>
 #include <RgbBuffer.h>
 #include <color.h>
-#include <float_buffer.h>
+#include <compfn.h>
+#include <def.h>
 
 #include <cmath>
 
@@ -290,8 +289,8 @@ bool OctQuant::GetPixel(int x, int y, RgbBuffer& picture, OctColor& getcolor)
 	colorrgb color_opt;
    
 	color_opt.set(double(picture.Get_one(x, y, red)),
-		      double(picture.Get_one(x,y,green)),
-		      double(picture.Get_one(x,y,blue)));	
+		      double(picture.Get_one(x, y, green)),
+		      double(picture.Get_one(x, y, blue)));	
 
 	getcolor.SetRed(byte(std::floor(color_opt.red)));
 	getcolor.SetGreen(byte(std::floor(color_opt.green)));
