@@ -1,3 +1,3 @@
-SUBDIRS = src pkgdata
+SUBDIRS = docs pkgdata src
 
 EXTRA_DIST = aclocal.m4

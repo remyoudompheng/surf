@@ -190,4 +190,5 @@ AC_SUBST(CPPFLAGS)
 
 AC_OUTPUT(Makefile
           src/Makefile
-          pkgdata/Makefile)
+          pkgdata/Makefile
+          docs/Makefile)
