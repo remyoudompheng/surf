@@ -65,38 +65,25 @@ namespace ImageFormats {
 			return false;
 		}
 
-#ifndef NO_GUI
-		void destroyDialog() {
-			gtk_widget_destroy(dialog);
-			shown = false;
-		}
-#endif
-		
-		char* filename;
-
 	private:
 		bool shown;
+		bool save;
 
-		RgbBuffer* buffer;
-		
 		bool optimized;
 		bool dither;
 		double ditherval;
 
 #ifndef NO_GUI		
-		void ditherDialog();
-
 		GtkWidget* dialog;
 		GtkWidget* optimizedRB;
 		GtkWidget* ditherHBox;
 		GtkWidget* ditherCB;
 		GtkObject* ditherAdj;
 		GtkWidget* ditherSpin;
+		GMainLoop* gmainloop;
 		
 		VOIDCALL(handle_ok, XPM);
-		VOIDCALL(handle_cancel, XPM) {
-			destroyDialog();
-		}
+		VOIDCALL(handle_cancel, XPM);
 		VOIDCALL(handle_optimized, XPM) {
 			gtk_widget_set_sensitive(ditherHBox,
 						 GTK_TOGGLE_BUTTON(optimizedRB)->active);
@@ -105,15 +92,11 @@ namespace ImageFormats {
 			gtk_widget_set_sensitive(ditherSpin,
 						 GTK_TOGGLE_BUTTON(ditherCB)->active);
 		}
-
+		EVENTCALL(handle_delete_event, XPM);
 #endif
 
-		void reallySave();
+		void reallySave(const char* filename, RgbBuffer& buffer);
 	};
-
-#ifndef NO_GUI
-	gint XPM_handle_delete(GtkWidget*, GdkEvent*, gpointer data);
-#endif
 
 	extern XPM imgFmt_XPM;
 }

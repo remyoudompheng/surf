@@ -66,41 +66,24 @@ namespace ImageFormats {
 			return false;
 		}
 
-#ifndef NO_GUI
-		void destroyDialog() {
-			gtk_widget_destroy(dialog);
-			shown = false;
-		}
-#endif
-		
-		char* filename;
-
 	private:
 		bool shown;
+		bool save;
 
-		RgbBuffer* buffer;
-		
 		int quality;
 
 #ifndef NO_GUI		
-		void qualityDialog();
-
 		GtkWidget* dialog;
 		GtkObject* qualityAdj;
+		GMainLoop* gmainloop;
 
 		VOIDCALL(handle_ok, JPEG);
-		VOIDCALL(handle_cancel, JPEG) {
-			destroyDialog();
-			std::free(filename);
-		}
+		VOIDCALL(handle_cancel, JPEG);
+		EVENTCALL(handle_delete_event, JPEG);
 #endif
 
-		void reallySave();
+		void reallySave(const char* filename, RgbBuffer& buffer);
 	};
-
-#ifndef NO_GUI
-	gint JPEG_handle_delete(GtkWidget*, GdkEvent*, gpointer data);
-#endif
 
 	extern JPEG imgFmt_JPEG;
 }

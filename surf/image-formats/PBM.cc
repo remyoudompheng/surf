@@ -48,8 +48,8 @@ namespace ImageFormats {
 			return false;
 		}
 		
-		fprintf (file, "P4\n%d %d\n", pixel.getWidth(), pixel.getHeight());
-		fwrite (pixel.getBuffer(), 1, pixel.getSize(), file);
+		fprintf(file, "P4\n%d %d\n", pixel.getWidth(), pixel.getHeight());
+		fwrite(pixel.getBuffer(), 1, pixel.getSize(), file);
 
 		return true;
 	}

@@ -48,138 +48,144 @@ namespace ImageFormats {
 	bool JPEG::saveColorImage(const char* fname, RgbBuffer& data, bool fromDlg)
 	{
 #ifndef NO_GUI
-		if (shown) {
+		if(shown) {
 			return false;
 		}
-		shown = true;
-#endif
-		
-		filename = std::strdup(fname); // preserve data
-		buffer = &data;
-		
-#ifndef NO_GUI
+
 		if (fromDlg) {
-			qualityDialog();
+			shown = true;
+
+			dialog = gtk_dialog_new();
+			EVENTCONNECT(dialog, "delete_event", handle_delete_event);
+			gtk_window_set_title(GTK_WINDOW(dialog), "Save JPEG image");
+			
+			// vbox:
+			
+			gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 4);
+			GtkWidget* frame = gtk_frame_new("adjust image quality:");
+			gtk_container_set_border_width(GTK_CONTAINER(frame), 8);
+			gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
+					   frame, true, true, 0);
+			qualityAdj = gtk_adjustment_new(90, 0, 100, 1, 10, 0);
+			GtkWidget* scale = gtk_hscale_new(GTK_ADJUSTMENT(qualityAdj));
+			gtk_container_add(GTK_CONTAINER(frame), scale);
+			
+			// action area:
+			
+			GtkWidget* bt = gtk_button_new_with_label("Okay");
+			gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+					   bt, true, true, 0);
+			GTK_WIDGET_SET_FLAGS(bt, GTK_CAN_DEFAULT);
+			gtk_widget_grab_default(bt);
+			VOIDCONNECT(bt, "clicked", handle_ok);
+			bt = gtk_button_new_with_label("Abort");
+			gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+					   bt, true, true, 0);
+			VOIDCONNECT(bt, "clicked", handle_cancel);
+			
+			gmainloop = g_main_new(false);
+
+			gtk_widget_show_all(dialog);
+			g_main_run(gmainloop);
+			
+			// wait for ok or cancel..
+
+			g_main_destroy(gmainloop);
+			gtk_widget_destroy(dialog);
+
+			if(save) {
+				reallySave(fname, data);
+			}
+
+			shown = false;
 		} else
 #endif
 		       {
 			quality = 90;
-			reallySave();
-			std::free(filename);
+			reallySave(fname, data);
 		}
 		return true;
 	}
 
-#ifndef NO_GUI
-	void JPEG::qualityDialog()
-	{
-		dialog = gtk_dialog_new();
-		gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
-				   GTK_SIGNAL_FUNC(&JPEG_handle_delete), this);
-		gtk_window_set_title(GTK_WINDOW(dialog), "Save JPEG image");
-
-		// vbox:
-
-		gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 4);
-		GtkWidget* frame;
-		frame = gtk_frame_new("adjust image quality:");
-		gtk_container_set_border_width(GTK_CONTAINER(frame), 8);
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
-				   frame, true, true, 0);
-		qualityAdj = gtk_adjustment_new(90, 0, 100, 1, 10, 0);
-		GtkWidget* scale;
-		scale = gtk_hscale_new(GTK_ADJUSTMENT(qualityAdj));
-		gtk_container_add(GTK_CONTAINER(frame), scale);
-
-		// action area:
-
-		GtkWidget* bt;
-		bt = gtk_button_new_with_label("Okay");
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
-				   bt, true, true, 0);
-		GTK_WIDGET_SET_FLAGS(bt, GTK_CAN_DEFAULT);
-		gtk_widget_grab_default(bt);
-		VOIDCONNECT(bt, "clicked", handle_ok);
-		bt = gtk_button_new_with_label("Abort");
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
-				   bt, true, true, 0);
-		VOIDCONNECT(bt, "clicked", handle_cancel);
-
-		gtk_widget_show_all(dialog);
-	}
-
-	void JPEG::handle_ok()
-	{
-		quality = int(GTK_ADJUSTMENT(qualityAdj)->value);
-		destroyDialog();
-		reallySave();
-	}
-
-	gint JPEG_handle_delete(GtkWidget*, GdkEvent*, gpointer data)
-	{
-		JPEG* This = (JPEG*)data;
-		This->destroyDialog();
-		std::free(This->filename);
-		return true;
-	}
-#endif
-
-	void JPEG::reallySave()
+	void JPEG::reallySave(const char* filename, RgbBuffer& buffer)
 	{
 		FileWriter fw(filename);
-		FILE *file;
+		FILE* file;
 		
 		if((file = fw.openFile()) == 0) {
-			Misc::alert ("Could not open file for writing...");
+			Misc::alert("Could not open file for writing...");
 			return;
 		}
 
-		int width = buffer->getWidth();
-		int height = buffer->getHeight();
+		int width = buffer.getWidth();
+		int height = buffer.getHeight();
 
 		// init cinfo struct:
 
 		jpeg_compress_struct cinfo;
 		jpeg_error_mgr jerr;
 		
-		cinfo.err = jpeg_std_error (&jerr);
-		jpeg_create_compress (&cinfo);
-		jpeg_stdio_dest (&cinfo, file);
+		cinfo.err = jpeg_std_error(&jerr);
+		jpeg_create_compress(&cinfo);
+		jpeg_stdio_dest(&cinfo, file);
 		cinfo.image_width = width;
 		cinfo.image_height = height;
 		cinfo.input_components = 3;
 		cinfo.in_color_space = JCS_RGB;
-		jpeg_set_defaults (&cinfo);
-		jpeg_set_quality (&cinfo, quality, true);
-		jpeg_start_compress (&cinfo, true);
+		jpeg_set_defaults(&cinfo);
+		jpeg_set_quality(&cinfo, quality, true);
+		jpeg_start_compress(&cinfo, true);
 		
 		
 		// compress and write to file:
 		
-		int row_stride = width * 3;
+		int row_stride = width*3;
 		JSAMPLE* row = new JSAMPLE[row_stride];
 		JSAMPROW rowpointer[1] = { row };
-		JSAMPLE* rptr = buffer->getRData();
-		JSAMPLE* gptr = buffer->getGData();
-		JSAMPLE* bptr = buffer->getBData();
+		JSAMPLE* rptr = buffer.getRData();
+		JSAMPLE* gptr = buffer.getGData();
+		JSAMPLE* bptr = buffer.getBData();
 		
-		while (cinfo.next_scanline < (unsigned int)(height)) {
+		while(cinfo.next_scanline < unsigned(height)) {
 			JSAMPLE* ptr = row;
-			for (int i = 0; i < width; ++i) {
+			for(int i = 0; i < width; ++i) {
 				*ptr++ = *rptr++;
 				*ptr++ = *gptr++;
 				*ptr++ = *bptr++;
 			}
-			jpeg_write_scanlines (&cinfo, rowpointer, 1);
+			jpeg_write_scanlines(&cinfo, rowpointer, 1);
 		}
 		
 		delete [] row;
 		
-		jpeg_finish_compress (&cinfo);
-		jpeg_destroy_compress (&cinfo);
-
-		std::free(filename);
+		jpeg_finish_compress(&cinfo);
+		jpeg_destroy_compress(&cinfo);
 	}
+
+#ifndef NO_GUI
+
+	// Gtk callbacks:
+
+	void JPEG::handle_ok()
+	{
+		quality = int(GTK_ADJUSTMENT(qualityAdj)->value);
+		save = true;
+		g_main_quit(gmainloop);
+	}
+
+	void JPEG::handle_cancel()
+	{
+		save = false;
+		g_main_quit(gmainloop);
+	}
+
+	gint JPEG::handle_delete_event()
+	{
+		save = false;
+		g_main_quit(gmainloop);
+		return true;
+	}
+#endif
 
 
 } // namespace ImageFormats

@@ -64,29 +64,17 @@ namespace ImageFormats {
 			return false;
 		}
 
-#ifndef NO_GUI
-		void destroyDialog() {
-			gtk_widget_destroy(dialog);
-			shown = false;
-		}
-#endif
-
-		char* filename;
-
 	private:
 		bool shown;
+		bool save;
 		
-		RgbBuffer* buffer;
-
 		bool indexed;
 		bool optimized;
 		bool dither;
 		double ditherval;
 
 #ifndef NO_GUI	
-		void showDialog();
 		GtkWidget* dialog;
-
 		GtkWidget* indexedRB;
 		GtkWidget* indexedFrame;
 		GtkWidget* optimizedRB;
@@ -94,12 +82,10 @@ namespace ImageFormats {
 		GtkWidget* ditherCB;
 		GtkObject* ditherAdj;
 		GtkWidget* ditherSpin;
+		GMainLoop* gmainloop;
 		
 		VOIDCALL(handle_ok, XWD);
-		VOIDCALL(handle_cancel, XWD) {
-			destroyDialog();
-			std::free(filename);
-		}
+		VOIDCALL(handle_cancel, XWD);
 		VOIDCALL(handle_indexed, XWD) {
 			gtk_widget_set_sensitive(indexedFrame,
 						 GTK_TOGGLE_BUTTON(indexedRB)->active);
@@ -112,16 +98,13 @@ namespace ImageFormats {
 			gtk_widget_set_sensitive(ditherSpin,
 						 GTK_TOGGLE_BUTTON(ditherCB)->active);
 		}
+		EVENTCALL(handle_delete_event, XWD);
 #endif
 
-		void reallySave();
-		void saveAsTrueColor(FILE*);
-		void saveAsIndexed(FILE*);
+		void reallySave(const char* filename, RgbBuffer& buffer);
+		void saveAsTrueColor(FILE* file, RgbBuffer& buffer);
+		void saveAsIndexed(FILE* file, RgbBuffer& buffer);
 	};
-
-#ifndef NO_GUI
-	gint XWD_handle_delete(GtkWidget*, GdkEvent*, gpointer data);
-#endif
 
 	extern XWD imgFmt_XWD;
 
