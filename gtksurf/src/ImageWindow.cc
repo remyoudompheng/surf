@@ -15,25 +15,31 @@
 
 #include <ImageWindow.h>
 
+#include <gdk/gdkkeysyms.h>
+
 #include<iostream>
 #include<fstream>
 #include<strstream>
 
 ImageWindow::ImageWindow(Glade& _glade, Kernel& _kernel)
 	: glade(_glade), kernel(_kernel),
+	  ditherwin(glade, kernel),
 	  pixbuf(0)
 {
+	kernel.set_imagewin(this);
+
 	window = glade.get_widget("window_image");
 	drawingarea = glade.get_widget("drawingarea");
 	
 	glade.sig_connect(window, "delete_event", _on_delete_event, this);
+	glade.sig_connect(window, "key_press_event", _on_key_press_event, this);
 	glade.sig_connect(drawingarea, "expose_event", _on_expose_event, this);
 	glade.sig_connect(drawingarea, "button_press_event", _on_button_press_event, this);
 	gtk_widget_add_events(drawingarea, GDK_BUTTON_PRESS_MASK);
 	glade.sig_connect("save_image", "activate", _on_save_activate, this);
 	glade.sig_connect("save_image_as", "activate", _on_save_as_activate, this);
 	glade.sig_connect("close_image", "activate", _on_close_activate, this);
-	glade.sig_connect("copy_image", "activate", _on_copy_activate, this);
+	glade.sig_connect("dither_image", "activate", _on_dither_activate, this);
 	
 	popupmenu = glade.get_widget("menu_image");
 	
@@ -44,23 +50,13 @@ void ImageWindow::set_title()
 {
 	std::string title = PACKAGE;
 	title += " - Color Image: ";
+
 	if(filename.length() == 0) {
 		title += "Untitled";
 	} else {
 		title += filename;
 	}
 	gtk_window_set_title(GTK_WINDOW(window), title.c_str());
-}
-
-void ImageWindow::show()
-{
-	gtk_widget_show(window);
-	gdk_window_raise(window->window);
-}
-
-void ImageWindow::hide()
-{
-	gtk_widget_hide(window);
 }
 
 void ImageWindow::clear()
@@ -107,6 +103,23 @@ void ImageWindow::set_image(guchar* pixdata, int width, int height, size_t rowst
 
 // Gtk callbacks:
 // ======================================================================
+
+void ImageWindow::on_key_press_event(GdkEventKey* event)
+{
+	if(event->state == GDK_CONTROL_MASK) {
+		switch(event->keyval) {
+		case GDK_s:
+			on_save_activate();
+			break;
+		case GDK_d:
+			on_dither_activate();
+			break;
+		case GDK_w:
+			on_close_activate();
+			break;
+		}
+	}
+}
 
 void ImageWindow::on_expose_event(GdkEventExpose* event)
 {
@@ -161,7 +174,7 @@ void ImageWindow::on_save_as_activate(GtkWidget*)
 	filetype.assign("auto");
 	gtk_widget_show_all(menu);
 
-	if(glade.fileselect("Save Image As", menu)) {
+	if(glade.fileselect("Save Color Image As", menu)) {
 		filename = glade.get_filename();
 		set_title();
 		on_save_activate();
@@ -175,11 +188,15 @@ void ImageWindow::on_close_activate(GtkWidget*)
 	hide();
 }
 
-void ImageWindow::on_copy_activate(GtkWidget*)
+void ImageWindow::on_dither_activate(GtkWidget*)
 {
-	// TODO!!!
-
-	// copy image
+	std::string script = "surface_run_commands = 1;\n";
+	if(mode == SURFACE) {
+		script += "dither_surface;\n";
+	} else {
+		script += "dither_curve;\n";
+	}
+	kernel.send(script);
 }
 
 void ImageWindow::on_filetype_activate(GtkWidget* wid)
@@ -187,7 +204,6 @@ void ImageWindow::on_filetype_activate(GtkWidget* wid)
 	char* str = static_cast<char*>(gtk_object_get_user_data(GTK_OBJECT(wid)));
 	
 	if(str != 0) {
-		std::cerr << "filetype is now: " << str << "\n";
 		filetype.assign(str);
 	}
 }

@@ -23,6 +23,7 @@
 
 class ScriptWindow;
 class ImageWindow;
+class DitherWindow;
 
 class Kernel {
 public:
@@ -34,6 +35,9 @@ public:
 	}
 	void set_imagewin(ImageWindow* iw) {
 		imagewin = iw;
+	}
+	void set_ditherwin(DitherWindow* dw) {
+		ditherwin = dw;
 	}
 
 	void connect_handler() {
@@ -65,8 +69,8 @@ public:
 	void receive_bytes(unsigned char* buf, size_t len) {
 		kernel_output->read(buf, len);
 	}
-	unsigned char receive_byte() {
-		unsigned char c;
+	char receive_byte() {
+		char c;
 		kernel_output->get(c);
 		return c;
 	}
@@ -108,6 +112,7 @@ private:
 
 	ScriptWindow* scriptwin;
 	ImageWindow* imagewin;
+	DitherWindow* ditherwin;
 
 	std::string defaults;
 
@@ -128,6 +133,7 @@ private:
 		NEUTRAL,
 		COLOR_IMAGE_HEADER,
 		COLOR_IMAGE_DATA,
+		DITHER_IMAGE,
 		STOPPED
 	} state;
 

@@ -17,6 +17,7 @@
 #include <Misc.h>
 #include <ScriptWindow.h>
 #include <ImageWindow.h>
+#include <DitherWindow.h>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -25,6 +26,20 @@
 #include <signal.h>
 
 #include<strstream>
+
+namespace {
+	char change_bits(char b)
+	{
+		return    (b >> 7) & 0x01
+			| (b >> 5) & 0x02
+			| (b >> 3) & 0x04
+			| (b >> 1) & 0x08
+			| (b << 1) & 0x10
+			| (b << 3) & 0x20
+			| (b << 5) & 0x40
+			| (b << 7) & 0x80;
+	}
+}
 
 Kernel::Kernel(const std::string& kernel_path)
 	: state(NEUTRAL)
@@ -157,12 +172,23 @@ void Kernel::process_output()
 	switch(state) {
 	case NEUTRAL: {
 		std::string s = receive_line();
-		if(s == "color_image") {
+		if(s == "draw_surface") {
 			state = COLOR_IMAGE_HEADER;
-			scriptwin->set_status("Rendering image...");
+			imagewin->set_mode(ImageWindow::SURFACE);
+			scriptwin->set_status("Rendering surface...");
+		} else if(s == "draw_curve") {
+			state = COLOR_IMAGE_HEADER;
+			imagewin->set_mode(ImageWindow::CURVE);
+			scriptwin->set_status("Rendering curve...");
 		} else if(s == "antialiased_image") {
 			state = COLOR_IMAGE_HEADER;
 			scriptwin->set_status("Antialiasing image...");
+		} else if(s == "dither_surface") {
+			state = DITHER_IMAGE;
+			imagewin->set_mode(ImageWindow::SURFACE);
+		} else if(s == "dither_curve") {
+			state = DITHER_IMAGE;
+			imagewin->set_mode(ImageWindow::CURVE);
 		} else if(s == "clear_screen") {
 			imagewin->clear();
 		} else if(s == "error") {
@@ -191,6 +217,7 @@ void Kernel::process_output()
 			scriptwin->set_status("Wrong image format!\n");
 			scriptwin->progress_mode(false);
 			state = NEUTRAL;
+			break;
 		}
 		image.width = receive_int();
 		image.height = receive_int();
@@ -220,14 +247,31 @@ void Kernel::process_output()
 			scriptwin->progress_mode(false);
 
 			imagewin->set_image(image.pixdata, image.width, image.height, image.rowstride);
-		} /*else {
+		} else {
 			// I don't really know why should we need this,
                         // but sometimes I do here!
                         // (otherwise I don't get everything out from the pipe.. :-/)
 			
 			process_output();
-		}*/
+		}
 
+		break;
+	}
+	case DITHER_IMAGE: {
+		state = NEUTRAL;
+		if(receive_line() != "P4") {
+			break;
+		}
+		std::string whstring = receive_line();
+		std::istrstream is(whstring.c_str());
+		is >> image.width >> image.height;
+		size_t bytesPerRow = image.width/8 + (image.width%8 ? 1 : 0);
+		image.length = image.height*bytesPerRow;
+		gchar* data = new gchar[image.length];
+		for(size_t i = 0; i != image.length; i++) {
+			data[i] = change_bits(receive_byte());
+		}
+		ditherwin->set_image(data, image.width, image.height);
 		break;
 	}
 	case STOPPED:

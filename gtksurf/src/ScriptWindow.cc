@@ -34,7 +34,6 @@ ScriptWindow::ScriptWindow(Glade& _glade, Kernel& _kernel)
 	  dirty(false)
 {
 	kernel.set_scriptwin(this);
-	kernel.set_imagewin(&imagewin);
 	
 	window = glade.get_widget("window_script");
 	text_script = glade.get_widget("text_script");

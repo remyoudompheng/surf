@@ -9,8 +9,8 @@
  */
 
 
-#ifndef IMAGE_WINDOW_H
-#define IMAGE_WINDOW_H
+#ifndef DITHER_WINDOW_H
+#define DITHER_WINDOW_H
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -18,9 +18,6 @@
 
 #include <Glade.h>
 #include <Kernel.h>
-#include <DitherWindow.h>
-
-#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include<string>
 
@@ -28,13 +25,13 @@
 #define MENUCB(name) \
         void on_##name##_activate(GtkWidget* w = 0);\
         static void _on_##name##_activate(GtkWidget* w, GladeWindow* This) {\
-                static_cast<ImageWindow*>(This)->on_##name##_activate(w);\
+                static_cast<DitherWindow*>(This)->on_##name##_activate(w);\
         }
 
-class ImageWindow : public GladeWindow {
+class DitherWindow : public GladeWindow {
 public:
-	ImageWindow(Glade& glade, Kernel& kernel);
-	virtual ~ImageWindow() {}
+	DitherWindow(Glade& glade, Kernel& kernel);
+	virtual ~DitherWindow() {}
 
 	void show() {
 		gtk_widget_show(window);
@@ -44,28 +41,15 @@ public:
 		gtk_widget_hide(window);
 	}
 		
-
-	enum ImageMode {
-		SURFACE,
-		CURVE
-	};
-	void set_mode(ImageMode _mode) {
-		mode = _mode;
-	}
-	
-	void clear();
-
-	void set_image(guchar* pixdata, int width, int height, size_t rowstride);
+	void set_image(gchar* pixdata, int width, int height);
 
 private:
 	Glade& glade;
 	Kernel& kernel;
-	DitherWindow ditherwin;
 
-	GdkPixbuf* pixbuf;
+	GdkGCValues gcval;
+	GdkBitmap* bitmap;
 
-	ImageMode mode;
-	
 	std::string filename;
 	std::string filetype;
 
@@ -81,33 +65,28 @@ private:
 	MENUCB(save);
 	MENUCB(save_as);
 	MENUCB(close);
-	MENUCB(dither);
 
 	MENUCB(filetype);
 
 	static int _on_delete_event(GtkWidget*, GdkEvent*, GladeWindow* This) {
-		static_cast<ImageWindow*>(This)->on_close_activate();
+		static_cast<DitherWindow*>(This)->on_close_activate();
 		return true;
 	}
 	void on_key_press_event(GdkEventKey* e);
 	static int _on_key_press_event(GtkWidget*, GdkEvent* e, GladeWindow* This) {
-		static_cast<ImageWindow*>(This)->on_key_press_event(reinterpret_cast<GdkEventKey*>(e));
+		static_cast<DitherWindow*>(This)->on_key_press_event(reinterpret_cast<GdkEventKey*>(e));
 		return true;
 	}
 	void on_expose_event(GdkEventExpose* event);
 	static int _on_expose_event(GtkWidget*, GdkEvent*e, GladeWindow* This) {
-		static_cast<ImageWindow*>(This)->on_expose_event(reinterpret_cast<GdkEventExpose*>(e));
+		static_cast<DitherWindow*>(This)->on_expose_event(reinterpret_cast<GdkEventExpose*>(e));
 		return false;
 	}
 	void on_button_press_event(GdkEventButton* event);
 	static int _on_button_press_event(GtkWidget*, GdkEvent*e, GladeWindow* This) {
-		static_cast<ImageWindow*>(This)->on_button_press_event(reinterpret_cast<GdkEventButton*>(e));
+		static_cast<DitherWindow*>(This)->on_button_press_event(reinterpret_cast<GdkEventButton*>(e));
 		return false;
-	}
-
-	static void delete_array_fn(guchar pixels[], gpointer) {
-		delete [] pixels;
 	}
 };
 
-#endif //!IMAGE_WINDOW_H
+#endif //!DITHER_WINDOW_H
