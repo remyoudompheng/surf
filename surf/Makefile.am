@@ -22,7 +22,7 @@ YACCSRC_OBJ = yaccsrc/bezierarith.o yaccsrc/hornerarith.o yaccsrc/monomarith.o y
 
 LOCAL_OBJECTS = $(CURVE_OBJ) $(BALLS_OBJ) $(MISC_OBJ) $(DRAWFUNC_OBJ) $(IMAGE_OBJ) $(SRC_OBJ) $(YACCSRC_OBJ) $(DRAW_OBJ) $(DEBUG_OBJ) $(DITHER_OBJ) #$(TRIANGULATOR_OBJ)
 
-SUBDIRS = yaccsrc src image-formats drawfunc curve draw misc debug dither docs #triangulator
+SUBDIRS = yaccsrc src image-formats drawfunc curve draw misc debug dither docs # triangulator
 
 bin_PROGRAMS = surf
 surf_SOURCES =

@@ -173,15 +173,15 @@ fi
 
 dnl check for GTS:
 dnl --------------
-JOJO_GTS
-
-if test "x$have_gts" = "xyes"; then
-
-  dnl OpenInventor:
-  dnl -------------
-  JOJO_INVENTOR
-
-fi
+dnl JOJO_GTS
+dnl
+dnl if test "x$have_gts" = "xyes"; then
+dnl 
+dnl   dnl OpenInventor:
+dnl   dnl -------------
+dnl   JOJO_INVENTOR
+dnl
+dnl fi
 
 dnl link with lex-libaray:
 dnl ----------------------
@@ -206,6 +206,6 @@ AC_OUTPUT(Makefile
 	  draw/Makefile
 	  misc/Makefile
 	  debug/Makefile
-	  dither/Makefile
-          triangulator/Makefile)
+	  dither/Makefile)
+dnl          triangulator/Makefile)
 
