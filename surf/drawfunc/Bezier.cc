@@ -54,9 +54,10 @@ Bezier::Bezier( const Polyx &Polynom, double le, double ri )
 		for( l = 0; l < Number; l++, cf++, cf2++ )
 			*cf = *cf2 / binom_coeff( num, l );   // scale coeffs
       
-		DivideLeft( 1.0 / ( ri + 1.0 ) );   // subdivide at r and keep left
-		if( le > 0.0 )                      // subdivide at l and keep right
-			DivideRight( ( ri - le ) / ( ri * ( le + 1.0 ) ) );
+		DivideLeft(1.0, ri);   // subdivide at r and keep left
+		if(le > 0.0) {                      // subdivide at l and keep right
+			DivideRight((ri - le)/ri);
+		}
 	} else {
 		double factor = ( (Number % 2) ? 1.0 : -1.0);
 		for( l = 0, cf2 += num;
@@ -67,10 +68,13 @@ Bezier::Bezier( const Polyx &Polynom, double le, double ri )
 		// store in reverse order and multiply 
 		// with (-1)^(n-i) to swap x and w
 		
-		DivideRight( le / ( le - 1.0 ) ); // subdivide at l and keep right
-		if( ri < 0.0 )                    // subdivide at r and keep left
-			//	DivideLeft( ( ri - 1.0 ) * le / ( ( le - 1.0 ) * ri ) );
-			DivideLeft( ( le - 1.0 ) * ri / ( ( ri - 1.0 ) * le ) );
+		DivideRight(-le, 1.0); // subdivide at l and keep right
+		if(ri < 0.0) {                    // subdivide at r and keep left
+			DivideLeft((le - ri)/le);
+		}
+		if(ri > 0.0) {
+			DivideLeft((le -ri)/le);
+		}
 		
 	}
 }
@@ -91,15 +95,8 @@ int Bezier::LargestRoot( double* Roots, int& NumberOfRoots) const
 
 	// return no if zero interval width or no crossing
   
-	if( Left >= 0.0 ) {
-		tt = ( 1.0 - sadd ) * Left / ( Left + 1.0 )
-			+ sadd * Right / ( Right + 1.0 );  // zero transformed
-		r = tt / ( 1.0 - tt );               // retransform zero
-	} else {
-		tt = ( 1.0 - sadd ) / ( 1.0 - Left )
-			+ sadd / ( 1.0 - Right );          // zero transformed
-		r = ( tt - 1.0 ) / tt;               // retransform zero
-	}
+	tt = sadd;
+	r = (1 - tt)*Left + tt*Right;
 
 	if( r - Left < Epsilon || Right - r < Epsilon ) {
 		// if close enough to interval borders
@@ -125,14 +122,9 @@ int Bezier::LargestRoot( double* Roots, int& NumberOfRoots) const
 
 void Bezier::DivideBezier( Bezier *Field, const double s ) const
 {
-	if( Right > Left ) {
-		if( Left >= 0.0 )
-			DivideBezier( Field, ( s - Left ) * ( Right + 1.0 ) /
-				      ( ( Right - Left ) * ( s + 1.0 ) ), s );
-		else
-			DivideBezier( Field, ( s - Left ) * ( 1.0 - Right ) /
-				      ( ( Right - Left ) * ( 1.0 - s ) ), s );
-	}
+	if(Right > Left) {
+		DivideBezier(Field, (s - Left)/(Right - Left), s);
+	}	
 }
 
 // ----------------------------------------------------------------------------
@@ -169,13 +161,7 @@ void Bezier::DivideBezier( Bezier *Field, const double t, const double x )const
 void Bezier::DivideDeflateLeft( const double s )
 {
 	if ( Right > Left ) {
-		double t = 0.0;
-		if( Left >= 0.0 )
-			t = ( Right - s ) * ( 1.0 + Left ) /
-				( ( Right - Left ) * ( 1.0 + s ) );
-		else
-			t = ( Right - s ) * ( 1.0 - Left ) /
-				( ( Right - Left ) * ( 1.0 - s ) );
+		double t = (Right - s)/(Right - Left);
 		
 		DivideLeft( t );       // subdivide at t and keep left
 		int i = --Number;      // decrease number and do deflation at t = 1
@@ -201,6 +187,16 @@ void Bezier::DivideLeft( const double t )
 			*cf = *cf * emt + *cf2 * t;
 }
 
+void Bezier::DivideLeft(const double t1, const double t2)
+{
+	double* cll = Coeff + Number - 1;
+	for(double* cl = Coeff + 1; cl <= cll; cl++) {
+		for(double* cf = cll, *cf2 = cf - 1; cf >= cl; cf--, cf2--) {
+			*cf = *cf2 * t1 + *cf * t2;
+		}
+	}
+}
+
 // ----------------------------------------------------------------------------
 // ------ subdivide and keep right part of interval ---------------------------
 // ----------------------------------------------------------------------------
@@ -214,6 +210,16 @@ void Bezier::DivideRight( const double t )
 			*cf = *cf * t + *cf2 * emt;
 }
 
+void Bezier::DivideRight(const double t1, const double t2)
+{
+	double* cll = Coeff + Number - 1;
+	for(double* cl = cll - 1; cl >= Coeff; cl--) {
+		for(double* cf = Coeff, *cf2 = cf + 1; cf <= cl; cf++, cf2++) {
+			*cf = *cf * t1 + *cf2 * t2;
+		}
+	}
+}
+
 // ----------------------------------------------------------------------------
 // -------- get crossing of bezier polygon ------------------------------------
 // ----------------------------------------------------------------------------
@@ -224,9 +230,10 @@ int Bezier::PolygonCrossing(double &s) const
 	int found = Number - 1;
 	double *cf = Coeff + found, *cf2 = cf - 1;
 
-	while( found && *cf * (*cf2) > 0.0 )
+	while(found && *cf * (*cf2) >= 0.0) {
 		found--, cf--, cf2--;                   // find crossing descending
-
+	}
+	
 	if( !found ) {                             // no crossing in interval
 		return false;
 	}

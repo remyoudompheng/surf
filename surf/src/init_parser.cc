@@ -410,6 +410,13 @@ void init_main_variables()
 		symtab_add_surface_name (str, SYM_POLYXYZ, false, &sym_cutsurfaces[i]);
 	}
 
+	std::string cutsurf = "cutsurface";
+	for(size_t i = 0; i < sizeof(sym_cutsurfaces)/sizeof(sym_cutsurfaces[0]); i++) {
+		char suff = '1' + i;
+		addPoly(cutsurf + suff, &sym_cutsurfaces[i]);
+	}
+	addPoly(cutsurf, &sym_cutsurfaces[0]); // an alias for "cutsurface1"
+
 	// -----------------------------
 	// GUI->kernel variables
 	// -----------------------------

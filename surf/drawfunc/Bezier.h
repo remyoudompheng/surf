@@ -45,8 +45,10 @@ class Bezier : public Polyx
 	int     PolygonCrossing(double&) const;
 	// return crossing of bezier polygon in double
 
-	void    DivideLeft( const double );  // divide interval and keep left part
-	void    DivideRight( const double ); // divide interval and keep right part
+	void DivideLeft(const double);  // divide interval and keep left part
+	void DivideLeft(const double, const double);  // divide interval and keep left part
+	void DivideRight(const double); // divide interval and keep right part
+	void DivideRight(const double, const double); // divide interval and keep right part
 
 public:
 	Bezier()                    : Polyx(), Left(0), Right(0)

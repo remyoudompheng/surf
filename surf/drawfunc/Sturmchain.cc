@@ -75,8 +75,12 @@ int Sturmchain::SignChange( double x, double Val ) const
   for( int i = 1; i < Length; i++ )
     {
       double ValN = Chain[i].Horner( x );
-      if( Val*ValN < 0.0 )
+      if(ValN == 0.0) {
+	      continue;
+      }
+      if(Val*ValN < 0.0) {
 	result ++;
+      }
       Val = ValN;
     }
   return result;
