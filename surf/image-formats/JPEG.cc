@@ -75,7 +75,7 @@ namespace ImageFormats {
 		cinfo.input_components = 3;
 		cinfo.in_color_space = JCS_RGB;
 		jpeg_set_defaults(&cinfo);
-		jpeg_set_quality(&cinfo, ScriptVar::jpeg_quality_data, true);
+		jpeg_set_quality(&cinfo, ScriptVar::jpg_quality_data, true);
 		jpeg_start_compress(&cinfo, true);
 		
 		

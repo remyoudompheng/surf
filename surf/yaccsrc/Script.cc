@@ -350,15 +350,7 @@ void Script::addNewCommands()
 	replaceCommand("print_color_image_formats", printColorImageFormats);
 	replaceCommand("print_dither_image_formats", printDitherImageFormats);
 //	replaceCommand("print_three_d_image_formats", print3DImageFormats);
-	replaceCommand("print_background", printBackground);
-	replaceCommand("print_curve_color", printCurveColor);
-	replaceCommand("print_origin", printOrigin);
-	replaceCommand("print_rotation", printRotation);
-	replaceCommand("print_scale", printScale);
-	replaceCommand("print_sequence", printSequence);
-	replaceCommand("print_clip", printClip);
-	replaceCommand("print_curve_width", printCurveWidth);
-	replaceCommand("print_curve_gamma", printCurveGamma);
+	replaceCommand("print_variable", printVariable);
 }
 
 //
@@ -807,95 +799,50 @@ void Script::print3DImageFormats()
 }
 #endif
 
-void Script::printBackground()
+void Script::printVariable()
 {
 	using namespace ScriptVar;
-	std::cout << "background:\t"
-		  << color_background_data[0] << ' '
-		  << color_background_data[1] << ' '
-		  << color_background_data[2] << '\n';
-	std::cout.flush();
-}
 
-void Script::printCurveColor()
-{
-	using namespace ScriptVar;
-	std::cout << "curve_color:\t"
-		  << curve_color_slider_data[0] << ' '
-		  << curve_color_slider_data[1] << ' '
-		  << curve_color_slider_data[2] << '\n';
-	std::cout.flush();
-}
+	if(variable_data == 0) {
+		std::cerr << "Error: 'variable' not set.\n";
+		return;
+	}
 
-void Script::printOrigin()
-{
-	using namespace ScriptVar;
-	std::cout << "origin:\t"
-		  << position_numeric.orig_x << ' '
-		  << position_numeric.orig_y << ' '
-		  << position_numeric.orig_z << '\n';
-	std::cout.flush();
-}
-
-void Script::printRotation()
-{
-	using namespace ScriptVar;
-	std::cout << "rotation:\t"
-		  << position_numeric.rot_x << ' '
-		  << position_numeric.rot_y << ' '
-		  << position_numeric.rot_z << '\n';
-	std::cout.flush();
-}
-
-void Script::printScale()
-{
-	using namespace ScriptVar;
-	std::cout << "scale:\t"
-		  << position_numeric.scale_x << ' '
-		  << position_numeric.scale_y << ' '
-		  << position_numeric.scale_z << '\n';
-	std::cout.flush();
-}
-
-void Script::printSequence()
-{
-	using namespace ScriptVar;
-	std::cout << "sequence:\t";
-	for(int i = 0; i != 3; i++) {
-		int s = position_sequence_data[i];
-		if(s == position_sequence_translate_data) {
-			std::cout << "translate ";
-		} else if(s == position_sequence_rotate_data) {
-			std::cout << "rotate ";
+	std::cout << variable_data << ": ";
+	symtab* st = symtab_find_name(variable_data);
+	if(st != 0) {
+		if(st->surface) {
+			switch(st->type) {
+			case SYM_STRING:
+				std::cout << *reinterpret_cast<char**>(st->ptr);
+				break;
+			case SYM_INTEGER:
+				std::cout << *reinterpret_cast<int*>(st->ptr);
+				break;
+			case SYM_DOUBLE:
+				std::cout << *reinterpret_cast<double*>(st->ptr);
+				break;
+			default:
+				std::cerr << "error";
+			}
 		} else {
-			std::cout << "scale";
+			switch(st->type) {
+			case SYM_STRING:
+				std::cout << st->str;
+				break;
+			case SYM_INTEGER:
+				std::cout << st->ival;
+				break;
+			case SYM_DOUBLE:
+				std::cout << st->dval;
+				break;
+			default:
+				std::cerr << "error";
+			}
 		}
+	} else {
+		std::cout << "error";
 	}
 	std::cout << '\n';
-	std::cout.flush();
-}
-
-void Script::printClip()
-{
-	using namespace ScriptVar;
-	std::cout << "clip:\t"
-		  << clip_data << ' '
-		  << clip_numeric.radius << '\n';
-	std::cout.flush();
-}
-
-void Script::printCurveWidth()
-{
-	using namespace ScriptVar;
-	std::cout << "curve_width:\t"
-		  << curve_width_data << '\n';
-	std::cout.flush();
-}
-
-void Script::printCurveGamma()
-{
-	using namespace ScriptVar;
-	std::cout << "curve_gamma:\t"
-		  << curve_gamma_data << '\n';
 	std::cout.flush();
 }

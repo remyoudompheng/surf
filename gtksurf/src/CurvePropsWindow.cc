@@ -162,8 +162,9 @@ void CurvePropsWindow::on_update_bgcol_clicked()
 }
 void CurvePropsWindow::on_reset_bgcol_clicked()
 {
-	int r, g, b;
-	Kernel::get_background(r, g, b);
+	int r = Kernel::get_int("background_red");
+	int g = Kernel::get_int("background_green");
+	int b = Kernel::get_int("background_blue");
 	set_bgcol(r, g, b);
 }
 
@@ -187,8 +188,9 @@ void CurvePropsWindow::on_update_curvecol_clicked()
 }
 void CurvePropsWindow::on_reset_curvecol_clicked()
 {
-	int r, g, b;
-	Kernel::get_curve_color(r, g, b);
+	int r = Kernel::get_int("curve_red");
+	int g = Kernel::get_int("curve_green");
+	int b = Kernel::get_int("curve_blue");
 	set_curvecol(r, g, b);
 }
 
@@ -219,8 +221,9 @@ void CurvePropsWindow::on_update_curveorig_clicked()
 }
 void CurvePropsWindow::on_reset_curveorig_clicked()
 {
-	double x, y, z;
-	Kernel::get_orig(x, y, z);
+	double x = Kernel::get_double("origin_x");
+	double y = Kernel::get_double("origin_y");
+	double z = Kernel::get_double("origin_z");
 	set_orig(x, y, z);
 }
 
@@ -250,8 +253,9 @@ void CurvePropsWindow::on_update_curvescale_clicked()
 }
 void CurvePropsWindow::on_reset_curvescale_clicked()
 {
-	double x, y, z;
-	Kernel::get_scale(x, y, z);
+	double x = Kernel::get_double("scale_x");
+	double y = Kernel::get_double("scale_y");
+	double z = Kernel::get_double("scale_z");
 	set_scale(x, y, z);
 }
 
@@ -271,8 +275,7 @@ void CurvePropsWindow::on_update_curverot_clicked()
 }
 void CurvePropsWindow::on_reset_curverot_clicked()
 {
-	double x, y, z;
-	Kernel::get_rotation(x, y, z);
+	double z = Kernel::get_double("rot_z");
 	z = rad_to_deg(z);
 	set_rot(z);
 }
@@ -297,9 +300,8 @@ void CurvePropsWindow::on_update_clip_clicked()
 }
 void CurvePropsWindow::on_reset_clip_clicked()
 {
-	int c;
-	double r;
-	Kernel::get_clip(c, r);
+	int c = Kernel::get_int("clip");
+	double r = Kernel::get_double("radius");
 	set_clip(c == 0, r);
 }
 
@@ -324,9 +326,8 @@ void CurvePropsWindow::on_update_app_clicked()
 }
 void CurvePropsWindow::on_reset_app_clicked()
 {
-	double w, g;
-	Kernel::get_curve_width(w);
-	Kernel::get_curve_gamma(g);
+	double w = Kernel::get_double("curve_width");
+	double g = Kernel::get_double("curve_gamma");
 	set_app(w, g);
 }
 

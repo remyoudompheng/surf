@@ -170,247 +170,73 @@ void Kernel::reset()
 	send("reset;\n");
 }
 
-void Kernel::get_background(int& r, int& g, int& b)
+std::string Kernel::get_string(const std::string& name)
 {
 	disconnect_handler();
-	send("print_background;\n");
-	std::string line;
-	line = receive_line();
+	send("variable = \"" + name + "\";\n"
+	     "print_variable;\n");
+	std::string line = receive_line();
 #ifdef HAVE_STRINGSTREAM
 	std::istringstream is(line);
 #else
-	std::istrstream is(line.c_str());
+	std::istrstream is(line);
 #endif
 	std::string head;
 	is >> head;
-	if(head == "background:") {
-		is >> r >> g >> b;
+	std::string s = "";
+	if(head == name + ":") {
+		is >> s;
 	} else {
-		Misc::print_warning("Scrambled kernel output!?");
+		Misc::print_error("Scrambled kernel output!?\n");
 	}
 	connect_handler();
+	return s;
 }
 
-void Kernel::get_curve_color(int& r, int& g, int& b)
+int Kernel::get_int(const std::string& name)
 {
 	disconnect_handler();
-	send("print_curve_color;\n");
-	std::string line;
-	line = receive_line();
+	send("variable = \"" + name + "\";\n"
+	     "print_variable;\n");
+	std::string line = receive_line();
 #ifdef HAVE_STRINGSTREAM
 	std::istringstream is(line);
 #else
-	std::istrstream is(line.c_str());
+	std::istrstream is(line);
 #endif
 	std::string head;
 	is >> head;
-	if(head == "curve_color:") {
-		is >> r >> g >> b;
+	int i = 0;
+	if(head == name + ":") {
+		is >> i;
 	} else {
-		Misc::print_warning("Scrambled kernel output!?");
+		Misc::print_error("Scrambled kernel output!?\n");
 	}
 	connect_handler();
+	return i;
 }
 
-void Kernel::get_orig(double& x, double& y, double& z)
+double Kernel::get_double(const std::string& name)
 {
 	disconnect_handler();
-	send("print_origin;\n");
-	std::string line;
-	line = receive_line();
+	send("variable = \"" + name + "\";\n"
+	     "print_variable;\n");
+	std::string line = receive_line();
 #ifdef HAVE_STRINGSTREAM
 	std::istringstream is(line);
 #else
-	std::istrstream is(line.c_str());
+	std::istrstream is(line);
 #endif
 	std::string head;
 	is >> head;
-	if(head == "origin:") {
-		is >> x >> y >> z;
+	double d = 0;
+	if(head == name + ":") {
+		is >> d;
 	} else {
-		Misc::print_warning("Scrambled kernel output!?");
+		Misc::print_error("Scrambled kernel output!?\n");
 	}
 	connect_handler();
-}
-
-void Kernel::get_rotation(double& x, double& y, double& z)
-{
-	disconnect_handler();
-	send("print_rotation;\n");
-	std::string line;
-	line = receive_line();
-#ifdef HAVE_STRINGSTREAM
-	std::istringstream is(line);
-#else
-	std::istrstream is(line.c_str());
-#endif
-	std::string head;
-	is >> head;
-	if(head == "rotation:") {
-		is >> x >> y >> z;
-	} else {
-		Misc::print_warning("Scrambled kernel output!?");
-	}
-	connect_handler();
-}
-
-void Kernel::get_scale(double& x, double& y, double& z)
-{
-	disconnect_handler();
-	send("print_scale;\n");
-	std::string line;
-	line = receive_line();
-#ifdef HAVE_STRINGSTREAM
-	std::istringstream is(line);
-#else
-	std::istrstream is(line.c_str());
-#endif
-	std::string head;
-	is >> head;
-	if(head == "scale:") {
-		is >> x >> y >> z;
-	} else {
-		Misc::print_warning("Scrambled kernel output!?");
-	}
-	connect_handler();
-}
-
-void Kernel::get_clip(int& clip, double& radius)
-{
-	disconnect_handler();
-	send("print_clip;\n");
-	std::string line;
-	line = receive_line();
-#ifdef HAVE_STRINGSTREAM
-	std::istringstream is(line);
-#else
-	std::istrstream is(line.c_str());
-#endif
-	std::string head;
-	is >> head;
-	if(head == "clip:") {
-		is >> clip >> radius;
-	} else {
-		Misc::print_warning("Scrambled kernel output!?");
-	}
-	connect_handler();
-}
-
-void Kernel::get_sequence(Sequence sequence[3])
-{
-	disconnect_handler();
-	send("print_sequence;\n");
-	std::string line;
-	line = receive_line();
-#ifdef HAVE_STRINGSTREAM
-	std::istringstream is(line);
-#else
-	std::istrstream is(line.c_str());
-#endif
-	std::string head;
-	is >> head;
-	if(head == "sequence:") {
-		for(int i = 0; i != 3; i++) {
-			std::string s;
-			is >> s;
-			if(s == "rotate") {
-				sequence[i] = rotate;
-			} else if(s == "scale") {
-				sequence[i] = scale;
-			} else if(s == "translate") {
-				sequence[i] = translate;
-			} else {
-				Misc::print_warning("Unkown sequence command!");
-			}
-		}
-	} else {
-		Misc::print_warning("Scrambled kernel output!?");
-	}
-	connect_handler();
-}
-
-void Kernel::get_curve_width(double& w)
-{
-	disconnect_handler();
-	send("print_curve_width;\n");
-	std::string line;
-	line = receive_line();
-#ifdef HAVE_STRINGSTREAM
-	std::istringstream is(line);
-#else
-	std::istrstream is(line.c_str());
-#endif
-	std::string head;
-	is >> head;
-	if(head == "curve_width:") {
-		is >> w;
-	} else {
-		Misc::print_warning("Scrambled kernel output!?");
-	}
-	connect_handler();
-}
-
-void Kernel::get_curve_gamma(double& g)
-{
-	disconnect_handler();
-	send("print_curve_gamma;\n");
-	std::string line;
-	line = receive_line();
-#ifdef HAVE_STRINGSTREAM
-	std::istringstream is(line);
-#else
-	std::istrstream is(line.c_str());
-#endif
-	std::string head;
-	is >> head;
-	if(head == "curve_gamma:") {
-		is >> g;
-	} else {
-		Misc::print_warning("Scrambled kernel output!?");
-	}
-	connect_handler();
-}
-
-void Kernel::get_curve_color(double& r, double& g, double &b)
-{
-	disconnect_handler();
-	send("print_curve_color;\n");
-	std::string line;
-	line = receive_line();
-#ifdef HAVE_STRINGSTREAM
-	std::istringstream is(line);
-#else
-	std::istrstream is(line.c_str());
-#endif
-	std::string head;
-	is >> head;
-	if(head == "curve_color:") {
-		is >> r >> g >> b;
-	} else {
-		Misc::print_warning("Scrambled kernel output!?");
-	}
-	connect_handler();
-}
-
-void Kernel::get_background_color(double& r, double& g, double &b)
-{
-	disconnect_handler();
-	send("print_background_color;\n");
-	std::string line;
-	line = receive_line();
-#ifdef HAVE_STRINGSTREAM
-	std::istringstream is(line);
-#else
-	std::istrstream is(line.c_str());
-#endif
-	std::string head;
-	is >> head;
-	if(head == "background_color:") {
-		is >> r >> g >> b;
-	} else {
-		Misc::print_warning("Scrambled kernel output!?");
-	}
-	connect_handler();
+	return d;
 }
 
 void Kernel::stop()

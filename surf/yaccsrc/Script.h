@@ -130,15 +130,7 @@ private:
 	static void printColorImageFormats();
 	static void printDitherImageFormats();
 //	static void print3DImageFormats();
-	static void printBackground();
-	static void printCurveColor();
-	static void printOrigin();
-	static void printRotation();
-	static void printScale();
-	static void printSequence();
-	static void printClip();
-	static void printCurveWidth();
-	static void printCurveGamma();
+	static void printVariable();
 };
 
 #endif //!SCRIPT_H

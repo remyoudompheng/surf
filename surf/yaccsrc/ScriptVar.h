@@ -156,6 +156,8 @@ namespace ScriptVar
 
 extern  char    *surface_filename_data;
 
+extern char* variable_data;
+
 
 // ---------------
 //  Formula input
@@ -549,7 +551,7 @@ extern  int     three_d_file_format_data;
 // Image Format options
 // --------------------
 
-extern int jpeg_quality_data;
+extern int jpg_quality_data;
 
 // -------------------------
 // GTS triangulation options

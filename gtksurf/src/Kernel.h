@@ -138,22 +138,9 @@ public:
 //		return three_d_image_formats;
 //	}
 
-	static void get_background(int& r, int& g, int& b);
-	static void get_curve_color(int& r, int& g, int& b);
-	static void get_orig(double& x, double& y, double& z);
-	static void get_rotation(double& x, double& y, double& z);
-	static void get_scale(double& x, double& y, double& z);
-	static void get_clip(int& clip, double& radius);
-	enum Sequence {
-		rotate,
-		translate,
-		scale
-	};
-	static void get_sequence(Sequence sequence[3]);
-	static void get_curve_width(double& w);
-	static void get_curve_gamma(double& g);
-	static void get_curve_color(double& r, double& g, double& b);
-	static void get_background_color(double& r, double& g, double& b);
+	static std::string get_string(const std::string& name);
+	static int get_int(const std::string& name);
+	static double get_double(const std::string& name);
 
 private:
 	static int kernel_pid;

@@ -36,7 +36,7 @@ namespace ImageFormats {
 			return "JPEG";
 		}
 		std::string getID() const {
-			return "jpeg";
+			return "jpg";
 		}
 		bool isExtension(const std::string& ext) const {
 			return ext == "jpg" || ext == "jpeg";

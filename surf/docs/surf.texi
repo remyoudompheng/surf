@@ -1254,7 +1254,7 @@ libraries. By setting @code{color_file_format} you can choose between:
 @multitable @columnfractions .1 .9
 @item @code{auto} @tab format is automatically chosen by looking at the
                        extension of @code{filename}
-@item @code{jpeg} @tab JPEG (24 bit)
+@item @code{jpg}  @tab JPEG (24 bit)
 @item @code{png}  @tab PNG (8 bit)
 @item @code{ppm}  @tab Portable Pixmap (24 bit)
 @item @code{sun}  @tab Sun Rasterfile (24 bit)
@@ -1273,7 +1273,7 @@ one results from an octree algorithm which chooses the most used 216
 colors among all colors of the image. @code{color_file_colormap} is only
 evaluated if it makes sense with the chosen @code{color_file_format}.
 The quality of JPEG images can be adjusted by setting
-@code{jpeg_quality} to an appropriate value between 0 and 100.
+@code{jpg_quality} to an appropriate value between 0 and 100.
 
 @emph{surf} can store black and white images these formats (set the variable
 @code{dither_file_format}):
@@ -1443,7 +1443,7 @@ $\infty$
 @item @code{save_dithered_image} @tab cmd.          @tab ---   @tab ---       @tab save dithered black and white image in file defined by the global string @code{filename}
 @item @code{filename}            @tab @code{string} @tab any   @tab @code{""} @tab filename used in @code{save_color_image} and @code{save_dithered_image}
 @item @code{color_file_format}   @tab @code{int}    @tab @{@code{auto},@*
-                                                           @code{jpeg},@*
+                                                           @code{jpg},@*
                                                            @code{png},@*
                                                            @code{ppm},@*
                                                            @code{sun},@*
@@ -1685,7 +1685,7 @@ they are listed here for the sake of completeness:
 @item @code{pattern_8x8}   @tab @code{int} @tab @code{1} @tab @code{pattern_size}
 @item @code{pattern_16x16} @tab @code{int} @tab @code{2} @tab @code{pattern_size}
 @item @code{auto}       @tab @code{int} @tab ? @tab @code{color_file_format},@* @code{dither_file_format},@* @code{three_d_file_format}
-@item @code{jpeg}       @tab @code{int} @tab ? @tab @code{color_file_format}
+@item @code{jpg}        @tab @code{int} @tab ? @tab @code{color_file_format}
 @item @code{ppm}        @tab @code{int} @tab ? @tab @code{color_file_format}
 @item @code{png}        @tab @code{int} @tab ? @tab @code{color_file_format}
 @item @code{sun}        @tab @code{int} @tab ? @tab @code{color_file_format}

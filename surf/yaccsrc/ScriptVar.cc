@@ -37,7 +37,7 @@ int     surface_run_commands   = true;
 
 namespace ScriptVar 
 {
-	
+char* variable_data = 0;	
 
 char    *surface_filename_data = 0;
 
@@ -514,7 +514,7 @@ int three_d_file_format_data;
 // image format options
 // --------------------
 
-int jpeg_quality_data = 90;
+int jpg_quality_data = 90;
  
 // -------------------------
 // GTS triangulation options

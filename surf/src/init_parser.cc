@@ -108,6 +108,8 @@ void init_main_variables()
 {
 	addNumber ("cut_distance", &sym_cut_distance);
 
+	addString("variable", &variable_data);
+
 	addString("filename", &surface_filename_data);
    
 	addNumber("width", &main_width_data);
@@ -428,7 +430,7 @@ void init_main_variables()
 	// image format options
 	// -----------------------------
 
-	addNumber("jpeg_quality", &jpeg_quality_data);
+	addNumber("jpg_quality", &jpg_quality_data);
 
 	// -----------------------------
 	// triangulation options (GTS)
