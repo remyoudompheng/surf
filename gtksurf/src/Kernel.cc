@@ -170,6 +170,48 @@ void Kernel::reset()
 	send("reset;\n");
 }
 
+void Kernel::get_background(int& r, int& g, int& b)
+{
+	disconnect_handler();
+	send("print_background;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "background:") {
+		is >> r >> g >> b;
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
+	connect_handler();
+}
+
+void Kernel::get_curve_color(int& r, int& g, int& b)
+{
+	disconnect_handler();
+	send("print_curve_color;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "curve_color:") {
+		is >> r >> g >> b;
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
+	connect_handler();
+}
+
 void Kernel::get_orig(double& x, double& y, double& z)
 {
 	disconnect_handler();
@@ -323,6 +365,48 @@ void Kernel::get_curve_gamma(double& g)
 	is >> head;
 	if(head == "curve_gamma:") {
 		is >> g;
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
+	connect_handler();
+}
+
+void Kernel::get_curve_color(double& r, double& g, double &b)
+{
+	disconnect_handler();
+	send("print_curve_color;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "curve_color:") {
+		is >> r >> g >> b;
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
+	connect_handler();
+}
+
+void Kernel::get_background_color(double& r, double& g, double &b)
+{
+	disconnect_handler();
+	send("print_background_color;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "background_color:") {
+		is >> r >> g >> b;
 	} else {
 		Misc::print_warning("Scrambled kernel output!?");
 	}

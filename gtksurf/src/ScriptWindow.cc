@@ -52,6 +52,7 @@ ScriptWindow::ScriptWindow()
 	Glade::sig_connect("copy", "activate", _on_copy_activate, this);
 	Glade::sig_connect("paste", "activate", _on_paste_activate, this);
 	Glade::sig_connect("clear", "activate", _on_clear_activate, this);
+	Glade::sig_connect("select_all", "activate", _on_select_all_activate, this);
 //	Glade::sig_connect("navigation", "activate", _on_navigation_activate, this);
 //	Glade::sig_connect("button_navigation", "clicked", _on_navigation_activate, this);
 	Glade::sig_connect("render_curve", "activate", _on_render_curve_activate, this);
@@ -60,6 +61,9 @@ ScriptWindow::ScriptWindow()
 	Glade::sig_connect("button_render_surface", "clicked", _on_render_surface_activate, this);
 	Glade::sig_connect("execute", "activate", _on_execute_activate, this);
 	Glade::sig_connect("button_execute", "clicked", _on_execute_activate, this);
+	Glade::sig_connect("curve_properties", "activate", _on_curve_properties_activate, this);
+//	Glade::sig_connect("surface_properties", "activate", _on_surface_properties_activate, this);
+//	Glade::sig_connect("lighting_properties", "activate", _on_lighting_properties_activate, this);
 	Glade::sig_connect("about", "activate", _on_about_activate, this);
 	Glade::sig_connect("button_stop", "clicked", _on_stop_clicked, this);
 
@@ -302,6 +306,11 @@ void ScriptWindow::on_clear_activate()
 	gtk_editable_delete_selection(GTK_EDITABLE(text_script));
 }
 
+void ScriptWindow::on_select_all_activate()
+{
+	gtk_editable_select_region(GTK_EDITABLE(text_script), 0, -1);
+}
+
 /*void ScriptWindow::on_navigation_activate()
 {
 	Kernel::reset();
@@ -347,6 +356,11 @@ void ScriptWindow::on_execute_activate()
 	prelude_length = script.length();
 	script += Glade::get_chars(text_script);
 	Kernel::send(script);
+}
+
+void ScriptWindow::on_curve_properties_activate()
+{
+	curvepropswin.show();
 }
 
 void ScriptWindow::on_about_activate()

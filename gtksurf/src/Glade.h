@@ -62,6 +62,14 @@ public:
 		GtkToggleButton* tb = (GtkToggleButton*)get_widget(name);
 		return toggle_connect(tb, func, This);
 	}
+	static GtkColorSelection* colorsel_connect(GtkColorSelection* cs, void (*func)(GtkColorSelection*, GladeWindow*), GladeWindow* This = 0) {
+		gtk_signal_connect(GTK_OBJECT(cs), "color_changed", GTK_SIGNAL_FUNC(func), gpointer(This));
+		return cs;
+	}
+	static GtkColorSelection* colorsel_connect(char* name, void (*func)(GtkColorSelection*, GladeWindow*), GladeWindow* This = 0) {
+		GtkColorSelection* cs = (GtkColorSelection*)get_widget(name);
+		return colorsel_connect(cs, func, This);
+	}
 	static std::string get_chars(GtkWidget* txtwid) {
 		gchar* content = gtk_editable_get_chars(GTK_EDITABLE(txtwid), 0, -1);
 		std::string res = content;

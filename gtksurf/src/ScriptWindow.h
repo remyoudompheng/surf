@@ -88,10 +88,14 @@ private:
 	MENUCB(copy);
 	MENUCB(paste);
 	MENUCB(clear);
+	MENUCB(select_all);
 //	MENUCB(navigation);
 	MENUCB(render_curve);
 	MENUCB(render_surface);
 	MENUCB(execute);
+	MENUCB(curve_properties);
+//      MENUCB(surface_properties);
+//      MENUCB(lighting_properties);
 	MENUCB(about);
 
 	static int _on_delete_event(GtkWidget*, GdkEvent*, GladeWindow* This) {
