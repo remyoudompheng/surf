@@ -632,7 +632,7 @@ void Script::triangulateSurface()
 	
 	Triangulator tritor;
 	tritor.triangulate();
-	tritor.write_gts_file();
+	tritor.write_data();
 	std::cout.flush();
 
 #else

@@ -34,6 +34,8 @@
 
 #include <gts.h>
 
+#include<map>
+
 class Triangulator {
 private:
 	Triangulator(const Triangulator&);
@@ -44,9 +46,28 @@ public:
 	virtual ~Triangulator();
 
 	void triangulate();
-	void write_gts_file(FILE* f = 0);
+	void write_gts_file();
+	void write_data();
 
 private:
+	void vertex_func(GtsVertex* v);
+	static gint _vertex_func(gpointer v, gpointer This) {
+		reinterpret_cast<Triangulator*>(This)->vertex_func(static_cast<GtsVertex*>(v));
+		return 0;
+	}
+	guint vertex_count;
+	std::map<GtsVertex*, guint> vertex_map;
+	void face_func(GtsFace* f);
+	static gint _face_func(gpointer f, gpointer This) {
+		reinterpret_cast<Triangulator*>(This)->face_func(static_cast<GtsFace*>(f));
+		return 0;
+	}
+	void iso_func(gdouble** f, GtsCartesianGrid g, guint k);
+	static void _iso_func(gdouble** f, GtsCartesianGrid g, guint k, gpointer This) {
+		reinterpret_cast<Triangulator*>(This)->iso_func(f, g, k);
+	}
+	void calc_normal(const GtsPoint& p, float& x, float& y, float& z);
+		
 	GtsSurface* surface;
 };
 
