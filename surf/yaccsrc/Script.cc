@@ -79,7 +79,7 @@ SymbolTable     *Script::defaultValues  = 0;
 Preview          Script::preview;
 
 Condition scriptRunning;
-
+Thread *scriptExecuteThread = 0;
 
 /* extern "C" */ void symtab_delete_element(symtab *);
 
@@ -109,6 +109,11 @@ SymbolTable &Script::getDefaultValues()
 
 void *Script::startThread (void *data)
 {
+	scriptRunning.lock();
+	scriptExecuteThread = Thread::getThread();
+	scriptRunning.signal();
+	scriptRunning.unlock();
+
 	ExecuteScriptStruct *ess = (ExecuteScriptStruct *) data;
 
 //  	int i;
@@ -138,6 +143,8 @@ void *Script::startThread (void *data)
 
 	scriptRunning.lock();
 	scriptRunning.value = 0;
+	scriptExecuteThread = 0;
+	scriptRunning.signal();
 	scriptRunning.unlock();
 
 	if (ess->doneCallback) {
@@ -159,25 +166,31 @@ bool Script::isScriptRunning ()
 	}
 }
 
-bool Script::startScriptExecution(ExecuteScriptStruct *ess)
+bool Script::startScriptExecution(ExecuteScriptStruct *ess, bool stop)
 {
-	if (!scriptRunning.tryLock()) {
-		Misc::alert("another script is running.");
-	} else if (scriptRunning.value != 0) {
-		scriptRunning.unlock();
-		Misc::alert("another script is running.");
-	} else {
-		scriptRunning.value = 1;
-		scriptRunning.unlock();
-		setDisplay (ess->drawingArea);
-
-		ess->thread = new Thread();
-		
-		ess->thread->start (startThread, ess);
-		return true;
+	scriptRunning.lock();
+	if (scriptRunning.value != 0) {
+		if (stop) {
+			scriptExecuteThread->stop();
+			do {
+				scriptRunning.wait();
+			} while (scriptRunning.value != 0);
+		} else {
+			scriptRunning.unlock();
+			Misc::alert("another script is running.");
+			return false;
+		}
 	}
 
-	return false;
+	scriptRunning.value = 1;
+	scriptExecuteThread = ess->thread = new Thread();
+	scriptRunning.unlock();
+	setDisplay (ess->drawingArea);
+
+
+		
+	ess->thread->start (startThread, ess);
+	return true;
 }
 
 TSDrawingArea *Script::getDisplay()

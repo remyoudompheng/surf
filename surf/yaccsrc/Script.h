@@ -45,7 +45,7 @@ public:
 	static bool isScriptRunning();
 	// returns true if Script can be executed (that means no other thread is
 	// executing an script), false otherwise
-	static bool startScriptExecution(ExecuteScriptStruct *ess);
+	static bool startScriptExecution(ExecuteScriptStruct *ess, bool stop);
 
 	// thread execution starts here
 	static void *startThread (void *data);

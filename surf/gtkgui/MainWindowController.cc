@@ -280,7 +280,7 @@ void MainWindowController::internalExecuteScript (const char *before, const char
 	ess->userData = this;
 	ess->userData2 = actualDocument;
 
-	if (!Script::startScriptExecution (ess)) {
+	if (!Script::startScriptExecution (ess, true)) {
 		delete ess;
 		return;
 	}
