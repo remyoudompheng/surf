@@ -153,7 +153,7 @@ float float_buffer::GetAbsFieldModuloHeight( int x, int y )
 void float_buffer::CorrectGamma (double gamma)
 {
 	for( int pos = 0; pos < n; pos++ )
-		b[pos] = pow( b[pos], gamma );
+		b[pos] = pow((double)b[pos], gamma);
 }
 
 // ----------------------------------------------------------------------------

@@ -253,7 +253,7 @@ static const char *COLOR_SLIDER_PIC_STRING[MAIN_SURFACE_AMOUNT_NUM][SURFS_COLOR_
 
 void addCommand (const char *name, void (*func) (void))
 {
-	symtab_add_surface_name(name, SYM_COMMAND, TRUE, func);
+	symtab_add_surface_name(name, SYM_COMMAND, TRUE, (void*)func);
 }
 
 void addConstant (const char *name, const int *ptr)

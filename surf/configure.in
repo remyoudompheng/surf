@@ -21,6 +21,9 @@ AC_ARG_ENABLE(pthread-test,
 			  flags)],
 	pthread_test="$enableval", pthread_test="yes")
 
+AC_ARG_WITH(gmp-prefix,[  --with-gmp-prefix=PFX   Prefix where GMP is installed (optional)],
+            gmp_prefix="$withval", gmp_prefix="")
+
 
 dnl some standard checks:
 dnl ---------------------
@@ -67,6 +70,13 @@ JB_CXX_STDNAMESPACE
 
 AC_LANG_RESTORE
 
+if test "$GCC" = "no" ; then
+	case `uname` in
+	IRIX*)
+		CXXFLAGS="-LANG:std $CXXFLAGS"
+		;;
+	esac
+fi
 
 
 dnl pthread stuff:
@@ -170,14 +180,20 @@ fi
 	
 dnl gmp library and header file:
 
-AC_CHECK_LIB(gmp, main,,
-             AC_CHECK_LIB(gmp2, main,,
-			  AC_MSG_ERROR([Sorry: can't find gmp])))
+if test x"$gmp_prefix" != x ; then
+	LDFLAGS="-L$gmp_prefix/lib $LDFLAGS"
+	CPPFLAGS="-I$gmp_prefix/include $CPPFLAGS"
+fi
 
 AC_CHECK_HEADER(gmp.h,,
 		AC_CHECK_HEADER(gmp2/gmp.h,
 				AC_DEFINE(GMP2_PREFIX),
 				AC_MSG_ERROR([Sorry: can't find header file gmp.h])))
+
+AC_CHECK_LIB(gmp, main,,
+             AC_CHECK_LIB(gmp2, main,,
+			  AC_MSG_ERROR([Sorry: can't find gmp])))
+
 
 dnl do we have getopt() and (optionally) GNU getopt_long()?
 
