@@ -274,6 +274,7 @@ itostr  { char_number += yyleng; return  ITOSTR; }
 itoascn { char_number += yyleng; return  ITOASCN; }
 itoasc  { char_number += yyleng; return  ITOASC; }
 sqrt    { char_number += yyleng; return  SQRT; }
+abs     { char_number += yyleng; return  ABS; }
 sin     { char_number += yyleng; return  SINUS; }
 cos     { char_number += yyleng; return  COSINUS; }
 tan     { char_number += yyleng; return  TANGENS; }

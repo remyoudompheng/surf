@@ -107,7 +107,7 @@ int    itotexascii( int i,char *s,int l )
 %token EQUAL NOTEQUAL BIGGER BIGGERTHAN SMALLER SMALLERTHAN AND OR
 %token ITOSTR ITOSTRN
 %token ITOASC ITOASCN
-%token SQRT SINUS COSINUS TANGENS COTANGENS POWER
+%token SQRT ABS SINUS COSINUS TANGENS COTANGENS POWER
 %token ARCUS_SINUS ARCUS_COSINUS ARCUS_TANGENS ARCUS_COTANGENS
 %token DEGREE LENGTH
 %token HESSE HESSIAN_SURFACE HESSIAN_CURVE DIFF ROTATE
@@ -1054,6 +1054,10 @@ d_expression:       '(' d_expression ')'
                         { $$ = sqrt( $3 ); }
                   | SQRT '(' i_expression ')'
                         { $$ = sqrt( (double)$3 ); }
+                  | ABS '(' d_expression ')'
+                        { $$ = fabs( $3 ); }
+                  | ABS '(' i_expression ')'
+                        { $$ = fabs( (double)$3 ); }
                   | POWER '(' d_expression ',' d_expression ')'
                         { $$ =
 #ifdef SUN

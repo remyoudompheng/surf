@@ -496,6 +496,7 @@ There are some built-in math functions:
 @multitable {@code{arctan()}} {arcus tangens} {@code{pow(@{double@}, @{int, double@})}} {returns}
 @item Function:     @tab Meaning:      @tab Valid Argument:              @tab Returns:
 @item @code{sqrt()} @tab square root   @tab @code{sqrt(@{int, double@})}   @tab @code{double}
+@item @code{abs()} @tab absolute value @tab @code{abs(@{int, double@})}   @tab @code{double}
 @item @code{pow()}  @tab power         @tab @code{pow(@{int@}, @{int, double@})} @*
                                     @code{pow(@{double@},@{int,double@})} @tab @code{double}
 @item @code{sin()}  @tab sine          @tab @code{sin(@{int, double@})}    @tab @code{double}
