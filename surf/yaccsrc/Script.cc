@@ -737,6 +737,20 @@ void Script::printPosition()
 		  << "scale:\t"
 		  << position_numeric.scale_x << ' '
 		  << position_numeric.scale_y << ' '
-		  << position_numeric.scale_z << '\n';
-	std::cerr.flush();
+		  << position_numeric.scale_z << '\n'
+		  << "sequence:\t";
+	for(int i = 0; i != 3; i++) {
+		using namespace ScriptVar;
+		int s = position_sequence_data[i];
+		if(s == position_sequence_translate_data) {
+			std::cout << "translate ";
+		} else if(s == position_sequence_rotate_data) {
+			std::cout << "rotate ";
+		} else {
+			std::cout << "scale";
+		}
+	}
+
+	std::cout << '\n';
+	std::cout.flush();
 }
