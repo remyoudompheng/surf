@@ -41,7 +41,7 @@ public:
 	static void deinit();
 
 	static char* readFile(const char* name);
-	static void executeScriptFromStdin();
+	static void executeScriptFromStdin(bool quiet);
 	static void executeScriptFromFile(const char* name);
 
 	static bool isKernelMode() { return kernelMode; }

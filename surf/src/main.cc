@@ -143,11 +143,7 @@ PACKAGE " " VERSION "\n"
 	Script::init();
 
 	if(optind == argc) {
-		if(!quiet) {
-			std::cout << PACKAGE " " VERSION "\n"
-				     "Reading from stdin.\n";
-		}
-		Script::executeScriptFromStdin();
+		Script::executeScriptFromStdin(quiet);
 	} else {
 		for(int i = optind; i < argc; ++i) {
 			std::cerr << "Processing file " << argv[i] << "\n";

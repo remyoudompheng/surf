@@ -45,8 +45,12 @@
 #include <RootFinder3d.h>
 #include <SymbolTable.h>
 #include <Triangulator.h>
-
 #include <debug.h>
+
+#ifdef HAVE_LIBREADLINE
+#  include <readline/readline.h>
+#  include <readline/history.h>
+#endif
 
 #include <sys/stat.h>
 #include <signal.h>
@@ -61,6 +65,8 @@
 #include<iostream>
 #include<strstream>
 #include<string>
+
+#define PROMPT "surf> "
 
 using namespace ScriptVar;
 
@@ -79,6 +85,7 @@ extern void symtab_delete_element(symtab*); // from lexfunc.cc
 extern double Y_AXIS_LR_ROTATE;
 
 namespace {
+
 void replaceCommand(const char* name, void (*func)())
 {
 	symtab* st = symtab_find_name(name);
@@ -200,22 +207,63 @@ char* Script::readFile(const char* name)
 	return str;
 }
 
-void Script::executeScriptFromStdin()
+void Script::executeScriptFromStdin(bool quiet)
 {
 	beforeScriptExecution();
 	
 	std::string script = "";
 	std::string line;
-	while(std::getline(std::cin, line)) {
-		if(line == "execute;") { // execute immediately
-			internalExecuteScript(script.c_str());
-			script.assign(""); // gcc 2.95 doesn't have std::string::clear()
-		} else {
-			script += line + '\n';
-		}
+#ifdef HAVE_LIBREADLINE
+	bool have_libreadline = true;
+#else
+	bool have_libreadline = false;
+#endif
+
+	bool is_a_tty = isatty(STDIN_FILENO);
+
+	if(is_a_tty && !quiet) {
+		std::cout << PACKAGE " " VERSION "\n";
 	}
-	if(script.length() > 0) {
-		internalExecuteScript(script.c_str());
+
+	if(is_a_tty && have_libreadline) {
+		
+		rl_bind_key('\t', reinterpret_cast<Function*>(rl_insert));
+		rl_bind_key('^', reinterpret_cast<Function*>(rl_insert));
+		char* l;
+		while((l = readline(PROMPT)) != 0) {
+			add_history(l);
+			line.assign(l);
+			free(l);
+			if(line == "execute;") { // execute immediately
+				internalExecuteScript(script.c_str());
+				script.assign(""); // gcc 2.95 doesn't have std::string::clear()
+			} else {
+				script += line + '\n';
+			}
+		}
+		
+	} else {
+		if(is_a_tty) {
+			std::cout << "Reading from stdin.\n"
+				  << PROMPT;
+		}
+		
+		while(std::getline(std::cin, line)) {
+			
+			if(line == "execute;") { // execute immediately
+				internalExecuteScript(script.c_str());
+				script.assign(""); // gcc 2.95 doesn't have std::string::clear()
+			} else {
+				script += line + '\n';
+			}
+
+			if(is_a_tty) {
+				std::cout << PROMPT;
+			}
+		}
+		if(script.length() > 0) {
+			internalExecuteScript(script.c_str());
+		}
 	}
 }
 

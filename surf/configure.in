@@ -133,6 +133,12 @@ dnl --------------
 
 JOJO_GMP
 
+dnl check for readline:
+dnl -------------------
+
+AC_CHECK_HEADERS(readline/readline.h readline/history.h,
+  AC_CHECK_LIB(readline, main))
+
 dnl check for GTS:
 dnl --------------
 JOJO_GTS
