@@ -24,11 +24,6 @@
 
 
 
-#include <math.h>
-#include <string.h>
-
-#include <debug.h>
-
 #include <SurfaceCalc.h>
 #include <RgbBuffer.h>
 #include <degree.h>
@@ -39,8 +34,7 @@
 #include <ScriptVar.h>
 #include <float_buffer.h>
 #include <antialiasing_factor.h>
-
-// FIXME
+#include <debug.h>
 
 extern double Y_AXIS_LR_ROTATE;
 

@@ -23,43 +23,61 @@
  */
 
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#ifndef IMAGEFORMAT_OOGL_H
+#define IMAGEFORMAT_OOGL_H
 
-#ifdef HAVE_LIBGTS
+#include <ImageFormats.h>
 
-#include <GTS.h>
-#include <FileWriter.h>
-#include <Triangulator.h>
-#include <Misc.h>
+#include <gts.h>
 
-#include<iostream>
+#include<fstream>
+#include<map>
+
+class Triangulator;
 
 namespace ImageFormats {
 
-	GTS imgFmt_GTS;
-
-	bool GTS::save3DImage(const char* filename, Triangulator& data)
-	{
-		FileWriter fw(filename);
-		FILE* file;
+	class OOGL : public Format {
+	public:
+		OOGL() : ofs(0), num_vertices(0) {}
+		virtual ~OOGL() {}
 		
-		if((file = fw.openFile()) == 0) {
-		        Misc::print_warning("Could not open file for writing.\n");
-			return false;
+		std::string getName() const {
+			return "OOGL/OFF (Geomview)";
+		}
+		std::string getID() const {
+			return "oogl";
+		}
+		bool isExtension(const std::string& ext) const {
+			return ext == "off" || ext == "oogl";
 		}
 
-		GtsSurface* surface = data.getSurface();
-		if(surface == 0) {
-			Misc::print_warning("There was no triangulated data to save.\n");
-			return false;
+		bool is3DFormat() const {
+			return true;
 		}
 
-		gts_surface_write(surface, file);
-		return true;
-	}
+		bool save3DImage(const char* filename, Triangulator& data);
 
-} // namespace ImageFormats
+	private:
+		std::ofstream* ofs;
 
-#endif // HAVE_LIBGTS
+		Triangulator* tritor;
+		int num_vertices;
+		std::map<GtsVertex*, int> vertex_map;
+
+		void vertex_func(GtsVertex* v);
+		static gint _vertex_func(gpointer v, gpointer This) {
+			static_cast<OOGL*>(This)->vertex_func(static_cast<GtsVertex*>(v));
+			return 0;
+		}
+		void face_func(GtsFace* f);
+		static gint _face_func(gpointer f, gpointer This) {
+			static_cast<OOGL*>(This)->face_func(static_cast<GtsFace*>(f));
+			return 0;
+		}
+	};
+
+	extern OOGL imgFmt_OOGL;
+}
+
+#endif //!IMAGEFORMAT_OOGL_H

@@ -53,6 +53,16 @@ public:
 		return surface;
 	}
 
+	struct Point {
+		gdouble x;
+		gdouble y;
+		gdouble z;
+	};
+
+	void initNormals();
+	Point getNormal(const Point& vertex);
+	void deinitNormals();
+
 private:
 	void write_data();
 	void clip();
@@ -73,8 +83,6 @@ private:
 	static void _iso_func(gdouble** f, GtsCartesianGrid g, guint k, gpointer This) {
 		reinterpret_cast<Triangulator*>(This)->iso_func(f, g, k);
 	}
-	void calc_normal(const GtsPoint& p, float& x, float& y, float& z);
-
 	hornerpolyxyz* hf;
 	hornerpolyxyz* hdx;
 	hornerpolyxyz* hdy;

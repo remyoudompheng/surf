@@ -39,7 +39,7 @@ namespace ImageFormats {
 			return "gts";
 		}
 		bool isExtension(const std::string& ext) const {
-			return ext == "gts";
+			return ext == "gts" || ext == "srf";
 		}
 
 		bool is3DFormat() const {

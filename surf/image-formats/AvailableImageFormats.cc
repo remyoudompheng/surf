@@ -51,6 +51,7 @@ namespace ImageFormats {
 
 #ifdef HAVE_LIBGTS
 		&imgFmt_GTS,
+		&imgFmt_OOGL,
 #endif
 
 		0 // last element is 0

@@ -49,6 +49,7 @@
 #include <XPM.h>
 #ifdef HAVE_LIBGTS
 #  include <GTS.h>
+#  include <OOGL.h>
 #endif
 
 namespace ImageFormats {

@@ -223,7 +223,7 @@ int Bezier::PolygonCrossing(double &s) const
 	int found = Number - 1;
 	double *cf = Coeff + found, *cf2 = cf - 1;
 
-	while(found && *cf * (*cf2) >= 0.0) {
+	while(found && *cf * (*cf2) > 0.0) {
 		found--, cf--, cf2--;                   // find crossing descending
 	}
 	

@@ -167,6 +167,28 @@ void Triangulator::clip()
 	gts_bb_tree_destroy(tree2, true);  
 }
 
+void Triangulator::initNormals()
+{
+	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
+	polyxyz_sort(&f);
+	polyxyz dx = polyxyz_dx(&f);
+	polyxyz_sort(&dx);
+	hdx = new hornerpolyxyz(dx);
+	polyxyz dy = polyxyz_dy(&f);
+	polyxyz_sort(&dy);
+	hdy = new hornerpolyxyz(dy);
+	polyxyz dz = polyxyz_dz(&f);
+	polyxyz_sort(&dz);
+	hdz = new hornerpolyxyz(dz);
+}
+
+void Triangulator::deinitNormals()
+{
+	delete hdx;
+	delete hdy;
+	delete hdz;
+}
+
 void Triangulator::write_data()
 {
 	std::cout << "triangulate_surface\n";
@@ -204,18 +226,8 @@ void Triangulator::write_data()
 			  << l.position[1] << ' '
 			  << l.position[2] << '\n';
 	}
-	
-	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
-	polyxyz_sort(&f);
-	polyxyz dx = polyxyz_dx(&f);
-	polyxyz_sort(&dx);
-	hdx = new hornerpolyxyz(dx);
-	polyxyz dy = polyxyz_dy(&f);
-	polyxyz_sort(&dy);
-	hdy = new hornerpolyxyz(dy);
-	polyxyz dz = polyxyz_dz(&f);
-	polyxyz_sort(&dz);
-	hdz = new hornerpolyxyz(dz);
+
+	initNormals();
 
 	vertex_count = 0;
 
@@ -228,10 +240,6 @@ void Triangulator::write_data()
 
 	std::cout << "end\n";
 	std::cout.flush();
-
-	delete hdx;
-	delete hdy;
-	delete hdz;
 }
 
 void Triangulator::vertex_func(GtsVertex* v)
@@ -239,13 +247,12 @@ void Triangulator::vertex_func(GtsVertex* v)
 	vertex_count++;
 	vertex_map[v] = vertex_count;
 	
-	GtsPoint& p = v->p;
-
-	float nx, ny, nz;
-	calc_normal(p, nx, ny, nz);
+	Point p = { v->p.x, v->p.y, v->p.z };
+	Point n = getNormal(p);
 
 	std::cout << p.x << ' ' << p.y << ' ' << p.z << ' '
-		  << nx << ' ' << ny << ' ' << nz << '\n';
+		  << n.x << ' ' << n.y << ' ' << n.z << '\n';
+
 }
 
 void Triangulator::face_func(GtsFace* f)
@@ -280,26 +287,30 @@ void Triangulator::iso_func(gdouble** f, GtsCartesianGrid g, guint k)
 	}
 }
 
-void Triangulator::calc_normal(const GtsPoint& p, float& x, float& y, float& z)
+Triangulator::Point Triangulator::getNormal(const Point& p)
 {
+	Point n;
+	
 	hdx->setRow(p.y);
 	hdx->setColumn(p.x);
-	x = hdx->pZ.horner(p.z);
+	n.x = hdx->pZ.horner(p.z);
 	hdy->setRow(p.y);
 	hdy->setColumn(p.x);
-	y = hdy->pZ.horner(p.z);
+	n.y = hdy->pZ.horner(p.z);
 	hdz->setRow(p.y);
 	hdz->setColumn(p.x);
-	z = hdz->pZ.horner(p.z);
+	n.z = hdz->pZ.horner(p.z);
 
 	// normalize:
-	float len = x*x + y*y + z*z;
+	float len = n.x*n.x + n.y*n.y + n.z*n.z;
 	if(len > 0) {
-		float sq = std::sqrt(len);
-		x /= sq;
-		y /= sq;
-		z /= sq;
+		float root = std::sqrt(len);
+		n.x /= root;
+		n.y /= root;
+		n.z /= root;
 	}
+
+	return n;
 }
 
 
