@@ -23,20 +23,20 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
+#include <Position.h>
 
-#include <stdio.h>
-#include <math.h>
-
-#include <ScriptVar.h>
 #include <simple.h>
 #include <monomarith.h>
 #include <roots.h>
 #include <color.h>
 #include <MultiVariatePolynom.h>
-#include <Vector.h>
-#include <MappingMatrix.h>
-#include <Position.h>
+
+#include <stdio.h>
+#include <math.h>
 
 extern double Y_AXIS_LR_ROTATE;
 extern double display_numeric_data[DISPLAY_NUMERIC_NUM];
@@ -45,7 +45,7 @@ extern double display_numeric_data[DISPLAY_NUMERIC_NUM];
 // -------------- constructor of positioning class ----------------------------
 // ----------------------------------------------------------------------------
 
-Position::Position( position_numeric_t Data, int *PRSD, int PRSP )
+Position::Position( position_numeric_t Data, int *PRSD, bool PRSP )
 	: Turn(Data.rot_x,
 	       Data.rot_y,
 	       Data.rot_z),
@@ -97,14 +97,6 @@ Position::Position( position_numeric_t Data, int *PRSD, int PRSP )
 	if( ScriptVar::display_numeric.stereo_eye) {
 		PosXYZ.Turn( Y_AXIS_LR_ROTATE,1 );
 	}
-}
-
-// ----------------------------------------------------------------------------
-// ------------------ destructor -- cleanup -----------------------------------
-// ----------------------------------------------------------------------------
-
-Position::~Position()
-{
 }
 
 // ----------------------------------------------------------------------------

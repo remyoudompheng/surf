@@ -155,7 +155,7 @@ void draw_func_cut()
 namespace {
 Position* GetPosition()
 {
-	int perspec = (ScriptVar::position_perspective_data
+	bool perspec = (ScriptVar::position_perspective_data
 		       == ScriptVar::position_perspective_central_data);
       
 	return new Position(ScriptVar::position_numeric,

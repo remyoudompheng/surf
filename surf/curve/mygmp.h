@@ -33,7 +33,7 @@
 #include <gmp.h>
 #endif
 
-#include <iostream.h>
+#include<iostream>
 
 extern void mpz_lcm (mpz_t lcm, mpz_t op1, mpz_t op2);
 extern ostream & operator << (ostream &os, mpz_t z);

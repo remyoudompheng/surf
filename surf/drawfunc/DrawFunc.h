@@ -26,6 +26,10 @@
 #ifndef DRAWFUNC_H
 #define DRAWFUNC_H
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 enum {
 	CURVE_INIT = 0,
 	CURVE_ROWS,

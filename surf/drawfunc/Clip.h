@@ -29,12 +29,16 @@
 #ifndef CLIP_H
 #define CLIP_H
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <WindowGeometry.h>
 #include <ScriptVar.h>
 
 class Position;
 class Vector;
-// class Mywindow;
+
 // ----------------------------------------------------------------------------
 // --------------- base for all clip classes ----------------------------------
 // ----------------------------------------------------------------------------
@@ -52,12 +56,12 @@ protected:
 	double WinMax[2];
 
 public:
-	Clip( const int _ClipModus, const clip_numeric_t & _ClipData, 
-	      const double win_min_0, const double win_max_0, 
-	      const double win_min_1, const double win_max_1);
+	Clip(int _ClipModus, const clip_numeric_t& _ClipData, 
+	     double win_min_0, double win_max_0, 
+	     double win_min_1, double win_max_1);
 
-	static Clip* create (const int, const int, const clip_numeric_t &,
-			     const WindowGeometry &wingeo, const double, Position*,
+	static Clip* create (bool, int, const clip_numeric_t&,
+			     const WindowGeometry& wingeo, double, Position*,
 			     int xmin, int xmax, int ymin, int ymax);
 
 	// replacement for operator new

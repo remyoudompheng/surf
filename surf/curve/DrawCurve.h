@@ -27,11 +27,15 @@
 #ifndef DRAWCURVE_H
 #define DRAWCURVE_H
 
-#include "RootFinder3d.h"
-#include "RgbBuffer.h"
-#include "float_buffer.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-#include "NewClip.h"
+#include <RootFinder3d.h>
+#include <RgbBuffer.h>
+#include <float_buffer.h>
+
+#include <NewClip.h>
 
 // DrawCurve is used to compute the intersection of two or more polynomials
 // in three variables

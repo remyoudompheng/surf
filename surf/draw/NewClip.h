@@ -26,6 +26,10 @@
 #ifndef NEWCLIP_H
 #define NEWCLIP_H
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 extern double cb, cf;
 
 class NewClip

@@ -23,11 +23,12 @@
  */
 
 
-
-
-
 #ifndef POSITION_H
 #define POSITION_H
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <Vector.h>
 #include <MappingMatrix.h>
@@ -40,13 +41,12 @@ class Polyxyz;
 class Position
 {
 private:
-	Position (const Position &);
-	void operator=(const Position &);
+	Position (const Position&);
+	void operator=(const Position&);
 	
 public:
-
-	Position (position_numeric_t Data,int*,int );
-	~Position();
+	Position (position_numeric_t Data, int*, bool);
+	~Position() {}
 
 	int     Central() const { return Perspective; }
 	Polyxy  Adjust( const Polyxy& );
@@ -61,8 +61,8 @@ private:
 	Vector Scale;
 	Vector Shift;
 	double SpecZ;
-	int    *Sequence;
-	int    Perspective;
+	int* Sequence;
+	bool Perspective;
 
 	MappingMatrix PosXY;
 	MappingMatrix PosXYZ;

@@ -27,6 +27,10 @@
 #ifndef BIGINTEGER_H
 #define BIGINTEGER_H
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <mygmp.h>
 
 #include<iostream>

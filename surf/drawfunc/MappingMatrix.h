@@ -23,23 +23,24 @@
  */
 
 
-
-
-
 #ifndef MAPMAT_H
 #define MAPMAT_H
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // --------------- class for positioning matrix -------------------------------
 // ----------------------------------------------------------------------------
 
-#include "MultiVariatePolynom.h"
-#include "Vector.h"
+#include <MultiVariatePolynom.h>
+#include <Vector.h>
 
 class MappingMatrix
 {
 public:
-	MappingMatrix()                   {}         
+	MappingMatrix() {}         
 	MappingMatrix( const MappingMatrix &alt )  { CopyAll( alt ); }
 	MappingMatrix( const double diagval )			// generate diagonal matrix of dval
 		{

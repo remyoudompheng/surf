@@ -23,19 +23,15 @@
  */
 
 
-
-
+#include <MappingMatrix.h>
 
 #include <stdio.h>
 #include <math.h>
 
 
-
 // ----------------------------------------------------------------------------
 // ------------------------- matrix assingments -------------------------------
 // ----------------------------------------------------------------------------
-
-#include "MappingMatrix.h"
 
 MappingMatrix& MappingMatrix::operator=(const MappingMatrix &alt)
 {

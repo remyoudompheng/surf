@@ -24,7 +24,11 @@
 
 
 
-#include "BigInteger.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <BigInteger.h>
 
 BigInteger::BigInteger()
 {

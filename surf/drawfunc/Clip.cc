@@ -678,22 +678,14 @@ int ClipCubeCentral::ClipXYZ( double ux, double uy, double &min, double &max )
 //---- static creator function --- decides which clip algorithm to use --------
 //-----------------------------------------------------------------------------
 
-Clip* Clip::create ( const int psp,            // perspective
-		     const int cm,             // clip modus
-		     const clip_numeric_t &cd,         // radii and center
-		     const WindowGeometry &wingeo,       // to get borders
-		     const double sz,                  // z of spectator
+Clip* Clip::create ( bool psp,            // perspective
+		     int cm,             // clip modus
+		     const clip_numeric_t& cd,         // radii and center
+		     const WindowGeometry& wingeo,       // to get borders
+		     double sz,                  // z of spectator
 		     Position* position,
 		     int xmin, int xmax, int ymin, int ymax)              // does rotation
 {
-
-// 	int xmin = 0;
-// 	int xmax = 0;
-// 	int ymin = 0;
-// 	int ymax = 0;
-	// FIXME
-// 	mywindow->GetBorders( 0, xmin, xmax );
-// 	mywindow->GetBorders( 1, ymin, ymax );
 	double a = wingeo.pixelToUser( 0, xmin );
 	double b = wingeo.pixelToUser( 0, xmax );
 	double c = wingeo.pixelToUser( 1, ymin );
