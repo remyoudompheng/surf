@@ -42,6 +42,7 @@
 #endif
 
 #include <signal.h>
+#include <stdlib.h>
 
 #include<iostream>
 #include<cstring>

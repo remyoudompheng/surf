@@ -248,8 +248,8 @@ AC_DEFUN(JOJO_STLPORT, [
     stlport_prefix="$withval",
     stlport_prefix="")
   AC_ARG_ENABLE(stlport,
-    [  --disable-stlport       Do not try to find STLport includes and library],
-    , enable_stlport=yes)
+    [  --enable-stlport        Try to find STLport includes and library],
+    , enable_stlport=no)
 
   if test "x$enable_stlport" = "xyes" ; then
     AC_MSG_CHECKING(for STLport includes)
@@ -271,7 +271,8 @@ AC_DEFUN(JOJO_STLPORT, [
     if test "x$stlportinclude" != x ; then
       CPPFLAGS="$stlportinclude $CPPFLAGS"
       AC_MSG_RESULT($stlportinclude)
-      AC_CHECK_LIB(stlport, main)
+      AC_CHECK_LIB(stlport, main,,
+        AC_CHECK_LIB(stlport_gcc, main))
     else
       AC_MSG_RESULT(no)
     fi
