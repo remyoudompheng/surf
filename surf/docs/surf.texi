@@ -308,6 +308,16 @@ true color (24 bit).
 Black & white images can be stored in the following formats:
 Postscript, Encapsulated Postscript (EPS), TIFF, XBM and PBM.
 
+If you have GTS (the GNU Triangulated Surfaces library) on your system
+and @emph{surf} has been built with GTS support, @emph{surf} can produce
+3D image files of surfaces after having triangularized them. For now,
+the only supported file format is the GTS native file format. This file
+format isn't quite optimal since it doesn't include any data for normal
+vectors at the vertices. (Of course you can calculate averaging normal
+vectors afterwards, but the resulting surface won't look as smooth as it
+should.)
+
+
 @c surf and make
 @c -------------
 
@@ -585,6 +595,7 @@ reference to the command language, have a look at
 * Plane Curves::
 * Surfaces::
 * Hyperplane Sections::
+* Surface Sections::
 * Multiple Curves/Surfaces::
 * Graphs and Isolines::
 * Antialiasing Surfaces::
@@ -593,6 +604,7 @@ reference to the command language, have a look at
 * Black & White Images::
 * Algorithms::
 * Image Formats::
+* Triangularization::
 @end menu
 
 
@@ -752,7 +764,7 @@ setting @code{clip_front} and @code{clip_back}.
 @c Hyperplane Sections
 @c -------------------
 
-@node Hyperplane Sections, Multiple Curves/Surfaces, Surfaces, Features
+@node Hyperplane Sections, Surface Sections, Surfaces, Features
 @section Hyperplane Sections
 
 To draw one or more hyperplane sections of an algebraic surface, just
@@ -795,10 +807,53 @@ value. A high value of @code{curve_gamma} (eg. 10.0) makes the curve
 look very pixelized, whereas a small value (eg. 1.0) makes the section
 look blurred.
 
+@c Surface Sections
+@c ----------------
+
+@node Surface Sections, Multiple Curves/Surfaces, Hyperplane Sections, Features
+@section Surface Sections
+
+To produce surface sections of algebraic surfaces, set the global
+variables @code{cutsurface}, @dots{}, @code{cutsurface9} to the
+equations of up to nine surfaces you want to cut with the original
+surfaces @code{surface}, @dots{}, @code{surface9}.
+
+Similarly to the hyperplane sections, the section is drawn when the
+command @code{cut_with_surface} is interpreted. Example:
+@example
+    rot_x = 0.5;
+    rot_z = 0.75;
+    rot_y = 0.5;
+
+    // specify lighting model:
+    illumination = ambient_light + diffuse_light
+                   + transmitted_light + reflected_light;
+
+    // first draw a partially transparent ellipsoid:
+    transparence = 10;
+    surface = 1.3*x^2 + 2*y^2 + 2*z^2 - 120;
+    draw_surface;
+
+    // cut with a second ellipsoid:
+    poly e = x^2 + 4*y^2 + 5*z^2 - 190;
+    cutsurface = rotate(rotate(e, 1.3, yAxis), 1.3, yAxis);
+    cut_with_surface;
+
+    // and save the picture...
+    color_file_format = ppm;
+    filename = "ellipsoidcut.ppm";
+    save_color_image;
+@end example
+
+Analogous to hyperplane sections, the color, width and gamma value of
+the section can be specified with @code{curve_red}, @code{curve_green},
+@code{curve_blue}, @code{curve_width} and @code{curve_gamma}.
+
+
 @c Multiple Curves/Surfaces
 @c ------------------------
 
-@node Multiple Curves/Surfaces, Graphs and Isolines, Hyperplane Sections, Features
+@node Multiple Curves/Surfaces, Graphs and Isolines, Surface Sections, Features
 @section Multiple Curves/Surfaces
 
 Multiple curves can be drawn in script files just by @emph{not} clearing
@@ -1153,7 +1208,7 @@ which is used in all root finders.  Additionally the maximal number of
 @c Image Formats
 @c -------------
 
-@node Image Formats, , Algorithms, Features
+@node Image Formats, Triangularization, Algorithms, Features
 @section Image Formats
 
 @emph{surf} can store color images in one of several file formats. Some
@@ -1196,6 +1251,47 @@ The quality of JPEG images can be adjusted by setting
 For Postscript, Encapsulated Postscript and TIFF the resolution may be
 specified by setting @code{resolution}) to the desired dpi value.
 
+@c Triangularization
+@c -----------------
+
+@node Triangularization, , Image Formats, Features
+@section Triangularization
+
+If GTS---the GNU Triangulated Surfaces library---is available,
+@emph{surf} can produce triangulated data from the first surface
+(@code{surface}). This data is calculated when the command
+@code{triangulate_surface} is interpreted, and it can be saved with the
+command @code{save_three_d_image}. The image format is chosen via the
+variable @code{three_d_image_format}, but the only format currently
+available is the GTS native file format so the only sensible values are
+@code{auto} and @code{gts} for now.
+
+The triangulation is done by calculating an ``isosurface'': For specific
+values of @math{x}, @math{y} and @math{z} located on a regular cartesian
+grid, samples of the polynomial @code{surface} are gathered. Afterwards,
+edges and faces are constructed. The number of samples in each direction
+can be adjusted via @code{gts_grid_size}.
+
+The resulting triangulated surface can become rather big if one chooses
+higher values for @code{gts_grid_size}: If the value is @math{n}, the
+number of vertices is
+@ifnottex
+@math{n^3}.
+@end ifnottex
+@tex
+$n^3$.
+@end tex
+On the other hand, if the value has been chosen too low, the resulting
+surface may have too many ``failures'' and even might be calculated
+in a topologically wrong way.
+
+The solution is to gather the data on a finer level and coarsen the 3D
+data in a second step. To fine tune this simplification, specify a
+maximum cost value by setting @code{gts_max_cost}. This value is the
+squared length of an edge and controls, when the coarsening algorithm
+stops collapsing edges. The coarsening of the surface can be turned off
+by setting @code{gts_coarsen} to @code{no}.
+
 
 @c List Of All Reserved Words
 @c **************************
@@ -1217,6 +1313,7 @@ parameters. Global variables are either constant or may be altered.
 * Dithering Variables::
 * Clipping Variables::
 * Algorithm Variables::
+* Triangulation Variables::
 * Constants::
 @end menu
 
@@ -1472,7 +1569,7 @@ $\infty$
 @c Algorithm Variables
 @c -------------------
 
-@node Algorithm Variables, Constants, Dithering Variables, List Of All Reserved Words
+@node Algorithm Variables, Triangulation Variables, Dithering Variables, List Of All Reserved Words
 @section Algorithm Variables
 
 @multitable {@code{root_finder}} {@code{d_chain_anderson_bjoerck, }} {@code{bezier_all_roots }} {used root finder}
@@ -1487,10 +1584,26 @@ $\infty$
 @item @code{terations}   @tab [@code{1}, @code{2000}] @tab @code{200} @tab max. number of iterations
 @end multitable
 
+@c Triangulation Variables
+@c -----------------------
+
+@node Triangulation Variables, Constants, Algorithm Variables, List Of All Reserved Words
+@section Triangulation Variables
+
+@multitable {@code{triangulate_surface}} {@{@code{auto}, @code{gts}@}} {@code{auto}} {size of regular cartesian grid}
+@item Command/Variable @tab Range @tab Def.     @tab Description
+@item @code{triangulate_surface} @tab -- @tab -- @tab triangulate 1st surface
+@item @code{save_three_d_image}  @tab -- @tab -- @tab save 3D data
+@item @code{three_d_file_format} @tab @{@code{auto}, @code{gts}@} @tab @code{auto} @tab 3D file format
+@item @code{gts_grid_size} @tab > 0                       @tab @code{48}  @tab size of regular cartesian grid
+@item @code{gts_coarsen}   @tab @{@code{yes}, @code{no}@} @tab @code{yes} @tab do surface simplification
+@item @code{gts_max_cost}  @tab > 0                       @tab @code{0.5} @tab maximum allowed cost
+@end multitable
+
 @c Constants
 @c ---------
 
-@node Constants, , Algorithm Variables, List Of All Reserved Words
+@node Constants, , Triangulation Variables, List Of All Reserved Words
 @section Constants
 
 These constants all appreared before as values for some variables
@@ -1498,7 +1611,7 @@ These constants all appreared before as values for some variables
 but since they're actually just "ordinary" constants and thus reserved words
 they are listed here for the sake of completeness:
 
-@multitable {@code{clustered_dot_ordered_dither}} {@code{string}} {Value} {@code{first}, @code{second}, @code{third}}
+@multitable {@code{clustered_dot_ordered_dither}} {@code{string}} {Value} {@code{three_d_file_format }}
 @item Constant           @tab Type        @tab Value    @tab Useful together with
 @item @code{yes}         @tab @code{int}  @tab @code{1} @tab any boolean variable
 @item @code{no}          @tab @code{int}  @tab @code{0} @tab any boolean variable
@@ -1532,7 +1645,7 @@ they are listed here for the sake of completeness:
 @item @code{pattern_4x4}   @tab @code{int} @tab @code{0} @tab @code{pattern_size}
 @item @code{pattern_8x8}   @tab @code{int} @tab @code{1} @tab @code{pattern_size}
 @item @code{pattern_16x16} @tab @code{int} @tab @code{2} @tab @code{pattern_size}
-@item @code{auto}       @tab @code{int} @tab ? @tab @code{color_file_format},@* @code{dither_file_format}
+@item @code{auto}       @tab @code{int} @tab ? @tab @code{color_file_format},@* @code{dither_file_format},@* @code{three_d_file_format}
 @item @code{jpeg}       @tab @code{int} @tab ? @tab @code{color_file_format}
 @item @code{ppm}        @tab @code{int} @tab ? @tab @code{color_file_format}
 @item @code{png}        @tab @code{int} @tab ? @tab @code{color_file_format}
@@ -1543,6 +1656,7 @@ they are listed here for the sake of completeness:
 @item @code{pbm}        @tab @code{int} @tab ? @tab @code{dither_file_format}
 @item @code{postscript} @tab @code{int} @tab ? @tab @code{dither_file_format}
 @item @code{xbm}        @tab @code{int} @tab ? @tab @code{dither_file_format}
+@item @code{gts}        @tab @code{int} @tab ? @tab @code{three_d_file_format}
 @item @code{netscape}   @tab @code{int} @tab @code{0} @tab @code{color_file_colormap}
 @item @code{optimized}  @tab @code{int} @tab @code{1} @tab @code{color_file_colormap}
 @item @code{truecolor}  @tab @code{int} @tab @code{2} @tab @code{color_file_colormap}
