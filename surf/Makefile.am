@@ -31,7 +31,7 @@ endif
 
 bin_PROGRAMS = surf
 surf_SOURCES = 
-EXTRA_DIST = background.pic Makefile.global aclocal.m4 surf.1 surf.xpm
+EXTRA_DIST = background.pic Makefile.global aclocal.m4 surf.1
 man_MANS = surf.1
 pkgdata_DATA = surf.xpm
 

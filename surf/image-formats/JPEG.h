@@ -66,10 +66,12 @@ namespace ImageFormats {
 			return false;
 		}
 
+#ifndef NO_GUI
 		void destroyDialog() {
 			gtk_widget_destroy(dialog);
 			shown = false;
 		}
+#endif
 		
 		char* filename;
 
