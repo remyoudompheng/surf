@@ -130,7 +130,11 @@ private:
 	static void printColorImageFormats();
 	static void printDitherImageFormats();
 //	static void print3DImageFormats();
-	static void printPosition();
+	static void printOrigin();
+	static void printRotation();
+	static void printScale();
+	static void printSequence();
+	static void printClip();
 };
 
 #endif //!SCRIPT_H

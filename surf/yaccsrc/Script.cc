@@ -350,7 +350,11 @@ void Script::addNewCommands()
 	replaceCommand("print_color_image_formats", printColorImageFormats);
 	replaceCommand("print_dither_image_formats", printDitherImageFormats);
 //	replaceCommand("print_three_d_image_formats", print3DImageFormats);
-	replaceCommand("print_position", printPosition);
+	replaceCommand("print_origin", printOrigin);
+	replaceCommand("print_rotation", printRotation);
+	replaceCommand("print_scale", printScale);
+	replaceCommand("print_sequence", printSequence);
+	replaceCommand("print_clip", printClip);
 }
 
 //
@@ -799,25 +803,41 @@ void Script::print3DImageFormats()
 }
 #endif
 
-void Script::printPosition()
+void Script::printOrigin()
 {
 	using namespace ScriptVar;
-	
 	std::cout << "origin:\t"
 		  << position_numeric.orig_x << ' '
 		  << position_numeric.orig_y << ' '
-		  << position_numeric.orig_z << '\n'
-		  << "rotation:\t"
+		  << position_numeric.orig_z << '\n';
+	std::cout.flush();
+}
+
+void Script::printRotation()
+{
+	using namespace ScriptVar;
+	std::cout << "rotation:\t"
 		  << position_numeric.rot_x << ' '
 		  << position_numeric.rot_y << ' '
-		  << position_numeric.rot_z << '\n'
-		  << "scale:\t"
+		  << position_numeric.rot_z << '\n';
+	std::cout.flush();
+}
+
+void Script::printScale()
+{
+	using namespace ScriptVar;
+	std::cout << "scale:\t"
 		  << position_numeric.scale_x << ' '
 		  << position_numeric.scale_y << ' '
-		  << position_numeric.scale_z << '\n'
-		  << "sequence:\t";
+		  << position_numeric.scale_z << '\n';
+	std::cout.flush();
+}
+
+void Script::printSequence()
+{
+	using namespace ScriptVar;
+	std::cout << "sequence:\t";
 	for(int i = 0; i != 3; i++) {
-		using namespace ScriptVar;
 		int s = position_sequence_data[i];
 		if(s == position_sequence_translate_data) {
 			std::cout << "translate ";
@@ -827,7 +847,15 @@ void Script::printPosition()
 			std::cout << "scale";
 		}
 	}
-
 	std::cout << '\n';
+	std::cout.flush();
+}
+
+void Script::printClip()
+{
+	using namespace ScriptVar;
+	std::cout << "clip:\t"
+		  << clip_data << ' '
+		  << clip_numeric.radius << '\n';
 	std::cout.flush();
 }
