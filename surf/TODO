@@ -1,5 +1,8 @@
 Here are some minor problems I can think of:
 
+* Do we really have to specify those constants for resolution? Why
+  not just set resolution to the desired DPI value!?
+
 * OctNode::TestBit:
   What does it do and is it correct in what it does ???
   I don't believe so.

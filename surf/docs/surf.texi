@@ -52,10 +52,12 @@ real algebraic geometry.
 This document applies to version @value{VERSION} of @command{surf}.
 
 @menu
-* Copying::                                  License issues.
-* Abstract::                                 Aims and achievements.
-* Overview::                                 Short introduction.
-* Introduction to surfs Command Language::  surf scripts.
+* Copying::
+* Abstract::
+* Overview::
+* Introduction to surfs Command Language::
+* Features::
+* List Of All Reserved Words::
 @end menu
 
 @end ifinfo
@@ -88,7 +90,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 @c ********
 
 @node Abstract, Overview, Copying, top
-@chapter Abstract
+@unnumbered Abstract
 
 The aim was to have a tool to visualize some real algebraic geometry:
 plane algebraic curves given as zero locus of a polynomial in two
@@ -115,15 +117,15 @@ displays the Fermat-curves accurately for degree up to 98.
 @chapter Overview
 
 @menu
-* Acknowledgements::          Thanks.
-* How to get surf::           Pointer to the surf website.
-* System Requirements::       Build dependancies.
-* Starting surf::             Command line options.
-* Scripting Language::        About surf's scripting language.
-* Output::                    Image formats.
-* Sample Scripts::            Examples included in the distribution.
-* surf and make::             Using surf together with make.
-* Oddities and Bug Reports::  Where to report bugs.
+* Acknowledgements::
+* How to get surf::
+* System Requirements::
+* Starting surf::
+* Scripting Language::
+* Output::
+* Sample Scripts::
+* surf and make::
+* Oddities and Bug Reports::
 @end menu
 
 
@@ -289,17 +291,17 @@ on surf's project page at sourceforge:
 @c Introduction to surf's Command Language
 @c ***************************************
 
-@node Introduction to surfs Command Language, , Oddities and Bug Reports, top
+@node Introduction to surfs Command Language, Data Types, Oddities and Bug Reports, top
 @chapter Introduction to surf's Command Language
 
 @menu
-* Data Types::               @code{int}, @code{double}, @code{string} and @code{poly}
-* Operators::                @code{+}, @code{-}, @code{*}, @dots{}
-* Mathematical Functions::   @code{sqrt}, @code{pow}, @code{sin}, @dots{}
-* String Functions::         @code{itostr}, @code{itostrn}
-* Polynomial Functions::     @code{deg}, @code{len}, @dots{}
-* First Examples::           First steps.
-* Conditional Statements::   @code{if(EXPR) goto LABEL;}
+* Data Types::
+* Operators::
+* Mathematical Functions::
+* String Functions::
+* Polynomial Functions::
+* First Examples::
+* Conditional Statements::
 @end menu
 
 @c Data Types
@@ -476,7 +478,7 @@ for example:
 @c Conditional Statements
 @c ----------------------
 
-@node Conditional Statements, , First Examples, Introduction to surfs Command Language
+@node Conditional Statements, Features, First Examples, Introduction to surfs Command Language
 @section Conditional Statements
 
 There are no @code{for} and no @code{while} statements.
@@ -503,5 +505,721 @@ which has occurred before as @code{NAME:}. Consider the example
 which obviously draws fifty spheres of increasing radius 
 and saves them into the X Pixmap files:
 @file{sphere00.xpm}, @dots{} @file{sphere49.xpm}.
+
+@c Features
+@c ********
+
+@node Features, Plane Curves, Conditional Statements, top
+@chapter Features
+
+In this section most features of surf are explained.  For a complete
+reference to the command language, have a look at
+@ref{List Of All Reserved Words}.
+
+@menu
+* Plane Curves::
+* Surfaces::
+* Hyperplane Sections::
+* Multiple Curves/Surfaces::
+* Graphs and Isolines::
+* Antialiasing Surfaces::
+* Animations::
+* Stereo Pictures::
+* Black & White Images::
+* Algorithms::
+* Image Formats::
+@end menu
+
+
+@c Plane Curves
+@c ------------
+
+@node Plane Curves, Surfaces, Features, Features
+@section Plane Curves
+
+To draw a plane curve, set the global variable @code{curve} to the
+polynomial describing the curve and call the @code{draw_curve}
+command. To see the result, save the image by setting the
+@code{filename} variable and calling @code{save_color_image}.
+Example script:
+@example
+        curve = x^2 + y^2 - 1;
+        draw_curve;
+        filename = "circle.xpm";
+        save_color_image;
+@end example
+
+By default the curve is drawn inside the rectangle
+@ifnottex
+@math{-10.0 <= x, y <= 10.0}
+@end ifnottex
+@tex
+$-10.0 \le x, y \le 10.0 $
+@end tex
+and is clipped at a circle with radius 10.0.  The x-axis is
+horizontal pointing to the right, the y-axis is vertical and points
+upwards. By default the image size is 200x200 pixels.  The image size
+can be altered by setting the variables @code{width} and @code{height}.
+
+A different origin can be specified by setting
+@code{origin_x} and @code{origin_y}.
+A rotation with center at @math{(0, 0)} can be specified by setting
+@code{rot_z}. The curve may be scaled by setting
+@code{scale_x} and @code{scale_y}.
+
+The width of the curve is determined by the variable @code{curve_width}
+and the gamma value by @code{curve_gamma} respectively.  A high gamma
+value sharpens the curve, whereas a low value blurs the curve.
+
+The clipping area can be specified by setting @code{clip}. For a curve
+the only reasonable values are @code{sphere} or to @code{none}. When
+choosing @code{sphere} you can adjust the variable @code{radius}.
+
+An arbitrary color can be given to the curve by setting
+@code{curve_red}, @code{curve_green} and @code{curve_blue} to
+appropriate values between 0 and 255.
+
+@c Surfaces
+@c --------
+
+@node Surfaces, Hyperplane Sections, Plane Curves, Features
+@section Surfaces
+
+To draw a plane curve, set the global variable @code{curve} to the
+polynomial describing the curve and call the @code{draw_curve}
+command. To see the result, save the image by setting the
+@code{filename} variable and calling @code{save_color_image}. Example
+script:
+@example
+        surface = x^2 + y^2 + z^2 - 4;
+        draw_surface;
+        filename = "sphere.jpg";
+        save_color_image;
+@end example
+
+By default, the surface
+is calculated inside the cube
+@ifnottex
+@math{-10.0 <= x, y, z <= 10.0}
+@end ifnottex
+@tex
+$-10.0 \le x, y, z \le 10.0$
+@end tex
+and clipped at a sphere of radius 10.0.
+
+The x-axis is horizontal pointing to the right, the y-axis is vertical
+and points upwards. The z-axis points to you. The spectator is located
+at @math{(0, 0, 25)} by default.
+
+A different origin may be specified by setting @code{origin_x},
+@code{origin_y} and @code{origin_z}.  To rotate the surface one can set
+@code{rot_x} about x-axis @code{rot_y} and @code{rot_z} to appropriate
+values. Rotation is performed on the following order: y-axis, x-axis,
+z-axis.
+
+To scale the surface set @code{scale_x}, @code{scale_y} and
+@code{scale_z} to desired values.
+
+It is also possible to switch from central perspective to parallel
+perspective by setting @code{perspective} to @code{central} or
+@code{parallel} respectively.
+
+Illumination and color can be altered, too.  The direction of the normal
+vector given by the gradient of the surface equation defines one side of
+the surface which is regarded as outside. You can specify a color for
+this side by setting @code{surface_red}, @code{surface_green} and
+@code{surface_blue}. The other side of the surface (inside) can be given
+a different color by specifying @code{inside_red}, @code{inside_green}
+and @code{inside_blue}.
+
+Currently only the Phong illumination model is implemented.
+Therefore the intensity of the surface in one point consists of
+four components which are calculated separately:
+@itemize
+@item
+ambient light,
+@item
+diffuse light,
+@item
+reflected light and
+@item transmitted light.
+@end itemize
+
+Ambient light is a constant which represents the light a point on the
+surface receives from the whole environment (the sky, the floor, the
+lawn @dots{})  but not from the light sources.
+
+Diffuse light is the light the point receives from the light sources and
+which is reflected equally in every possible direction. The amount of
+diffuse light is independent of the spectator position, it is
+proportional to the cosine of the angle between the normal vector and
+the vector from the point to the light source.
+
+Reflected light is the light from the light sources which is reflected
+specular from the surface point. Its amount is proportional to a power
+of the cosine of the angle between the vector from the point to the
+spectator and the specular reflection vector from the light source. If a
+high power of the cosine is taken, the surface will appear shiny,
+whereas a low power of the cosine lets the surface look rough.  Therfore
+the variable controlling this power is named @code{smoothness}.
+
+Transmitted light comes in if a surface is transparent. A variable
+called @code{transparence} specifies the percentage of light which
+passes through the surface. Algebraic surfaces are infinitesimally
+thin. However our eye is not used to such objects, so we pretend that
+our surfaces have a constant @code{thickness}. Specifying a positive
+@code{thickness} for a transparent surface results in a loss of
+transparency in the places where the surface normal does not point to
+the spectator.
+
+These four light components are added with weights @code{ambient},
+@code{diffuse}, @code{reflected} and @code{transmitted}.
+
+The number of light sources is limited to nine. For every light source,
+the position, the color and the intensity can be specified. See the next
+chapter for a complete listing of these variables.
+
+The shape of the clipping area is determined by the variable
+@code{clip}. The center is specified via @code{center_x},
+@code{center_y}, @code{center_z} and the radius via @code{radius}.
+Additionally a front and a back clipping plane may be specified by
+setting @code{clip_front} and @code{clip_back}.
+
+@c Hyperplane Sections
+@c -------------------
+
+@node Hyperplane Sections, Multiple Curves/Surfaces, Surfaces, Features
+@section Hyperplane Sections
+
+To draw one or more hyperplane sections of an algebraic surface, just
+specify the hyperplane by setting the global variable @code{plane} to
+its equation.
+
+The section is drawn when the command @code{cut_with_plane} is interpreted.
+For example:
+@example
+    rot_x = 0.3; // a nice rotation
+    rot_y = 0.2;
+
+    // draw the steiner roman surface:
+    surface = x^2*y^2  +y^2*z^2 + z^2*x^2 - 16*x*y*z;
+    clear_screen;
+    draw_surface;
+
+    // draw a green hyperplane section
+    curve_red = 0;
+    curve_green = 255;
+    curve_blue = 0;
+    curve_width = 5;
+    curve_gamma = 1.2;
+    plane = x + y + z;
+    cut_with_plane;
+
+    // draw another one
+    plane = x + y + z + 4.0;
+    cut_with_plane;
+
+    // save image:
+    filename = "hyperplanesections.jpg";
+    save_color_image;
+@end example
+
+The color of the hyperplane section can be set by specifying
+@code{curve_red}, @code{curve_green} and @code{curve_blue}.  The width
+of the section is altered by setting @code{curve_width} to any suitable
+value. A high value of @code{curve_gamma} (eg. 10.0) makes the curve
+look very pixelized, whereas a small value (eg. 1.0) makes the section
+look blurred.
+
+@c Multiple Curves/Surfaces
+@c ------------------------
+
+@node Multiple Curves/Surfaces, Graphs and Isolines, Hyperplane Sections, Features
+@section Multiple Curves/Surfaces
+
+Multiple curves can be drawn in script files just by @emph{not} clearing
+the screen. This works fine for plane curves.  Just consider the
+following example:
+@example
+    // draw a cubic
+    curve = y^2 - x^2*(x - 1);
+    draw_curve;
+
+    // draw y-axis
+    curve = x;
+    draw_curve;
+    
+    // draw x-axis:
+    curve = y;
+    draw_curve;
+
+    // save image:
+    filename = "cubic.xpm";
+    save_color_image;
+@end example
+
+Note that every curve will be drawn just over all curves that have been
+drawn so far.
+
+Multiple surfaces can be drawn by specifying up to nine surfaces in the
+variables @code{surface}, @code{surface2}, @dots{},
+@code{surface9}. Additionally it is possible to draw on every surface
+any number of hyperplane sections.
+
+@example
+    rot_x = 0.69; // a nice rotation
+    rot_y = 0.35;
+    illumination = ambient_light +  // specify illumination model
+                   diffuse_light +
+                   reflected_light +
+                   transmitted_light;
+    transparence = 35;  // set transparence for surface no 1
+    transparence2 = 35; // set transparence for surface no 2
+
+    // first surface: a sphere
+    surface = x^2 + y^2 + z^2 - 30;  
+
+    // second surface: a red steiner surface
+    surface2_red = 255;              
+    surface2_green = 0;
+    surface2_blue = 0;
+    surface2 = x^2*y^2 + x^2*z^2 + y^2*z^2 - 16*x*y*z;
+
+    draw_surface; // draw both surfaces
+
+    // draw a green hyperplane section...
+    curve_width = 5;
+    curve_red = 0;
+    curve_green = 255;
+    curve_blue = 0;
+    plane = x + y + z - 6.0;
+    surf_nr = 1;           // ...on the sphere
+    cut_with_plane;
+
+    // draw a turquoise hyperplane section...
+    curve_red = 0;
+    curve_green = 255;
+    curve_blue = 255;
+    plane = x + y + z +4.0;                 
+    surf_nr = 2;           // ...on the steiner surface
+    cut_with_plane;
+
+    // save the image
+    filename = "multisurfs.jpg";
+    save_color_image;
+@end example
+
+@c Graphs and Isolines
+@c -------------------
+
+@node Graphs and Isolines, Antialiasing Surfaces, Multiple Curves/Surfaces, Features
+@section Graphs and Isolines
+
+Given a polynomial function @math{f(x, y)} and a set of levels
+@math{z1}, @dots{}, @math{zn}, surf can visualize the graph @math{z =
+f(x, y)} and all isolines for the levels @math{z1}, @dots{}, @math{zn}
+as follows:
+@example
+    rot_x = -0.8;
+    poly f = x^2 + y^2; // graph of (x,y) -> x^2 + y^2
+    surface = z - f;
+    draw_surface;      // draw the graph
+
+    curve_width = 3;   // width of isolines
+    int i = 1;
+    loop:
+        plane = z - i;
+        cut_with_plane; // draw isoline f(x,y) = i
+        i = i + 1;
+    if(i < 10) goto loop;
+
+    // save image
+    filename = "isolines.jpg";
+    save_color_image;
+@end example
+
+If however your function @math{f} is not polynomial, try to expand
+calculate its Taylor series. Since the new root algorithms work fine
+with polynomials of degree up to 30, you might approximate @math{f} by
+its Taylor series. If your function is piecewise defined, better use
+another program.
+
+@c Antialiasing Surfaces
+@c ---------------------
+
+@node Antialiasing Surfaces, Animations, Graphs and Isolines, Features
+@section Antialiasing Surfaces
+
+Especially in animations aliasing is very disturbing. Therefore if
+@code{antialiasing} is set to a value
+@ifnottex
+@math{n >= 1}
+@end ifnottex
+@tex
+$n \ge 1$
+@end tex
+then in a second pass all pixels differing by a value of at least
+@code{antialiasing_threshold} from one of their neighbours are
+refined. Exactly
+@ifnottex
+@math{n^2+1}
+@end ifnottex
+@tex
+$n^2 + 1$
+@end tex
+intensity values are calculated. In most
+cases an antialiasing level of 4 will remove aliasing.
+
+@c Animations
+@c ----------
+
+@node Animations, Stereo Pictures, Antialiasing Surfaces, Features
+@section Animations
+
+You can calculate a series of images with surf and convert this
+series of images to the movie format of your choice.
+@example
+    // --------------------------
+    // the 4-nodal cubic rotating
+    // --------------------------
+    
+    width = 200;  // set image size
+    height = 200;
+    
+    double sf = 0.3;
+    scale_x = sf; // set scaling
+    scale_y = sf;
+    scale_z = sf;
+
+    double pi = 2*arccos(0); // define some constants
+    double w2 = sqrt(2);
+    
+    // define tetrahedral coordinates
+    poly p = 1 - z - w2*x;
+    poly q = 1 - z + w2*x;
+    poly r = 1 + z + w2*y;
+    poly s = 1 + z -w2*y;
+
+    // the cubic:
+    poly cubic = 4*(p^3 + q^3 + r^3 + s^3) - (p + q + r + s)^3;
+
+    int i = 0;
+    loop:
+        surface = rotate(cubic, 2*pi/100*i, zAxis); // rotate the cubic
+        clear_screen;
+        draw_surface; // draw the cubic
+        filename = "cubic" + itostrn(3, i) + ".ras";
+        save_color_image; // save the image
+        i = i + 1;
+    if(i < 100) goto loop; // repeat 100 times
+@end example
+Here some 100 Sun rasterfiles are created.  Afterwards you could use a
+tool to convert these single images to a movie. For example with the
+@command{convert} program from the ImageMagick suite you could type
+@kbd{convert -delay 5 cubic*.ras cubic.gif} to create a GIF animation.
+
+
+@c Stereo Pictures
+@c ---------------
+
+@node Stereo Pictures, Black & White Images, Animations, Features
+@section Stereo Pictures
+
+Have you ever watched one of those films with that red and green
+glasses? surf tries to accomplish exactly this effect when you set
+@code{stereo_eye} to a value greater than zero.
+
+The following situation is simulated: The spectator is located at
+@math{(0,0, spectator z)} and the distance between his eyes is
+@code{stereo_eye}. The surface will appear at the z-coordinate
+@code{stereo_z}.  Furthermore it is possible to adjust to specific
+red-green or red-blue glasses by setting @code{stereo_red} (left eye),
+@code{stereo_green} and @code{stereo_blue} (right eye). In particular it
+is assumed that the right eye wears the red glass.
+
+@c Black & White Images
+@c --------------------
+
+@node Black & White Images, Dithering with Blue Noise, Stereo Pictures, Features
+@section Black & White Images
+
+If a color image of a surface/curve has been calculated, this image can
+be mapped to a black and white image by calling one of the commands
+@code{dither_surface} or @code{dither_curve}.  The second one is just
+designed for dithering curves.
+
+The appearance of the black and white image can be altered/adjusted in
+several ways.  Since the mapping itself is done by dithering, the
+dithering algorithm can be specified. Currently available are seven
+algorithms coming in three groups:
+
+@menu
+* Dithering with Blue Noise::
+* Dithering with Ordered Dither::
+* Hybrid Methods::
+* The Black & White Problem::
+@end menu
+
+@c Dithering with Blue Noise
+
+@node Dithering with Blue Noise, Dithering with Ordered Dither, Black & White Images, Black & White Images
+@subsection Dithering with Blue Noise
+
+@itemize
+@item Floyd-Steinberg filter
+@item Jarvis, Judis and Ninke filter
+@item Stucki filter
+@end itemize
+
+All three filters are based on the same idea of error
+distribution. Floyd Steinberg is the simplest one, whereas Stucki
+differs from Jarvis only by its weights. They tend to produce disturbing
+patterns if they process large areas of intensity near 0.5. Therefore
+one can let them proceed in a serpentine fashion, which reduces the
+patterns. Nearly all patterns disappear if the weights are disturbed
+randomly. The algorithms are best for use with low resolution printers,
+typically 300 dpi. Some (most?) 600 dpi laser printers do not like these
+algorithms, since they do not like isolated pixels.
+
+@c Dithering with Ordered Dither
+
+@node Dithering with Ordered Dither, Hybrid Methods, Dithering with Blue Noise, Black & White Images
+@subsection Dithering with Ordered Dither
+
+@itemize
+@item Clustered dot ordered dither
+@item Dispersed dot ordered dither
+@end itemize
+The clustered dot ordered dither is a fast method and produces
+satisfying results in combination with high resolution printers (600 dpi
+and more). The second algorithm is for use with low resolution
+printers. Both perform no error distribution. Depending on the printer
+resolution and the number of emulated gray levels, one can choose the
+pattern size:
+@itemize
+@item 4 x 4 pixels: 16 gray levels,
+@item 8 x 8 pixels: 64 gray levels or
+@item 16 x 16 pixels: 256 gray levels.
+@end itemize
+
+@c Hybrid Methods
+
+@node Hybrid Methods, The Black & White Problem, Dithering with Ordered Dither, Black & White Images
+@subsection Hybrid Methods
+
+@itemize
+@item Knuth's dot diffusion
+@item Knuth's smooth dot diffusion
+@end itemize
+Both algorithms combine clustered dot ordered dither and error
+distribution. Depending on the printer resolution on can choose the
+number of barons in a 8x8 matrix to be
+@itemize
+@item 1 for resolutions of 1200 dpi or above or
+@item 2 for resolutions of 600 dpi or above.
+@end itemize
+The barons are the bad guys in a matrix which get all the error left
+over from the good guys.
+
+@c The Black & White Problem
+
+@node The Black & White Problem, Algorithms, Hybrid Methods, Black & White Images
+@subsection The Black & White Problem
+
+The surfaces on black and white images often don't look very impressive;
+often it is hard to detect the edges of a surface. An algorithm called
+enhancing the edges avoids this drawback. This algorithm takes a value
+@code{alpha} in @math{[0, 1]} as input.  Best results are achieved with
+@code{alpha} around 0.9.
+
+The intensity of the background on the black and white image can be
+specified by altering the value @code{background} to any value in
+@math{[0, 1]}. Here 0 is black whereas 1 means white.
+
+If @code{tone_scale_adjustment} is set to @code{yes}, intensity values
+between 0 and 0.1 are mapped to 0, values between 0.1 and 0.9 linearly
+to @math{[0, 1]} and values between 0.9 and 1 to 1. This is used to
+enhance the contrast of an image. Additionally, @code{gamma_correction}
+can be set to @code{yes} to correct the linearity of an output device.
+
+By specifying @code{pixel_size} one can correct the printer pixel size:
+A value of 50 means that the radius of a pixel is exactly half the
+distance between two neighbouring pixels. A value of 100 says that the
+radius of a pixel is exactly the distance between two neighbouring
+pixels.
+
+@c Algorithms
+@c ----------
+
+@node Algorithms, Image Formats, The Black & White Problem, Features
+@section Algorithms
+
+The heart of surf is an algorithm which determines all roots of a
+polynomial in one variable. Currently you can choose between six
+methods for the @code{root_finder} variable:
+@itemize
+@item @code{d_chain_bisection}
+@item @code{d_chain_regula_falsi}
+@item @code{d_chain_pegasus}
+@item @code{d_chain_anderson_bjoerck}
+@item @code{d_chain_newton}
+@item @code{bezier_all_roots}
+@end itemize
+The first five methods use a
+chain of derivatives to determine intervals where the polynomial has
+exactly one root. They differ by the iteration method which is used to
+find the roots in these intervals. Some of the iteration methods were
+just implemented out of academic interest. However, they all work. The
+last method uses Rockwoods all roots algorithm: the polynomial is
+converted into a bezier function and the roots of the bezier function
+are approximated by the roots of the control polygon.
+
+For curves/surfaces of degree less than ten, all methods work.  When the
+degree gets higher, best results are achieved by the bisection, the
+Newton and the bezier all roots method. At last, for a degree higher
+than 30 only the bisection methods seems to work (up to degree 50). If a
+curve has multiple components, the bisection and the Newton method tend
+to produce the best results.
+
+Moreover it is possible to specify a numerical precision @code{epsilon}
+which is used in all root finders.  Additionally the maximal number of
+@code{iterations} of the iteration methods can be specified.
+
+@c Image Formats
+@c -------------
+
+@node Image Formats, List Of All Reserved Words, Algorithms, Features
+@section Image Formats
+
+surf can store color images in one of several file formats. By setting
+@code{color_file_format} you can choose between:
+@multitable {@code{jpeg}} {Sun Rasterfiles (suffix: ".ras")}
+@item @code{jpeg} @tab JPEG
+@item @code{ppm}  @tab Portable Pixmap
+@item @code{sun}  @tab Sun Rasterfiles (suffix: ".ras")
+@item @code{xpm}  @tab X Pixmap
+@end multitable
+Additionally the value of @code{color_file_colormap} can be chosen
+among:
+@multitable {@code{Optimized}} {optimized by an octree algorithm (8 bit) and}
+@item @code{Netscape}  @tab Netscape 216 color cube (8 bit)
+@item @code{Optimized} @tab optimized by an octree algorithm (8 bit)
+@item @code{TrueColor} @tab true color (24 bit)
+@end multitable
+The first colormap is just the 6x6x6 colormap Netscape uses.  The second
+one results from an octree algorithm which chooses the most used 216
+colors among all colors of the image. @code{color_file_colormap} is only
+evaluated if it makes sense with the chosen @code{color_file_format}.
+The quality of JPEG images can be adjusted by setting
+@code{jpeg_quality} to an appropriate value between 0 and 100.
+
+surf can store black and white images these formats (set the variable
+@code{dither_file_format}):
+@multitable {@code{postscript}} {Encapsulated Postscript}
+@item @code{eps}        @tab Encapsulated Postscript
+@item @code{pbm}        @tab Portable Bitmap
+@item @code{postscript} @tab Postscript
+@item @code{tiff}       @tab TIFF
+@item @code{xbm}        @tab X Bitmap
+@end multitable
+For postscript and encapsulated postscript the resolution may be
+specified (by setting @code{resolution}) among:
+@code{res_75dpi}, @code{res_100dpi}, @code{res_150dpi}, @code{res_300dpi},
+@code{res_600dpi} and @code{res_1200dpi}.
+
+When using postscript, the image will (regardless its size) appear
+centered on the page (which is assumed to be A4).
+
+
+@c List Of All Reserved Words
+@c **************************
+
+@node List Of All Reserved Words, Main Commands, Image Formats, top
+@chapter List Of All Reserved Words
+
+A reserved word in surf's language is either a command or a global
+variable. A command is invoked mostly without parameters. Global
+variables are either constant or may be altered.
+
+@menu
+* Main Commands::
+* Main Variables::
+* Positioning::
+@end menu
+
+
+@c Main Commands
+@c -------------
+@node Main Commands, Main Variables, List Of All Reserved Words, List Of All Reserved Words
+@section Main Commands
+
+@multitable @columnfractions 0.2 0.8
+@item Reserved Word: @tab Description:
+@item @code{clear_screen}        @tab erase the image
+@item @code{draw_curve}          @tab draw the curve defined by the global
+                                      polynomial @code{curve}
+@item @code{draw_surface}        @tab draw the surfaces defined by the global
+                                      polynomials @code{surface}, @code{surface2},
+                                      @dots{}, @code{surface9}
+@item @code{cut_with_plane}      @tab draw the hyperplane section defined
+                                      defined by the linear polynomial @code{plane}
+@item @code{dither_surface}      @tab convert color image to a dithered
+                                      black and white image
+@item @code{dither_curve}        @tab convert color image to a dithered
+                                      black and white image (for curves only)
+@item @code{save_color_image}    @tab save color image in file defined by the
+                                      global string @code{filename}
+@item @code{save_dithered_image} @tab save dithered black and white image in
+                                      file defined by the global string @code{filename}
+@end multitable
+
+@c Main Variables
+@c --------------
+
+@node Main Variables, Positioning, Main Commands, List Of All Reserved Words
+@section Main Variables
+
+@multitable {Reserved Word} {@code{string}} {@{64, @dots{}, 3000@}} {Default} {height of surface image}
+@item Reserved Word @tab Type @tab Range @tab Default @tab Description
+@item @code{curve}    @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of curve
+@item @code{surface}  @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface
+@item @code{surface2} @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface2
+@item @dots{}         @tab @dots{}  @tab @dots{} @tab @dots{} @tab @dots{}
+@item @code{surface9} @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface9
+@item @code{plane}    @tab @code{poly} @tab linear @tab @code{0} @tab equation of hyperplane
+@item @code{width}    @tab @code{int}  @tab @{@code{64}, ..., @code{3000}@} @tab @code{200} @tab width of image
+@item @code{height}   @tab @code{int}  @tab @{@code{64}, ..., @code{3000}@} @tab @code{200} @tab height of image
+@item @code{filename} @tab @code{string} @tab any @tab @code{""} @tab filename used in @code{save_color_image} and @code{save_dithered_image}
+@item @code{surf_nr}  @tab @code{int}  @tab @{@code{1},..., @code{9}@} @tab @code{1} @tab surface which is used for @code{cut_with_plane}
+@end multitable
+
+@c Positioning
+@c -----------
+
+@node Positioning, , Main Variables, List Of All Reserved Words
+@section Positioning
+
+@multitable {Reserved Word} {@code{double}} {]@code{-9999}, @code{9999}[} {Default} {ratio surface is scaled in}
+@item Reserved Word @tab Type @tab Range @tab Default @tab Description
+@item @code{origin_x}    @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{0} @tab x position of origin
+@item @code{origin_y}    @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{0} @tab y position of origin
+@item @code{origin_z}    @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{0} @tab z position of origin
+@item @code{spec_z}      @tab @code{double} @tab ]@code{0}, @code{9999}[     @tab @code{100} @tab spectator distance from origin
+@item @code{rot_x}       @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{0} @tab rotation angle of surface about the x-axis
+@item @code{rot_y}       @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{0} @tab rotation angle of surface about the y-axis
+@item @code{rot_z}       @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{0} @tab rotation angle of surface about the z-axis
+@item @code{scale_x}     @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{1} @tab ratio surface is scaled in direction of the x-axis
+@item @code{scale_y}     @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{1} @tab ratio surface is scaled in direction of the y-axis
+@item @code{scale_z}     @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{1} @tab ratio surface is scaled in direction of the z-axis
+@item @code{perspective} @tab @code{int}    @tab @{@code{0}, @code{1}@}      @tab   @code{0} @tab perspective to use
+@item @code{parallel}    @tab @code{int}    @tab @code{0}                    @tab   @code{0} @tab constant
+@item @code{central}     @tab @code{int}    @tab @code{1}                    @tab   @code{1} @tab constant
+@item @code{first}       @tab @code{int}    @tab @{@code{0}, @code{1}, @code{2}@} @tab @code{0} @tab first performed action
+@item @code{second}      @tab @code{int}    @tab @{@code{0}, @code{1}, @code{2}@} @tab @code{0} @tab second performed action
+@item @code{third}       @tab @code{int}    @tab @{@code{0}, @code{1}, @code{2}@} @tab @code{0} @tab third performed action
+@item @code{translate}   @tab @code{int}    @tab @code{0}                    @tab   @code{0} @tab constant
+@item @code{rotate}      @tab @code{int}    @tab @code{1}                    @tab   @code{1} @tab constant
+@item @code{scale}       @tab @code{int}    @tab @code{2}                    @tab   @code{2} @tab constant
+@end multitable
 
 @bye
