@@ -9,8 +9,8 @@
 @ifinfo
 This file documents @emph{surf} -- the visualization tool for real algebraic geometry.
 
-Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,
-1997-2001 Johannes Gutenberg-Universitaet Mainz.
+Copyright (C) 1996-1997 Friedrich-Alexander-Universit@"at Erlangen-N@"urnberg,
+1997-2002 Johannes Gutenberg-Universit@"at Mainz.
 @end ifinfo
 
 @c title page
@@ -33,7 +33,7 @@ Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,
 @item Copyright @copyright{}
 @tab 1996--1997 Friedrich-Alexander-Universit@"at Erlangen-N@"urnberg,
 @item
-@tab 1997--2001 Johannes Gutenberg-Universit@"at Mainz.
+@tab 1997--2002 Johannes Gutenberg-Universit@"at Mainz.
 @end multitable
 @end titlepage
 
@@ -51,7 +51,7 @@ real algebraic geometry.
 
 This document applies to version @value{VERSION} of @emph{surf}.
 Although it may hopefully be well readable in info format with any info
-reader (preferably XEmacs) or in HTML format, it will look best as DVI
+reader (preferably Emacs) or in HTML format, it will look best as DVI
 file produced by @command{texi2dvi}: Just do a @kbd{make dvi} in the
 @file{docs/} directory of the @emph{surf} distribution.
 
@@ -78,7 +78,7 @@ file produced by @command{texi2dvi}: Just do a @kbd{make dvi} in the
 @item Copyright @copyright{}
 @tab 1996--1997 Friedrich-Alexander-Universit@"at Erlangen-N@"urnberg,
 @item
-@tab 1997--2001 Johannes Gutenberg-Universit@"at Mainz.
+@tab 1997--2002 Johannes Gutenberg-Universit@"at Mainz.
 @end multitable
 
 This program is free software; you can redistribute it and/or modify
@@ -179,12 +179,9 @@ it.
 @node How to get surf, System Requirements, Overview, Overview
 @section Hot to get @emph{surf}
 
-A source tarball of @emph{surf} is available via HTTP and FTP at
+A source tarball of @emph{surf} is available at
 the @emph{surf} home page
 @url{http://surf.sourceforge.net}
-
-An official Debian package is hopefully avaiable on your local Debian
-mirror soon. Just type @command{apt-get install surf} as usal.
 
 For information about how to compile and install the source
 distribution of @emph{surf}, please read the @file{README} and
@@ -213,12 +210,37 @@ an ISO C++ compiler (GCC version 2.95 or higher should work, too),
 @item
 @command{make}
 @item
-GNU @command{flex} version 2.5 or higher (minor versions should
-  work also, but @command{lex} does @emph{not} suffice),
+GNU @command{flex} version 2.5 or higher (older versions should
+  work, too, but @command{lex} does @emph{not} suffice),
 @item
 Berkeley @command{yacc} or GNU @command{bison},
 @item
 GNU MP (gmp) version 2 or later
+@end itemize
+
+If you want to use all of @emph{surf}'s features you will additionally
+need the following libraries and their header files:
+
+@itemize
+@item
+GNU libc or libgnugetopt to use long options provided by the
+getopt_long() function
+@item
+libz
+@item
+libjpeg: for the JPEG image format
+@item
+libpng: for the PNG image format
+@item
+libreadline: for a more comfortable command line editing while
+interactively typing @emph{surf} scripts
+@item
+libgts: to use the triangulation feature of @emph{surf}. GTS stands
+for ``GNU Triangulated Surface library''. More info is available
+on the GTS homepage @url{http://gts.sourceforge.net}
+@item
+OpenGL and OpenInventor: to save triangulated surfaces in the native
+file format of OpenInventor
 @end itemize
 
 @c Starting surf
@@ -227,13 +249,13 @@ GNU MP (gmp) version 2 or later
 @node Starting surf, Scripting Language, System Requirements, Overview
 @section Starting @emph{surf}
 
-@emph{surf} is started by typing @kbd{surf} together with some filenames
+@emph{surf} is invoked by typing @kbd{surf} together with some filenames
 of @emph{surf} script files on the command line. Optional arguments are:
 @itemize
 @item
 @option{--quiet}/@option{-q}: Don't print any useless output.
 @item
-@option{--help}/@option{-h}: Display option summary and exit.
+@option{--help}/@option{-h}: Just display option summary and exit.
 @item
 @option{--version}/@option{-v}: Print version, copyright notice and exit.
 @end itemize
@@ -242,12 +264,17 @@ If you don't pass any script files, @emph{surf} will read commands from
 standard input. Thus it's possible to pipe output from another program
 to @emph{surf}:
 @example
-    $ another_proggy | surf
+    $ another_program | surf
 @end example
 
-To check out the examples given in this manual just enter them with
-an editor of your choice (If you haven't chosen yet, just take XEmacs!),
-save them and pass them as arguments to @emph{surf}:
+If @emph{surf} has been compiled with and linked against libreadline,
+you can use the usual command line editing features when you enter
+commands at the @emph{surf} prompt.
+
+To check out the examples given in this manual just invoke @emph{surf}
+without any arguments and enter them line by line or save a script
+file with an editor of your choice (If you haven't chosen yet, just
+take GNU Emacs), save them and pass them as arguments to @emph{surf}:
 @example
     $ surf my_1st_script.pic
 @end example
@@ -255,7 +282,9 @@ save them and pass them as arguments to @emph{surf}:
 Historically, the typical filename extension for @emph{surf} scripts is
 @file{.pic} (which is the extension all the example scripts in the
 @file{examples/} directory of @emph{surf}'s source distribution have),
-but there's no particular extension required.
+but there's really no particular extension required -- any text file
+which is syntactically correct in the @emph{surf}-sense is also a
+@emph{surf}-script :o)
 
 
 @c Scripting Language
@@ -266,26 +295,25 @@ but there's no particular extension required.
 
 @emph{surf} is designed to visualize algebraic curves and surfaces.  As
 already noted, this is done by writing scripts and let @emph{surf}
-execute them. Writing scripts may seem a bit circumstantiol. But in fact
+execute them. Writing scripts may seem a bit intricately. But in fact
 it's often much more powerful than a graphical interface and it comes in
 very handy if you want to fiddle with your polynomials before rendering
 them or if you wish to automate some time-consuming calculations.
 
-On the other hand it's often useful to have some kind of interaction to
-"play" with the curves and surfaces before producing the final output.
-To do this just install and use the separate graphical frontend
+On the other hand it's often useful to have some kind of interaction
+to "play" with the curves and surfaces before producing the final
+output.  To do this use the separately available graphical frontend
 @emph{gtksurf}. @emph{gtksurf} uses @emph{surf} as a kernel to let it
-do the Real Work. If you don't already have it on your hard disk, you'll
-find @emph{gtksurf} on @emph{surf}'s homepage:
+do the Real Work. You find @emph{gtksurf} on @emph{surf}'s homepage:
 @url{http://surf.sourceforge.net}
 
-Please note that @emph{gtksurf} is by no means required to use
-@emph{surf}. @emph{surf} compiles just fine without any X or GTK library
-on your system. Maybe you remember older @emph{surf} versions, where the
-kernel and the graphical frontend weren't separated. This separation has
-been a design decision to make the development of both parts easier and
-to allow users to install @emph{surf} on systems without all the libraries
-needed for a nifty GUI program like @emph{gtksurf}.
+Please note that GTK is by no means required to use @emph{surf}.
+@emph{surf} compiles just fine without any X or GTK library on your
+system. Maybe you remember older @emph{surf} versions, where the
+kernel and the graphical frontend weren't separated. This separation
+has been a design decision to make the development of both parts
+easier and to allow users to install @emph{surf} on systems without
+all the libraries needed for a nifty GUI program.
 
 You will find some sample scripts together with @emph{surf}'s
 distribution. They are stored in the @file{examples/} directory.
@@ -297,7 +325,8 @@ distribution. They are stored in the @file{examples/} directory.
 @node Output, surf and make, Scripting Language, Overview
 @section Output
 
-@emph{surf} calculates both color and black & white images.
+@emph{surf} produces color images and can calculate black & white
+images out of it.
 
 Color images can currently be stored in the following formats: JPEG,
 PNG, PPM, Sun Rasterfile, TIFF and XPM. If it makes sense with the
@@ -308,14 +337,13 @@ true color (24 bit).
 Black & white images can be stored in the following formats:
 Postscript, Encapsulated Postscript (EPS), TIFF, XBM and PBM.
 
-If you have GTS (the GNU Triangulated Surfaces library) on your system
-and @emph{surf} has been built with GTS support, @emph{surf} can produce
-3D image files of surfaces after having triangularized them. For now,
-the only supported file format is the GTS native file format. This file
-format isn't quite optimal since it doesn't include any data for normal
-vectors at the vertices. (Of course you can calculate averaging normal
-vectors afterwards, but the resulting surface won't look as smooth as it
-should.)
+If you have GTS (the GNU Triangulated Surfaces library, see the GTS
+homepage for details: @url{http://gts.sourceforge.net}) on your system
+and @emph{surf} has been built with GTS support, @emph{surf} can
+produce triangulated surfaces. The available file formats for this
+3D data are: the GTS native file format (which isn't quite optimal
+because it doesn't include any data for normal vectors at the
+vertices), OOGL and OpenInventor.
 
 
 @c surf and make
@@ -324,38 +352,36 @@ should.)
 @node surf and make, Oddities and Bug Reports, Output, Overview
 @section @emph{surf} and @command{make}
 
-@emph{surf} can be invoked from @command{make}. This comes in quite
-handy when visualising a series of curves/surfaces. Suppose there are
-script files @file{s1.pic}, @file{s2.pic}, @dots{}, @file{sn.pic} which
-create during execution images @file{s1.png}, @file{s2.png}, @dots{},
-@file{sn.png}. If for example GIF is the desired image file format, an
-appropriate @file{Makefile} might look like:
+Of course @emph{surf} can be invoked from @command{make}. This comes
+in quite handy when visualising a series of curves/surfaces. Suppose
+there are script files @file{s1.pic}, @file{s2.pic}, @dots{},
+@file{sn.pic} which create during execution images @file{s1.png},
+@file{s2.png}, @dots{}, @file{sn.png}. If for example GIF is the
+desired image file format, an appropriate @file{Makefile} might look
+like this one:
 
 @example
-    #!/bin/bash
-    #
-    SURF    = surf
-    RM      = /bin/rm -f
+    SURF = surf
+    RM = /bin/rm -f
     CONVERT = convert
-    #
-    OBJS    = s1.gif s2.gif .... sn.gif
-    #
+
+    OBJS = s1.gif s2.gif .... sn.gif
+
     .SUFFIXES: .pic .gif
-    #
+
     .pic.gif:
-    	$(SURF)    $<
+    	$(SURF) $<
     	$(CONVERT) $*.png $*.gif
-    	$(RM)      $*.png
-    #
+    	$(RM) $*.png
+
     all: $(OBJS)
-    #
+
     clean:
     	$(RM) *.gif
-    #
-    # end of Makefile
 @end example
 
-Here, @command{convert} is the Image Magick image format converter.
+Here, @command{convert} is the ImageMagick image format converter
+tool.
 
 @c Oddities and Bug Reports
 @c ------------------------
@@ -374,13 +400,13 @@ on @emph{surf}'s project page at SourceForge:
 @node Introduction to surfs Command Language, Features, Overview, top
 @chapter Introduction to @emph{surf}'s Command Language
 
-The language used in @emph{surf}'s scripts is quite simple.  It has got
-a (very restricted) C-like syntax. There is no comma separator like in
+The language used in @emph{surf}'s scripts is quite simple.  It has a
+(very restricted) C-like syntax. There is no comma separator like in
 C. Declaring a name twice results in an error. The scope of the name
 begins at the point of its declaration and lasts until the end of the
-file. There is no method of undeclaring a name. Only C++-style comments
-are allowed: Everything after an @code{//} up to the end of that line is
-ignored.
+file. There is no method of undeclaring a name. Only C++-style
+comments are allowed: Everything after an @code{//} up to the end of
+that line is ignored.
 
 @menu
 * Data Types::
@@ -398,7 +424,7 @@ ignored.
 @node Data Types, Operators, Introduction to surfs Command Language, Introduction to surfs Command Language
 @section Data Types
 
-The language provides the following four data types:
+@emph{surf}'s script language provides the following four data types:
 @itemize
 @item
 @code{int} (integer),
@@ -501,6 +527,8 @@ without blanks. For example, @code{itostr(31)} returns @code{"31"}.
 For example: @code{itostrn(3, 88)} returns @code{"088"},
 @code{itostrn(4, 88)} returns @code{"0088"}.
 
+These functions can be useful to contstuct filenames inside loops etc.
+
 
 @c Polynomial Functions
 @c --------------------
@@ -556,12 +584,11 @@ for example:
 @node Conditional Statements, , First Examples, Introduction to surfs Command Language
 @section Conditional Statements
 
-There are no @code{for} and no @code{while} statements.
-There is only the crude
+There are no @code{for} and no @code{while} statements,
+there is only the crude
 @example
     if(INTEGER-EXPRESSION) goto LABEL;
 @end example
-which you might remember from your early BASIC sessions.
 
 Here @code{INTEGER-EXPRESSION} can be arbitrary complicated as long as it
 results in an integer. @code{LABEL} is something like @code{NAME}
@@ -577,7 +604,7 @@ which has occurred before as @code{NAME:}. Consider the example
         i = i + 1;
     if(i < 50) goto loop;
 @end example
-which obviously draws fifty spheres of increasing radius 
+which draws fifty spheres of increasing radius 
 and saves them into the X Pixmap files:
 @file{sphere00.xpm}, @dots{} @file{sphere49.xpm}.
 
@@ -656,6 +683,10 @@ choosing @code{sphere} you may adjust its radius with the variable
 An arbitrary color can be given to the curve by setting
 @code{curve_red}, @code{curve_green} and @code{curve_blue} to
 appropriate values between 0 and 255.
+
+The background color can be changed by setting the variables
+@code{background_red}, @code{background_green} and
+@code{background_blue} and executing @code{clear_screen}.
 
 @c Surfaces
 @c --------
@@ -845,7 +876,7 @@ command @code{cut_with_surface} is interpreted. Example:
     save_color_image;
 @end example
 
-Analogous to hyperplane sections, the color, width and gamma value of
+Analogically to hyperplane sections, the color, width and gamma value of
 the section can be specified with @code{curve_red}, @code{curve_green},
 @code{curve_blue}, @code{curve_width} and @code{curve_gamma}.
 
@@ -860,6 +891,12 @@ Multiple curves can be drawn in script files just by @emph{not} clearing
 the screen. This works fine for plane curves.  Just consider the
 following example:
 @example
+    // set background color:
+    background_red = 20;
+    background_green = 20;
+    background_blue = 80;
+    clear_screen;
+    
     // draw a cubic
     curve = y^2 - x^2*(x - 1);
     draw_curve;
@@ -1065,8 +1102,7 @@ is assumed that the right eye wears the red glass.
 
 If a color image of a surface/curve has been calculated, this image can
 be mapped to a black and white image by calling one of the commands
-@code{dither_surface} or @code{dither_curve}.  The second one is just
-designed for dithering curves.
+@code{dither_surface} or @code{dither_curve}.
 
 The appearance of the black and white image can be altered/adjusted in
 several ways.  Since the mapping itself is done by dithering, the

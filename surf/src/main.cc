@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
 PACKAGE " " VERSION "\n"
 "\n"
 "Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,\n"
-"1997-2001 Johannes Gutenberg-Universitaet Mainz.\n"
+"1997-2002 Johannes Gutenberg-Universitaet Mainz.\n"
 "\n"
 "This is free software; you can redistribute it and/or modify it under the\n"
 "terms of the GNU General Public License; either version 2 of the License,\n"
