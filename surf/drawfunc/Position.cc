@@ -39,7 +39,7 @@
 #include <Position.h>
 
 extern double Y_AXIS_LR_ROTATE;
-extern double  display_numeric_data[DISPLAY_NUMERIC_NUM];
+extern double display_numeric_data[DISPLAY_NUMERIC_NUM];
 
 // ----------------------------------------------------------------------------
 // -------------- constructor of positioning class ----------------------------

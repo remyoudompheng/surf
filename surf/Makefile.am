@@ -22,7 +22,7 @@ TRIANGULATOR_OBJ = triangulator/Triangulator.o
 
 LOCAL_OBJECTS = $(CURVE_OBJ) $(BALLS_OBJ) $(MISC_OBJ) $(DRAWFUNC_OBJ) $(IMAGE_OBJ) $(SRC_OBJ) $(YACCSRC_OBJ) $(DRAW_OBJ) $(DEBUG_OBJ) $(DITHER_OBJ) $(TRIANGULATOR_OBJ)
 
-SUBDIRS = docs yaccsrc src image-formats drawfunc curve draw misc debug dither triangulator
+SUBDIRS = yaccsrc src image-formats drawfunc curve draw misc debug dither triangulator docs
 
 bin_PROGRAMS = surf
 surf_SOURCES =
@@ -32,8 +32,7 @@ EXTRA_DIST = Makefile.global
 surf: $(LOCAL_OBJECTS)
 	$(CXX) $(LOCAL_OBJECTS) -o surf $(LDFLAGS) $(LIBS)
 
-EXTRA_DIST = aclocal.m4 surf.1 Makefile.global
-man_MANS = surf.1
+EXTRA_DIST = aclocal.m4 Makefile.global
 
 dist-hook::
 	absdistdir=`cd $(distdir) && pwd` && \

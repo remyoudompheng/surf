@@ -34,8 +34,8 @@
 #endif
 
 #ifdef HAVE_GETOPT_LONG
-# define _GNU_SOURCE_H
-# include <getopt.h>
+#  define _GNU_SOURCE_H
+#  include <getopt.h>
 #else
 #define getopt_long(argc, argv, optstring, longopts, longindex) \
         getopt(argc, argv, optstring)
@@ -49,32 +49,23 @@
 
 namespace {
 char usage_text[] =
-#ifdef HAVE_GETOPT_LONG
 "\n"
 "surf is a script driven visualization tool for real algebraic geometry.\n"
 "\n"
 "Usage: surf [OPTION]... [FILE]...\n"
 "\n"
+#ifdef HAVE_GETOPT_LONG
 "  -q, --quiet      don't be chatty\n"
 "  -h, --help       display this help and exit\n"
 "  -V, --version    output version information and exit\n"
-"\n"
-"Report bugs to the SourceForge bug tracking system at\n"
-"http://sourceforge.net/tracker/?group_id=3275\n"
-"\n";
-#else // !HAVE_GETOPT_LONG
-"\n"
-"surf is a script driven visualization tool for real algebraic geometry.\n"
-"\n"
-"Usage: surf [OPTION]... [FILE]...\n"
-"\n"
+#else
 "  -q    don't be chatty\n"
 "  -h    display this help and exit\n"
 "  -V    output version information and exit\n"
-"\n"
-"Report bugs to\n"
-"http://sourceforge.net/tracker/?group_id=3275\n";
 #endif
+"\n"
+"Report bugs to the SourceForge bug tracking system at\n"
+"http://sourceforge.net/tracker/?group_id=3275\n";
 }
 
 
@@ -153,9 +144,8 @@ PACKAGE " " VERSION "\n"
 
 	if(optind == argc) {
 		if(!quiet) {
-			std::cout <<
-PACKAGE " " VERSION "\n"
-"Reading from stdin.\n";
+			std::cout << PACKAGE " " VERSION "\n"
+				     "Reading from stdin.\n";
 		}
 		Script::executeScriptFromStdin();
 	} else {

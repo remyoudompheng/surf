@@ -91,16 +91,16 @@ color_slider_t color_slider[MAIN_SURFACE_AMOUNT_NUM];
 // Background color
 // ---------------- 
 
-int     color_background_data[COLOR_BACKGROUND_NUM];
-int     color_do_background_data;
+int color_background_data[3];
+int color_do_background_data;
 
 
 // --------
 // Gradient
 // --------
 
-int     color_gradient_data;
-int     color_gradient_end_data[COLOR_GRADIENT_END_NUM];
+int color_gradient_data;
+int color_gradient_end_data[3];
 
 
 // -------------------
@@ -465,7 +465,7 @@ double  curve_gamma_data;
 //  Curve color sliders 
 // ---------------------
 
-int     curve_color_slider_data[CURVE_COLOR_SLIDER_NUM];
+int curve_color_slider_data[3];
 
  
 // ----------------

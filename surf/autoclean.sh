@@ -9,6 +9,8 @@ rm -f configure
 rm -f Makefile.in */Makefile.in
 rm -f aclocal.m4
 rm -f config.log config.cache
-(cd yaccsrc && rm -f polyyacc.c polyyacc.h polylex.c)
-rm -f yaccsrc/addDefaultSymbols.cc
+rm -f stamp-h.in
+rm -f config.h.in
+(cd yaccsrc && rm -f polyyacc.c polyyacc.h polylex.c addDefaultSymbols.cc)
 find . -name \*~ -exec rm \{\} \;
+(cd docs && rm -f mdate-sh stamp-vti texinfo.tex version.texi surf.info surf.1)

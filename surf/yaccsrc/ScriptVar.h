@@ -183,7 +183,7 @@ extern color_slider_t color_slider[MAIN_SURFACE_AMOUNT_NUM];
 // Background color
 // ----------------
 
-extern int     color_background_data[COLOR_BACKGROUND_NUM];
+extern int     color_background_data[3];
 extern int     color_do_background_data;
 
 
@@ -192,7 +192,7 @@ extern int     color_do_background_data;
 // --------
 
 extern int     color_gradient_data;
-extern int     color_gradient_end_data[COLOR_GRADIENT_END_NUM];
+extern int     color_gradient_end_data[3];
 
 
 // -------------------
@@ -211,13 +211,13 @@ extern  int     light_illumination_transmitted_data;
 // Illumination settings
 // ---------------------
 
-extern  int     LIGHT_SETTINGS_SECOND_MAX_VALUE [LIGHT_SETTINGS_SECOND_NUM];
+extern int LIGHT_SETTINGS_SECOND_MAX_VALUE[LIGHT_SETTINGS_SECOND_NUM];
 
 
 extern light_settings_t light_settings[MAIN_SURFACE_AMOUNT_NUM];
 
 
-extern light_data_t light_data [LIGHT_SOURCE_MAX_VALUE];
+extern light_data_t light_data[LIGHT_SOURCE_MAX_VALUE];
 
 
 
@@ -501,7 +501,7 @@ extern  double  curve_gamma_data;
 // Curve Color
 // -----------
 
-extern  int     curve_color_slider_data[CURVE_COLOR_SLIDER_NUM];   
+extern int curve_color_slider_data[3];
 
 
 // -------------
