@@ -24,7 +24,7 @@ GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin,
 	  pi(std::acos(-1.0)),
 	  dragging(false),
 	  rotMat(4), deltaRotMat(4), rotating(false),
-	  showCross(true), wireframe(false), centralPerspective(true),
+	  showCross(false), wireframe(false), centralPerspective(true),
 	  origx(0.0), origy(0.0), origz(0.0),
 	  scalex(1.0), scaley(1.0), scalez(1.0),
 	  shown(false),
@@ -85,12 +85,20 @@ void GLArea::read_data()
 {
 	scriptwin->progress_mode(true);
 	scriptwin->set_progress(0);
-	
-	std::string line = kernel.receive_line();
-	std::istrstream iss(line.c_str());
 
-	size_t nv, nf;
-	iss >> nv >> nf;
+	int red = kernel.receive_int();
+	int green = kernel.receive_int();
+	int blue = kernel.receive_int();
+	kernel.receive_line();
+
+	int inside_red = kernel.receive_int();
+	int inside_green = kernel.receive_int();
+	int inside_blue = kernel.receive_int();
+	kernel.receive_line();
+
+	int nv = kernel.receive_int();
+	int nf = kernel.receive_int();
+	kernel.receive_line();
 
 	std::cerr << "nv: " << nv << ", nf: " << nf << "\n";
 
@@ -103,7 +111,7 @@ void GLArea::read_data()
 
 	// read vertices:
 	GLvertex* vertices = new GLvertex[nv];
-	for(size_t i = 0; i != nv; i++) {
+	for(int i = 0; i != nv; i++) {
 		vertices[i].x = kernel.receive_float();
 		vertices[i].y = kernel.receive_float();
 		vertices[i].z = kernel.receive_float();
@@ -117,7 +125,7 @@ void GLArea::read_data()
 
 	// read faces:
 	GLface* faces = new GLface[nf];
-	for(size_t i = 0; i != nf; i++) {
+	for(int i = 0; i != nf; i++) {
 		faces[i].p1 = kernel.receive_int();
 		faces[i].p2 = kernel.receive_int();
 		faces[i].p3 = kernel.receive_int();
@@ -142,9 +150,12 @@ void GLArea::read_data()
 	glNewList(display_list, GL_COMPILE);
 	glBegin(GL_TRIANGLES);
 
-	glColor3f(0.2, 0.2, 0.8);
+	GLfloat surface_color[] = { red/255.0, green/255.0, blue/255.0, 1.0 };
+	GLfloat inside_color[] = { inside_red/255.0, inside_green/255.0, inside_blue/255.0, 1.0 };
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, surface_color);
+	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, inside_color);
 
-	for(size_t i = 0; i != nf; i++) {
+	for(int i = 0; i != nf; i++) {
 		GLface& f = faces[i];
 		GLvertex& p1 = vertices[f.p1 - 1];
 		GLvertex& p2 = vertices[f.p2 - 1];
@@ -176,8 +187,6 @@ void GLArea::init(GLsizei width, GLsizei height)
 	static GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 	static GLfloat shininess = 50.0;
 	
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 
@@ -202,6 +211,8 @@ void GLArea::init(GLsizei width, GLsizei height)
 	glEnable(GL_DEPTH_TEST);
 
 	glEnable(GL_NORMALIZE);
+
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -395,7 +406,7 @@ void GLArea::set_rot(gfloat x, gfloat y, gfloat z)
 
 	GLvector xaxis(1.0, 0.0, 0.0);
 	GLvector yaxis(0.0, 1.0, 0.0);
-	GLvector zaxis(0.0, 0.0, 1.0);
+	GLvector zaxis(0.0, 0.0, -1.0);
 	
 	GLmatrix yrot(4);
 	yrot.setToRotation(y*deg, yaxis);
