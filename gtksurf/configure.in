@@ -20,38 +20,6 @@ AC_MINIX
 AC_HEADER_STDC
 
 
-dnl check for STLport:
-dnl ------------------
-
-AC_ARG_WITH(stlport-prefix,[  --with-stlport-prefix=PFX Prefix where STLport is installed (optional)],
-            stlport_prefix="$withval", stlport_prefix="")
-AC_ARG_ENABLE(stlport, [  --disable-stlport       Do not try to find STLport includes and library],
-                    , enable_stlport=yes)
-
-if test "x$enable_stlport" = "xyes" ; then
-    AC_MSG_CHECKING(for STLport includes)
-    stlportinclude=""
-    if test x$stlport_prefix != x ; then
-        if test -d "$stlport_prefix/include/stlport"; then
-	    stlportinclude="-I$stlport_prefix/include/stlport"
-            LDFLAGS="-L$stlport_prefix/lib $LDFLAGS"
-        fi
-    else
-        if test -d "/usr/include/stlport"; then
-            stlportinclude="-I/usr/include/stlport"
-        elif test -d "/usr/local/include/stlport"; then
-            stlportinclude="-I/usr/local/include/stlport"
-        fi
-    fi
-    if test x$stlportinclude != x ; then
-        CPPFLAGS="$stlportinclude $CPPFLAGS"
-        AC_MSG_RESULT($stlportinclude)
-        AC_CHECK_LIB(stlport, main)
-    else
-        AC_MSG_RESULT(no)
-    fi
-fi
-
 dnl check if C++ compiler really works:
 dnl -----------------------------------
 

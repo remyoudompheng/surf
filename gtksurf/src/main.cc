@@ -16,6 +16,7 @@
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
+#include <stdlib.h>
 
 #ifdef HAVE_GETOPT_LONG
 # define _GNU_SOURCE_H

@@ -36,9 +36,7 @@ ImageWindow::ImageWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* _sw)
 {
 	kernel.set_imagewin(this);
 
-#ifndef HAVE_LIBGDK_PIXBUF
 	gdk_rgb_init();
-#endif
 
 	window = glade.get_widget("window_image");
 	drawingarea = glade.get_widget("drawingarea");
