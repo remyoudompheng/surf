@@ -1,2 +1,4 @@
 Makefile.in Makefile
 surf.info version.texi stamp-vti surf.html surf.dvi
+surf.log surf.aux surf.cp surf.fn surf.vr surf.tp surf.ky surf.pg surf.toc
+
