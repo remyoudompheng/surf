@@ -64,8 +64,8 @@ NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel, ScriptWindow*
 	glade.sig_connect("togglewireframe", "activate", _on_togglewireframe_activate, this);
 	glade.sig_connect("central_perspective", "activate", _on_perspective_activate, this);
 	glade.sig_connect("parallel_perspective", "activate", _on_perspective_activate, this);
-	glade.sig_connect("save_3d_file", "activate", _on_save_3d_image_activate, this);
-	glade.sig_connect("save_3d_file_as", "activate", _on_save_3d_image_as_activate, this);
+	glade.sig_connect("save_3d_file", "activate", _on_save_activate, this);
+	glade.sig_connect("save_3d_file_as", "activate", _on_save_as_activate, this);
 	glade.sig_connect("close_navigation", "activate", _on_close_activate, this);
 	popupmenu = glade.get_widget("menu_navigation");
 }
@@ -249,30 +249,76 @@ void NavigationWindow::on_button_press_event(GdkEventButton* event = 0)
 	}
 }
 
-void NavigationWindow::on_togglecross_activate()
+void NavigationWindow::on_togglecross_activate(GtkWidget*)
 {
 	glarea.toggle_cross();
 }
 
-void NavigationWindow::on_togglewireframe_activate()
+void NavigationWindow::on_togglewireframe_activate(GtkWidget*)
 {
 	glarea.toggle_wireframe();
 }
 
-void NavigationWindow::on_perspective_activate()
+void NavigationWindow::on_perspective_activate(GtkWidget*)
 {
 	GtkCheckMenuItem* item = GTK_CHECK_MENU_ITEM(glade.get_widget("central_perspective"));
 	glarea.set_perspective(item->active);
 }
 
-void NavigationWindow::on_save_3d_image_activate()
+void NavigationWindow::on_save_activate(GtkWidget*)
 {
+	if(filename.length() == 0) {
+		on_save_as_activate();
+		return;
+	}
+
+	std::string s = "filename = \"";
+	s += filename + "\";\n";
+	if(filetype.length() > 0) {
+		s += "three_d_file_format = ";
+		s += filetype + ";\n";
+	}
+	s += "save_three_d_image;\n";
+	kernel.send(s);
 }
 
-void NavigationWindow::on_save_3d_image_as_activate()
+void NavigationWindow::on_save_as_activate(GtkWidget*)
 {
+	// construct "Save Options" frame w/file type menu:
+	
+	GtkWidget* menu = gtk_menu_new();
+
+	std::list<std::string> fmts = kernel.get_three_d_image_formats();
+	std::list<std::string>::iterator i;
+	for(i = fmts.begin(); i != fmts.end(); ) {
+		GtkWidget* item = gtk_menu_item_new_with_label((*i).c_str());
+		i++;
+		gtk_object_set_user_data(GTK_OBJECT(item), const_cast<char*>((*i).c_str()));
+		i++;
+		gtk_menu_append(GTK_MENU(menu), item);
+		glade.sig_connect(item, "activate", _on_filetype_activate, this);
+	}
+	filetype.assign("auto");
+	gtk_widget_show_all(menu);
+
+	if(glade.fileselect("Save 3D Image As", menu)) {
+		filename = glade.get_filename();
+		on_save_activate();
+	}
+	
+	gtk_widget_destroy(menu);
 }
 
-void NavigationWindow::on_close_activate()
+void NavigationWindow::on_filetype_activate(GtkWidget* wid)
 {
+	char* str = static_cast<char*>(gtk_object_get_user_data(GTK_OBJECT(wid)));
+	
+	if(str != 0) {
+		filetype.assign(str);
+	}
+}
+
+void NavigationWindow::on_close_activate(GtkWidget*)
+{
+	hide();
 }

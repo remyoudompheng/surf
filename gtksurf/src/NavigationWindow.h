@@ -31,9 +31,9 @@
 
 #undef MENUCB
 #define MENUCB(name) \
-        void on_##name##_activate();\
-        static void _on_##name##_activate(GtkWidget*, GladeWindow* This) {\
-                static_cast<NavigationWindow*>(This)->on_##name##_activate();\
+        void on_##name##_activate(GtkWidget* w = 0);\
+        static void _on_##name##_activate(GtkWidget* w, GladeWindow* This) {\
+                static_cast<NavigationWindow*>(This)->on_##name##_activate(w);\
         }
 
 class ScriptWindow;
@@ -67,6 +67,8 @@ private:
 	gfloat rotx, roty, rotz;
 	bool updatingRot;
 
+	std::string filename;
+	std::string filetype;
 
 	double rad_to_deg(double rad) {
 		return 180.0*rad/pi;
@@ -129,9 +131,11 @@ private:
 	MENUCB(togglecross);
 	MENUCB(togglewireframe);
 	MENUCB(perspective);
-	MENUCB(save_3d_image);
-	MENUCB(save_3d_image_as);
+	MENUCB(save);
+	MENUCB(save_as);
 	MENUCB(close);
+	
+	MENUCB(filetype);
 };
 
 #endif //!NAVIGATION_WINDOW_H
