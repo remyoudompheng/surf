@@ -106,6 +106,8 @@ void MainWindowController::allowScriptExecution(bool val)
 	gtk_widget_set_sensitive (ditherSurfaceButton, val);
 	gtk_widget_set_sensitive (drawCurveButton,     val);
 	gtk_widget_set_sensitive (ditherCurveButton,   val);
+	gtk_widget_set_sensitive (colorSaveButton, val && colorSaveButtonState);
+	gtk_widget_set_sensitive (ditheredSaveButton, val && ditheredSaveButtonState);
 }
 
 bool MainWindowController::mayClose()
@@ -185,11 +187,11 @@ void MainWindowController::saveScript()
 {
 	if (!actualDocument) {
 		Misc::alert ("Strange internal error");
-	}
-	if (actualDocument)
+	} else {
 		actualDocument->setContents(tw.getContents ());
+	}
 
-
+	
 	if (!actualDocument->isChanged()) {
 		showAlert ("Document not changed. Not saving.");
 		return;
@@ -430,7 +432,8 @@ MainWindowController::~MainWindowController()
 
 MainWindowController::MainWindowController() 
 	: colorWindow (new ColorWindow (this, true)), bitmapWindow(new ColorWindow(this, false)),
-	  actualDocument(0), docToSave(0)
+	  actualDocument(0), docToSave(0),
+	  colorSaveButtonState(false), ditheredSaveButtonState(false)
 {
 	static GtkItemFactoryEntry entries[] = {
 		{(gchar *)"/Program/Separator", 0, 0, 0,		(gchar *)"<Separator>"},
@@ -665,11 +668,14 @@ void MainWindowController::previewToggled(GtkWidget *widget, gpointer data)
 	
 }
 
-void MainWindowController::enableSaveButton(bool which)
+void MainWindowController::enableSaveButton(SaveButtonType which)
 {
-	if (which) {
-		gtk_widget_set_sensitive(colorSaveButton, true);
-	} else {
-		gtk_widget_set_sensitive(ditheredSaveButton, true);
+	switch (which) {
+	case Color:
+		colorSaveButtonState = true;
+		break;
+	case Dithered:
+		ditheredSaveButtonState = true;
+		break;
 	}
 }

@@ -41,6 +41,10 @@
 #include "WidgetReadWriter.h"
 #include "SaveImageDialog.h"
 
+enum SaveButtonType {
+	Color, Dithered
+};
+
 class MainWindowController : private DocumentListener
 {
 private:
@@ -59,7 +63,8 @@ public:
 	void show();
 	void quit();	
 	void toggleDisplayedState();
-	void enableSaveButton(bool which);
+	
+	void enableSaveButton(SaveButtonType which);
 	
 
 protected:
@@ -166,7 +171,9 @@ protected:
 
 	GtkWidget * previewButtons[3];
 	bool displayedState;
-	
+
+	bool colorSaveButtonState;
+	bool ditheredSaveButtonState;
 	
 private:
 	WidgetReadWriter wrw;

@@ -83,7 +83,8 @@ void ColorWindow::show()
 {
 	gtk_widget_show_all(window); 
 	gdk_window_raise(window->window);
-	mainWindowController->enableSaveButton(isColored);
+
+	mainWindowController->enableSaveButton(isColored ? Color : Dithered);
 }
 
 void ColorWindow::lock()
