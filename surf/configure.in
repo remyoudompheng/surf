@@ -88,13 +88,10 @@ AC_CACHE_CHECK(whether there's a gethostname prototype in unistd.h,
                                AC_DEFINE(NO_GETHOSTNAME_PROTO)))
 
 
-dnl math lib and (g)zlib:
-dnl ---------------------
+dnl math lib:
+dnl ---------
 
 RS_CHECK_LIB(m, main)
-AC_CHECK_LIB(z,  main,,
-  AC_CHECK_LIB(gz, main,,
-    AC_MSG_ERROR([Sorry: Can't find libz/libgz.])))
 
 
 dnl checks for image libraries (optional):

@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------
+                                            _____ 
+                        ________ __________/ ____\
+                       /  ___/  |  \_  __ \   __\ 
+                       \___ \|  |  /|  | \/|  |   
+                      /____  >____/ |__|   |__|   
+                           \/                     
 
 				  surf
 
@@ -18,15 +24,65 @@ What is surf?
 -------------
 
 surf is a tool to visualize algebraic curves and algebraic surfaces.
-surf is completely script driven. If you're looking for a graphical
-tool, you may want to get the seperate GTK-based GUI frontend called
+surf is completely script driven. You can execute script files passed to
+the surf kernel as command line arguments or you can enter them
+interactively line by line. If you're looking for a graphical tool, you
+may want to check out the seperate GTK+-based GUI frontend called
 "gtksurf" which makes usage of surf as kernel.
-
-Documentation can be found in the docs/ directory.
 
 Visit surf's homepage for more information:
 
 		      http://surf.sourceforge.net
+
+Documentation can be found in the docs/ directory. If surf is installed
+correctly, a Texinfo-manual will be available by typing "info surf" in a
+shell window.
+
+
+Requirements:
+-------------
+
+The following things are mandatory:
+
+- A working, tolerably standard conformable C++ compiler with STL.
+
+- Some "make" tool.
+
+- GNU flex 2.5 or later
+
+- GNU MP (gmp) version 2 or later
+
+
+These libraries are optional (but please read on!):
+
+- GTS, the GNU Triangulated Surfaces library. It is *really* recommended
+  that you install this library before compiling surf. Otherwise you 
+  won't have any triangulation support which is a stunning new feature
+  of this release of surf [:o)] and allows real-time applications with
+  algebraic surfaces like the Navigation-window in gtksurf.
+
+- STLport is used if it's found. This is useful for people without a
+  sufficiently standard conformable C++ compiler.
+
+- GNU's getopt_long() function is used if it has been found by configure
+  (There's a check for libgnugetopt, too).
+
+- JPEG library (libjpeg). If it's not found, you can't save color images
+  in JPEG format.
+
+- PNG libarary (libpng). Needed for saving images in PNG format.
+
+- TIFF library (libtiff). Support for images in TIFF format.
+
+- GNU readline (libreadline). If you use surf ineractively very often,
+  you should consider installing this nice library..)
+
+- OpenInventor. This is a 3D library by SGI built on top of OpenGL (so
+  having Inventor implies having OpenGL and X libararies). If you have
+  Inventor on your system, you will be able to save triangulated data
+  as Inventor files in binary format. Otherwise you can still save them
+  as ASCII Inventor files.
+
 
 
 Basic Installation:

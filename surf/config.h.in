@@ -65,9 +65,6 @@
 /* Define if you have the jpeg library (-ljpeg).  */
 #undef HAVE_LIBJPEG
 
-/* Define if you have the m library (-lm).  */
-#undef HAVE_LIBM
-
 /* Define if you have the png library (-lpng).  */
 #undef HAVE_LIBPNG
 
@@ -76,9 +73,6 @@
 
 /* Define if you have the stlport library (-lstlport).  */
 #undef HAVE_LIBSTLPORT
-
-/* Define if you have the z library (-lz).  */
-#undef HAVE_LIBZ
 
 /* Name of package */
 #undef PACKAGE
