@@ -63,9 +63,9 @@ namespace ImageFormats {
 		
 		// write colors
 		
-		const guint8* rmap = buffer.getRMap();
-		const guint8* gmap = buffer.getGMap();
-		const guint8* bmap = buffer.getBMap();
+		const byte* rmap = buffer.getRMap();
+		const byte* gmap = buffer.getGMap();
+		const byte* bmap = buffer.getBMap();
 
 		for(size_t i = 0; i < nmap; i++) {
 			fprintf(file, "\"%.2x c #%.2x%.2x%.2x\",\n", i, rmap[i], gmap[i], bmap[i]);
@@ -73,7 +73,7 @@ namespace ImageFormats {
 
 		// write pixels
 
-		const guint8* ptr = buffer.getMap();
+		const byte* ptr = buffer.getMap();
 
 		for(int i = 0; i < height; i++) {
 			fputc('\"', file);

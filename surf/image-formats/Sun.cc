@@ -29,13 +29,14 @@
 #include <math.h>
 #include <ctype.h>
 
-#include <errno.h>
-#include <string.h>
-
 #include <FileWriter.h>
 #include <RgbBuffer.h>
 
 #include <Sun.h>
+
+#include <errno.h>
+#include <string.h>
+#include <netinet/in.h>
 
 #include<iostream>
 
@@ -70,6 +71,13 @@ struct RASHDR
 #define RMT_EQUAL_RGB	  1
 #define RMT_RAW	  2
 
+namespace {
+	void put_long(uint32_t hostlong, FILE* file)
+	{
+		uint32_t be_long = htonl(hostlong);
+		fwrite(&be_long, 1, sizeof(uint32_t), file);
+	}
+}
 
 namespace ImageFormats {
 
@@ -102,20 +110,21 @@ namespace ImageFormats {
 		rhdr.ras_maptype   = RMT_NONE;
 		rhdr.ras_maplength = 0;
 
-		/* Write rasterfile header - note: use Sun byte order */
+		/* Write rasterfile header
+                   note: use Sun byte order == network order */
 		
-		put_long(rhdr.ras_magic, file, BIG_ENDIAN);
-		put_long(rhdr.ras_width, file, BIG_ENDIAN);
-		put_long(rhdr.ras_height, file, BIG_ENDIAN);
-		put_long(rhdr.ras_depth, file, BIG_ENDIAN);
-		put_long(rhdr.ras_length, file, BIG_ENDIAN);
-		put_long(rhdr.ras_type, file, BIG_ENDIAN);
-		put_long(rhdr.ras_maptype, file, BIG_ENDIAN);
-		put_long(rhdr.ras_maplength, file, BIG_ENDIAN);
+		put_long(rhdr.ras_magic, file);
+		put_long(rhdr.ras_width, file);
+		put_long(rhdr.ras_height, file);
+		put_long(rhdr.ras_depth, file);
+		put_long(rhdr.ras_length, file);
+		put_long(rhdr.ras_type, file);
+		put_long(rhdr.ras_maptype, file);
+		put_long(rhdr.ras_maplength, file);
 		
-		const guint8* rdata = data.getRData();
-		const guint8* gdata = data.getGData();
-		const guint8* bdata = data.getBData();
+		const byte* rdata = data.getRData();
+		const byte* gdata = data.getGData();
+		const byte* bdata = data.getBData();
 		
 		for(size_t i = 0; i < length; i++) {
 			fputc(bdata[i], file);

@@ -33,7 +33,8 @@
 #include <limits.h>
 #include <stdio.h>
 
-#include "ImageFormats.h"
+#include <mytypes.h>
+#include <ImageFormats.h>
 
 #define PIXEL_BLACK     0
 #define PIXEL_WHITE     1
@@ -53,7 +54,7 @@ public:
 	int getWidth()  { return width; }
 	int getHeight() { return height; }
 	int getSize() { return n_bytes; }
-	guint8* getBuffer() { return b; }
+	byte* getBuffer() { return b; }
 	
 	bool getPixel (int x, int y);
 	void setPixel (int x, int y, int val);
@@ -77,8 +78,7 @@ private:
 
 	int bytesPerRow;
 
-	guint8* b;             // Image buffer
-
+	byte* b;             // Image buffer
 };
 
 #endif

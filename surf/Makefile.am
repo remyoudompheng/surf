@@ -12,15 +12,17 @@ CURVE_OBJ = curve/RBTree.o curve/resultant.o curve/RootFinder2d.o curve/RootFind
 
 DRAWFUNC_OBJ =  drawfunc/Bezier.o drawfunc/Clip.o drawfunc/DrawfuncData.o drawfunc/DrawFunc.o drawfunc/Hornergroup.o drawfunc/Horner.o drawfunc/MappingMatrix.o drawfunc/MultiVariatePolynom.o drawfunc/Position.o drawfunc/Sturmchain.o drawfunc/UniVariatePolynom.o drawfunc/Vector.o drawfunc/HornergroupXY.o drawfunc/HornergroupXYZ.o drawfunc/RationalHornerXY.o
 
-IMAGE_OBJ =  image-formats/ImageFormats.o image-formats/AvailableImageFormats.o image-formats/ByExtension.o image-formats/JPEG.o image-formats/TIFF.o image-formats/Postscript.o image-formats/Sun.o image-formats/EPS.o image-formats/XWD.o image-formats/XBitmap.o image-formats/PPM.o image-formats/PBM.o image-formats/XPM.o
+IMAGE_OBJ =  image-formats/ImageFormats.o image-formats/AvailableImageFormats.o image-formats/ByExtension.o image-formats/JPEG.o image-formats/TIFF.o image-formats/Postscript.o image-formats/Sun.o image-formats/EPS.o image-formats/XBitmap.o image-formats/PPM.o image-formats/PBM.o image-formats/XPM.o
 
 SRC_OBJ = src/RGBToNetscape.o src/compfn.o src/cube.o src/float_buffer.o src/init_parser.o src/main.o src/oct_quan.o src/RgbBuffer.o src/roots.o src/bit_buffer.o src/SurfaceDataStruct.o src/CanvasDataStruct.o src/WindowGeometry.o src/antialiasing_factor.o
 
 YACCSRC_OBJ = yaccsrc/bezierarith.o yaccsrc/hornerarith.o yaccsrc/monomarith.o yaccsrc/mymemory.o yaccsrc/polyarith.o yaccsrc/polylex.o yaccsrc/polyroot.o yaccsrc/polyyacc.o yaccsrc/simple.o yaccsrc/polyx.o yaccsrc/lexfunc.o yaccsrc/SymbolTable.o yaccsrc/addDefaultSymbols.o yaccsrc/Script.o yaccsrc/ScriptVar.o
 
-LOCAL_OBJECTS = $(CURVE_OBJ) $(BALLS_OBJ) $(MISC_OBJ) $(DRAWFUNC_OBJ) $(IMAGE_OBJ) $(SRC_OBJ) $(YACCSRC_OBJ) $(DRAW_OBJ) $(DEBUG_OBJ) $(DITHER_OBJ)
+TRIANGULATOR_OBJ = triangulator/Triangulator.o
 
-SUBDIRS = yaccsrc src image-formats drawfunc curve draw misc debug dither
+LOCAL_OBJECTS = $(CURVE_OBJ) $(BALLS_OBJ) $(MISC_OBJ) $(DRAWFUNC_OBJ) $(IMAGE_OBJ) $(SRC_OBJ) $(YACCSRC_OBJ) $(DRAW_OBJ) $(DEBUG_OBJ) $(DITHER_OBJ) $(TRIANGULATOR_OBJ)
+
+SUBDIRS = yaccsrc src image-formats drawfunc curve draw misc debug dither triangulator
 
 bin_PROGRAMS = surf
 surf_SOURCES = 

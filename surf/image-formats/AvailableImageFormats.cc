@@ -43,7 +43,6 @@ namespace ImageFormats {
 		
                 &imgFmt_XPM,
 		&imgFmt_XBitmap,
-		&imgFmt_XWD,
 		&imgFmt_Sun,
 
 		0 // last element is 0

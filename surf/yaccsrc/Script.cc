@@ -44,6 +44,7 @@
 #include <MultiVariatePolynom.h>
 #include <RootFinder3d.h>
 #include <SymbolTable.h>
+#include <Triangulator.h>
 
 #include <debug.h>
 
@@ -311,6 +312,7 @@ void Script::addNewCommands()
 	replaceCommand("clear_pixmap", clearScreen);
 	replaceCommand("resultant", computeResultant);
 	replaceCommand("reset", reset);
+        replaceCommand("triangulate_surface", triangulateSurface);
 	replaceCommand("kernel_mode_set", kernelModeSet);
 	replaceCommand("print_defaults", printDefaults);
 	replaceCommand("print_color_image_formats", printColorImageFormats);
@@ -618,6 +620,24 @@ void Script::reset()
 	char_number = 0;
 	symtab_delete_user_names();
 	*zbuffer = -10.0;
+}
+
+void Script::triangulateSurface()
+{
+#ifdef HAVE_LIBGTS
+
+	std::cout << "triangulate_surface\n";
+	std::cout.flush();
+	
+	Triangulator tritor;
+	tritor.triangulate();
+	tritor.write_gts_file();
+	std::cout.flush();
+
+#else
+	std::cout << "not_implemented\n";
+	std::cout.flush();
+#endif // HAVE_LIBGTS
 }
 
 void Script::kernelModeSet()

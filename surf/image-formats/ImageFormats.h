@@ -28,13 +28,6 @@
 #ifndef IMAGEFORMATS_H
 #define IMAGEFORMATS_H
 
-typedef unsigned char guint8;   // this _could_ be dangerous..
-typedef unsigned short guint16; // this *is* dangerous!
-typedef unsigned long guint32;  // and this one, too.
-
-// If we really want to go for sure, we had to configure this in
-// configure (like glib does for glibconfig.h)
-
 #include <stdio.h>
 
 #include<string>
@@ -60,10 +53,6 @@ namespace ImageFormats {
 
 	bool saveColorImage(const char* filename, RgbBuffer& data);
 	bool saveDitheredImage(const char* filename, bit_buffer& data);
-
-	void put_long(long word, FILE* f, int order);
-	void swapshort(char* bp, unsigned int n);
-	void swaplong(char*bp, unsigned int n);
 }
 
 #endif //!IMAGEFORMATS_H

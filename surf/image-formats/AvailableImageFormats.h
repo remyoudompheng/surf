@@ -40,7 +40,6 @@
 #include <Postscript.h>
 #include <Sun.h>
 #include <EPS.h>
-#include <XWD.h>
 #include <XBitmap.h>
 #include <PPM.h>
 #include <PBM.h>

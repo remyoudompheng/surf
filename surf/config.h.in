@@ -31,10 +31,15 @@
 #undef HAVE_LIBTIFF
 #undef TIFF_HEADER_34
 
+#undef HAVE_LIBGTS
+
 #undef NO_GETHOSTNAME_PROTO
 
 /* Define if you have the getopt_long function.  */
 #undef HAVE_GETOPT_LONG
+
+/* Define if you have the <stdint.h> header file.  */
+#undef HAVE_STDINT_H
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H

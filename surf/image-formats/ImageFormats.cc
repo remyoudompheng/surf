@@ -63,7 +63,7 @@ namespace ImageFormats {
 	}
 
 	
-	// some file format implementations could use this utility function:
+/*	// some file format implementations could use this utility function:
 	// Write a long word to a file respecting endianess:
 	void put_long(long word, FILE* file, int order)
 	{
@@ -117,6 +117,6 @@ namespace ImageFormats {
 		}
 	}
 
-
+*/
 
 } // namespace ImageFormats

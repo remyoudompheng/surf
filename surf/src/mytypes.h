@@ -27,6 +27,28 @@
 #ifndef MYTYPES_H
 #define MYTYPES_H
 
-typedef unsigned char byte;
+#ifdef HAVE_STDINT_H
 
-#endif
+#  include <stdint.h>
+typedef uint8_t byte;
+
+#else
+
+#  ifdef HAVE_GTS
+
+#    include <glib.h>
+typedef guint8 byte;
+typedef guint16 uint16_t;
+typedef guint32 uint32_t;
+
+#  else
+
+typedef unsigned char byte;
+typedef unsigned short uint16_t;
+typedef unsigned long uint32_t;
+
+#  endif //HAVE_GTS
+
+#endif //HAVE_STDINT_H
+
+#endif //!MYTYPES_H

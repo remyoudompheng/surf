@@ -43,7 +43,7 @@ void bit_buffer::setSize (int w, int h)
 	delete []b;
 
 	if (n_bytes > 0)
-		b = new guint8[n_bytes];
+		b = new byte[n_bytes];
 	else {
 		b = 0;
 	}
@@ -79,7 +79,7 @@ bool bit_buffer::getPixel (int x, int y)
 	if( x < 0 || x >= width || y < 0 || y >= height ) {
 		return  PIXEL_WHITE;
 	} else {
-		guint8 c = b[x / CHAR_BIT + y*bytesPerRow];
+		byte c = b[x / CHAR_BIT + y*bytesPerRow];
 		return c & ( (1 << (CHAR_BIT-1)) >> x % CHAR_BIT) ? PIXEL_BLACK : PIXEL_WHITE;
 	}
 }
@@ -87,7 +87,7 @@ bool bit_buffer::getPixel (int x, int y)
 void bit_buffer::setPixel (int x, int y, int value)
 {
 	if( x >= 0 && x < width && y >= 0 && y < height ) {
-		guint8 &c = b[x / CHAR_BIT + y*bytesPerRow];
+		byte &c = b[x / CHAR_BIT + y*bytesPerRow];
 
 		if (value == PIXEL_BLACK)
 			c |= ( (1 << (CHAR_BIT-1)) >> x % CHAR_BIT);

@@ -5,7 +5,7 @@ libdummy_a_SOURCES = ImageFormats.h ImageFormats.cc \
         AvailableImageFormats.h AvailableImageFormats.cc \
 	ByExtension.h ByExtension.cc \
 	JPEG.h JPEG.cc   TIFF.h TIFF.cc     Postscript.h Postscript.cc \
-        Sun.h Sun.cc     EPS.h EPS.cc       XWD.h XWD.cc \
+        Sun.h Sun.cc     EPS.h EPS.cc       \
 	XBitmap.h XBitmap.cc PPM.h PPM.cc   PBM.h PBM.cc \
 	XPM.h XPM.cc
 

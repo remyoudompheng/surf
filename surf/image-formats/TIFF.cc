@@ -118,9 +118,9 @@ namespace ImageFormats {
 		TIFFSetField( tif,TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT );
 		TIFFSetField( tif,TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG );
 		TIFFSetField( tif,TIFFTAG_ROWSPERSTRIP,
-			      TIFFDefaultStripSize( tif,(guint32)(-1) ) );
+			      TIFFDefaultStripSize( tif,(uint32_t)(-1) ) );
 		
-		TIFFSetField( tif,TIFFTAG_RESOLUTIONUNIT,(guint16)RESUNIT_INCH );
+		TIFFSetField( tif,TIFFTAG_RESOLUTIONUNIT,(uint16_t)RESUNIT_INCH );
 		int resolution = ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data];
 		TIFFSetField( tif,TIFFTAG_XRESOLUTION,(float)(resolution) );
 		TIFFSetField( tif,TIFFTAG_YRESOLUTION,(float)(resolution) );
@@ -134,7 +134,7 @@ namespace ImageFormats {
 		TIFFSetField( tif,TIFFTAG_DATETIME,the_time );
 		TIFFSetField( tif,TIFFTAG_IMAGEDESCRIPTION,title );
 		
-		guint8* scanline = new guint8[TIFFScanlineSize(tif)];
+		byte* scanline = new byte[TIFFScanlineSize(tif)];
 		
 		if (scanline == 0) {
 			fprintf(stderr, "cant alloc ...\n");

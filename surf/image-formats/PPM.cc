@@ -50,9 +50,9 @@ namespace ImageFormats {
 		
 		fprintf (file, "P6\n%d %d\n255\n", width, height);
 		
-		const guint8* rdata = data.getRData();
-		const guint8* gdata = data.getGData();
-		const guint8* bdata = data.getBData();
+		const byte* rdata = data.getRData();
+		const byte* gdata = data.getGData();
+		const byte* bdata = data.getBData();
 		
 		size_t n = width*height;
 

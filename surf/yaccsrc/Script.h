@@ -103,6 +103,7 @@ private:
 	static void ditherSurface();
 	static void ditherCurve();
 	static void reset();
+	static void triangulateSurface();
 	static void kernelModeSet();
 	static void printDefaults();
 	static void printColorImageFormats();

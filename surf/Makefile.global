@@ -2,4 +2,4 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/drawfunc \
 -I$(top_srcdir)/yaccsrc -I$(top_srcdir)/image-formats \
 -I$(top_srcdir)/curve -I$(top_srcdir)/draw \
 -I$(top_srcdir)/misc -I$(top_srcdir)/debug \
--I$(top_srcdir)/dither
+-I$(top_srcdir)/dither -I$(top_srcdir)/triangulator
