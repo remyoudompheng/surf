@@ -3,4 +3,6 @@ aclocal.m4 configure config.cache config.status config.log
 config.h config.h.in stamp-h stamp-h.in
 surf
 ID
+gmon.out
+
 

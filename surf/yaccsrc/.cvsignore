@@ -1,2 +1,4 @@
 Makefile.in Makefile .deps 
 polyyacc.c polyyacc.h polylex.c addDefaultSymbols.cc
+*.da
+
