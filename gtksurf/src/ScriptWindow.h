@@ -20,7 +20,6 @@
 #include <PrefsWindow.h>
 #include <ImageWindow.h>
 #include <NavigationWindow.h>
-#include <Kernel.h>
 
 #include<string>
 

@@ -17,7 +17,6 @@
 #endif
 
 #include <Glade.h>
-#include <Kernel.h>
 #include <DitherWindow.h>
 
 #ifdef HAVE_LIBGDK_PIXBUF

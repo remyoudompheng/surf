@@ -11,13 +11,10 @@
 #ifndef OOGL_H
 #define OOGL_H
 
-#include <Kernel.h>
 #include <GL/gl.h>
 
 namespace OOGL {
-
-	GLuint read();
-
+GLuint read();
 }
 
 #endif //!OOGL_H

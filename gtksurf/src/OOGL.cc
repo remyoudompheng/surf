@@ -10,6 +10,7 @@
 
 #include <OOGL.h>
 #include <GLtypes.h>
+#include <Kernel.h>
 
 #include<vector>
 

@@ -17,7 +17,6 @@
 #endif
 
 #include <Glade.h>
-#include <Kernel.h>
 #include <GLArea.h>
 
 #include<string>
