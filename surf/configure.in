@@ -140,7 +140,7 @@ AC_CHECK_HEADER(jpeglib.h,
 dnl PNG library and png.h
 
 AC_CHECK_HEADER(png.h,
-	        AC_CHECK_LIB(png, main))
+	        AC_CHECK_LIB(png, png_set_rows))
 
 dnl tiff library and header file:
 
