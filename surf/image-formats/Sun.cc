@@ -26,11 +26,16 @@
 #include <FileWriter.h>
 #include <RgbBuffer.h>
 
-#include <netinet/in.h>
+#ifdef HTONL_IN_NETINET_IN_H
+#  include <netinet/in.h>
+#else
+#  include <sys/param.h>
+#endif
+
+#include <sys/param.h>
 
 #include<cstdio>
 #include<iostream>
-
 
 namespace {
 

@@ -61,6 +61,11 @@ public:
 
 	void initNormals();
 	Point getNormal(const Point& vertex);
+	Point getNormal(GtsVertex* v) {
+		Point p = { v->p.x, v->p.y, v->p.z };
+		return getNormal(p);
+	}
+
 	void deinitNormals();
 
 private:

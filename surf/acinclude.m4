@@ -53,22 +53,21 @@ AC_DEFUN(LF_CHECK_CC_FLAG,[
 
 AC_DEFUN([RS_CHECK_LIB], 
 [
-	AC_CHECK_LIB($1, main,, AC_MSG_ERROR([Sorry: can't link with library lib$1.\(a\|so\).]))
+  AC_CHECK_LIB($1, main,,
+    AC_MSG_ERROR([Sorry: Can't link with library lib$1.\(a\|so\).]))
 ])
 
 AC_DEFUN([RS_CHECK_HEADER],
 [
-	AC_CHECK_HEADER($1,, AC_MSG_ERROR([Sorry: can't find header file $1]))
+  AC_CHECK_HEADER($1,,
+    AC_MSG_ERROR([Sorry: Can't find header file $1.]))
 ])
-
 
 dnl Use AC_VERBOSE w/o the warnings
 dnl
 AC_DEFUN([CF_VERBOSE],
 [test -n "$verbose" && echo "   $1" 1>&AC_FD_MSG
 ])dnl
-
-
 
 
 dnl Autoconf support for C++
@@ -160,22 +159,25 @@ dnl define HAVE_FUNCTION_NONTYPE_PARAMETERS.
 dnl
 dnl @author Luc Maisonobe
 dnl
-AC_DEFUN(AC_CXX_FUNCTION_NONTYPE_PARAMETERS,
-[AC_CACHE_CHECK(whether ${CXX} supports function templates with non-type parameters,
-ac_cv_cxx_function_nontype_parameters,
-[AC_LANG_SAVE
- AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([
-template<class T, int N> class A {};
-template<class T, int N> int f(const A<T,N>& x) { return 0; }
-],[A<double, 17> z; return f(z);],
- ac_cv_cxx_function_nontype_parameters=yes, ac_cv_cxx_function_nontype_parameters=no)
- AC_LANG_RESTORE
-])
-dnl if test "$ac_cv_cxx_function_nontype_parameters" = yes; then
-dnl  AC_DEFINE(HAVE_FUNCTION_NONTYPE_PARAMETERS,,
-dnl             [define if the compiler supports function templates with non-type parameters])
-dnl fi
+AC_DEFUN(AC_CXX_FUNCTION_NONTYPE_PARAMETERS, [
+  AC_CACHE_CHECK([whether ${CXX} supports function templates with non-type parameters],
+    ac_cv_cxx_function_nontype_parameters, [
+      AC_LANG_SAVE
+      AC_LANG_CPLUSPLUS
+      AC_TRY_COMPILE([
+          template<class T, int N> class A {};
+          template<class T, int N> int f(const A<T,N>& x) { return 0; }
+        ],[
+          A<double, 17> z; return f(z);
+        ],
+        ac_cv_cxx_function_nontype_parameters=yes,
+        ac_cv_cxx_function_nontype_parameters=no)
+      AC_LANG_RESTORE
+    ])
+
+  if test "$ac_cv_cxx_function_nontype_parameters" = no; then
+    AC_MSG_ERROR([Sorry your C++ compiler isn't smart enough to build surf.])
+  fi
 ])
 
 
@@ -184,84 +186,248 @@ dnl (inspired by Gtk-- 1.2.1 configure.in)
 dnl ------------------------------------------
 
 AC_DEFUN(JOJO_CXX_NAMESPACES, [
-	AC_MSG_CHECKING(whether ${CXX} supports namespaces)
-	AC_TRY_COMPILE([
-		namespace Foo { struct A {}; }
-		using namespace Foo;
-	],[
-		A a;
-	],[
-		AC_MSG_RESULT(yes)
-	],[
-		AC_MSG_RESULT(no)
-		AC_MSG_ERROR([Sorry: C++ compiler doesn't support namespaces])
-	])
+  AC_MSG_CHECKING(whether ${CXX} supports namespaces)
+  AC_LANG_SAVE
+  AC_LANG_CPLUSPLUS
+  AC_TRY_COMPILE([
+      namespace Foo { struct A {}; }
+      using namespace Foo;
+    ],[
+      A a;
+    ],
+    AC_MSG_RESULT(yes),
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR([Sorry: C++ compiler doesn't support namespaces.]))
+  AC_LANG_RESTORE
 ])
 
 AC_DEFUN(JOJO_CXX_STDNAMESPACE, [
-	AC_MSG_CHECKING(whether ${CXX} uses std namespace)
-	AC_TRY_COMPILE([
-		#include <iostream>
-		namespace std{}
-		using namespace std;
-	],[
-		cout << "test" << endl;
-	],[
-		AC_MSG_RESULT(yes)
-	],[
-		AC_TRY_COMPILE([
-			#include <iostream.h>
-			namespace std{}
-			using namespace std;
-		],[
-			cout << "test" << endl;
-		],[
-			AC_MSG_RESULT(yes)
-		],[
-			AC_MSG_RESULT(no)
-			AC_MSG_ERROR([Sorry: C++ compiler doesn't use namepsace std])
-		])
-	])
+  AC_MSG_CHECKING(whether ${CXX} uses std namespace)
+  AC_LANG_SAVE
+  AC_LANG_CPLUSPLUS
+  AC_TRY_COMPILE([
+    #include<iostream>
+    namespace std{}
+    using namespace std;
+  ],[
+    cout << "test" << endl;
+  ],
+  AC_MSG_RESULT(yes),
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([Sorry: C++ compiler doesn't use namepsace std.]))
+  AC_LANG_RESTORE
 ])
 
+dnl
+dnl checks for STLport:
+dnl
+dnl @author Johannes Beigel <jojo@beigel.de>
+dnl
+AC_DEFUN(JOJO_STLPORT, [
+  AC_ARG_WITH(stlport-prefix,
+    [  --with-stlport-prefix=PFX Prefix where STLport is installed (optional)],
+    stlport_prefix="$withval",
+    stlport_prefix="")
+  AC_ARG_ENABLE(stlport,
+    [  --disable-stlport       Do not try to find STLport includes and library],
+    , enable_stlport=yes)
 
-dnl JOJO_COMPILE_WARNINGS
-dnl Turn on many useful compiler warnings
-dnl For now, only works on GCC
-dnl (this is taken from GNOME_COMPILE_WARNINGS..)
+  if test "x$enable_stlport" = "xyes" ; then
+    AC_MSG_CHECKING(for STLport includes)
+    stlportinclude=""
 
-AC_DEFUN([JOJO_COMPILE_WARNINGS],[
-  if test "x$GCC" = xyes; then
-    AC_MSG_CHECKING(what warning flags to pass to the C compiler)
+    if test "x$stlport_prefix" != x ; then
+      if test -d "$stlport_prefix/include/stlport"; then
+	stlportinclude="-I$stlport_prefix/include/stlport"
+        LDFLAGS="-L$stlport_prefix/lib $LDFLAGS"
+      fi
+    else
+      if test -d "/usr/local/include/stlport"; then
+        stlportinclude="-I/usr/local/include/stlport"
+      elif test -d "/usr/include/stlport"; then
+        stlportinclude="-I/usr/include/stlport"
+      fi
+    fi
 
-    warnCFLAGS=
-    case " $CFLAGS " in
-      *[\ \	]-Wall[\ \	]*) ;;
-      *) warnCFLAGS="-Wall" ;;
-    esac
-
-    AC_MSG_RESULT($warnCFLAGS)
-    
-    CFLAGS="$CFLAGS $warnCFLAGS"
+    if test "x$stlportinclude" != x ; then
+      CPPFLAGS="$stlportinclude $CPPFLAGS"
+      AC_MSG_RESULT($stlportinclude)
+      AC_CHECK_LIB(stlport, main)
+    else
+      AC_MSG_RESULT(no)
+    fi
   fi
 ])
 
-dnl For C++, do basically the same thing.
+dnl
+dnl checks for GNU MP (gmp)
+dnl
+dnl @author Johannes Beigel
+dnl
+AC_DEFUN(JOJO_GMP, [
+  AC_ARG_WITH(gmp-prefix,
+    [  --with-gmp-prefix=PFX   Prefix where GMP is installed],
+    gmp_prefix="$withval",
+    gmp_prefix="")
 
-AC_DEFUN([JOJO_CXX_WARNINGS],[
-  if test "x$GCC" = xyes; then
-    AC_MSG_CHECKING(what warning flags to pass to the C++ compiler)
-  
-    warnCXXFLAGS=
-    
-    case " $CXXFLAGS " in
-      *[\ \	]-Wall[\ \	]*) ;;
-      *) warnCXXFLAGS="-Wall" ;;
-    esac
+  if test x"$gmp_prefix" != x ; then
+    LDFLAGS="-L$gmp_prefix/lib $LDFLAGS"
+    CPPFLAGS="-I$gmp_prefix/include $CPPFLAGS"
+  fi
 
-    AC_MSG_RESULT($warnCXXFLAGS)
+  AC_CHECK_HEADER(gmp.h,,
+    AC_CHECK_HEADER(gmp2/gmp.h,
+      AC_DEFINE(GMP2_PREFIX),
+      AC_MSG_ERROR([Sorry: Can't find header file gmp.h])))
 
-    CXXFLAGS="$CXXFLAGS $warnCXXFLAGS"
+  AC_CHECK_LIB(gmp, main,,
+    AC_CHECK_LIB(gmp2, main,, AC_MSG_ERROR([Sorry: can't find gmp])))
+])
+
+dnl
+dnl checks for GTS (the GNU Triangulated Surfaces library)
+dnl
+dnl   sets have_gts to "yes" if GTS has been found
+dnl
+dnl @author Johannes Beigel
+dnl
+AC_DEFUN(JOJO_GTS, [
+  AC_ARG_WITH(gts-prefix,
+    [  --with-gts-prefix=PFX   Prefix where GTS is installed],
+    gts_prefix="$withval",
+    gts_prefix="")
+  AC_ARG_ENABLE(gts,
+    [  --disable-gts           Do not try to find GTS includes and library],
+    , enable_gts=yes)
+
+  if test "x$enable_gts" = "xyes" ; then
+    if test x"$gts_prefix" != x ; then
+      LDFLAGS="-L$gts_prefix/lib $LDFLAGS"
+      CPPFLAGS="-I$gts_prefix/include $CPPFLAGS"
+    fi
+
+    dnl GTS needs GLIB...:
+    echo "**** If the following test for GLIB fails you may want to install GTS"
+    echo "**** (and GLIB) or re-run configure with the --disable-gts option."
+    echo "**** However, without GTS you won't be able to use the triangulation"
+    echo "**** feature of surf!"
+
+    AM_PATH_GLIB(1.2.0)
+    LIBS="$LIBS $GLIB_LIBS"
+    CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
+
+    AC_CHECK_HEADER(gts.h,
+      AC_CHECK_LIB(gts, main,
+        AC_DEFINE(HAVE_LIBGTS)
+         LIBS="$LIBS -lgts"
+         have_gts="yes",
+        AC_MSG_ERROR([Couldn't find libgts. Please install GTS or try --disable-gts.])),
+      AC_MSG_ERROR([Couldn't find gts.h. Please install GTS or try --diasble-gts.]))
   fi
 ])
 
+dnl
+dnl checks for OpenGL/Mesa and GLU
+dnl
+dnl  If everything was found
+dnl   - sets have_opengl to "yes"
+dnl   - defines HAVE_OPENGL
+dnl   - GL_LIBS, GL_LDFLAGS and GL_CPPFLAGs contain the needed flags
+dnl
+dnl @author Johannes Beigel
+dnl
+AC_DEFUN(JOJO_OPENGL, [
+  save_cppflags=$CPPFLAGS
+  save_libs=$LIBS
+  save_ldflags=$LDFLAGS
+
+  AC_ARG_WITH(gl-prefix,
+    [  --with-GL-prefix=PFX    Prefix where OpenGL/Mesa & GLU are installed],
+    gl_prefix="$withval",
+    gl_prefix="")
+  AC_ARG_ENABLE(opengl,
+    [  --disable-OpenGL        Do not try to find any GL/GLU includes and libraries],
+    , enable_opengl=yes)
+
+  if test "x$enable_opengl" = "xyes" ; then
+
+    if test "x$gl_prefix" != "x" ; then
+      GL_CPPFLAGS="-I$gl_prefix/include"
+      GL_LDFLAGS="-L$gl_prefix/lib"
+      CPPFLAGS="$CPPFLAGS $GL_CPPFLAGS"
+      LDFLAGS="$LDFLAGS $GL_LDFLAGS"
+    fi
+
+    have_opengl=yes
+
+    dnl libGL/libMesaGL:
+    AC_CHECK_LIB(GL, glBegin,
+      GL_LIBS="-lGL",
+      AC_CHECK_LIB(MesaGL, glBegin,
+        GL_LIBS="-lMesaGL",
+        have_opengl=no))
+
+    LIBS="$LIBS $GL_LIBS"
+
+    if test "x$have_opengl" == "xyes"; then
+      dnl libGLU/libMesaGLU:
+      AC_CHECK_LIB(GLU, gluLookAt,
+        GL_LIBS="$GL_LIBS -lGLU",
+        AC_CHECK_LIB(MesaGLU, gluLookAt,
+          GL_LIBS="$GL_LIBS -lMesaGLU",
+          have_opengl=no))
+    fi
+
+    if test "x$have_opengl" == "xyes"; then
+      dnl GL & GLU header files:
+      AC_CHECK_HEADERS(GL/gl.h GL/glu.h,
+        AC_DEFINE(HAVE_OPENGL),
+        have_opengl=no)
+    fi
+  fi
+
+  CPPFLAGS=$save_cppflags
+  LIBS=$save_libs
+  LDFLAGS=$save_ldflags
+])
+
+AC_DEFUN([JOJO_INVENTOR],[
+  save_cppflags=$CPPFLAGS
+  save_libs=$LIBS
+  save_ldflags=$LDFLAGS
+
+  dnl X
+  AC_PATH_X
+
+  if test x"$no_x" != "xyes"; then
+    CPPFLAGS="$CPPFLAGS $GL_CPPFLAGS -I$x_includes"
+    LDFLAGS="$LDFLAGS $GL_LDFLAGS -L$x_libraries"
+    LIBS="$LIBS $GL_LIBS -lX11 -lInventor"
+
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+
+    AC_MSG_CHECKING([for SoDB::init in -lInventor])
+
+    AC_TRY_COMPILE([
+      #include <Inventor/SoDB.h>
+    ], [
+      SoDB::init();
+    ],
+    have_inventor=yes,
+    have_inventor=no)
+
+    AC_MSG_RESULT($have_inventor)
+
+    AC_LANG_RESTORE
+
+  fi
+
+  if test x"$have_inventor" == "xno"; then
+    CPPFLAGS=$save_cppflags
+    LDFLAGS=$save_ld_flags
+    LIBS=$save_libs
+  else
+    AC_DEFINE(HAVE_INVENTOR)
+  fi
+])

@@ -23,43 +23,55 @@
  */
 
 
-#ifndef AVAILABLEIMAGEFMTS_H
-#define AVAILABLEIMAGEFMTS_H
+#ifndef IMAGEFORMAT_INVENTOR_H
+#define IMAGEFORMAT_INVENTOR_H
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include <ImageFormats.h>
 
-#include <ByExtension.h>
-#ifdef HAVE_LIBJPEG
-#  include <JPEG.h>
-#endif
-#ifdef HAVE_LIBPNG
-#  include <PNG.h>
-#endif
-#ifdef HAVE_LIBTIFF
-#  include <TIFF.h>
-#endif
-#include <Postscript.h>
-#include <Sun.h>
-#include <EPS.h>
-#include <XBitmap.h>
-#include <PPM.h>
-#include <PBM.h>
-#include <XPM.h>
-#ifdef HAVE_LIBGTS
-#  include <GTS.h>
-#  include <OOGL.h>
-#  ifdef HAVE_INVENTOR
-#    include <Inventor.h>
-#  endif
-#endif
+#include <gts.h>
+
+class Triangulator;
+class SoCoordinate3;
+class SoNormal;
+class SoFaceSet;
 
 namespace ImageFormats {
-	extern Format* availableFormats[];
-	extern size_t numAvailableFormats;
-	
-	extern int image_formats_data[];
+
+	class OpenInventor : public Format {
+	public:
+		std::string getName() const {
+			return "Inventor";
+		}
+		std::string getID() const {
+			return "inventor";
+		}
+		bool isExtension(const std::string& ext) const {
+			return ext == "iv";
+		}
+
+		bool is3DFormat() const {
+			return true;
+		}
+
+		bool save3DImage(const char* filename, Triangulator& data);
+
+	private:
+		Triangulator* tritor;
+		
+		int vertex_index;
+		int face_index;
+		SoCoordinate3* coords;
+		SoNormal* normals;
+		SoFaceSet* faceSets;
+
+		void face_func(GtsFace* f);
+		static gint _face_func(gpointer f, gpointer This) {
+			static_cast<OpenInventor*>(This)->face_func(static_cast<GtsFace*>(f));
+			return 0;
+		}
+	};
+
+	extern OpenInventor imgFmt_Inventor;
 }
 
-#endif //AVAILABLEIMAGEFMTS_H
+#endif //!IMAGEFORMAT_INVENTOR_H

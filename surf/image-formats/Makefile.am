@@ -1,5 +1,7 @@
 include $(top_srcdir)/Makefile.global
 
+CXXFLAGS=$(CXXFLAGS_WITHOUT_WALL)
+
 noinst_LIBRARIES = libdummy.a
 libdummy_a_SOURCES = ImageFormats.h ImageFormats.cc \
         AvailableImageFormats.h AvailableImageFormats.cc \
@@ -10,7 +12,8 @@ libdummy_a_SOURCES = ImageFormats.h ImageFormats.cc \
 	XPM.h XPM.cc \
         PNG.h PNG.cc \
         GTS.h GTS.cc \
-        OOGL.h OOGL.cc
+        OOGL.h OOGL.cc \
+        Inventor.h Inventor.cc
 
 libdummy.a:: $(libdummy_a_OBJECTS) $(libdummy_a_DEPENDENCIES)
 

@@ -17,7 +17,6 @@ AC_PROG_CXX
 AC_AIX
 AC_ISC_POSIX
 AC_MINIX
-AC_HEADER_STDC
 AM_PROG_LEX
 AC_PROG_YACC
 AC_PROG_RANLIB
@@ -26,82 +25,51 @@ AC_PROG_RANLIB
 dnl check if C++ compiler really works:
 dnl -----------------------------------
 
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
-
 AC_CXX_FUNCTION_NONTYPE_PARAMETERS
-if test "$ac_cv_cxx_function_nontype_parameters" = "no"; then
-	AC_MSG_ERROR(["Sorry, your compiler is not smart enough to build surf"])
-fi
-
 ICE_CXX_EXPLICIT_TEMPLATE_INSTANTIATION
-
-JOJO_CXX_WARNINGS
+LF_CHECK_CXX_FLAG(-Wall)
 JOJO_CXX_NAMESPACES
 JOJO_CXX_STDNAMESPACE
 
-AC_LANG_RESTORE
-
 if test "$GCC" = "no" ; then
-	case `uname` in
-	IRIX*)
-		CXXFLAGS="-LANG:std $CXXFLAGS"
-		;;
-	esac
+  case `uname` in
+  IRIX*)
+    CXXFLAGS="-LANG:std $CXXFLAGS"
+    ;;
+  esac
 fi
-
 
 dnl include /usr/local/lib and /usr/local/include in search paths:
 dnl --------------------------------------------------------------
 
 if test -d "/usr/local/lib/"; then
-	LDFLAGS="-L/usr/local/lib/ $LDFLAGS"
+  LDFLAGS="-L/usr/local/lib/ $LDFLAGS"
 fi
 if test -d "/usr/local/include/"; then
-	CPPFLAGS="-I/usr/local/include/ $CPPFLAGS"
-fi
-
-dnl check for STLport:
-dnl ------------------
-
-AC_ARG_WITH(stlport-prefix,[  --with-stlport-prefix=PFX Prefix where STLport is installed (optional)],
-            stlport_prefix="$withval", stlport_prefix="")
-AC_ARG_ENABLE(stlport, [  --disable-stlport       Do not try to find STLport includes and library],
-                    , enable_stlport=yes)
-
-if test "x$enable_stlport" = "xyes" ; then
-    AC_MSG_CHECKING(for STLport includes)
-    stlportinclude=""
-    if test x$stlport_prefix != x ; then
-        if test -d "$stlport_prefix/include/stlport"; then
-	    stlportinclude="-I$stlport_prefix/include/stlport"
-            LDFLAGS="-L$stlport_prefix/lib $LDFLAGS"
-        fi
-    else
-        if test -d "/usr/include/stlport"; then
-            stlportinclude="-I/usr/include/stlport"
-        elif test -d "/usr/local/include/stlport"; then
-            stlportinclude="-I/usr/local/include/stlport"
-        fi
-    fi
-    if test x$stlportinclude != x ; then
-        CPPFLAGS="$stlportinclude $CPPFLAGS"
-        AC_MSG_RESULT($stlportinclude)
-        AC_CHECK_LIB(stlport, main)
-    else
-        AC_MSG_RESULT(no)
-    fi
+  CPPFLAGS="-I/usr/local/include/ $CPPFLAGS"
 fi
 
 dnl checks for header files:
 dnl ------------------------
 
-AC_CHECK_HEADERS(unistd.h stdint.h)
+JOJO_STLPORT
+AC_CHECK_HEADERS(unistd.h)
 
+dnl FeeBSD doesn't define htonl() in netinet/in.h but in sys/param.h
+dnl ----------------------------------------------------------------
+
+AC_MSG_CHECKING([whether htonl() is defined in netinet/in.h])
+AC_TRY_COMPILE([
+    #include <netinet/in.h>
+  ], [
+    int n = htonl(0x12345678);
+  ],
+  AC_DEFINE(HTONL_IN_NETINET_IN_H)
+    AC_MSG_RESULT(yes),
+  AC_MSG_RESULT(no))
 
 dnl check options:
 dnl --------------
-
 
 dnl do we have getopt() and (optionally) GNU getopt_long()?
 
@@ -109,8 +77,6 @@ AC_CHECK_FUNC(getopt,, AC_MSG_ERROR([Sorry: can't find getopt() function]))
 AC_CHECK_HEADER(getopt.h, AC_CHECK_FUNCS(getopt_long))
 
 dnl check for gethostname prototype in unistd.h:
-
-AC_CHECK_HEADERS(unistd.h stdint.h)
 
 AC_CACHE_CHECK(whether there's a gethostname prototype in unistd.h,
                ac_cv_gethostname_has_prototype,
@@ -125,8 +91,8 @@ dnl ---------------------
 
 RS_CHECK_LIB(m, main)
 AC_CHECK_LIB(z,  main,,
-	     AC_CHECK_LIB(gz, main,,
-                          AC_MSG_ERROR([Sorry: Can't find libz/libgz.])))
+  AC_CHECK_LIB(gz, main,,
+    AC_MSG_ERROR([Sorry: Can't find libz/libgz.])))
 
 
 dnl checks for image libraries (optional):
@@ -135,88 +101,57 @@ dnl --------------------------------------
 dnl JPEG library and jpeglib.h:
 
 AC_CHECK_HEADER(jpeglib.h,
-	        AC_CHECK_LIB(jpeg, main))
+  AC_CHECK_LIB(jpeg, main))
 
 dnl PNG library and png.h
 
 AC_CHECK_HEADER(png.h,
-	        AC_CHECK_LIB(png, png_set_rows))
+  AC_CHECK_LIB(png, png_set_rows))
 
 dnl tiff library and header file:
 
 tifflibfound="no"
 AC_CHECK_HEADER(tiffio.h,
-	        AC_CHECK_LIB(tiff, main,
-	                     tifflibfound="yes"
-			     AC_DEFINE(HAVE_LIBTIFF)
-			     LIBS="$LIBS -ltiff"))
+  AC_CHECK_LIB(tiff, main,
+    tifflibfound="yes"
+     AC_DEFINE(HAVE_LIBTIFF)
+     LIBS="$LIBS -ltiff"))
 
 if test "$libtifffound" = "no"
 then
 dnl (FreeBSD 3.0 has tiff34.so instead of tiff.so and the header files
 dnl are in /usr/local/lib/tiff34)
   AC_CHECK_HEADER(tiff34/tiffio.h,
-                  AC_CHECK_LIB(tiff34, main,
-	                       AC_DEFINE(TIFF_HEADER_34)
-		               AC_DEFINE(HAVE_LIBTIFF)
-			       LIBS="$LIBS -ltiff34"))
+    AC_CHECK_LIB(tiff34, main,
+      AC_DEFINE(TIFF_HEADER_34)
+       AC_DEFINE(HAVE_LIBTIFF)
+       LIBS="$LIBS -ltiff34"))
 fi
 
-	
 dnl check for gmp:
 dnl --------------
 
-AC_ARG_WITH(gmp-prefix,[  --with-gmp-prefix=PFX   Prefix where GMP is installed],
-            gmp_prefix="$withval", gmp_prefix="")
-
-
-if test x"$gmp_prefix" != x ; then
-	LDFLAGS="-L$gmp_prefix/lib $LDFLAGS"
-	CPPFLAGS="-I$gmp_prefix/include $CPPFLAGS"
-fi
-
-AC_CHECK_HEADER(gmp.h,,
-		AC_CHECK_HEADER(gmp2/gmp.h,
-				AC_DEFINE(GMP2_PREFIX),
-				AC_MSG_ERROR([Sorry: can't find header file gmp.h])))
-
-AC_CHECK_LIB(gmp, main,,
-             AC_CHECK_LIB(gmp2, main,,
-			  AC_MSG_ERROR([Sorry: can't find gmp])))
+JOJO_GMP
 
 dnl check for GTS:
 dnl --------------
+JOJO_GTS
 
-AC_ARG_WITH(gts-prefix,[  --with-gts-prefix=PFX   Prefix where GTS is installed],
-            gts_prefix="$withval", gts_prefix="")
-AC_ARG_ENABLE(gts, [  --disable-gts           Do not try to find GTS includes and library],
-                    , enable_gts=yes)
+if test "x$have_gts" == "xyes"; then
 
-if test "x$enable_gts" = "xyes" ; then
-    if test x"$gts_prefix" != x ; then
-	LDFLAGS="-L$gts_prefix/lib $LDFLAGS"
-	CPPFLAGS="-I$gts_prefix/include $CPPFLAGS"
-    fi
+  dnl OpenGL & GLU:
+  dnl -------------
+  JOJO_OPENGL
 
-    dnl GTS needs glib..:
-    echo "**** If the following test for GLIB fails you may want to install GTS"
-    echo "**** (and GLIB) or re-run configure with the --disable-gts option."
-    echo "**** However, without GTS you won't be able to use the triangulation"
-    echo "**** feature of surf!"
+  if test "x$have_opengl" == "xyes"; then
 
-    AM_PATH_GLIB(1.2.0)
-    LIBS="$LIBS $GLIB_LIBS"
-    CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
+    dnl OpenInventor:
+    dnl -------------
+    JOJO_INVENTOR
 
-    AC_CHECK_HEADER(gts.h,
-      AC_CHECK_LIB(gts, main,
-        AC_DEFINE(HAVE_LIBGTS)
-         LIBS="$LIBS -lgts",
-        AC_MSG_ERROR([Couldn't find libgts. Please install GTS or try --disable-gts.])),
-      AC_MSG_ERROR([Couldn't find gts.h. Please install GTS or try --diable-gts.]))
+  fi
+
 fi
-
-
 
 dnl link with lex-libaray:
 dnl ----------------------
@@ -224,6 +159,9 @@ dnl ----------------------
 LIBS="$LIBS $LEXLIB"
 
 AC_SUBST(CPPFLAGS)
+
+CXXFLAGS_WITHOUT_WALL=`echo $CXXFLAGS | sed s/-Wall//`
+AC_SUBST(CXXFLAGS_WITHOUT_WALL)
 
 AM_MISSING_PROG(HELP2MAN, help2man, $missing_dir)
 AM_MISSING_PROG(SED, sed, $missing_dir)

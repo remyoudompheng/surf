@@ -9,3 +9,9 @@
 #undef HAVE_LIBGTS
 
 #undef NO_GETHOSTNAME_PROTO
+
+#undef HTONL_IN_NETINET_IN_H
+
+#undef HAVE_OPENGL
+
+#undef HAVE_INVENTOR

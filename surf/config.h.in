@@ -17,9 +17,6 @@
 /* Define if you need to in order for stat and other things to work.  */
 #undef _POSIX_SOURCE
 
-/* Define if you have the ANSI C header files.  */
-#undef STDC_HEADERS
-
 /* Define if lex declares yytext as a char * by default, not a char[].  */
 #undef YYTEXT_POINTER
 
@@ -35,11 +32,20 @@
 
 #undef NO_GETHOSTNAME_PROTO
 
+#undef HTONL_IN_NETINET_IN_H
+
+#undef HAVE_OPENGL
+
+#undef HAVE_INVENTOR
+
 /* Define if you have the getopt_long function.  */
 #undef HAVE_GETOPT_LONG
 
-/* Define if you have the <stdint.h> header file.  */
-#undef HAVE_STDINT_H
+/* Define if you have the <GL/gl.h> header file.  */
+#undef HAVE_GL_GL_H
+
+/* Define if you have the <GL/glu.h> header file.  */
+#undef HAVE_GL_GLU_H
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
