@@ -39,6 +39,8 @@ AC_PROG_RANLIB
 dnl check if C++ compiler really works:
 dnl -----------------------------------
 
+AC_LANG_SAVE
+
 AC_LANG_CPLUSPLUS
 LF_CHECK_CC_FLAG(-Wall -W -Wwrite-strings -Wpointer-arith -Wconversion -Wno-unused -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs)
 
@@ -62,6 +64,8 @@ fi
 
 JB_CXX_NAMESPACES
 JB_CXX_STDNAMESPACE
+
+AC_LANG_RESTORE
 
 
 
