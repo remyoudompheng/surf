@@ -84,43 +84,15 @@ namespace ImageFormats {
 			}
 		}
 		
-		// check if filename is of type "<fmt>|<command>"
-		
-		const int maxExtLen = 32;
-		int len = strlen(filename);
-		
-		if (len > maxExtLen) {
-			len = maxExtLen;
+		// just look for "*.extension"
+		char* ext = strrchr(filename, '.');
+		if (ext == 0) {
+			return 0;
 		}
-		
-		bool pipe = false;
-		char ext[maxExtLen];
-		
-		for (int i = 0; i != len; ++i) {
-			if (filename[i] == '|') {
-				pipe = true;
-				std::strncpy(ext, filename, i);
-				ext[i] = 0;
-				*newfilename = filename + i;
-				break;
-			}
-		}
-		
-		if (!pipe) { // just look for "*.extension"
-			char* extPtr = strrchr(filename, '.');
-			if (extPtr == 0) {
-				return 0;
-			}
+		ext++;
 
-			strncpy(ext, extPtr + 1, maxExtLen);
-			*newfilename = filename;
-		}
-
-		return findFormatByExt(ext, type);
-	}
-
-	Format* ByExtension::findFormatByExt(const char* ext, Type type)
-	{
+		*newfilename = filename;
+		
 		for (size_t i = 0; i != numAvailableFormats; ++i) {
 			Format* fmt = availableFormats[i];
 			if(fmt->isExtension(ext)) {
@@ -133,6 +105,7 @@ namespace ImageFormats {
 				return 0;
 			}
 		}
+
 		std::cerr << "Couldn't determine file type by extension.\n";
 		return 0;
 	}

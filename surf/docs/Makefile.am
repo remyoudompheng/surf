@@ -13,4 +13,3 @@ html: surf.texi
 
 clean-local:
 	rm -rf html/
-

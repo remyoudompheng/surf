@@ -428,5 +428,14 @@ void init_main_variables()
 	// image format options
 	// -----------------------------
 
-	addNumber("jpeg_quality", &jpeg_quality);
+	addNumber("jpeg_quality", &jpeg_quality_data);
+
+	// -----------------------------
+	// triangulation options (GTS)
+	// -----------------------------
+
+	addNumber("gts_grid_size", &gts_grid_size_data);
+	addNumber("gts_coarsen", &gts_coarsen_data);
+	addNumber("gts_max_cost", &gts_max_cost_data);
+
 }

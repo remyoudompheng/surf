@@ -35,6 +35,7 @@
 #include <Misc.h>
 #include <FileWriter.h>
 #include <polyarith.h>
+#include <ScriptVar.h>
 
 #include <gts.h>
 
@@ -60,9 +61,7 @@ void Triangulator::triangulate()
 	hf = new hornerpolyxyz(f);
 	
 	GtsCartesianGrid g;
-	g.nx = 64;
-	g.ny = 64;
-	g.nz = 64;
+	g.nx = g.ny = g.nz = ScriptVar::gts_grid_size_data;
 
 	g.x = -10.0; g.dx = 20.0/gdouble(g.nx - 1);
 	g.y = -10.0; g.dy = 20.0/gdouble(g.ny - 1);
@@ -73,11 +72,11 @@ void Triangulator::triangulate()
 				  gts_edge_class(),
 				  gts_vertex_class());
 	gts_isosurface_cartesian(surface, g, _iso_func, this, 0.0);
-	gdouble maxcost = 0.1;
-	gts_surface_coarsen(surface,
-			    0, 0,
-			    0, 0,
-			    gts_coarsen_stop_cost, &maxcost, 0);
+
+	if(ScriptVar::gts_coarsen_data) {
+		gts_surface_coarsen(surface, 0, 0, 0, 0, gts_coarsen_stop_cost,
+				    &ScriptVar::gts_max_cost_data, 0);
+	}
 
 	delete hf;
 

@@ -65,7 +65,6 @@ namespace ImageFormats {
 			color, dithered, three_d
 		};
 		Format* guessFormat(const char* filename, Type type, const char** newfilename);
-		Format* findFormatByExt(const char* ext, Type type);
 	};
 
 	extern ByExtension imgFmt_ByExtension;

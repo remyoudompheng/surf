@@ -3,6 +3,9 @@ include $(top_srcdir)/Makefile.global
 EXTRA_DIST = polyyacc.h
 YACC = @YACC@ -d
 
+addDefaultSymbols.cc: $(top_srcdir)/defaults.pic
+	perl $(top_srcdir)/tools/convertScript.pl $< >$@
+
 noinst_LIBRARIES = libdummy.a
 libdummy_a_SOURCES =	polyyacc.y polylex.l polylexyacc.h degree.h \
 			lexfunc.cc			\
@@ -21,3 +24,5 @@ libdummy_a_SOURCES =	polyyacc.y polylex.l polylexyacc.h degree.h \
 
 libdummy.a:: $(libdummy_a_OBJECTS) $(libdummy_a_DEPENDENCIES)
 
+clean-local:
+	rm -f polyyacc.c polyyacc.h polyex.c addDefaultSymbols.cc

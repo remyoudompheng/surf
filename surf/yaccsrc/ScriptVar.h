@@ -549,7 +549,16 @@ extern  int     three_d_file_format_data;
 // Image Format options
 // --------------------
 
-extern int jpeg_quality; 
+extern int jpeg_quality_data;
+
+// -------------------------
+// GTS triangulation options
+// -------------------------
+
+extern int gts_grid_size_data;
+extern int gts_coarsen_data;
+extern double gts_max_cost_data;
+
 }
 
 #endif  //!SCRIPTVAR_H

@@ -514,6 +514,14 @@ int three_d_file_format_data;
 // image format options
 // --------------------
 
-int jpeg_quality = 90;
+int jpeg_quality_data = 90;
  
+// -------------------------
+// GTS triangulation options
+// -------------------------
+
+int gts_grid_size_data = 48;
+int gts_coarsen_data = 1;
+double gts_max_cost_data = 0.5;
+
 }

@@ -1,0 +1,11 @@
+Sections still lacking in the manual:
+
+* Triangulation:
+ 
+  - gts_grid_size, gts_coarsen, gts_max_cost
+
+  - triangulate_surface, three_d_file_format, save_three_d_image
+
+* cut_with_surface
+
+* filename = "|bla" (saving to pipes)
