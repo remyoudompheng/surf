@@ -56,7 +56,7 @@ char usage_text[] =
 "Usage: surf [OPTION]... [FILE]...\n"
 "\n"
 #ifdef HAVE_GETOPT_LONG
-"  -q, --quiet      don't be chatty\n"
+"  -q, --quiet      be quiet\n"
 "  -h, --help       display this help and exit\n"
 "  -V, --version    output version information and exit\n"
 #else
