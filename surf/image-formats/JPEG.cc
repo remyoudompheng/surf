@@ -88,6 +88,8 @@ namespace ImageFormats {
 		bt = gtk_button_new_with_label("Okay");
 		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
 				   bt, true, true, 0);
+		GTK_WIDGET_SET_FLAGS(bt, GTK_CAN_DEFAULT);
+		gtk_widget_grab_default(bt);
 		VOIDCONNECT(bt, "clicked", handle_ok);
 		bt = gtk_button_new_with_label("Abort");
 		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),

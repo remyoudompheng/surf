@@ -81,9 +81,17 @@ public:
 	void clearTags();
 	void clearCurveTags();
 
-	int getWidth() const		{return width;};
-	int getHeight() const		{return height;};
-
+	int getWidth() const { return width; }
+	int getHeight() const { return height; }
+	byte* getRData() const { return r; }
+	byte* getGData() const { return g; }
+	byte* getBData() const { return b; }
+	const byte* getMap() const { return map; }
+	const byte* getRMap() const { return rmap; }
+	const byte* getGMap() const { return gmap; }
+	const byte* getBMap() const { return bmap; }
+	int getNumCols() const { return nmap; }
+	
         RgbBuffer& operator=( const RgbBuffer& );
         RgbBuffer& operator=( byte );
   
@@ -197,12 +205,9 @@ public:
         void    StereoLeft( void );
         void    StereoRight( float,float,float,int,int );
 
-	void write_image(const char* filename, ImageFormats::Format* fmt, bool fromDlg);
-	
-
-protected:
-        void NetscapeColor  ();
-        void OptimizedColor (bool dither, double ditherval);
+public:
+        void NetscapeColor();
+        void OptimizedColor(bool dither, double ditherval);
 
 protected:
         int width;

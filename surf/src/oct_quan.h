@@ -28,6 +28,8 @@
 #ifndef OCT_QUAN_H
 #define OCT_QUAN_H
 
+#include "mytypes.h" // byte typedef
+#include "RgbBuffer.h"
 
 typedef unsigned long DWORD;
 
@@ -198,7 +200,7 @@ class OctQuant
 
   // -----------------------------------------------------------
     
-    bool GetPixel( int, int,RgbBuffer&, OctColor & );   
+    bool GetPixel(int, int, RgbBuffer&, OctColor&);   
 
     void DeleteNode( OctNode * );
     

@@ -30,13 +30,6 @@
 
 #include "bit_buffer.h"
 
-void bit_buffer::write_image(const char* filename, ImageFormats::Format* fmt,
-			     int paper_width, int paper_height, int resolution, bool fromDlg)
-{
-	fmt->saveDitheredImage(filename, *this, paper_width, paper_height, resolution, fromDlg);
-}
-
-
 void bit_buffer::setSize (int w, int h)
 {
 	width         = w;

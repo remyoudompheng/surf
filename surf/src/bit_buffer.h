@@ -68,9 +68,6 @@ public:
 		}
 
 
-	void write_image(const char* filename, ImageFormats::Format* fmt, int paper_width,
-			 int paper_height, int resolution, bool fromDlg);
-
 private:
 	int     width;                      // Width of image
 	int     height;                     // Height of image

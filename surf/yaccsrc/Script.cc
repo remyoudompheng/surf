@@ -422,7 +422,7 @@ void Script::saveColorImage ()
 		return;
 	}
 	
-	buffer->write_image(surface_filename_data, fmt, false);
+	fmt->saveColorImage(surface_filename_data, *buffer, false);
 }
 
 
@@ -509,9 +509,11 @@ void Script::saveDitheredImage()
 		Misc::alert("couldn't determine file format by extension");
 		return;
 	}
-	
-	pixel->write_image(surface_filename_data, fmt, main_width_data, main_height_data,
-			   print_resolution_array_data[print_resolution_data], false);
+
+	fmt->saveDitheredImage(surface_filename_data, *pixel,
+			       main_width_data, main_height_data,
+			       print_resolution_array_data[print_resolution_data],
+			       false);
 }
 
 void Script::ditherSurface()

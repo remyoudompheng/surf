@@ -618,11 +618,6 @@ void    RgbBuffer::StereoRight( float rm,float gm,float bm,int dist,int back )
 }
 
 
-void RgbBuffer::write_image(const char* filename, ImageFormats::Format* fmt, bool fromDlg)
-{
-	fmt->saveColorImage(filename, r, g, b, width, height, fromDlg);
-}
-
 void RgbBuffer::AddCurve (int curve_r, int curve_g, int curve_b)
 {
 	int    r_tmp,Layer1r;

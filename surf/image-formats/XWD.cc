@@ -126,10 +126,13 @@ namespace ImageFormats {
 		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
 				   bt, true, true, 0);
 		VOIDCONNECT(bt, "clicked", handle_ok);
+		GTK_WIDGET_SET_FLAGS(bt, GTK_CAN_DEFAULT);
+		gtk_widget_grab_default(bt);
 		bt = gtk_button_new_with_label("Abort");
 		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
 				   bt, true, true, 0);
 		VOIDCONNECT(bt, "clicked", handle_cancel);
+
 
 		gtk_widget_show_all(dialog);
 	}
