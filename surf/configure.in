@@ -143,24 +143,31 @@ AC_CHECK_LIB(z,  main,,
 	     AC_CHECK_LIB(gz, main,,
                           AC_MSG_ERROR([Sorry: can't find libz/libgz.])))
 
-dnl jpeg library and jpeglib.h:
+dnl jpeg library and jpeglib.h (optional):
 
-RS_CHECK_LIB(jpeg, main)
-RS_CHECK_HEADER(jpeglib.h)
+AC_CHECK_HEADER(jpeglib.h,
+	        AC_CHECK_LIB(jpeg, main))
 
-dnl check for tiff library and header file (FreeBSD 3.0 has tiff34.so
-dnl instead of tiff.so and the header files are in /usr/local/lib/tiff34):
+dnl check for tiff library and header file (optional):
 
-AC_CHECK_LIB(tiff, main,,
-             AC_CHECK_LIB(tiff34, main,,
-                          AC_MSG_ERROR([Sorry: can't find libtiff])))
+tifflibfound="no"
+AC_CHECK_HEADER(tiffio.h,
+	        AC_CHECK_LIB(tiff, main,
+	                     tifflibfound="yes"
+			     AC_DEFINE(HAVE_LIBTIFF)
+			     LIBS="$LIBS -ltiff"))
 
-AC_CHECK_HEADER(tiffio.h,,
-                AC_CHECK_HEADER(tiff34/tiffio.h,
-                AC_DEFINE(TIFF_HEADER_34),
-                AC_MSG_ERROR([Sorry: can't find header file tiffio.h])))
-
-
+if test "$libtifffound" = "no"
+then
+dnl (FreeBSD 3.0 has tiff34.so instead of tiff.so and the header files
+dnl are in /usr/local/lib/tiff34)
+  AC_CHECK_HEADER(tiff34/tiffio.h,
+                  AC_CHECK_LIB(tiff34, main,
+	                       AC_DEFINE(TIFF_HEADER_34)
+		               AC_DEFINE(HAVE_LIBTIFF)
+			       LIBS="$LIBS -ltiff34"))
+fi
+	
 dnl gmp library and header file:
 
 AC_CHECK_LIB(gmp, main,,
