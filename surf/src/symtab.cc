@@ -49,6 +49,7 @@ int     color_output_data                = 1;
 const int     color_output_xwd_data             = 0;
 const int     color_output_sun_data             = 1;
 const int     color_output_ppm_data		= 2;
+const int     color_output_jpeg_data            = 3;
 
 
 

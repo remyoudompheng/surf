@@ -210,6 +210,8 @@ public:
 	
 	void write_as_ppm (FILE *f);
 
+	void write_as_jpeg (FILE* f);
+
 
 	
 

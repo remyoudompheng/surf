@@ -93,6 +93,7 @@ SaveImageDialog::SaveImageDialog ()
 	omb.addOption ("portable pixmap (.ppm)", "ppm");
 	omb.addOption ("sun rasterfile (.ras)" , "sun");
 	omb.addOption ("X window dump (.xwd)"  , "xwd");
+	omb.addOption ("JPEG file (.jpg)", "jpg");
 			
 	GtkWidget *om=omb.getOptionMenu();
 	gtk_box_pack_start (GTK_BOX(colorBox), om, TRUE, TRUE, 0);

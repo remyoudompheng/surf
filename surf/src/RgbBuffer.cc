@@ -54,6 +54,7 @@
 #include "oct_quan.h"
 #include "xwd.h"
 #include "sun.h"
+#include "jpeg.h"
 
 #include "RGBToNetscape.h"
 
@@ -631,6 +632,11 @@ void RgbBuffer::write_as_xwd24 (FILE *f)
 void RgbBuffer::write_as_sun24 (FILE *f)
 {
 	write_sun24_file (r, g, b, width, height, f);
+}
+
+void RgbBuffer::write_as_jpeg (FILE* f)
+{
+	write_jpeg_file (r, g, b, width, height, f);
 }
 
 void RgbBuffer::write_as_xwd8_netscape (FILE *f)

@@ -457,6 +457,8 @@ void Script::saveColorImage ()
 		}
 	} else if (color_output_data == color_output_ppm_data) {
 		buffer->write_as_ppm (fw.openFile());
+	} else if (color_output_data == color_output_jpeg_data) {
+		buffer->write_as_jpeg (fw.openFile());
 	}
 }
 

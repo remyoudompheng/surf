@@ -13,7 +13,7 @@ CURVE_OBJ = curve/RBTree.o curve/resultant.o curve/RootFinder2d.o curve/RootFind
 
 DRAWFUNC_OBJ =  drawfunc/Bezier.o drawfunc/Clip.o drawfunc/DrawfuncData.o drawfunc/DrawFunc.o drawfunc/Hornergroup.o drawfunc/Horner.o drawfunc/MappingMatrix.o drawfunc/MultiVariatePolynom.o drawfunc/Position.o drawfunc/Sturmchain.o drawfunc/UniVariatePolynom.o drawfunc/Vector.o drawfunc/HornergroupXY.o drawfunc/HornergroupXYZ.o drawfunc/RationalHornerXY.o
 
-IMAGE_OBJ =  image-formats/bm2font.o image-formats/eps.o image-formats/ps.o image-formats/sun.o image-formats/tiffprint.o image-formats/xbitmap.o image-formats/xwd.o
+IMAGE_OBJ =  image-formats/bm2font.o image-formats/eps.o image-formats/ps.o image-formats/sun.o image-formats/tiffprint.o image-formats/xbitmap.o image-formats/xwd.o image-formats/jpeg.o
 
 SRC_OBJ = src/RGBToNetscape.o src/compfn.o src/cube.o src/float_buffer.o src/gui_config.o src/init_parser.o src/main.o src/oct_quan.o src/RgbBuffer.o src/roots.o src/bit_buffer.o src/SurfaceDataStruct.o src/CanvasDataStruct.o src/symtab.o src/WindowGeometry.o src/antialiasing_factor.o src/stop.o
 

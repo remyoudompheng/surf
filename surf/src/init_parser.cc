@@ -465,6 +465,7 @@ void    init_surface_main_variables( void )
 	addConstant("xwd", &color_output_xwd_data);
 	addConstant("sun", &color_output_sun_data);
 	addConstant("ppm", &color_output_ppm_data);
+	addConstant("jpg", &color_output_jpeg_data);
 
 	addNumber("color_file_colormap", &colormap_output_data);
 	addConstant("Netscape", &colormap_output_netscape_data);

@@ -49,6 +49,7 @@ extern  int     color_output_data;
 extern  const int     color_output_xwd_data;  // "xwd"
 extern  const int     color_output_sun_data;  // "sun"
 extern  const int     color_output_ppm_data;  // "ppm"
+extern  const int     color_output_jpeg_data; // "jpg"
 
 
 
