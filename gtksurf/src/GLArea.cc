@@ -13,6 +13,7 @@
 
 #include<iostream>
 #include<cstdlib>
+#include<cmath>
 #include<strstream>
 
 GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin)
@@ -80,6 +81,27 @@ inline bool vertex_compare(const GLvertex& a, const GLvertex& b)
 {
 	return a.x == b.x && a.y == b.y && a.z == b.z;
 }
+
+inline GLvertex calc_normal(const GLvertex& p1, const GLvertex& p2, const GLvertex& p3)
+{
+	GLvertex v = { p3.x - p1.x, p3.y - p1.y, p3.z - p1.z };
+	GLvertex w = { p3.x - p2.x, p3.y - p2.y, p3.z - p2.z };
+	GLvertex norm = {
+		v.y*w.z - w.y*v.z,
+		w.x*v.z - v.x*w.z,
+		v.x*w.y - w.x*v.y
+	};
+	double length = norm.x*norm.x + norm.y*norm.y + norm.z*norm.z;
+	if(length > 0.0001) {
+		length = std::sqrt(length);
+		norm.x /= length;
+		norm.y /= length;
+		norm.z /= length;
+	} else {
+		norm.x = norm.y = norm.z = 0;
+	}
+	return norm;
+}
 }
 
 void GLArea::read_triangulated_data(std::ifstream& ifs)
@@ -90,6 +112,8 @@ void GLArea::read_triangulated_data(std::ifstream& ifs)
 
 	size_t nv, ne, nf;
 	iss >> nv >> ne >> nf;
+
+	std::cerr << "nv: " << nv << ", ne: " << ne << ", nf: " << nf << "\n";
 
 	// read vertices:
 	GLvertex* vertices = new GLvertex[nv];
@@ -124,12 +148,12 @@ void GLArea::read_triangulated_data(std::ifstream& ifs)
 	glColor3f(0.2, 0.2, 0.8);
 
 	for(size_t i = 0; i != nf; i++) {
-		GLedge& a = edges[faces[i].a];
-		GLedge& b = edges[faces[i].b];
-		GLvertex& p1 = vertices[a.from];
-		GLvertex& p2 = vertices[a.to];
-		GLvertex& p3a = vertices[b.from];
-		GLvertex& p3b = vertices[b.to];
+		GLedge& a = edges[faces[i - 1].a - 1];
+		GLedge& b = edges[faces[i - 1].b - 1];
+		GLvertex& p1 = vertices[a.from - 1];
+		GLvertex& p2 = vertices[a.to - 1];
+		GLvertex& p3a = vertices[b.from - 1];
+		GLvertex& p3b = vertices[b.to - 1];
 		GLvertex p3;
 		if(vertex_compare(p3a, p1) || vertex_compare(p3a, p2)) {
 			p3 = p3b;
@@ -137,7 +161,8 @@ void GLArea::read_triangulated_data(std::ifstream& ifs)
 			p3 = p3a;
 		}
 
-		glNormal3f(1.0, 0.0, 0.0);
+		GLvertex norm = calc_normal(p1, p2, p3);
+		glNormal3f(norm.x, norm.y, norm.z);
 		glVertex3f(p1.x, p1.y, p1.z);
 		glVertex3f(p2.x, p2.y, p2.z);
 		glVertex3f(p3.x, p3.y, p3.z);
@@ -154,6 +179,32 @@ void GLArea::read_triangulated_data(std::ifstream& ifs)
 
 void GLArea::init(GLsizei width, GLsizei height)
 {
+	// define material:
+	static GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
+	static GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+	static GLfloat shininess = 50.0;
+	
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+
+	// define 1st light source:
+	static GLfloat light0_pos[] = { -20.0, 10.0, 10.0, 1.0};
+	glLightfv(GL_LIGHT0, GL_POSITION, light0_pos);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+	glEnable(GL_LIGHT0);
+
+	// define 2nd light source:
+	static GLfloat light1_pos[] = { -10.0, -10.0, -15.0, 1.0};
+	glLightfv(GL_LIGHT1, GL_POSITION, light1_pos);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, white);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+	glEnable(GL_LIGHT1);
+	
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
@@ -190,7 +241,6 @@ void GLArea::display()
 	
 
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 
 	glTranslatef(origx, origy, origz);
 
