@@ -26,7 +26,7 @@
 
 NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* _scriptwin)
 	: glade(_glade), kernel(_kernel), scriptwin(_scriptwin),
-	  glarea(glade, kernel, this),
+	  glarea(glade, kernel, this, scriptwin),
 	  origx(0.0), origy(0.0), origz(0.0),
 	  scalex(1.0), scaley(1.0), scalez(1.0), keep_scaleratio(true),
 	  rotx(0.0), roty(0.0), rotz(0.0), updatingRot(false)
@@ -218,5 +218,11 @@ void NavigationWindow::on_reset_clicked()
 	glarea.set_rot(x, y, z); // because of the updatingRot stuff
 
 	kernel.get_scale(x, y, z);
+	GtkToggleButton* w = reinterpret_cast<GtkToggleButton*>(glade.get_widget("togglebutton_scaleratio"));
+	if(x == y && y == z) {
+		gtk_toggle_button_set_active(w, true);
+	} else {
+		gtk_toggle_button_set_active(w, false);
+	}
 	set_scale(x, y, z);
 }

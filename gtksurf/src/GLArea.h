@@ -38,10 +38,11 @@
         }
 
 class NavigationWindow;
+class ScriptWindow;
 
 class GLArea : public GladeWindow {
 public:
-	GLArea(Glade& glade, Kernel& kern, NavigationWindow* navwin);
+	GLArea(Glade& glade, Kernel& kern, NavigationWindow* navwin, ScriptWindow* sw);
 	virtual ~GLArea();
 
 	GtkWidget* getWidget() {
@@ -91,6 +92,7 @@ private:
 	Glade& glade;
 	Kernel& kernel;
 	NavigationWindow* navigationwin;
+	ScriptWindow* scriptwin;
 
 	GLfloat pi;
 	

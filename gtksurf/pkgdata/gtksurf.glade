@@ -1717,7 +1717,7 @@
       <last_modification_time>Tue, 13 Mar 2001 09:22:28 GMT</last_modification_time>
     </signal>
     <label>Central Perspective</label>
-    <active>False</active>
+    <active>True</active>
     <always_show_toggle>False</always_show_toggle>
     <group>perspective</group>
   </widget>
@@ -1731,7 +1731,7 @@
       <last_modification_time>Tue, 13 Mar 2001 09:22:28 GMT</last_modification_time>
     </signal>
     <label>Parallel Perspective</label>
-    <active>True</active>
+    <active>False</active>
     <always_show_toggle>False</always_show_toggle>
     <group>perspective</group>
   </widget>

@@ -10,6 +10,7 @@
 
 #include <GLArea.h>
 #include <NavigationWindow.h>
+#include <ScriptWindow.h>
 #include <Misc.h>
 
 #include<iostream>
@@ -17,8 +18,9 @@
 #include<cmath>
 #include<strstream>
 
-GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin)
-	: glade(_glade), kernel(_kernel), navigationwin(navwin),
+GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin,
+	       ScriptWindow* sw)
+	: glade(_glade), kernel(_kernel), navigationwin(navwin), scriptwin(sw),
 	  pi(std::acos(-1.0)),
 	  dragging(false),
 	  rotMat(4), deltaRotMat(4), rotating(false),
@@ -81,7 +83,8 @@ GLArea::~GLArea()
 
 void GLArea::read_data()
 {
-	kernel.disconnect_handler();
+	scriptwin->progress_mode(true);
+	scriptwin->set_progress(0);
 	
 	std::string line = kernel.receive_line();
 	std::istrstream iss(line.c_str());
@@ -90,6 +93,8 @@ void GLArea::read_data()
 	iss >> nv >> nf;
 
 	std::cerr << "nv: " << nv << ", nf: " << nf << "\n";
+
+	size_t total = nv + nf;
 
 	if(nv == 0 || nf == 0) {
 		Misc::print_warning("There were no vertices/no faces at all!\n");
@@ -105,6 +110,9 @@ void GLArea::read_data()
 		vertices[i].nx = kernel.receive_float();
 		vertices[i].ny = kernel.receive_float();
 		vertices[i].nz = kernel.receive_float();
+		kernel.receive_line(); // eat up '\n'
+
+		scriptwin->set_progress(i/gfloat(total));
 	}
 
 	// read faces:
@@ -113,10 +121,18 @@ void GLArea::read_data()
 		faces[i].p1 = kernel.receive_int();
 		faces[i].p2 = kernel.receive_int();
 		faces[i].p3 = kernel.receive_int();
+		kernel.receive_line(); // eat up '\n'
+
+		scriptwin->set_progress((nv + i)/gfloat(total));
 	}
 
-	kernel.connect_handler();
+	if(kernel.receive_line() != "end") {
+		Misc::print_warning("Transmission from kernel didn't end properly\n");
+	}
 	
+	scriptwin->set_status("");
+	scriptwin->progress_mode(false);
+
 	// build OpenGL display list:
 	if(display_list != 0) {
 		glDeleteLists(display_list, 1);
@@ -232,7 +248,7 @@ void GLArea::display()
 	}
 	glMultMatrixf(rotMat.getArray());
 
-	glScalef(scalex, scaley, scalez);
+	glScalef(1/scalex, 1/scaley, 1/scalez);
 
 	if(wireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

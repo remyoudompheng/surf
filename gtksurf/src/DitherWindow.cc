@@ -84,8 +84,6 @@ void DitherWindow::read_data()
 		gdk_bitmap_unref(bitmap);
 	}
 
-	kernel.disconnect_handler();
-	
 	if(kernel.receive_line() != "P4") {
 		scriptwin->set_status("Wrong image format!\n");
 		return;
@@ -105,8 +103,6 @@ void DitherWindow::read_data()
 		Misc::print_warning("Transmission from kernel didn't end properly\n");
 	}
 
-	kernel.connect_handler();
-	
 	bitmap = gdk_bitmap_create_from_data(drawingarea->window,
 					     reinterpret_cast<gchar*>(data),
 					     width, height);

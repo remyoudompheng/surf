@@ -151,7 +151,10 @@ void Kernel::stop()
 
 void Kernel::process_output()
 {
+	disconnect_handler();
+	
 	std::string s = receive_line();
+
 	if(s == "draw_surface") {
 		imagewin->set_mode(ImageWindow::SURFACE);
 		scriptwin->set_status("Rendering surface...");
@@ -174,7 +177,6 @@ void Kernel::process_output()
 	} else if(s == "triangulate_surface") {
 		scriptwin->set_status("Triangulating surface...");
 		glarea->read_data();
-		scriptwin->set_status("");
 	} else if(s == "not_implemented") {
 		scriptwin->set_status("Feature not implemented in kernel!");
 	} else if(s == "error") {
@@ -191,6 +193,11 @@ void Kernel::process_output()
 		gdk_beep();
 	} else {
 		std::string w = "Unrecognized line from kernel: ";
+		if(s.length() == 0) {
+			s.assign("<empty line>");
+		}
 		Misc::print_warning(w + s);
 	}
+
+	connect_handler();
 }

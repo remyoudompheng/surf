@@ -91,9 +91,7 @@ void ImageWindow::read_data()
 		gdk_pixbuf_unref(pixbuf);
 	}
 
-	kernel.disconnect_handler();
-	
-	scriptwin->progress_mode(false);
+	scriptwin->progress_mode(true);
 	scriptwin->set_progress(0);
 	
 	if(kernel.receive_line() != "P6") {
@@ -127,8 +125,6 @@ void ImageWindow::read_data()
 		Misc::print_warning("Transmission from kernel didn't end properly\n");
 	}
 		
-	kernel.connect_handler();
-	
 	scriptwin->set_status("");
 	scriptwin->progress_mode(false);
 
