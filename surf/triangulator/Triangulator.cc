@@ -42,11 +42,6 @@
 #include<iostream>
 #include<cmath>
 
-Triangulator::Triangulator()
-	: surface(0)
-{
-}
-
 Triangulator::~Triangulator()
 {
 	if(surface != 0) {
@@ -201,83 +196,6 @@ void Triangulator::deinitNormals()
 	delete hdz;
 }
 
-void Triangulator::write_data()
-{
-	std::cout << "triangulate_surface\n";
-	std::cout.flush();
-
-	// transparence and surface & inside colors:
-	std::cout << 1.0 - ScriptVar::light_settings[0].transparence/100.0 << '\n'
-		  << ScriptVar::color_slider[0].red/255.0 << ' '
-		  << ScriptVar::color_slider[0].green/255.0 << ' '
-		  << ScriptVar::color_slider[0].blue/255.0 << '\n'
-		  << ScriptVar::color_slider[0].inside_red/255.0 << ' '
-		  << ScriptVar::color_slider[0].inside_green/255.0 << ' '
-		  << ScriptVar::color_slider[0].inside_blue/255.0 << '\n';
-		  
-
-	// light sources:
-	size_t num = 0;
-	for(int i = 0; i != LIGHT_SOURCE_MAX_VALUE; i++) {
-		if(ScriptVar::light_data[i].volume == 0) {
-			continue;
-		}
-		num++;
-	}
-	std::cout << num << '\n';
-	for(int i = 0; i != LIGHT_SOURCE_MAX_VALUE; i++) {
-		light_data_t& l = ScriptVar::light_data[i];
-		int vol = l.volume;
-		if(vol == 0) {
-			continue;
-		}
-		std::cout << l.getColorValue(0) << ' '
-			  << l.getColorValue(1) << ' '
-			  << l.getColorValue(2) << ' '
-			  << l.position[0] << ' '
-			  << l.position[1] << ' '
-			  << l.position[2] << '\n';
-	}
-
-	initNormals();
-
-	vertex_count = 0;
-
-	std::cout << gts_surface_vertex_number(surface) << ' '
-		  << gts_surface_face_number(surface) << '\n';
-	gts_surface_foreach_vertex(surface, _vertex_func, this);
-	gts_surface_foreach_face(surface, _face_func, this);
-
-	vertex_map.erase(vertex_map.begin(), vertex_map.end());
-
-	std::cout << "end\n";
-	std::cout.flush();
-}
-
-void Triangulator::vertex_func(GtsVertex* v)
-{
-	vertex_count++;
-	vertex_map[v] = vertex_count;
-	
-	Point p = { v->p.x, v->p.y, v->p.z };
-	Point n = getNormal(p);
-
-	std::cout << p.x << ' ' << p.y << ' ' << p.z << ' '
-		  << n.x << ' ' << n.y << ' ' << n.z << '\n';
-
-}
-
-void Triangulator::face_func(GtsFace* f)
-{
-	GtsVertex* v1;
-	GtsVertex* v2;
-	GtsVertex* v3;
-	gts_triangle_vertices(&f->triangle, &v1, &v2, &v3);
-	std::cout << vertex_map[v1] << ' '
-		  << vertex_map[v2] << ' '
-		  << vertex_map[v3] << '\n';
-}
-
 void Triangulator::iso_func(gdouble** f, GtsCartesianGrid g, guint k)
 {
 	gdouble z = g.z;
@@ -326,7 +244,5 @@ Triangulator::Point Triangulator::getNormal(const Point& p)
 
 	return n;
 }
-
-
 
 #endif // HAVE_GTS

@@ -36,15 +36,13 @@
 
 #include <gts.h>
 
-#include<map>
-
 class Triangulator {
 private:
 	Triangulator(const Triangulator&);
 	void operator=(const Triangulator&);
 	
 public:
-	Triangulator();
+	Triangulator() : surface(0) {}
 	virtual ~Triangulator();
 
 	void triangulate();
@@ -65,29 +63,16 @@ public:
 		Point p = { v->p.x, v->p.y, v->p.z };
 		return getNormal(p);
 	}
-
 	void deinitNormals();
 
 private:
-	void write_data();
 	void clip();
 	
-	void vertex_func(GtsVertex* v);
-	static gint _vertex_func(gpointer v, gpointer This) {
-		reinterpret_cast<Triangulator*>(This)->vertex_func(static_cast<GtsVertex*>(v));
-		return 0;
-	}
-	guint vertex_count;
-	std::map<GtsVertex*, guint> vertex_map;
-	void face_func(GtsFace* f);
-	static gint _face_func(gpointer f, gpointer This) {
-		reinterpret_cast<Triangulator*>(This)->face_func(static_cast<GtsFace*>(f));
-		return 0;
-	}
 	void iso_func(gdouble** f, GtsCartesianGrid g, guint k);
 	static void _iso_func(gdouble** f, GtsCartesianGrid g, guint k, gpointer This) {
 		reinterpret_cast<Triangulator*>(This)->iso_func(f, g, k);
 	}
+	
 	hornerpolyxyz* hf;
 	hornerpolyxyz* hdx;
 	hornerpolyxyz* hdy;
