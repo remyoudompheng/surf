@@ -225,4 +225,8 @@ void NavigationWindow::on_reset_clicked()
 		gtk_toggle_button_set_active(w, false);
 	}
 	set_scale(x, y, z);
+
+	Kernel::Sequence a, b, c;
+	kernel.get_sequence(a, b, c);
+	glarea.set_sequence(a, b, c);
 }

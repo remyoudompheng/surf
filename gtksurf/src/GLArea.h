@@ -52,6 +52,12 @@ public:
 	void set_orig(gfloat x, gfloat y, gfloat z);
 	void set_scale(gfloat x, gfloat y, gfloat z);
 	void set_rot(gfloat x, gfloat y, gfloat z);
+	void set_sequence(Kernel::Sequence f, Kernel::Sequence s, Kernel::Sequence t) {
+		sequence[0] = f;
+		sequence[1] = s;
+		sequence[2] = t;
+		display();
+	}
 
 	void show() {
 		shown = true;
@@ -114,6 +120,7 @@ private:
 
 	GLfloat origx, origy, origz;
 	GLfloat scalex, scaley, scalez;
+	Kernel::Sequence sequence[3];
 
 	bool shown;
 

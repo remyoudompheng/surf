@@ -12,6 +12,7 @@ gtksurf_SOURCES = main.cc \
                   gdk_draw_bitmap.h gdk_draw_bitmap.cc \
 		  NavigationWindow.h NavigationWindow.cc \
 		  GLArea.h GLArea.cc \
+                  OOGL.h OOGL.cc \
 		  About.h About.cc \
                   Matrix.h Vec3.h GLtypes.h\
                   Misc.h Misc.cc

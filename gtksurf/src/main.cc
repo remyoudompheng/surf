@@ -85,12 +85,9 @@ int main(int argc, char* argv[])
 
 		switch(c) {
 		case 'k':
-			std::cout << "Using " << optarg << " as kernel.\n";
 			kernel_path.assign(optarg);
 			break;
 		case 'g':
-			std::cout << "Using " << optarg
-				  << " as GUI description file.\n";
 			gladefile.assign(optarg);
 			break;
 		case 'h':

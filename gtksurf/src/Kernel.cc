@@ -137,7 +137,7 @@ void Kernel::update_position()
 
 	send("print_position;\n");
 
-	for(int i = 0; i != 3; i++) {
+	for(int i = 0; i != 4; i++) {
 		std::string line;
 		line = receive_line();
 		std::istrstream is(line.c_str());
@@ -159,6 +159,8 @@ void Kernel::update_position()
 					sequence[i] = scale;
 				} else if(s == "translate") {
 					sequence[i] = translate;
+				} else {
+					Misc::print_warning("Unkown sequence command!");
 				}
 			}
 		} else {
