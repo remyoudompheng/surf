@@ -56,9 +56,9 @@ int main(int argc, char** argv)
 	yydebug = 1;
 #endif
 
-	cout << welcomeMessage;
-
 	options = new Options(argc, argv);
+
+	std::cout << welcomeMessage;
 
 	init_all();
 

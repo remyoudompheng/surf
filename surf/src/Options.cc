@@ -24,26 +24,44 @@
 
 #include "Options.h"
 #include<iostream>
-#include <string.h>
 
 #ifndef NO_GUI
+
+#include <unistd.h>
+
+#ifdef HAVE_GETOPT_LONG
+# define _GNU_SOURCE_H
+# include <getopt.h>
+#endif
 
 #include <gtk/gtk.h>
 
 namespace {
+#ifdef HAVE_GETOPT_LONG
 char usage_text[] = "Usage: surf -n | --no-gui FILE...\n"
-                    "       surf [GTK-OPTIONS] [-x | --exec] [--progress-dialog]\n"
-                    "            [--auto-resize] [FILE]...\n"
-                    "       surf --help\n"
+                    "       surf [GTK-OPTIONS] [-x | --exec] [-p | --progress-dialog]\n"
+                    "            [-a | --auto-resize] [FILE]...\n"
+                    "       surf -h | --help\n"
                     "\n"
 		    "-n, --no-gui           disable GUI, execute all scripts passed as FILEs\n"
 		    "-x, --exec             when running with GUI, execute first script immediately\n"
-                    "    --progress-dialog  pop up a dialog instead of using a status bar\n"
-                    "    --auto-resize      resize image windows automatically to image size\n"
-                    "    --help             display this help and exit\n\n";
+                    "-p, --progress-dialog  pop up a dialog instead of using a status bar\n"
+                    "-a, --auto-resize      resize image windows automatically to image size\n"
+                    "-h, --help             display this help and exit\n\n";
+#else
+char usage_text[] = "Usage: surf -n FILE...\n"
+                    "       surf [GTK-OPTIONS] -xpa [FILE]...\n"
+                    "       surf -h\n"
+                    "\n"
+		    "-n  disable GUI, execute all scripts passed as FILEs\n"
+		    "-x  when running with GUI, execute first script immediately\n"
+                    "-p  pop up a dialog instead of using a status bar\n"
+                    "-a  resize image windows automatically to image size\n"
+                    "-h  display this help and exit\n\n";
+#endif
 };
 
-#endif
+#endif // !NO_GUI
 
 Options::Options(int _argc, char* _argv[])
 	: argc(_argc), argv(_argv),
@@ -55,42 +73,59 @@ Options::Options(int _argc, char* _argv[])
 		no_gui = true;
 		fileopts = 2;
 	}
+
 #ifndef NO_GUI
+
           else {
 		gtk_init(&argc, &argv);
-		
-		int i;
-		for(i = 1; i < argc; ++i) {
-			if(argv[i][0] != '-') {
+		int c;
+
+#ifdef HAVE_GETOPT_LONG
+
+		option longopts[] = {
+                        { "help", no_argument, 0, 'h' },
+			{ "exec", no_argument, 0, 'x' },
+                        { "progress-dialog", no_argument, 0, 'p' },
+                        { "auto-resize", no_argument, 0, 'a' },
+			{ "no-gui", no_argument, 0, 'n' }
+		};
+		while((c = getopt_long(argc, argv, "hxpan", longopts, 0)) != -1) {
+
+#else
+
+		while((c = getopt(argc, argv, "hxpan")) != -1) {
+
+#endif // HAVE_GETOPT_LONG
+
+			switch(c) {
+			case 'h':
+				std::cerr << usage_text;
+				exit(0);
+				break;
+			case 'x':
+				execute = true;
+				break;
+			case 'p':
+				progress_dialog = true;
+				break;
+			case 'a':
+				auto_resize = true;
+				break;
+			case 'n':
+#ifdef HAVE_GETOPT_LONG
+				std::cerr << "Error: -n|--no-gui must be the only option\n\n"
+					  << usage_text;
+#else
+				std::cerr << "Error: -n must be the only option\n\n"
+					  << usage_text;
+#endif
+				exit(1);
 				break;
 			}
-			
-			++fileopts;
-			
-			if(strcmp(argv[i], "-x") == 0 ||
-			    strcmp(argv[i], "--exec") == 0) {
-				execute = true;
-			} else if(strcmp(argv[i], "--help") == 0) {
-				cerr << usage_text;
-				exit(0);
-			} else if(strcmp(argv[i], "--progress-dialog") == 0) {
-				progress_dialog = true;
-			} else if(strcmp(argv[i], "--auto-resize") == 0) {
-				auto_resize = true;
-			} else if(strcmp(argv[i], "-n") == 0 ||
-				  strcmp(argv[i], "--no-gui") == 0) {
-				cerr << "Error: \'" << argv[i] << "\' must be the only option\n\n"
-					  << usage_text;
-				exit(1);
-			} else {
-				cerr << "Error: unknown option \'" << argv[i] << "\'\n\n"
-					  << usage_text;
-				exit(1);
-			}
 		}
-		fileopts = i;
+		fileopts = optind;
 	}
 #else
         no_gui = true;
-#endif
+#endif // !NO_GUI
 }
