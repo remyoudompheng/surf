@@ -108,73 +108,12 @@ CPPFLAGS="$CPPFLAGS $GTK_CFLAGS"
 LDFLAGS="$LDFLAGS $GTK_LDFLAGS"
 LIBS="$LIBS $GTK_LIBS"
 
-dnl check for libgdk-pixbuf
-dnl =======================
+dnl checks for libgdk-pixbuf, libglade, gtkgl
+dnl =========================================
 
 AM_PATH_GDK_PIXBUF
-
-dnl check for libglade
-dnl ==================
-
-AC_ARG_WITH(glade-prefix,[  --with-glade-prefix=PFX Prefix where libglade is installed],
-            glade_prefix="$withval", glade_prefix="")
-
-
-if test x"$glade_prefix" != x ; then
-	LDFLAGS="-L$glade_prefix/lib $LDFLAGS"
-	CPPFLAGS="-I$glade_prefix/include $CPPFLAGS"
-fi
-
-RS_CHECK_HEADER(glade/glade.h)
-RS_CHECK_LIB(glade, main)
-
-
-dnl OpenGL/Mesa:
-dnl ============
-
-AC_ARG_WITH(gl-prefix,
-  [  --with-gl-prefix=PFX    Prefix where OpenGL/Mesa is installed],
-  gl_prefix="$withval", gl_prefix="")
-
-dnl libGL/libMesaGL:
-
-if test "x$gl_prefix" != "x" ; then
-  CPPFLAGS="$CPPFLAGS -I$gl_prefix/include"
-  LDOPTS="$LDOPTS -L$gl_prefix/lib"
-fi
-
-AC_CHECK_LIB(GL, glBegin,,
-  AC_CHECK_LIB(MesaGL, glBegin,,
-    AC_MSG_ERROR([You need OpenGL/Mesa (libGL or libMesaGL)!])))
-
-dnl libGLU/libMesaGLU:
-
-AC_CHECK_LIB(GLU, gluLookAt,,
-  AC_CHECK_LIB(MesaGLU, gluLookAt,,
-    AC_MSG_ERROR([You need GLU (libGLU or libMesaGLU)!])))
-
-
-AC_CHECK_HEADERS(GL/gl.h GL/glu.h,,
-	         AC_MSG_ERROR([You need the OpenGL header files gl.h & glu.h!]))
-
-
-dnl GtkGlArea widget.
-dnl =================
-
-AC_ARG_WITH(gtkgl-prefix,
-  [  --with-gtkgl-prefix=PFX Prefix where GtkGLArea is installed],
-  gtkgl_prefix="$withval", gtkgl_prefix="")
-
-if test "x$gtkgl_prefix" != "x" ; then
-  CPPFLAGS="$CPPFLAGS -I$gtkgl_prefix/include" 
-  LDOPTS="$LDOPTS -L$gtkgl_prefix/lib" 
-fi
-
-AC_CHECK_LIB(gtkgl, gtk_gl_area_make_current,,
-  AC_MSG_ERROR([You need GtkGLArea (libgtkgl)!]))
-
-AC_CHECK_HEADERS(gtkgl/gtkglarea.h,,
-	         AC_MSG_ERROR([You need the GtkGLArea header file (gtkgl/gtkglarea.h)!]))
+AM_PATH_LIBGLADE
+AM_PATH_GTKGL
 
 
 AM_MISSING_PROG(HELP2MAN, help2man, $missing_dir)
