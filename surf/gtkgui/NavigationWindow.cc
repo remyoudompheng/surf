@@ -33,40 +33,46 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 	: mwc(winctrl), shown(false),
 	  rotationUpdating(false), scaleUpdating(false), originUpdating(false)
 {
-	GtkWidget* notebook;
-	GtkWidget* vbox;
-	GtkWidget* widget;
-	GtkWidget* table;
-	GtkWidget* frame;
-	GtkWidget* hbox;
-	
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);	
 	gtk_signal_connect(GTK_OBJECT (window), "delete_event",
 			   GTK_SIGNAL_FUNC (handle_delete), this);
 	gtk_window_set_title(GTK_WINDOW (window), PACKAGE " Navigation Window");
 	gtk_container_border_width(GTK_CONTAINER (window), 5);
 	gtk_widget_set_usize(window, 320, 0);
-	
-	notebook = gtk_notebook_new();
-	gtk_container_add(GTK_CONTAINER(window), notebook);
 
+
+	GtkWidget* mainbox;
+	mainbox = gtk_vbox_new(false, 5);
+	gtk_container_add(GTK_CONTAINER(window), mainbox);
+
+	GtkWidget* notebook;
+	notebook = gtk_notebook_new();
+	//gtk_container_add(GTK_CONTAINER(window), notebook);
+	gtk_box_pack_start(GTK_BOX(mainbox), notebook, false, false, 0);
+
+
+	// Notebook:
+	// ---------
 
 	// "Rotation" tab:
-	// ---------------
 
+	GtkWidget* vbox;
 	vbox = gtk_vbox_new(false, 5);
 	gtk_container_border_width(GTK_CONTAINER(vbox), 4);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox,
 				 gtk_label_new("Rotation"));
 
+	GtkWidget* frame;
 	frame = gtk_frame_new("relative:");
 	gtk_box_pack_start(GTK_BOX(vbox), frame, false, false, 0);
 	gtk_container_border_width(GTK_CONTAINER(frame), 4);
 
+	GtkWidget* table;
 	table = gtk_table_new(3, 3, false);
 	gtk_container_add(GTK_CONTAINER(frame), table);
 	gtk_container_border_width(GTK_CONTAINER(table), 4);
 
+	GtkWidget* widget;
 	widget = gtk_label_new("X:");
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_NONE, GTK_NONE, 0, 0);
 	widget = gtk_button_new_with_label("-");
@@ -98,6 +104,7 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 	gtk_box_pack_start(GTK_BOX(vbox), frame, false, false, 0);
 	gtk_container_border_width(GTK_CONTAINER(frame), 4);
 
+	GtkWidget* hbox;
 	hbox = gtk_hbox_new(false, 5);
 	gtk_container_add(GTK_CONTAINER(frame), hbox);
 	gtk_container_border_width(GTK_CONTAINER(hbox), 4);
@@ -126,15 +133,8 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 	gtk_box_pack_start(GTK_BOX(hbox), widget, true, true, 0);
 	wrw.addWidget(widget, "rot_z");
 
-	hbox = gtk_hbox_new(false, 5);
-	gtk_box_pack_end(GTK_BOX(vbox), hbox, false, false, 0);
-	widget = gtk_button_new_with_label("reset");
-	VOIDCONNECT(widget, "clicked", rotationReset);
-	gtk_box_pack_end(GTK_BOX(hbox), widget, false, false, 0);
-	
-	
+
 	// "Scale" tab
-	// -----------
 
 	vbox = gtk_vbox_new(false, 5);
 	gtk_container_border_width(GTK_CONTAINER(vbox), 4);
@@ -172,15 +172,8 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(maintAspectRatio), true);
 	gtk_box_pack_start(GTK_BOX(vbox), maintAspectRatio, false, false, 0);
 
-	hbox = gtk_hbox_new(false, 5);
-	gtk_box_pack_end(GTK_BOX(vbox), hbox, false, false, 0);
-	widget = gtk_button_new_with_label("reset");
-	VOIDCONNECT(widget, "clicked", scaleReset);
-	gtk_box_pack_end(GTK_BOX(hbox), widget, false, false, 0);
-
 
 	// "Origin" tab
-	// ------------
 
 	vbox = gtk_vbox_new(false, 5);
 	gtk_container_border_width(GTK_CONTAINER(vbox), 4);
@@ -214,31 +207,19 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 	gtk_table_attach_defaults(GTK_TABLE(table), widget, 1, 2, 2, 3);
 	wrw.addWidget(widget, "origin_z");
 
+	// get script values button:
+	// -------------------------
+
 	hbox = gtk_hbox_new(false, 5);
-	gtk_box_pack_end(GTK_BOX(vbox), hbox, false, false, 0);
-	widget = gtk_button_new_with_label("reset");
-	VOIDCONNECT(widget, "clicked", originReset);
+	gtk_box_pack_start(GTK_BOX(mainbox), hbox, false, false, 0);
+	widget = gtk_button_new_with_label("get script values");
 	gtk_box_pack_end(GTK_BOX(hbox), widget, false, false, 0);
+	VOIDCONNECT(widget, "clicked", getScriptValues);
 }
 
 
 void NavigationWindow::show()
 {
-	rotX = ScriptVar::position_numeric.rot_x;
-	rotY = ScriptVar::position_numeric.rot_y;
-	rotZ = ScriptVar::position_numeric.rot_z;
-	updateAngles();
-
-	scaleX = ScriptVar::position_numeric.scale_x;
-	scaleY = ScriptVar::position_numeric.scale_y;
-	scaleY = ScriptVar::position_numeric.scale_z;
-	updateScales();
-
-	origX = ScriptVar::position_numeric.orig_x;
-	origY = ScriptVar::position_numeric.orig_y;
-	origY =	ScriptVar::position_numeric.orig_z;
-	updateOrigin();
-
 	gtk_widget_show_all(window);
 	gdk_window_raise(window->window);
 	shown = true;
@@ -338,15 +319,6 @@ void NavigationWindow::rotateZ(double rad)
 	rotate(mat);
 }
 
-void NavigationWindow::rotationReset()
-{
-	rotX = ScriptVar::position_numeric.rot_x;
-	rotY = ScriptVar::position_numeric.rot_y;
-	rotZ = ScriptVar::position_numeric.rot_z;
-	updateAngles();
-	mwc->drawSurfaceWithParams();
-}
-
 inline const Matrix33 NavigationWindow::getRotMat()
 {
 	double cosx = std::cos(rotX);
@@ -421,15 +393,15 @@ void NavigationWindow::xScale()
 	double value = ((GtkAdjustment*)xScaleAdj)->value;
 	
 	if(GTK_TOGGLE_BUTTON(maintAspectRatio)->active) {
-		double ratioyx = ScriptVar::position_numeric.scale_y / ScriptVar::position_numeric.scale_x;
-		double ratiozx = ScriptVar::position_numeric.scale_z / ScriptVar::position_numeric.scale_x;
+		double ratioyx = scaleY / scaleX;
+		double ratiozx = scaleZ / scaleX;
 		
-		ScriptVar::position_numeric.scale_y = ratioyx * value;
-		ScriptVar::position_numeric.scale_z = ratiozx * value;
-		ScriptVar::position_numeric.scale_x = value;
+		scaleY = ratioyx * value;
+		scaleZ = ratiozx * value;
+		scaleX = value;
 		updateScales();
 	} else {
-		ScriptVar::position_numeric.scale_x = value;
+		scaleX = value;
 	}
 	mwc->drawSurfaceWithParams();
 }
@@ -443,15 +415,15 @@ void NavigationWindow::yScale()
 	double value = ((GtkAdjustment*)yScaleAdj)->value;
 	
 	if(GTK_TOGGLE_BUTTON(maintAspectRatio)->active) {
-		double ratioxy = ScriptVar::position_numeric.scale_x / ScriptVar::position_numeric.scale_y;
-		double ratiozy = ScriptVar::position_numeric.scale_z / ScriptVar::position_numeric.scale_y;
+		double ratioxy = scaleX / scaleY;
+		double ratiozy = scaleZ / scaleY;
 		
-		ScriptVar::position_numeric.scale_x = ratioxy * value;
-		ScriptVar::position_numeric.scale_z = ratiozy * value;
-		ScriptVar::position_numeric.scale_y = value;
+		scaleX = ratioxy * value;
+		scaleZ = ratiozy * value;
+		scaleY = value;
 		updateScales();
 	} else {
-		ScriptVar::position_numeric.scale_y = value;
+		scaleY = value;
 	}
 	mwc->drawSurfaceWithParams();
 }
@@ -465,34 +437,25 @@ void NavigationWindow::zScale()
 	double value = ((GtkAdjustment*)zScaleAdj)->value;
 	
 	if(GTK_TOGGLE_BUTTON(maintAspectRatio)->active) {
-		double ratioxz = ScriptVar::position_numeric.scale_x / ScriptVar::position_numeric.scale_z;
-		double ratioyz = ScriptVar::position_numeric.scale_y / ScriptVar::position_numeric.scale_z;
+		double ratioxz = scaleX / scaleZ;
+		double ratioyz = scaleY / scaleZ;
 		
-		ScriptVar::position_numeric.scale_x = ratioxz * value;
-		ScriptVar::position_numeric.scale_y = ratioyz * value;
-		ScriptVar::position_numeric.scale_z = value;
+		scaleX = ratioxz * value;
+		scaleY = ratioyz * value;
+		scaleZ = value;
 		updateScales();
 	} else {
-		ScriptVar::position_numeric.scale_z = value;
+		scaleZ = value;
 	}
-	mwc->drawSurfaceWithParams();
-}
-
-void NavigationWindow::scaleReset()
-{
-	scaleX = ScriptVar::position_numeric.scale_x;
-	scaleY = ScriptVar::position_numeric.scale_y;
-	scaleY = ScriptVar::position_numeric.scale_z;
-	updateScales();
 	mwc->drawSurfaceWithParams();
 }
 
 void NavigationWindow::updateScales()
 {
 	scaleUpdating = true;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(xScaleAdj), ScriptVar::position_numeric.scale_x);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(yScaleAdj), ScriptVar::position_numeric.scale_y);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(zScaleAdj), ScriptVar::position_numeric.scale_z);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(xScaleAdj), scaleX);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(yScaleAdj), scaleY);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(zScaleAdj), scaleZ);
 	scaleUpdating = false;
 }
 
@@ -501,7 +464,7 @@ void NavigationWindow::xOrigin()
 	if(!shown || originUpdating) {
 		return;
 	}
-	ScriptVar::position_numeric.orig_x = ((GtkAdjustment*)xOriginAdj)->value;
+	origX = ((GtkAdjustment*)xOriginAdj)->value;
 	mwc->drawSurfaceWithParams();
 }
 
@@ -510,7 +473,7 @@ void NavigationWindow::yOrigin()
 	if(!shown || originUpdating) {
 		return;
 	}
-	ScriptVar::position_numeric.orig_y = ((GtkAdjustment*)yOriginAdj)->value;
+	origY = ((GtkAdjustment*)yOriginAdj)->value;
 	mwc->drawSurfaceWithParams();
 }
 
@@ -519,12 +482,29 @@ void NavigationWindow::zOrigin()
 	if(!shown || originUpdating) {
 		return;
 	}
-	ScriptVar::position_numeric.orig_z = ((GtkAdjustment*)zOriginAdj)->value;
+	origZ = ((GtkAdjustment*)zOriginAdj)->value;
 	mwc->drawSurfaceWithParams();
 }
 
-void NavigationWindow::originReset()
+void NavigationWindow::updateOrigin()
 {
+	originUpdating = true;
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(xOriginAdj), origX);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(yOriginAdj), origY);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(zOriginAdj), origZ);
+	originUpdating = false;
+}
+
+void NavigationWindow::getScriptValues()
+{
+	rotX = ScriptVar::position_numeric.rot_x;
+	rotY = ScriptVar::position_numeric.rot_y;
+	rotZ = ScriptVar::position_numeric.rot_z;
+	updateAngles();
+	scaleX = ScriptVar::position_numeric.scale_x;
+	scaleY = ScriptVar::position_numeric.scale_y;
+	scaleZ = ScriptVar::position_numeric.scale_z;
+	updateScales();
 	origX = ScriptVar::position_numeric.orig_x;
 	origY = ScriptVar::position_numeric.orig_y;
 	origY =	ScriptVar::position_numeric.orig_z;
@@ -532,11 +512,3 @@ void NavigationWindow::originReset()
 	mwc->drawSurfaceWithParams();
 }
 
-void NavigationWindow::updateOrigin()
-{
-	originUpdating = true;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(xOriginAdj), ScriptVar::position_numeric.orig_x);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(yOriginAdj), ScriptVar::position_numeric.orig_y);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(zOriginAdj), ScriptVar::position_numeric.orig_z);
-	originUpdating = false;
-}

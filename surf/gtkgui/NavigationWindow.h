@@ -89,15 +89,13 @@ private:
 	VOIDCALL(xRotSpin, NavigationWindow);
 	VOIDCALL(yRotSpin, NavigationWindow);
 	VOIDCALL(zRotSpin, NavigationWindow);
-	VOIDCALL(rotationReset, NavigationWindow);
 	VOIDCALL(xScale, NavigationWindow);
 	VOIDCALL(yScale, NavigationWindow);
 	VOIDCALL(zScale, NavigationWindow);
-	VOIDCALL(scaleReset, NavigationWindow);
 	VOIDCALL(xOrigin, NavigationWindow);
 	VOIDCALL(yOrigin, NavigationWindow);
 	VOIDCALL(zOrigin, NavigationWindow);
-	VOIDCALL(originReset, NavigationWindow);
+	VOIDCALL(getScriptValues, NavigationWindow);
 
 	double rotX, rotY, rotZ;
 	double scaleX, scaleY, scaleZ;

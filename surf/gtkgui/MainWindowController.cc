@@ -664,6 +664,8 @@ MainWindowController::MainWindowController()
 	editDocument(Document::newUnnamed());
 
 	cw.readSymbols (Script::getDefaultValues());
+
+	navwin.readSymbols(Script::getDefaultValues());
 	
 	displayedState = false;
 
