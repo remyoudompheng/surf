@@ -129,6 +129,6 @@ PACKAGE " " VERSION "\n"
 	}
 	
 	glade.main_loop();
-	
+
 	return 0;
 }

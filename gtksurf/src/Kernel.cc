@@ -25,6 +25,7 @@
 #endif
 #include <sys/wait.h>
 #include <signal.h>
+#include <fcntl.h>
 
 #include<strstream>
 
@@ -56,7 +57,7 @@ Kernel::Kernel(const std::string& kernel_path)
 	kernel_input = new std::ofstream(kernel_input_fd);
 	kernel_output_fd = from_kernel[0];
 	kernel_output = new std::ifstream(kernel_output_fd);
-
+	
 	kernel_pid = fork();
 	if(kernel_pid == -1) {
 		Misc::syscall_failed("fork()");
@@ -122,10 +123,8 @@ Kernel::Kernel(const std::string& kernel_path)
 
 Kernel::~Kernel()
 {
-	// (flush &) close connexions to the kernel and wait for SIGCHILD
 	kernel_input->close();
 	kernel_output->close();
-	waitpid(kernel_pid, 0, 0);
 }
 
 void Kernel::reset()

@@ -227,8 +227,7 @@ void GLArea::reshape(GLsizei _width = 0, GLsizei _height = 0)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	if(centralPerspective) {
-//		gluPerspective(45.0, GLfloat(width)/GLfloat(height), 1.0, 100.0);
-		glFrustum(-10.0, 10.0, -10.0, 10.0, 10.0, 30.0);
+		glFrustum(-5.0, 5.0, -5.0, 5.0, 10.0, 30.0);
 	} else {
 		glOrtho(-10.0, 10.0, -10.0, 10.0, 10.0, 30.0);
 	}
