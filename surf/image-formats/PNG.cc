@@ -23,18 +23,27 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#ifdef HAVE_LIBPNG
+
 #include <FileWriter.h>
 #include <RgbBuffer.h>
 #include <ScriptVar.h>
-#include <XPM.h>
+#include <Misc.h>
+#include <PNG.h>
+
+#include <png.h>
 
 #include<iostream>
 
 namespace ImageFormats {
 
-	XPM imgFmt_XPM;
+	PNG imgFmt_PNG;
 
-	bool XPM::saveColorImage(const char* filename, RgbBuffer& buffer)
+	bool PNG::saveColorImage(const char* filename, RgbBuffer& buffer)
 	{
 		FileWriter fw(filename);
 		FILE* file;
@@ -50,42 +59,67 @@ namespace ImageFormats {
 			buffer.OptimizedColor(ScriptVar::display_color_dither_data, ScriptVar::display_dither_value_data);
 		}
 
-		// write header
+		
+                // allocate PNG structs:
+		
+		png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+		if(png_ptr == 0) {
+			Misc::print_warning("Allocation of PNG write buffer failed. Saving aborted!\n");
+			return false;
+		}
 
-		fputs("/* XPM */\n"
-		      "static char* surf_image[] = {\n\n", file);
+		png_infop info_ptr = png_create_info_struct(png_ptr);
+		if(!info_ptr) {
+			Misc::print_warning("Allocation of PNG info buffer failed. Saving aborted!\n");
+			png_destroy_write_struct(&png_ptr, 0);
+			return false;
+		}
+
+		png_init_io(png_ptr, file);
+
+
+		// header:
 
 		int width = buffer.getWidth();
 		int height = buffer.getHeight();
-		size_t nmap = buffer.getNumCols();
+		png_set_IHDR(png_ptr, info_ptr, width, height, 8,
+			     PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_ADAM7,
+			     PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
-		fprintf(file, "\"%d %d %d 2\",\n\n", width, height, nmap);
-		
-		// write colors
-		
+
+		// palette:
+
+		size_t numcols = buffer.getNumCols();
+		png_colorp palette = new png_color[numcols];
 		const byte* rmap = buffer.getRMap();
 		const byte* gmap = buffer.getGMap();
 		const byte* bmap = buffer.getBMap();
-
-		for(size_t i = 0; i < nmap; i++) {
-			fprintf(file, "\"%.2x c #%.2x%.2x%.2x\",\n", i, rmap[i], gmap[i], bmap[i]);
+		for(size_t i = 0; i < numcols; i++) {
+			palette[i].red = rmap[i];
+			palette[i].green = gmap[i];
+			palette[i].blue = bmap[i];
 		}
+		png_set_PLTE(png_ptr, info_ptr, palette, numcols);
 
-		// write pixels
+		
+		// rows:
 
-		const byte* ptr = buffer.getMap();
-
-		for(int i = 0; i < height; i++) {
-			fputc('\"', file);
-			for(int j = 0; j < width; j++) {
-				fprintf(file, "%.2x", *ptr++);
-			}
-			fputs("\",\n", file);
+		png_bytep ptr = const_cast<png_bytep>(buffer.getMap());
+		png_bytepp row_pointers = new png_bytep[height];
+		for(size_t i = 0; i != height; i++) {
+			row_pointers[i] = ptr;
+			ptr += width;
 		}
+		png_set_rows(png_ptr, info_ptr, row_pointers);
 
-		fputs("\n};\n", file);
+		
+                // write everything:
+		
+		png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, 0);
 
 		return true;
 	}
 
 } // namespace ImageFormats
+
+#endif // HAVE_LIBPNG

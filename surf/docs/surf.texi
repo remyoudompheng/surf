@@ -7,7 +7,7 @@
 @include version.texi
 
 @ifinfo
-This file documents surf -- the visualization tool for real algebraic geometry.
+This file documents @emph{surf} -- the visualization tool for real algebraic geometry.
 
 Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,
 1997-2001 Johannes Gutenberg-Universitaet Mainz.
@@ -46,7 +46,7 @@ Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,
 @node Top, Copying, , (dir)
 @top surf
 
-This document describes the usage of surf, the visualization tool for
+This document describes the usage of @emph{surf}, the visualization tool for
 real algebraic geometry.
 
 This document applies to version @value{VERSION} of @command{surf}.
@@ -105,9 +105,9 @@ curve/surface singularities in codimension greater than one and the
 degree of the surface or curve.  This has been achieved quite a bit. We
 have drawn curves of degree up to 30 and surfaces of degree up to 20
 successfully. However, there are examples of curves/surfaces of lower
-degree where surf fails to produce perfect images. This happens
+degree where @emph{surf} fails to produce perfect images. This happens
 especially if the equation of the curve/surface is not reduced. Best
-results are achieved using reduced equations. On the other hand, surf
+results are achieved using reduced equations. On the other hand, @emph{surf}
 displays the Fermat-curves accurately for degree up to 98.
 
 @c Overview
@@ -139,7 +139,7 @@ displays the Fermat-curves accurately for degree up to 98.
 
 I thank Prof. W. Barth (University Erlangen) for (en)forcing me to start
 this project. Hans H@"ulf, R@"udiger @"Ortel and Kai Schneider have
-spent lots of time on coding parts of surf.
+spent lots of time on coding parts of @emph{surf}.
 
 Some of the code has been copied from other places:
 
@@ -163,9 +163,9 @@ it.
 @c ---------------
 
 @node How to get surf, System Requirements, Acknowledgements, Overview
-@section Hot to get surf
+@section Hot to get @emph{surf}
 
-surf is available via http/ftp at the surf home page
+@emph{surf} is available via http/ftp at the @emph{surf} home page
 @url{http://surf.sourceforge.net}
 
 @c System Requirements
@@ -174,7 +174,7 @@ surf is available via http/ftp at the surf home page
 @node System Requirements, Starting surf, How to get surf, Overview
 @section System Requirements
 
-To compile surf, the following software is needed:
+To compile @emph{surf}, the following software is needed:
 
 @itemize
 @item
@@ -350,27 +350,27 @@ The following arithmetic operators are implemented:
 @multitable {operator} {greater or equal} {@{int,double,poly@}-@{int,double,poly@}}
 @item operator @tab meaning @tab valid data types 
 
-@item +   @tab binary plus    @tab @{int,double,poly@}+@{int,double,poly@}
-@item +   @tab concatenation  @tab @{string@}+@{string@}
-@item +   @tab unary plus     @tab +@{int,double,poly@}
-@item -   @tab binary minus   @tab @{int,double,poly@}-@{int,double,poly@}
-@item -   @tab unary minus    @tab -@{int,double,poly@}
-@item *   @tab multiplication @tab @{int,double,poly@}*@{int,double,poly@}
-@item /   @tab division       @tab @{int,double,poly@}/@{int,double@}
-@item %   @tab remainder      @tab @{int@}%@{int@}
-@item ^   @tab power          @tab @{int,double@}^@{int,double@}@*
-                                   @{poly@}^@{int@}
-@item ( ) @tab brackets       @tab (@{int,double,poly@})
-@item =   @tab assignment     @tab @{poly@}=@{int,double,poly@}@*
-                                   @{double@}=@{int,double@}@*
-                                   @{int@}=@{int@}@*
-                                   @{string@}=@{string@}
-@item ==  @tab equal          @tab @{int,double@}==@{int,double@}
-@item !=  @tab not equal      @tab @{int,double@}!=@{int,double@}
-@item <   @tab smaller than   @tab @{int,double@}<@{int,double@}
-@item <=  @tab smaller or equal @tab @{int,double@}<=@{int,double@}
-@item >   @tab greater than   @tab @{int,double@}>@{int,double@}
-@item >=  @tab greater or equal @tab @{int,double@}>=@{int,double@}
+@item @code{+}   @tab binary plus    @tab @{@code{int}, @code{double}, @code{poly}@}+@{@code{int},@code{double},@code{poly}@}
+@item @code{+}   @tab concatenation  @tab @{@code{string}@}+@{@code{string}@}
+@item @code{+}   @tab unary plus     @tab +@{@code{int},@code{double},@code{poly}@}
+@item @code{-}   @tab binary minus   @tab @{@code{int},@code{double},@code{poly}@}-@{@code{int},@code{double},@code{poly}@}
+@item @code{-}   @tab unary minus    @tab -@{@code{int},@code{double},@code{poly}@}
+@item @code{*}   @tab multiplication @tab @{@code{int},@code{double},@code{poly}@}*@{@code{int},@code{double},@code{poly}@}
+@item @code{/}   @tab division       @tab @{@code{int},@code{double},@code{poly}@}/@{@code{int},@code{double}@}
+@item @code{%}   @tab remainder      @tab @{@code{int}@}%@{@code{int}@}
+@item @code{^}   @tab power          @tab @{@code{int},@code{double}@}^@{@code{int},@code{double}@}@*
+                                   @{@code{poly}@}^@{@code{int}@}
+@item @code{( )} @tab brackets       @tab (@{@code{int},@code{double},@code{poly}@})
+@item @code{=}   @tab assignment     @tab @{@code{poly}@}=@{@code{int},@code{double},@code{poly}@}@*
+                                   @{@code{double}@}=@{@code{int},@code{double}@}@*
+                                   @{@code{int}@}=@{@code{int}@}@*
+                                   @{@code{string}@}=@{@code{string}@}
+@item @code{==}  @tab equal          @tab @{@code{int},@code{double}@}==@{@code{int},@code{double}@}
+@item @code{!=}  @tab not equal      @tab @{@code{int},@code{double}@}!=@{@code{int},@code{double}@}
+@item @code{<}   @tab smaller than   @tab @{@code{int},@code{double}@}<@{@code{int},@code{double}@}
+@item @code{<=}  @tab smaller or equal @tab @{@code{int},@code{double}@}<=@{@code{int},@code{double}@}
+@item @code{>}   @tab greater than   @tab @{@code{int},@code{double}@}>@{@code{int},@code{double}@}
+@item @code{>=}  @tab greater or equal @tab @{@code{int},@code{double}@}>=@{@code{int},@code{double}@}
 @end multitable
 
 The precedence of operators copied from C.
@@ -1246,6 +1246,8 @@ $\infty$
 @item @code{color_file_colormap} @tab @code{int}    @tab @{@code{netscape},@*
                                                            @code{optimized},@*
                                                            @code{truecolor}@} @tab @code{truecolor} @tab colormap type
+@item @code{dither_colors}       @tab @code{int}    @tab @{@code{yes}, @code{no}@} @tab @code{yes} @tab color dithering
+@item @code{dither_steps}        @tab @code{double} @tab [@code{5}, @dots{}...,@code{255}] @tab @code{20.0} @tab steps of dithering
 @item @code{dither_file_format}  @tab @code{int}    @tab @{@code{auto},@* @code{eps},@* @code{pbm},@* @code{postscript},@* @code{tiff},@* @code{xbm}@} @tab @code{auto} @tab file format used in @code{save_dithered_image}
 @item @code{resolution}          @tab @code{int}    @tab @{@code{res_75dpi},@*
                                                            @code{res_100dpi},@*
@@ -1263,8 +1265,6 @@ $\infty$
 
 @multitable {@code{antialiasing_threshold}} {@code{string}} {@code{postscript,}} {@code{auto}} {save color image in file defined}
 @item Reserved Word                 @tab Type          @tab Range @tab Def.     @tab Description
-@item @code{dither_colors}          @tab @code{int}    @tab @{@code{yes}, @code{no}@} @tab @code{yes} @tab color dithering
-@item @code{dither_steps}           @tab @code{double} @tab [@code{5}, @dots{}...,@code{255}] @tab @code{20.0} @tab steps of dithering
 @item @code{normalize}              @tab @code{int}    @tab @{@code{yes}, @code{no}@} @tab @code{no} @tab normalize image
 @item @code{normalize_factor}       @tab @code{double} @tab ]@code{0}, @dots{}, @code{5}] @tab @code{1.0} @tab multiply with
 @item @code{antialiasing}           @tab @code{int}    @tab @{@code{1}, @dots{}, @code{8}@} @tab @code{1} @tab level of antialiasing

@@ -34,6 +34,9 @@
 #ifdef HAVE_LIBJPEG
 #  include <JPEG.h>
 #endif
+#ifdef HAVE_LIBPNG
+#  include <PNG.h>
+#endif
 #ifdef HAVE_LIBTIFF
 #  include <TIFF.h>
 #endif

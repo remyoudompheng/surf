@@ -4,7 +4,7 @@ DITHER_OBJ = dither/dither_brute.o dither/dither_clustered.o dither/dither_dispe
 
 DEBUG_OBJ = debug/debug.o
 
-MISC_OBJ = misc/mystrdup.o
+MISC_OBJ = misc/mystrdup.o misc/Misc.o
 
 DRAW_OBJ = draw/NewClip.o draw/NewClipSphere.o draw/NewClipSphereCentral.o draw/NewClipSphereParallel.o draw/NewClipAlgebraic.o draw/NewClipAlgebraicCube.o draw/NewClipAlgebraicTetra.o draw/NewClipAlgebraicOcta.o draw/NewClipAlgebraicDode.o draw/NewClipAlgebraicIco.o draw/NewClipAlgebraicCyl.o draw/NewClipAlgebraicUser.o draw/NewSimpleClip.o draw/SurfaceCalc.o
 
@@ -12,7 +12,7 @@ CURVE_OBJ = curve/RBTree.o curve/resultant.o curve/RootFinder2d.o curve/RootFind
 
 DRAWFUNC_OBJ =  drawfunc/Bezier.o drawfunc/Clip.o drawfunc/DrawfuncData.o drawfunc/DrawFunc.o drawfunc/Hornergroup.o drawfunc/Horner.o drawfunc/MappingMatrix.o drawfunc/MultiVariatePolynom.o drawfunc/Position.o drawfunc/Sturmchain.o drawfunc/UniVariatePolynom.o drawfunc/Vector.o drawfunc/HornergroupXY.o drawfunc/HornergroupXYZ.o drawfunc/RationalHornerXY.o
 
-IMAGE_OBJ =  image-formats/ImageFormats.o image-formats/AvailableImageFormats.o image-formats/ByExtension.o image-formats/JPEG.o image-formats/TIFF.o image-formats/Postscript.o image-formats/Sun.o image-formats/EPS.o image-formats/XBitmap.o image-formats/PPM.o image-formats/PBM.o image-formats/XPM.o
+IMAGE_OBJ =  image-formats/ImageFormats.o image-formats/AvailableImageFormats.o image-formats/ByExtension.o image-formats/JPEG.o image-formats/TIFF.o image-formats/Postscript.o image-formats/Sun.o image-formats/EPS.o image-formats/XBitmap.o image-formats/PPM.o image-formats/PBM.o image-formats/XPM.o image-formats/PNG.o
 
 SRC_OBJ = src/RGBToNetscape.o src/compfn.o src/cube.o src/float_buffer.o src/init_parser.o src/main.o src/oct_quan.o src/RgbBuffer.o src/roots.o src/bit_buffer.o src/SurfaceDataStruct.o src/CanvasDataStruct.o src/WindowGeometry.o src/antialiasing_factor.o
 

@@ -23,36 +23,36 @@
  */
 
 
-#include <AvailableImageFormats.h>
+#ifndef IMAGEFORMAT_PNG_H
+#define IMAGEFORMAT_PNG_H
+
+#include <ImageFormats.h>
 
 namespace ImageFormats {
-	Format* availableFormats[] = {
-		&imgFmt_ByExtension,
-		&imgFmt_PPM,
-		&imgFmt_PBM,
-		&imgFmt_Postscript,
-		&imgFmt_EPS,
 
-#ifdef HAVE_LIBJPEG
-		&imgFmt_JPEG,
-#endif
+	class PNG : public Format {
+	public:
+		std::string getName() const {
+			return "PNG";
+		}
+		std::string getID() const {
+			return "png";
+		}
+		ColorType getColorType() const {
+			return color;
+		}
+		bool isExtension(const std::string& ext) const {
+			return ext == "png";
+		}
 
-#ifdef HAVE_LIBPNG
-		&imgFmt_PNG,
-#endif
-
-#ifdef HAVE_LIBTIFF
-		&imgFmt_TIFF,
-#endif
+		bool saveColorImage(const char* filename, RgbBuffer& data);
 		
-                &imgFmt_XPM,
-		&imgFmt_XBitmap,
-		&imgFmt_Sun,
-
-		0 // last element is 0
+		bool saveDitheredImage(const char* filename, bit_buffer& data) {
+			return false;
+		}
 	};
 
-	size_t numAvailableFormats = sizeof(availableFormats)/sizeof(Format) - 1;
-
-	int image_formats_data[sizeof(availableFormats)/sizeof(Format) - 1];
+	extern PNG imgFmt_PNG;
 }
+
+#endif //!IMAGEFORMAT_PNG_H

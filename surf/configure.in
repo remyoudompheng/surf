@@ -100,10 +100,15 @@ AC_CHECK_LIB(z,  main,,
 dnl checks for image libraries (optional):
 dnl --------------------------------------
 
-dnl jpeg library and jpeglib.h:
+dnl JPEG library and jpeglib.h:
 
 AC_CHECK_HEADER(jpeglib.h,
 	        AC_CHECK_LIB(jpeg, main))
+
+dnl PNG library and png.h
+
+AC_CHECK_HEADER(png.h,
+	        AC_CHECK_LIB(png, main))
 
 dnl tiff library and header file:
 
