@@ -61,7 +61,6 @@
 #include "eps.h"
 #include "xbitmap.h"
 #include "tiffprint.h"
-#include "bm2font.h"
 #include "Thread.h"
 
 #include "MultiVariatePolynom.h"
@@ -576,17 +575,6 @@ void Script::saveDitheredImage()
 			   print_resolution_array_data[print_resolution_data]);
 		break;
  
-	case  4 :
-		if (fw.isWritingToPipe()) {
-			Misc::alert ("bm2font images can only be written to a file.");
-			return;
-		}
-
-		bm2fontprint (*pixel, name,
-			      main_width_data, main_height_data,
-			      print_resolution_array_data[print_resolution_data]);
-		break;
-
 	case 5:
 		pixel->write_as_pgm (fw.openFile());
 		break;

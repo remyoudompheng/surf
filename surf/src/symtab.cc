@@ -77,6 +77,5 @@ const int     print_output_ps_data             = 0;
 const int     print_output_eps_data            = 1;
 const int     print_output_bitmap_data         = 2;
 const int     print_output_tiff_data           = 3;
-const int     print_output_bm2font_data        = 4;
 const int     print_output_pgm_data            = 5;
 const int     print_output_pbm_data            = 6;

@@ -1,10 +1,5 @@
 Here are some minor problems I can think of:
 
-* TeX pk:
-  Remove saving of black&white pictures as TeX pk fonts
-  I couldn't compile bm2font and TeX has no problems handling 
-  postscript files. So I can't see any reason to support this any longer !
-
 * handling of pow/sunpow:
   Somehow I believe, that this is really broken. At least it hasn't been
   tested for a while. Are there any implementations of pow with pow(0,0)!=1 ?

@@ -74,7 +74,6 @@ extern  const int     print_output_ps_data;
 extern  const int     print_output_eps_data;
 extern  const int     print_output_bitmap_data;
 extern  const int     print_output_tiff_data;
-extern  const int     print_output_bm2font_data;
 extern  const int     print_output_pgm_data;
 extern  const int     print_output_pbm_data;
 #endif

@@ -477,7 +477,6 @@ void    init_surface_main_variables( void )
 	addConstant("encapsulated", &print_output_eps_data);
 	addConstant("X11_bitmap",&print_output_bitmap_data);
 	addConstant("tiff", &print_output_tiff_data);
-	addConstant("bm2font", &print_output_bm2font_data);
 	addConstant("pgm", &print_output_pgm_data);
 	addConstant("pbm", &print_output_pbm_data);
 
