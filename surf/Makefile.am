@@ -37,5 +37,5 @@ man_MANS = surf.1
 
 dist-hook::
 	absdistdir=`cd $(distdir) && pwd` && \
-	(cd $(top_srcdir) && find examples docs | grep -v CVS | cpio -pad $$absdistdir)
+	(cd $(top_srcdir) && find examples | grep -v CVS | cpio -pad $$absdistdir)
 

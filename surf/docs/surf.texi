@@ -49,7 +49,11 @@ Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,
 This document describes the usage of @emph{surf}, the visualization tool for
 real algebraic geometry.
 
-This document applies to version @value{VERSION} of @command{surf}.
+This document applies to version @value{VERSION} of @emph{surf}.
+Although it may hopefully be well readable in info format with any info
+reader (preferably XEmacs) or in HTML format, it will look best as DVI
+file produced by @command{texi2dvi}: Just do a @kbd{make dvi} in the
+@file{docs/} directory of the @emph{surf} distribution.
 
 @menu
 * Copying::
@@ -153,9 +157,9 @@ it.
 
 
 @c Overview
-@c ************
+@c ********
 
-@node Overview, How to get surf, Acknowledgements, top
+@node Overview, Introduction to surfs Command Language, Acknowledgements, top
 @chapter Overview
 
 @menu
@@ -181,6 +185,18 @@ the @emph{surf} home page
 
 An official Debian package is hopefully avaiable on your local Debian
 mirror soon. Just type @command{apt-get install surf} as usal.
+
+For information about how to compile and install the source
+distribution of @emph{surf}, please read the @file{README} and
+@file{INSTALL} files in the top level directory of the distribution,
+or simply do the habitually
+
+@example
+$ ./configure
+$ make
+$ su
+# make install
+@end example
 
 
 @c System Requirements
@@ -334,7 +350,7 @@ Here, @command{convert} is the Image Magick image format converter.
 @c Oddities and Bug Reports
 @c ------------------------
 
-@node Oddities and Bug Reports, Introduction to surfs Command Language, surf and make, Overview
+@node Oddities and Bug Reports, , surf and make, Overview
 @section Oddities and Bug Reports
 
 In case you find any bug, please use the bug tracking system
@@ -345,7 +361,7 @@ on @emph{surf}'s project page at SourceForge:
 @c Introduction to surf's Command Language
 @c ***************************************
 
-@node Introduction to surfs Command Language, Data Types, Oddities and Bug Reports, top
+@node Introduction to surfs Command Language, Features, Overview, top
 @chapter Introduction to @emph{surf}'s Command Language
 
 @menu
@@ -527,7 +543,7 @@ for example:
 @c Conditional Statements
 @c ----------------------
 
-@node Conditional Statements, Features, First Examples, Introduction to surfs Command Language
+@node Conditional Statements, , First Examples, Introduction to surfs Command Language
 @section Conditional Statements
 
 There are no @code{for} and no @code{while} statements.
@@ -558,7 +574,7 @@ and saves them into the X Pixmap files:
 @c Features
 @c ********
 
-@node Features, Plane Curves, Conditional Statements, top
+@node Features, List Of All Reserved Words, Introduction to surfs Command Language, top
 @chapter Features
 
 In this section most features of @emph{surf} are explained.  For a complete
@@ -1136,7 +1152,7 @@ which is used in all root finders.  Additionally the maximal number of
 @c Image Formats
 @c -------------
 
-@node Image Formats, List Of All Reserved Words, Algorithms, Features
+@node Image Formats, , Algorithms, Features
 @section Image Formats
 
 @emph{surf} can store color images in one of several file formats. Some
@@ -1183,7 +1199,7 @@ specified by setting @code{resolution}) to the desired dpi value.
 @c List Of All Reserved Words
 @c **************************
 
-@node List Of All Reserved Words, Main Variables, Image Formats, top
+@node List Of All Reserved Words, , Features, top
 @chapter List Of All Reserved Words
 
 A reserved word in @emph{surf}'s language is either a command, a

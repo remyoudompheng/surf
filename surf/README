@@ -4,8 +4,9 @@
 
 			     Version 1.1.0
 
-	Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet
-  Erlangen-Nuernberg, 1997-2001 Johannes Gutenberg-Universitaet Mainz
+			     Copyright (C)
+     1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,
+	    1997-2001 Johannes Gutenberg-Universitaet Mainz
 
   Authors: Stephan Endrass, Hans Huelf, Ruediger Oertel, Ralf Schmitt,
 	  Kai Schneider and Johannes Beigel (see AUTHORS file)
@@ -17,8 +18,9 @@ What is surf?
 -------------
 
 surf is a tool to visualize algebraic curves and algebraic surfaces.
-surf is completely script although there's an seperate GTK-based GUI
-frontend called "gtksurf".
+surf is completely script driven. If you're looking for a graphical
+tool, you may want to get the seperate GTK-based GUI frontend called
+"gtksurf" which makes usage of surf as kernel.
 
 Documentation can be found in the docs/ directory.
 

@@ -9,16 +9,6 @@ AM_INIT_AUTOMAKE(surf, 1.1.0)
 CF_VERBOSE
 
 
-dnl there are systems which don't automatically include these standard paths..
-
-if test -d "/usr/local/lib/" ; then
-	LDFLAGS="-L/usr/local/lib/ $LDFLAGS"
-fi
-if test -d "/usr/local/include/" ; then
-	CPPFLAGS="-I/usr/local/include/ $CPPFLAGS"
-fi
-
-
 dnl some standard checks:
 dnl ---------------------
 
@@ -58,6 +48,17 @@ if test "$GCC" = "no" ; then
 		CXXFLAGS="-LANG:std $CXXFLAGS"
 		;;
 	esac
+fi
+
+
+dnl add /usr/local/include and /usr/local/lib if they exist
+dnl (there are systems which don't automatically include these standard paths..)
+
+if test -d "/usr/local/lib/" ; then
+	LDFLAGS="-L/usr/local/lib/ $LDFLAGS"
+fi
+if test -d "/usr/local/include/" ; then
+	CPPFLAGS="-I/usr/local/include/ $CPPFLAGS"
 fi
 
 

@@ -1,0 +1,17 @@
+If you want to have some documentation, just enter (in this directory)
+
+    make
+
+        ..to produce the manual in info format using 'makeinfo'.
+
+    make html
+
+        ..to produce the manual in HTML format using 'texi2html'.
+
+    make dvi
+
+        ..to produce the manual in DVI format using TeX and 'texi2dvi'.
+
+The info-page should be created and installed automagically by the usual
+'make' and 'make install' invocations from the top-level directory of
+the surf distribution.
