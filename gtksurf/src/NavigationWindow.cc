@@ -14,6 +14,7 @@
 #endif
 
 #include <NavigationWindow.h>
+#include <ScriptWindow.h>
 #include <Misc.h>
 
 #include <gtkgl/gtkglarea.h>
@@ -21,9 +22,11 @@
 
 #include<iostream>
 #include<cmath>
+#include<strstream>
 
-NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel)
-	: glade(_glade), kernel(_kernel), glarea(glade, kernel, this),
+NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* _scriptwin)
+	: glade(_glade), kernel(_kernel), scriptwin(_scriptwin),
+	  glarea(glade, kernel, this),
 	  origx(0.0), origy(0.0), origz(0.0),
 	  scalex(1.0), scaley(1.0), scalez(1.0), keep_scaleratio(true),
 	  rotx(0.0), roty(0.0), rotz(0.0), updatingRot(false)
@@ -49,6 +52,7 @@ NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel)
 	glade.toggle_connect(w, _on_scaleratio_toggled, this);
 	gtk_toggle_button_set_active(w, true); // libglade bug?
 
+	glade.sig_connect("button_updatescript", "clicked", _on_update_clicked, this);
 	glade.sig_connect("button_reset", "clicked", _on_reset_clicked, this);
 }
 
@@ -181,6 +185,22 @@ void NavigationWindow::on_rotz_changed(gfloat val)
 	glarea.set_rot(rotx, roty, rotz);
 }
 
+void NavigationWindow::on_update_clicked()
+{
+	std::ostrstream os;
+	os << "// the following lines were inserted by gtksurf:\n"
+	   << "origin_x = " << origx << ";\n"
+	   << "origin_y = " << origy << ";\n"
+	   << "origin_z = " << origz << ";\n"
+	   << "rot_y = " << deg_to_rad(roty) << ";\n"
+	   << "rot_x = " << deg_to_rad(rotx) << ";\n"
+	   << "rot_z = " << deg_to_rad(rotz) << ";\n"
+	   << "scale_x = " << scalex << ";\n"
+	   << "scale_y = " << scaley << ";\n"
+	   << "scale_z = " << scalez << ";\n"
+	   << "// end of inserted text\n\n";
+	scriptwin->insert(os.str());
+}
 
 void NavigationWindow::on_reset_clicked()
 {

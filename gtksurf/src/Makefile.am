@@ -6,6 +6,7 @@ gtksurf_SOURCES = main.cc \
 		  Kernel.h Kernel.cc \
                   Glade.h Glade.cc \
 		  ScriptWindow.h ScriptWindow.cc \
+		  PrefsWindow.h PrefsWindow.cc \
 		  ImageWindow.h ImageWindow.cc \
                   DitherWindow.h DitherWindow.cc \
                   gdk_draw_bitmap.h gdk_draw_bitmap.cc \

@@ -140,6 +140,24 @@
 
 	    <widget>
 	      <class>GtkMenuItem</class>
+	      <name>preferences</name>
+	      <signal>
+		<name>activate</name>
+		<handler>on_preferences_activate</handler>
+		<last_modification_time>Mon, 12 Mar 2001 12:30:00 GMT</last_modification_time>
+	      </signal>
+	      <label>Preferences...</label>
+	      <right_justify>False</right_justify>
+	    </widget>
+
+	    <widget>
+	      <class>GtkMenuItem</class>
+	      <name>separator7</name>
+	      <right_justify>False</right_justify>
+	    </widget>
+
+	    <widget>
+	      <class>GtkMenuItem</class>
 	      <name>quit</name>
 	      <accelerator>
 		<modifiers>GDK_CONTROL_MASK</modifiers>
@@ -1764,6 +1782,321 @@
     </signal>
     <label>Close</label>
     <right_justify>False</right_justify>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>window_prefs</name>
+  <visible>False</visible>
+  <title>gtksurf - Preferences</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox7</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkNotebook</class>
+      <name>notebook2</name>
+      <border_width>4</border_width>
+      <can_focus>True</can_focus>
+      <show_tabs>True</show_tabs>
+      <show_border>True</show_border>
+      <tab_pos>GTK_POS_TOP</tab_pos>
+      <scrollable>False</scrollable>
+      <tab_hborder>2</tab_hborder>
+      <tab_vborder>2</tab_vborder>
+      <popup_enable>False</popup_enable>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkVBox</class>
+	<name>vbox8</name>
+	<border_width>4</border_width>
+	<homogeneous>False</homogeneous>
+	<spacing>4</spacing>
+
+	<widget>
+	  <class>GtkFrame</class>
+	  <name>frame5</name>
+	  <label>Script-Editor Font:</label>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkVBox</class>
+	    <name>vbox12</name>
+	    <border_width>4</border_width>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>radiobutton_default_font</name>
+	      <can_focus>True</can_focus>
+	      <label>Default Font</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>font</group>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>radiobutton_custom_font</name>
+	      <can_focus>True</can_focus>
+	      <label>Custom Font</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>font</group>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox_font</name>
+	      <border_width>4</border_width>
+	      <sensitive>False</sensitive>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkEntry</class>
+		<name>entry_font</name>
+		<can_focus>True</can_focus>
+		<editable>True</editable>
+		<text_visible>True</text_visible>
+		<text_max_length>0</text_max_length>
+		<text></text>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>button_font</name>
+		<can_focus>True</can_focus>
+		<label>Select Font</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkFrame</class>
+	  <name>frame6</name>
+	  <label>Toolbar Style:</label>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkVBox</class>
+	    <name>vbox11</name>
+	    <border_width>4</border_width>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>radiobutton_icons</name>
+	      <can_focus>True</can_focus>
+	      <label>Icons only</label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>toolbar</group>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>radiobutton_text</name>
+	      <can_focus>True</can_focus>
+	      <label>Text only</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>toolbar</group>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>radiobutton_both</name>
+	      <can_focus>True</can_focus>
+	      <label>Icons &amp; Text</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>toolbar</group>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>Notebook:tab</child_name>
+	<name>label13</name>
+	<label>Appearance</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHBox</class>
+      <name>hbox4</name>
+      <border_width>5</border_width>
+      <homogeneous>True</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button_prefs_ok</name>
+	<can_focus>True</can_focus>
+	<label>Okay</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button_prefs_apply</name>
+	<can_focus>True</can_focus>
+	<label>Apply</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button_prefs_cancel</name>
+	<can_focus>True</can_focus>
+	<label>Cancel</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkFontSelectionDialog</class>
+  <name>fontselectiondialog</name>
+  <border_width>4</border_width>
+  <visible>False</visible>
+  <title>Select Font</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>True</auto_shrink>
+
+  <widget>
+    <class>GtkButton</class>
+    <child_name>FontSel:ok_button</child_name>
+    <name>ok_button2</name>
+    <can_default>True</can_default>
+    <can_focus>True</can_focus>
+    <label>OK</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
+  </widget>
+
+  <widget>
+    <class>GtkButton</class>
+    <child_name>FontSel:apply_button</child_name>
+    <name>apply_button1</name>
+    <can_default>True</can_default>
+    <can_focus>True</can_focus>
+    <label>Apply</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
+  </widget>
+
+  <widget>
+    <class>GtkButton</class>
+    <child_name>FontSel:cancel_button</child_name>
+    <name>cancel_button2</name>
+    <can_default>True</can_default>
+    <can_focus>True</can_focus>
+    <label>Cancel</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 </widget>
 

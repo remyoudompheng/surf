@@ -29,7 +29,9 @@ namespace {
 
 ScriptWindow::ScriptWindow(Glade& _glade, Kernel& _kernel)
 	: glade(_glade),
-	  imagewin(glade, _kernel), navigationwin(glade, _kernel),
+	  prefswin(glade, this),
+	  imagewin(glade, _kernel),
+	  navigationwin(glade, _kernel, this),
 	  kernel(_kernel),
 	  dirty(false)
 {
@@ -39,7 +41,7 @@ ScriptWindow::ScriptWindow(Glade& _glade, Kernel& _kernel)
 	text_script = glade.get_widget("text_script");
 	
 	glade.sig_connect(text_script, "changed", _on_text_script_changed, this);
-	glade.sig_connect(window, "delete_event", _on_script_delete_event, this);
+	glade.sig_connect(window, "delete_event", _on_delete_event, this);
 	glade.sig_connect("new", "activate", _on_new_activate, this);
 	glade.sig_connect("button_new", "clicked", _on_new_activate, this);
 	glade.sig_connect("open", "activate", _on_open_activate, this);
@@ -47,6 +49,7 @@ ScriptWindow::ScriptWindow(Glade& _glade, Kernel& _kernel)
 	glade.sig_connect("save", "activate", _on_save_activate, this);
 	glade.sig_connect("button_save", "clicked", _on_save_activate, this);
 	glade.sig_connect("save_as", "activate", _on_save_as_activate, this);
+	glade.sig_connect("preferences", "activate", _on_prefs_activate, this);
 	glade.sig_connect("quit", "activate", _on_quit_activate, this);
 	glade.sig_connect("cut", "activate", _on_cut_activate, this);
 	glade.sig_connect("copy", "activate", _on_copy_activate, this);
@@ -151,6 +154,13 @@ void ScriptWindow::select_region(int from, int to)
 	gtk_editable_select_region(GTK_EDITABLE(text_script), from, to);
 }
 
+void ScriptWindow::insert(const std::string& str)
+{
+	gint pos = 0;
+	gtk_editable_insert_text(GTK_EDITABLE(text_script), str.c_str(),
+				 str.length(), &pos);
+}
+
 
 // Gtk callbacks:
 // ======================================================================
@@ -222,6 +232,11 @@ void ScriptWindow::on_save_as_activate()
 		set_title();
 		on_save_activate();
 	}
+}
+
+void ScriptWindow::on_prefs_activate()
+{
+	prefswin.show();
 }
 
 void ScriptWindow::on_quit_activate()

@@ -17,6 +17,7 @@
 #endif
 
 #include <Glade.h>
+#include <PrefsWindow.h>
 #include <ImageWindow.h>
 #include <NavigationWindow.h>
 #include <Kernel.h>
@@ -40,11 +41,15 @@ public:
 	void set_status(const std::string& txt);
 	void progress_mode(bool mode) const;
 	void set_progress(gfloat percentage);
+
 	void select_region(int from, int to);
+
+	void insert(const std::string& str);
 
 private:
 	Glade& glade;
 
+	PrefsWindow prefswin;
 	ImageWindow imagewin;
 	NavigationWindow navigationwin;
 
@@ -72,6 +77,7 @@ private:
 	MENUCB(open);
 	MENUCB(save);
 	MENUCB(save_as);
+        MENUCB(prefs);
 	MENUCB(quit);
 	MENUCB(cut);
 	MENUCB(copy);
@@ -83,7 +89,7 @@ private:
 	MENUCB(execute);
 	MENUCB(about);
 
-	static int _on_script_delete_event(GtkWidget*, GdkEvent*, GladeWindow* This) {
+	static int _on_delete_event(GtkWidget*, GdkEvent*, GladeWindow* This) {
 		static_cast<ScriptWindow*>(This)->on_quit_activate();
 		return true;
 	}

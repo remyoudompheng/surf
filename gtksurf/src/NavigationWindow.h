@@ -29,9 +29,11 @@
 		static_cast<NavigationWindow*>(This)->on_##name##_changed(adj->value);\
 	}
 
+class ScriptWindow;
+
 class NavigationWindow : public GladeWindow {
 public:
-	NavigationWindow(Glade& glade, Kernel& kernel);
+	NavigationWindow(Glade& glade, Kernel& kernel, ScriptWindow* scriptwin);
 	virtual ~NavigationWindow() {}
 
 	void show();
@@ -44,6 +46,7 @@ public:
 private:
 	Glade& glade;
 	Kernel& kernel;
+	ScriptWindow* scriptwin;
 
 	GLArea glarea;
 
@@ -104,6 +107,10 @@ private:
 		static_cast<NavigationWindow*>(This)->on_scaleratio_toggled(gtk_toggle_button_get_active(tb));
 	}
 
+	void on_update_clicked();
+	static void _on_update_clicked(GtkWidget*, GladeWindow* This) {
+		static_cast<NavigationWindow*>(This)->on_update_clicked();
+	}
 	void on_reset_clicked();
 	static void _on_reset_clicked(GtkWidget*, GladeWindow* This) {
 		static_cast<NavigationWindow*>(This)->on_reset_clicked();
