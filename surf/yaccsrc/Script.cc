@@ -236,7 +236,9 @@ void Script::init()
 	bitbuffer->setSize(main_width_data, main_height_data);
 	zbuffer = new float_buffer(main_width_data, main_height_data);
 	*zbuffer = -10.0; // FIXME
+#ifdef HAVE_LIBGTS
 	tritor = new Triangulator;
+#endif
 	kernelMode = false;
 	stop_flag = false;
 }
@@ -436,6 +438,7 @@ void Script::saveDitheredImage()
 
 void Script::save3DImage()
 {
+#ifdef HAVE_LIBGTS
 	Triangulator* tritor = getTriangulator();
 	
 	if(surface_filename_data == 0) {
@@ -444,6 +447,7 @@ void Script::save3DImage()
 	}
 
 	ImageFormats::save3DImage(surface_filename_data, *tritor);
+#endif
 }
 
 void Script::ditherSurface()

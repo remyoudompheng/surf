@@ -27,12 +27,10 @@ SUBDIRS = yaccsrc src image-formats drawfunc curve draw misc debug dither triang
 bin_PROGRAMS = surf
 surf_SOURCES =
 
-EXTRA_DIST = Makefile.global
-
 surf: $(LOCAL_OBJECTS)
 	$(CXX) $(LOCAL_OBJECTS) -o surf $(LDFLAGS) $(LIBS)
 
-EXTRA_DIST = aclocal.m4 Makefile.global
+EXTRA_DIST = aclocal.m4 Makefile.global defaults.pic
 
 dist-hook::
 	absdistdir=`cd $(distdir) && pwd` && \

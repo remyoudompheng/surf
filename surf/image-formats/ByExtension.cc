@@ -77,8 +77,10 @@ namespace ImageFormats {
 				return &imgFmt_PPM;
 			case dithered:
 				return &imgFmt_PBM;
+#ifdef HAVE_LIBGTS
 			case three_d:
 				return &imgFmt_GTS;
+#endif
 			default:
 				return 0;
 			}

@@ -189,26 +189,31 @@ dnl --------------
 
 AC_ARG_WITH(gts-prefix,[  --with-gts-prefix=PFX   Prefix where GTS is installed],
             gts_prefix="$withval", gts_prefix="")
+AC_ARG_ENABLE(gts, [  --disable-gts           Do not try to find GTS includes and library],
+                    , enable_gts=yes)
 
-if test x"$gts_prefix" != x ; then
+if test "x$enable_gts" = "xyes" ; then
+    if test x"$gts_prefix" != x ; then
 	LDFLAGS="-L$gts_prefix/lib $LDFLAGS"
 	CPPFLAGS="-I$gts_prefix/include $CPPFLAGS"
-fi
+    fi
 
-AC_CHECK_HEADER(gts.h,
-                AC_CHECK_LIB(gts, main,
-                             havegts="yes"
-                               AC_DEFINE(HAVE_LIBGTS)
-                               LIBS="$LIBS -lgts",
-                             havegts="no"))
+    AC_CHECK_HEADER(gts.h,
+      AC_CHECK_LIB(gts, main,
+                   havegts="yes"
+                   AC_DEFINE(HAVE_LIBGTS)
+                     LIBS="$LIBS -lgts",
+                   havegts="no"))
 
-dnl GTS needs glib..:
-if test "$havegts" = "yes" ; then
+    dnl GTS needs glib..:
+    if test "$havegts" = "yes" ; then
 	AM_PATH_GLIB(1.2.0)
 	LIBS="$LIBS $GLIB_LIBS"
 	CFLAGS="$CFLAGS $GLIB_CFLAGS"
 	CXXFLAGS="$CXXFLAGS $GLIB_CFLAGS"
+    fi
 fi
+
 
 
 dnl link with lex-libaray:
