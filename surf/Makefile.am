@@ -44,7 +44,7 @@ surf: $(LOCAL_OBJECTS)
 endif
 
 clean-local::
-	rm -f *~
+	rm -f *~ surf.xpm
 
 dist-hook::
 	absdistdir=`cd $(distdir) && pwd` && \
