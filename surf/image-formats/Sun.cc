@@ -89,11 +89,18 @@ namespace ImageFormats {
 		const byte* gdata = data.getGData();
 		const byte* bdata = data.getBData();
 		
-		uint32 length = width*height;
-		for(size_t i = 0; i < length; i++) {
-			std::fputc(bdata[i], file);
-			std::fputc(gdata[i], file);
-			std::fputc(rdata[i], file);
+		bool addbyte = width*3 % 2 == 1;
+		size_t cnt = 0;
+		for(size_t i = 0; i < height; i++) {
+			for(size_t j = 0; j < width; j++) {
+				std::fputc(bdata[cnt], file);
+				std::fputc(gdata[cnt], file);
+				std::fputc(rdata[cnt], file);
+				cnt++;
+			}
+			if(addbyte) {
+				std::fputc(0, file);
+			}
 		}
 
 		return true;
