@@ -118,13 +118,6 @@ Type Matrix<Type>::threadedDeterminant () const
 	TRACE(bestCol);
 	TRACE(bestColZeros);
 
-	struct 
-	{
-		pthread_t thread;
-		bool nonzero;
-	} threads [size];
-	memset (threads, 0, size*sizeof(threads[0]));
-
 	void *subdeterminant;
 	if (bestRowZeros > bestColZeros) {
 		int col;
