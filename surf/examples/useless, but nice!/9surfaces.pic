@@ -1,0 +1,106 @@
+// --------------------------------------------
+//  It is possible to draw up to nine surfaces
+//  in one picture, and every surface may have
+//  different properties!
+//  take care about the clipping, this 8 spheres 
+//  and the cube don't need any clipping 
+// --------------------------------------------
+
+//  image size
+
+width=550;
+height=300;
+set_size;
+
+//  fix surface color
+
+surface3_red  =  0;
+surface3_green=255;
+surface3_blue =  0;
+
+surface5_red  =255;
+surface5_green=  0;
+surface5_blue =  0;
+
+surface6_red  = 50;
+surface6_green=  0;
+surface6_blue =255;
+inside6_red   =  50;
+inside6_green =   0;
+inside6_blue  = 255;
+
+surface7_red  =255;
+surface7_green=  0;
+surface7_blue =255;
+
+surface8_red  =255;
+surface8_green=255;
+surface8_blue =  0;
+
+surface9_red  = 50;
+surface9_green=  0;
+surface9_blue =255;
+inside9_red   = 50;
+inside9_green =  0;
+inside9_blue  =255;
+
+//  fix surface properties
+
+transparence =0;
+transparence2=0;
+transparence3=0;
+transparence4=0;
+transparence5=0;
+transparence6=50;
+thickness6   =15;
+transmitted6 =80;
+transparence7=0;
+transparence8=0;
+transparence9=80;
+thickness9   =15;
+transmitted9=50;
+
+diffuse2=60;
+reflected2=45;
+
+smoothness =120;
+smoothness2=13;
+smoothness4=2;
+smoothness9=30;
+
+//  fix light
+
+illumination=ambient_light+
+             diffuse_light+
+             reflected_light+
+             transmitted_light;
+
+light1_vol=50;
+light3_vol=60;
+
+//  fix perspective
+
+perspective=central;
+antialiasing=4;
+
+//  fix surfaces
+
+surface =(x+14)^2+y^2+z^2-3;
+surface2=(x+10)^2+y^2+z^2-3;
+surface3=(x+7 )^2+y^2+z^2-3;
+surface4=(x+4 )^2+y^2+z^2-3;
+surface5= x^2+y^2+z^2-3;
+surface6=(x-3.5)^2+y^2+z^2-10;
+surface7=(x-6 )^2+y^2+z^2-4;
+surface8=(x-10)^8+y^8+z^8-100;
+surface9=(x-13)^2+y^2+z^2-8;
+
+//  fix single rotation
+
+surface8=rotate(surface8,2.0,xAxis);
+
+//  draw it
+
+clip=none;
+clear_screen;
+draw_surface;

@@ -1,0 +1,28 @@
+// ----------------------
+//  draw the newton knot
+// ----------------------
+
+// set window size 400x400
+width =400;
+height=400;
+set_size;
+
+// disable clipping
+clip=none;
+
+// set curve color white
+curve_red  =255;
+curve_green=255;
+curve_blue =255;
+
+// set curve width
+curve_width=2;
+curve_gamma=3;
+
+curve = y^2-x^3-x^2;
+
+scale_x=0.5;
+scale_y=0.5;
+
+clear_screen;
+draw_curve;

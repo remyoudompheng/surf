@@ -1,0 +1,116 @@
+// ---------------------
+//  The cyclide:
+//  a quartic surface
+//  with singular conic
+// ---------------------
+
+//  image size
+
+width=300;
+height=300;
+set_size;
+
+//  constants
+
+double  w2=sqrt(2.0);
+double  Pi=2*arccos(0);
+
+//  light
+
+illumination = ambient_light +
+               diffuse_light +
+               reflected_light +
+               transmitted_light;
+
+ambient=20;
+
+smoothness=30;
+diffuse=60;
+reflected=70;
+transmitted=0;
+transparence=0;
+
+diffuse2=diffuse;
+reflected2=reflected;
+transmitted2=0;
+transparence2=100;
+thickness2=0;
+
+light1_x=-173;
+light1_y=100;
+light1_z=100;
+light1_vol=80;
+light1_red=255;
+light1_green=255;
+light1_blue=255;
+
+light2_x=173;
+light2_y=100;
+light2_z=80;
+light2_vol=0;
+
+light3_x=0;
+light3_y=-80;
+light3_z=80;
+light3_vol=20;
+
+//   since the image will be dithered 
+//   the background is set to white
+
+background_red  =255;
+background_blue =255;
+background_green=255;
+
+radius=9.5;
+
+spec_z=30;
+perspective=central;
+antialiasing = 4;
+
+curve_red  =surface_red;
+curve_green=surface_green;
+curve_blue =surface_blue;
+
+curve_width=3;
+
+double  sf = 0.15;
+scale_x=sf;
+scale_y=sf;
+scale_z=sf;
+
+//  equation
+
+double a1=3;
+double a2=1;
+double a3=2;
+double c=1;
+
+poly zyklide=(x^2+y^2+(-1))^2 +
+    z^2*(a1*x^2 +  a2*y^2 +a3*(-1) + c*z^2);
+
+//  rotation
+
+rot_y=Pi/180*70;
+rot_x=Pi/180*10;
+rot_z=Pi/180*0;
+
+epsilon=0.0000001;
+root_finder=d_chain_newton;
+
+//  draw the singular conic by cutting the sphere
+//  of surface2 with the plane z=0
+
+surface=zyklide;
+surface2=x^2+y^2+z^2-1.0;
+
+clear_screen;
+draw_surface;
+
+//  draw the singular conic
+
+plane=z;
+surf_nr=2;
+cut_with_plane;
+
+dither_surface;
+

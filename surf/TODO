@@ -1,0 +1,25 @@
+Here are some minor problems I can think of:
+
+* TeX pk:
+  Remove saving of black&white pictures as TeX pk fonts
+  I couldn't compile bm2font and TeX has no problems handling 
+  postscript files. So I can't see any reason to support this any longer !
+
+* handling of pow/sunpow:
+  Somehow I believe, that this is really broken. At least it hasn't been
+  tested for a while. Are there any implementations of pow with pow(0,0)!=1 ?
+  Maybe we should exit from the configure script if we see that pow(0,0)!=1.
+
+* set_size:
+  Check that the set_size command isn't really needed any more.
+
+* OctNode::TestBit:
+  What does it do and is it correct in what it does ???
+  I don't believe so.
+
+* Matrix::threadedDeterminant
+  Make the threaded version work.
+
+* libtiff/libjpeg/zlib
+  Disable tiff support if one of the above isn't there instead of
+  forcing the user to install 'em.

@@ -1,0 +1,90 @@
+// -----------------------
+//  Demo for transparence
+// -----------------------
+
+//  image size
+
+width  = 300;
+height = 300;
+set_size;
+
+//  fix rotation
+
+rot_x=0.2;
+rot_y=-0.33;
+rot_z=-3.33;
+
+//  fix scaling
+
+double sf = 0.25;
+ 
+scale_x=sf;
+scale_y=sf;
+scale_z=sf;
+
+//  fix position and perspective
+
+spec_z = 25.0;
+perspective=central;
+radius=9.0;
+
+//  fix surface properties
+
+transparence=60;
+transmitted =70;
+thickness   =14;
+
+surface_red  =255;
+surface_green=100;
+surface_blue =130;
+inside_red   =255;
+inside_green =100;
+inside_blue  =130;
+
+//  fix light
+
+illumination=ambient_light+
+             diffuse_light+
+             reflected_light+
+             transmitted_light;
+ambient=20;
+smoothness=30;
+ 
+light1_x=1-00;
+light1_y=100;
+light1_z=100;
+light1_vol=80;
+ 
+light3_x=100;
+light3_y=20;
+light3_z=50;
+light3_vol=60;
+ 
+light8_x=-100;
+light8_y=100;
+light8_z=-100;
+light8_vol=0;
+
+//  define the sextic
+ 
+double t=(1+sqrt(5))/2;
+ 
+poly f1=t^2*x^2-y^2;
+poly f2=t^2*y^2-z^2;
+poly f3=t^2*z^2-x^2;
+ 
+poly g =(x^2+y^2+z^2-1)^2;
+ 
+surface=-(4*f1*f2*f3-(1+2*t)*g);
+
+epsilon=0.0001;
+iterations=30;
+
+//  draw it
+
+clear_screen;
+draw_surface;
+
+
+
+

@@ -1,0 +1,46 @@
+.TH SURF 1 "20 August 98"
+.SH NAME
+surf \- visualization of algebraic curves and surfaces
+.SH SYNOPSIS
+\fBsurf\fP [filename] [-toolkitoption ...]
+.SH DESCRIPTION
+\fBsurf\fP provides a GUI for rendering algebraic curves and surfaces
+interactively. The only input needed is the equation of an
+algebraic curve/surface in everyday mathematical notation. The
+output is either a (series of) color image(s) in the formats
+XWD, SUN or FLI (via fbm2fli), or a black
+and white image in either postscript, TIFF, XBM  or TeX pk format.
+\fBsurf\fP also provides a C-style command language which helps
+working out more complicated equations. The resolution of
+an image is only bounded by the available memory. Since the
+image is stored as an array of floats and because some
+image processing algorithms need a copy of the image, you need
+at least width*height*12 bytes of virtual memory. \fBsurf\fP can
+handle curves/surfaces up to degree 30. The main features include
+\fBalgebraic curves\fP, \fBalgebraic surfaces\fP, \fBhyper plane sections\fP, \fBlines
+on surfaces\fP, \fBmultiple curves/surfaces\fP,
+\fBadaptive anti aliasing\fP and \fBdithering\fP.
+.SH OPTIONS
+\fBsurf\fP accepts  all of the standard X Toolkit command line
+options (see \fBX\fP(1)).
+.SH COPYRIGHT
+.TP
+(c) 1992, 1995,1996,1997 FAU Nuernberg-Erlangen, Math. Dept.,
+1998 JoGu Mainz, Math. Dept.
+.SH FILES
+.TP
+\fI/usr/local/surf/examples/*/*.pic\fR
+Example scripts
+.TP
+\fI/usr/local/doc/surf/manual.html\fR
+Draft manual
+.SH "SEE ALSO"
+\fBX\fP(1)
+.SH AUTHORS
+Stephan Endrass <endrass@mathematik.uni-mainz.de>, Hans Huelf, Ruedeger Oertel,
+Kai Schneider
+.SH BUGS
+The GUI is not fool proof. Beware pressing any button except
+the stop button when calculating an image.
+Usually images of curves/surfaces
+are not correct if equations are not reduced.

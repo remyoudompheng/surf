@@ -1,0 +1,16 @@
+// --------------
+//  The G series
+// --------------
+height=400;
+width =400;
+set_size;
+clip=none;
+clear_screen;
+curve = -(y+x+x*y)*(12*(y+x+x*y)^7*(1+x+y)*x*y
+        -256*(1+x+y)^2*(y+x+x*y)^2*x^4*y^4
+        +384*(1+x+y)*(y+x+x*y)*x^5*y^5
+        -64*(y+x+x*y)^3*x^4*y^4-12*(y+x+x*y)^6*x^2*y^2
+        -192*x^6*y^6+64*(1+x+y)^3*(y+x+x*y)^3*x^3*y^3
+        +112*(y+x+x*y)^4*(1+x+y)*x^3*y^3
+        -48*(y+x+x*y)^5*(1+x+y)^2*x^2*y^2-(y+x+x*y)^9);
+draw_curve;

@@ -1,0 +1,90 @@
+// -------------------------------
+//  The Barth decic:
+//  a degree 10 surface with 345
+//  ordinary double points
+// -------------------------------
+
+//  image size
+
+height=300;
+width =300;
+set_size;
+
+//  constans
+
+double Pi=2*arccos(0);
+
+//  fix rotation
+
+rot_x=-0.2;
+rot_y= 0.25;
+rot_z= 0.0;
+
+//  fix scaling
+
+double  sf = 0.26;
+
+scale_x=sf;
+scale_y=sf;
+scale_z=sf;
+
+spec_z=35;
+radius=9.0;
+
+perspective=central;
+antialiasing=4;
+
+//  fix illumination
+
+ambient   =20;
+diffuse   =60;
+reflected =60;
+smoothness=30;
+
+light1_x  = 100;
+light1_y  = 100;
+light1_z  = 100;
+light1_vol= 100;
+
+light3_x  =-100;
+light3_y  =  20;
+light3_z  =  50;
+light3_vol=  60;
+
+light8_x  = 100;
+light8_y  = 100;
+light8_z  =-100;
+light8_vol=   0;
+
+//  surface color
+
+surface_red  =200;
+surface_green=150;
+surface_blue =100;
+inside_red   =surface_red;
+inside_green =surface_green;
+inside_blue  =surface_blue;
+
+// genrate surface
+
+double  t=(1+sqrt(5))/2;
+
+poly p1 = x^2-t^4*y^2;
+poly p2 = y^2-t^4*z^2;
+poly p3 = z^2-t^4*x^2;
+poly p4 = x^4+y^4+z^4-2*x^2*y^2
+            -2*y^2*z^2-2*x^2*z^2;
+
+poly q1 = (x^2+y^2+z^2-1)^2;
+poly q2 = (x^2+y^2+z^2-(2-t))^2;
+
+poly decic = 8*p1*p2*p3*p4+(3+5*t)*q1*q2;
+
+surface=decic;
+
+epsilon=0.000000001;
+
+// draw the surface
+
+clear_screen;
+draw_surface;

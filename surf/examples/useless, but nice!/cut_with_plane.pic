@@ -1,0 +1,59 @@
+// ------------------------------
+//  Demo for curves on a surface
+// ------------------------------ 
+
+//  fix rotation
+
+rot_x=0.3745;
+rot_y=0.445;
+rot_z=0;
+
+//  fix surface properties
+
+surface_red  =240;
+surface_green=220;
+surface_blue =0;
+
+transparence=60;
+
+antialiasing=4;
+
+//  fix light
+
+illumination= ambient_light+
+              diffuse_light+
+              reflected_light+
+              transmitted_light;
+
+//  the formula 
+
+surface=x^4+y^3+z^3-120;
+
+//  draw it
+
+clear_screen;
+draw_surface;
+
+
+//  fix curve properties
+
+curve_width=4;
+ 
+curve_red=255;
+curve_green=0;
+curve_blue=0;
+plane=y;
+cut_with_plane;
+
+curve_red=0;
+curve_green=255;
+curve_blue=0;
+plane=z;
+cut_with_plane;
+
+curve_red=0;
+curve_green=0;
+curve_blue=255;
+plane=x;
+cut_with_plane;
+

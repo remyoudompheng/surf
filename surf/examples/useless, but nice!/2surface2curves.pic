@@ -1,0 +1,53 @@
+// -----------------------------
+//  Demo for cutting two planes
+//  on different surfaces
+// -----------------------------
+
+//  fix rotation and perspective
+
+rot_x=0.2618;
+rot_y=0.3491;
+rot_z=0;
+
+perspective=central;
+
+//  fix surface properties
+
+surface2_red  =255;
+surface2_green=0;
+surface2_blue =0;
+
+transparence =50;
+thickness=14;
+transparence2=30;
+thickness2=25;
+
+//  fix light
+
+illumination=ambient_light+
+             diffuse_light+
+             reflected_light+
+             transmitted_light; // calculate also transperence
+
+//  the formulae
+
+surface=x^2+z^2+y^2-70;
+surface2=x^10+y^10+z^10-24114;
+
+clear_screen;
+draw_surface;
+
+//  fix the curves
+
+curve_width=3;
+curve_red  =255;
+curve_green=255;
+curve_blue =255;
+
+surface_n=2;
+plane=x;
+cut_with_plane;
+
+surface_n=1; 
+plane=y;
+cut_with_plane;

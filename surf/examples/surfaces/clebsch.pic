@@ -1,0 +1,107 @@
+// -------------------------------
+//  The Clebsch diagonal surface:
+//  a smooth cubic surface
+//  admitting the symmetry
+//  of the tetrahedron
+// -------------------------------
+
+//  set image size 
+
+width =400;
+height=400;
+set_size;
+
+//  define some useful constants
+
+double  w2=sqrt(2.0); 
+double  Pi=2*arccos(0);
+
+//  define tetrahedral coordinates
+
+poly p=1-z-w2*x;
+poly q=1-z+w2*x;
+poly r=1+z+w2*y;
+poly s=1+z-w2*y;
+
+//  symmetric polynomials 
+
+poly c1=p  +q  +r  -s;
+poly c2=p^3+q^3+r^3-s^3;
+
+//  fix rotation
+
+first  = translate;
+second = rotate;
+third  = scale;
+
+rot_x=-0.5;
+rot_y= 4.35;
+rot_z=-0.58+Pi;
+
+//  fix scaling
+
+double  sf = 0.6;
+
+scale_x=sf;
+scale_y=sf*0.5;
+scale_z=sf;
+
+//  visible area and perspective
+
+depth_cueing=yes;
+depth=-20;
+radius=9;
+spec_z=30;
+perspective=central;
+antialiasing=4;
+
+// fix light
+
+ambient   =20;
+diffuse   =60;
+reflected =70;
+smoothness=30;
+
+light1_x  =-100;
+light1_y  = 100;
+light1_z  = 100;
+light1_vol=  80;
+
+light3_x  = 100;
+light3_y  =  20;
+light3_z  =  50;
+light3_vol=  60;
+
+light8_x  =-100;
+light8_y  = 100;
+light8_z  = 100;
+light8_vol=  20;
+
+//   surface color
+
+surface_red  =200;
+surface_green= 56;
+surface_blue = 88;
+inside_red   =200;
+inside_green = 56;
+inside_blue  = 88;
+
+//  define the diagonal surface
+
+poly clebsch = c2 - c1^3;
+surface=clebsch;
+
+//  draw the surface
+
+clear_screen;
+draw_surface;
+filename="clebsch.ras";
+save_color_image;
+
+//  print the surface
+
+dither_surface;
+dither_file_format=postscript;
+filename="clebsch.ps";
+save_dithered_image;
+

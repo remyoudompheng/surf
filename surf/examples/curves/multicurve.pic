@@ -1,0 +1,54 @@
+// ----------------------
+//  draw multiple curves
+// ----------------------
+
+// set window size 400x400
+width =400;
+height=400;
+set_size;
+optimize_colors=no;
+
+scale_x=0.5;
+scale_y=0.5;
+
+// disable clipping
+clip=none;
+do_background=yes;
+
+// coordinate axes
+curve_red  =255;
+curve_green=255;
+curve_blue =255;
+
+curve_width=2;
+curve_gamma=3;
+
+curve=x*y;
+draw_curve;
+
+// curve no 1
+do_background=no;
+
+curve_red  =255;
+curve_green=100;
+curve_blue =150;
+
+curve = y^2-x*(x+1)*(x-1);
+draw_curve;
+
+// curve no 2
+curve_red  =100;
+curve_green=150;
+curve_blue =255;
+
+curve = y^2-(x+0.2)*(x+0.8)*(x-0.8);
+draw_curve;
+
+// curve no 3
+optimize_colors=yes;
+curve_red  =150;
+curve_green=255;
+curve_blue =100;
+
+curve = y^2-(x-0.2)*(x+1.2)*(x-1.2);
+draw_curve;

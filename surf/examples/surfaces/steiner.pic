@@ -1,0 +1,119 @@
+// ---------------------------
+//  The Steiner roman surface
+//  is an emmbedding of P_2
+//  into R^3.
+//  The algebraic surface
+//  containing the image
+//  contains three lines.
+// ---------------------------
+
+//  image size
+
+height=200;
+width =200;
+set_size;
+
+double  w2=sqrt(2.0);
+double  Pi=2*arccos(0);
+
+//  tetrahedral coodinates
+
+poly p=1-z-w2*x;
+poly q=1-z+w2*x;
+poly r=1+z+w2*y;
+poly s=1+z-w2*y;
+
+//  rotation
+
+rot_x=0.2;
+rot_y=0.6;
+rot_z=0.94+Pi;
+
+//  scaling 
+
+double  sf = 1.4;
+
+scale_x=sf;
+scale_y=sf;
+scale_z=sf;
+
+radius=9.5;
+
+spec_z=30;
+perspective=central;
+antialiasing=4;
+
+//  light
+
+illumination=ambient_light+
+             diffuse_light+
+             reflected_light+
+             transmitted_light;
+
+ambient=20;
+smoothness=30;
+transparence=0;
+
+light1_x=-100;
+light1_y=100;
+light1_z=100;
+light1_vol=100;
+
+light3_x=100;
+light3_y=20;
+light3_z=50;
+light3_vol=20;
+
+light8_x=0;
+light8_y=100;
+light8_z=30;
+light8_vol=40;
+
+poly steiner=x^2*y^2+x^2*z^2+y^2*z^2-17*x*y*z;
+surface=steiner;
+
+//  our new way to draw lines
+//  as intersection of planes
+
+transparence2=100;
+transmitted2 =0;
+transparence3=100;
+transmitted3 =0;
+transparence4=100;
+transmitted4 =0;
+
+//  this are the three planes
+ 
+surface2=x-y;
+surface3=y-z;
+surface4=z+x;
+
+clear_screen;
+draw_surface;
+
+curve_width = 4.0;
+curve_red   = surface_red;
+curve_blue  = surface_blue;
+curve_green = surface_green;
+
+//  draw z-axis x=y=0
+
+surface_n=2;
+plane=x+y;
+cut_with_plane;
+
+//  draw x-axis y=z=0
+
+surface_n=3;
+plane=y+z;
+cut_with_plane;
+
+// draw y-axis x=z=0
+
+surface_n=4;
+plane=z-x;
+cut_with_plane;
+
+filename="steiner.ras";
+color_file_format=sun;
+save_color_image;

@@ -1,0 +1,152 @@
+// -------------------------------
+//  The Clebsch diagonal surface:
+//  a smooth cubic surface
+//  admitting the symmetry
+//  of the tetrahedron
+//  This surface contains
+//  (like every smooth cubic)
+//  27 distinct lines
+// -------------------------------
+
+//  set image size
+
+int factor=3;
+width =factor*100;
+height=factor*100;
+set_size;
+
+//  define some useful constants
+
+double  w2 =sqrt(2); 
+double  w5 =sqrt(5);
+double  w10=sqrt(10);
+double  Pi =2*arccos(0);
+
+//  define tetrahedral coordinates
+
+poly p=1-z-w2*x;
+poly q=1-z+w2*x;
+poly r=1+z+w2*y;
+poly s=1+z-w2*y;
+
+poly c1=p  +q  +r  -s;
+poly c2=p^3+q^3+r^3-s^3;
+
+//  fix rotation
+
+rot_y=0.1;
+rot_x=0.2;
+rot_z=0.0;
+
+double angle=0.6154797970;
+
+//  fix scaling
+
+double  sf = 0.6;
+
+scale_x=sf;
+scale_y=sf*0.5;
+scale_z=sf;
+
+//  visible area and perspective
+
+radius=9;
+spec_z=35;
+perspective=central;
+antialiasing=6;
+
+//  fix nice light
+
+ambient=14;
+
+light1_x=-100;
+light1_y= 100;
+light1_z= 100;
+light1_vol=70;
+
+light3_x=100;
+light3_y= 20;
+light3_z= 50;
+light3_vol=42;
+
+light8_x=-100;
+light8_y=-100;
+light8_z= 100;
+light8_vol=14;
+
+smoothness=30;
+
+//  surface color
+
+surface_red  =105;
+surface_green=133;
+surface_blue =209;
+inside_red   =105;
+inside_green =133;
+inside_blue  =209;
+
+
+//  define the diagonal surface
+
+poly clebsch = c2 - c1^3;
+clebsch=rotate(clebsch,angle,xAxis);
+clebsch=rotate(clebsch,2*Pi/3,yAxis);
+surface=rotate(clebsch,Pi,zAxis);
+
+// draw the surface
+
+clear_screen;
+draw_surface;
+
+// draw the 27 lines
+
+curve_red  =255;
+curve_green=255;
+curve_blue =255;
+curve_width=3;
+
+plane = 2*x+w2*z-w2;
+plane = rotate(plane,angle,xAxis);
+plane = rotate(plane,Pi,zAxis);
+cut_with_plane;
+
+plane = 2*x-w2*z+w2;
+plane = rotate(plane,angle,xAxis);
+plane = rotate(plane,Pi,zAxis);
+cut_with_plane;
+
+plane = 2*y+w10*z-w2*(2+w5);
+plane = rotate(plane,angle,xAxis);
+plane = rotate(plane,Pi,zAxis);
+cut_with_plane;
+
+plane = 2*y+w2*z+w2;
+plane = rotate(plane,angle,xAxis);
+plane = rotate(plane,Pi,zAxis);
+cut_with_plane;
+
+plane = 4*y+w2*(w5-3)*z+w2*(3-w5);
+plane = rotate(plane,angle,xAxis);
+plane = rotate(plane,Pi,zAxis);
+cut_with_plane;
+
+plane = 4*x+(2*w5-6)*y+w2*(1-w5)*z-w2*(3+w5);
+plane = rotate(plane,angle,xAxis);
+plane = rotate(plane,Pi,zAxis);
+cut_with_plane;
+
+plane = 4*x +(6-2*w5)*y+w2*(w5-1)*z+w2*(3+w5);
+plane = rotate(plane,angle,xAxis);
+plane = rotate(plane,Pi,zAxis);
+cut_with_plane;
+
+plane = 2*x+2*w5*y-w2*(1+w5)*z+w2*(w5-1);
+plane = rotate(plane,angle,xAxis);
+plane = rotate(plane,Pi,zAxis);
+cut_with_plane;
+
+plane = 2*x-2*w5*y+w2*(1+w5)*z+w2*(1-w5);
+plane = rotate(plane,angle,xAxis);
+plane = rotate(plane,Pi,zAxis);
+cut_with_plane;
+

@@ -1,0 +1,80 @@
+// ----------------------------------
+//  The Barth sextic: 
+//  a degree 6 surface with 65
+//  ordinary double points
+//  and symmetry of the icosahedron
+// ----------------------------------
+
+//  image size
+
+width = 500;
+height = 500;
+set_size;
+ 
+//  fix rotation
+
+rot_x=0.2;
+rot_y=-0.33;
+rot_z=-3.33;
+
+//  fix scaling
+
+double sf = 0.25;
+ 
+scale_x=sf;
+scale_y=sf;
+scale_z=sf;
+
+//  fix position and perspective
+
+spec_z = 25.0;
+perspective=central;
+radius=9.0;
+
+//  fix light
+
+surface_red  =inside_red;
+surface_green=inside_green;
+surface_blue =inside_blue;
+
+ambient=20;
+diffuse=60;
+reflected=60;
+
+smoothness=14;
+ 
+light1_x=100;
+light1_y=100;
+light1_z=100;
+light1_vol=80;
+ 
+light2_x=100;
+light2_y= 20;
+light2_z= 50;
+light2_vol=50;
+ 
+light3_x=-100;
+light3_y= 100;
+light3_z=-100;
+light3_vol=0;
+
+//  define the sextic
+ 
+double t=(1+sqrt(5))/2;
+ 
+poly f1=t^2*x^2-y^2;
+poly f2=t^2*y^2-z^2;
+poly f3=t^2*z^2-x^2;
+ 
+poly g =(x^2+y^2+z^2-1)^2;
+ 
+surface=4*f1*f2*f3-(1+2*t)*g;
+
+
+epsilon=0.0001;
+iterations=30;
+
+//  draw it
+
+clear_screen;
+draw_surface;

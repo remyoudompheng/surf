@@ -1,0 +1,76 @@
+// --------------------------------
+//  This is a quintic surface with
+//  31 double points and hence
+//  a Togliatti surface.
+//  Lets make an animation ...
+// --------------------------------
+
+double  Pi=2*arccos(0);
+
+rot_x=Pi/2+0.3;
+
+origin_z=0.7;
+radius=8.0;
+
+double  sf = 0.35;
+
+scale_x=sf;
+scale_y=sf;
+scale_z=sf;
+
+ambient=20;
+smoothness=25;
+
+light1_x=-100;
+light1_y=100;
+light1_z=100;
+light1_vol=70;
+
+light3_x=100;
+light3_y=20;
+light3_z=50;
+light3_vol=50;
+
+light8_x=-100;
+light8_y=100;
+light8_z=100;
+light8_vol=30;
+
+double  u1=(sqrt(5)-1)/4;
+double  u2=(sqrt(5)+1)/4;
+double  v1=(5+sqrt(5))/8;
+double  v2=(5-sqrt(5))/8;
+
+double  c=sqrt(5-sqrt(5))/2;
+double  a=-(8/5)*(1+1/sqrt(5))*sqrt(5-sqrt(5));
+double  r=(1+3*sqrt(5))/4;
+
+poly q=(1-c*z)*(x^2+y^2-1+r*z^2)^2;
+
+poly f=(x-z)*((u1*x-z)^2-v1*y^2)*((u2*x+z)^2-v2*y^2);
+
+poly h1=x-z;
+poly h2=cos(2*Pi/5)*x-sin(2*Pi/5)*y-z;
+poly h3=cos(4*Pi/5)*x-sin(4*Pi/5)*y-z;
+poly h4=cos(6*Pi/5)*x-sin(6*Pi/5)*y-z;
+poly h5=cos(8*Pi/5)*x-sin(8*Pi/5)*y-z;
+
+poly F=h1*h2*h3*h4*h5;
+
+poly quintic=a*F+q;
+poly quintic_rot;
+
+int i=0;
+
+loop:
+    quintic_rot = rotate( quintic,i*2*Pi/5.0/50.0,zAxis );
+    surface = quintic_rot;
+    clear_screen;
+    draw_surface;
+    filename="quintic"+itostrn( 3,i )+".ras";
+    save_color_image;
+    i=i+1;
+if( i < 50 ) goto loop;
+
+filename="quintic.fli";
+create_movie;

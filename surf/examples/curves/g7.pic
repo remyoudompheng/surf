@@ -1,0 +1,13 @@
+// --------------
+//  The G series
+// --------------
+height=400;
+width =400;
+set_size;
+clip=none;
+clear_screen;
+curve = 4*(y+x+x*y)^4*(1+x+y)*x*y
+        -16*(1+x+y)*(y+x+x*y)*x^3*y^3
+        -(y+x+x*y)^6-4*(y+x+x*y)^3*x^2*y^2
+        +16*x^4*y^4;
+draw_curve;

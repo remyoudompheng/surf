@@ -1,0 +1,93 @@
+// -------------------------------------
+//  Demo for stereo pictures (red/blue)
+// -------------------------------------
+ 
+//  image size
+
+height=500;
+width =500;
+set_size;
+
+//  fix rotation
+
+rot_x= 0.2;
+rot_y=-0.33;
+rot_z=-3.33;
+
+//  fix scaling
+
+double sf = 0.35;
+scale_x=sf;
+scale_y=sf;
+scale_z=sf;
+
+// fix position and perspective
+
+spec_z = 25.0;
+perspective=central;
+antialiasing=4;
+radius=7.0;
+
+// fix surface color
+
+surface_red=255;
+surface_green=255;
+surface_blue=200;
+inside_red=255;
+inside_green=255;
+inside_blue=200;
+
+// fix stereopicture
+
+stereo_eye=1.2;
+
+// vary these values to adjust the
+// picture to your 3D-glasses
+
+stereo_red  =1.0; 
+stereo_blue =1.0;    // for red/green set to 0.0
+//stereo_green =0.8  // for red/green set  > 0.0
+
+// fix light
+
+ambient=10;
+smoothness=30;
+ 
+light1_x=1000;
+light1_y=1000;
+light1_z=1000;
+light1_vol=70;
+ 
+light3_x=-1000;
+light3_y=200;
+light3_z=500;
+light3_vol=50;
+ 
+light8_x=0;
+light8_y=-1000;
+light8_z=1000;
+light8_vol=30;
+
+// define the sextic
+ 
+double t=(1+sqrt(5))/2;
+ 
+poly f1=t^2*x^2-y^2;
+poly f2=t^2*y^2-z^2;
+poly f3=t^2*z^2-x^2;
+ 
+poly g =(x^2+y^2+z^2-1)^2;
+ 
+surface=-(4*f1*f2*f3-(1+2*t)*g);
+
+epsilon=0.0001;
+iterations=30;
+
+// draw it
+
+clear_screen;
+draw_surface;
+
+
+
+

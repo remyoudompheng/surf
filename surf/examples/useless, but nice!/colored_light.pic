@@ -1,0 +1,88 @@
+// ------------------------------
+//  The 16 nodal quartic surface
+//  colored light demo
+// ------------------------------
+
+//  set some constants
+
+double pi=3.145;
+double mue2 =2/3;
+double lam =-3/7;
+
+//  fix scaling
+
+scale_x = 0.11;
+scale_y = 0.11;
+scale_z = 0.11;
+
+//  fix rotation
+
+rot_x=6.2478;
+rot_y=1.2318;
+rot_z=2.1903;
+
+spec_z=30;
+perspective=central;
+
+//  fix clip-values 
+
+radius=10;
+
+//  fix light
+
+ambient=30;
+illumination=7;
+
+light1_x =60;
+light1_y =40;
+light1_z =0;
+light1_red=255;
+light1_green=5;
+light1_blue=5;
+light1_vol=50;
+
+light2_x =100;
+light2_y =00;
+light2_z =-20;
+light2_red=0;
+light2_green=255;
+light2_blue=0;
+light2_vol=50;
+
+light3_x=-70;
+light3_y=50;
+light3_z=-0;
+light3_red=0;
+light3_green=0;
+light3_blue=250;
+light3_vol=40;
+
+//  fix surface properties 
+
+smoothness=50;
+diffuse=70;
+
+surface_red=232;
+surface_green=230;
+surface_blue=230;
+inside_red=230;
+inside_green=180;
+inside_blue=30;
+
+//  the formula
+
+poly p = 1-x-y+z;
+poly q = 1+x+y+z;
+poly r = 1-x+y-z;
+poly s = 1+x-y-z;
+
+poly s2= x^2+y^2+z^2;
+
+poly pqrs2 = p*q*r*s;
+
+surface = (s2 -mue2)^2 + lam*pqrs2;
+
+//  draw it
+
+clear_screen;
+draw_surface;

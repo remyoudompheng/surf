@@ -1,0 +1,106 @@
+// ------------------------------------------
+//  The sextic surface with 65 singularities
+//  and symmetry of the icosahedron
+//  There are exactly six planes touching the
+//  surface along a conic
+// ------------------------------------------
+
+//  image size
+
+width  = 600;
+height = 600;
+set_size;
+ 
+//  fix rotation
+
+rot_x=0.2;
+rot_y=-0.33;
+rot_z=-3.33;
+
+//  fix scaling
+
+double sf = 0.25;
+ 
+scale_x=sf;
+scale_y=sf;
+scale_z=sf;
+
+//  fix position and perspective
+
+spec_z = 25.0;
+perspective=central;
+radius=9.0;
+
+//  fix light
+
+ambient=20;
+smoothness=14;
+ 
+light1_x=100;
+light1_y=100;
+light1_z=100;
+light1_vol=80;
+ 
+light3_x=100;
+light3_y=20;
+light3_z=50;
+light3_vol=60;
+ 
+light8_x=-100;
+light8_y=100;
+light8_z=-100;
+light8_vol=0;
+
+surface_red  =200;
+surface_green=200;
+surface_blue =200;
+inside_red   =surface_red;
+inside_blue  =surface_blue;
+inside_green =surface_green;
+
+//  define the sextic
+ 
+double t=(1+sqrt(5))/2;
+ 
+poly f1=t^2*x^2-y^2;
+poly f2=t^2*y^2-z^2;
+poly f3=t^2*z^2-x^2;
+ 
+poly g =(x^2+y^2+z^2-1)^2;
+ 
+surface=4*f1*f2*f3-(1+2*t)*g;
+
+epsilon=0.0001;
+iterations=30;
+
+//  draw it
+
+clear_screen;
+draw_surface;
+
+//  draw the six conics
+
+curve_red  =240;
+curve_green= 40;
+curve_blue = 80;
+
+curve_width=3;
+
+plane=t*x+y;
+cut_with_plane;
+
+plane=t*x-y;
+cut_with_plane;
+
+plane=t*y+z;
+cut_with_plane;
+
+plane=t*y-z;
+cut_with_plane;
+
+plane=t*z+x;
+cut_with_plane;
+
+plane=t*z-x;
+cut_with_plane;
+

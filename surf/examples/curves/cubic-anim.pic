@@ -1,0 +1,54 @@
+// -----------------------
+//  the plane cubic curve
+//  animated
+// -----------------------
+
+// switch off time-expensive
+// color optimization
+optimize_colors=no;
+dither_colors=no;
+
+// switch off clipping
+clip=none;
+clear_screen;
+
+scale_x=0.2;
+scale_y=0.2;
+
+// set curve color white
+curve_red=255;
+curve_green=255;
+curve_blue=255;
+curve_width=3;
+
+double a;
+double d=0.05;
+int    r=0;
+
+loop:
+    a=0.0;
+    loop1:
+        curve=y^2-x^2*(x+a);
+        clear_pixmap;
+         draw_curve;
+         a=a+d;
+    if( a < 1.0 ) goto loop1;
+
+    a=0.0;
+    loop2:
+        curve=y^2-(x^2+a^2)*(x+1.0);
+        clear_pixmap;
+        draw_curve;
+        a=a+d;
+    if( a < 1.0 ) goto loop2;
+
+    a=1.0;
+    loop3:
+        curve=y^2-(x^2+a)*(x+a);
+        clear_pixmap;
+        draw_curve;
+        a=a-d;
+    if( a > 0.0 ) goto loop3;
+
+    r=r+1;
+if( r<3 ) goto loop;
