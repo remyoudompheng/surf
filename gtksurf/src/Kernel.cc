@@ -54,9 +54,11 @@ Kernel::Kernel(const std::string& kernel_path)
 	sigaction(SIGCHLD, &sa, 0);
 
 	kernel_input_fd = to_kernel[1];
-	kernel_input = new std::ofstream(kernel_input_fd);
+	kernel_input = new std::ofstream;
+	kernel_input->sys_open(kernel_input_fd);
 	kernel_output_fd = from_kernel[0];
-	kernel_output = new std::ifstream(kernel_output_fd);
+	kernel_output = new std::ifstream;
+	kernel_output->sys_open(kernel_output_fd);
 	
 	kernel_pid = fork();
 	if(kernel_pid == -1) {
