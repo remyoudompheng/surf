@@ -227,7 +227,7 @@ void Script::executeScriptFromStdin()
 "  ________ __________/ ____\\\n"
 " /  ___/  |  \\_  __ \\   __\\\n"
 " \\___ \\|  |  /|  | \\/|  |\n"
-"/____  >____/ |__|   |__| " VERSION "\n"
+"/____  >____/ |__|   |__| v" VERSION "\n"
 "     \\/\n\n";
 
 		} else {
@@ -259,7 +259,7 @@ void Script::executeScriptFromStdin()
 			std::cout << PROMPT;
 		}
 #endif
-		std::cout << "\nExiting.\n";
+		std::cout << "\nQuitting.\n";
 
 	} else {
 		std::string script = "";

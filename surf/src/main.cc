@@ -89,7 +89,11 @@ int main(int argc, char* argv[])
 //	sa.sa_handler = sighup_handler;
 //	sigaction(SIGTERM, &sa, 0);
 	signal(SIGHUP, sig_handler);
-	signal(SIGINT, sig_handler);
+
+	// do the same on C-C if we have a terminal as input
+	if(isatty(STDIN_FILENO)) {
+		signal(SIGINT, sig_handler);
+	}
 
 
 #ifdef DEBUG

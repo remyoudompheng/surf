@@ -70,7 +70,6 @@ namespace ImageFormats {
 	
 		uint32 width = data.getWidth();
 		uint32 height = data.getHeight();
-		uint32 length = width*height*3;
 		
 		// write rasterfile header:
                 // (note: use Sun byte order == network order)
@@ -79,7 +78,7 @@ namespace ImageFormats {
 		put_long(width, file);       // ras_width
 		put_long(height, file);      // ras_height
 		put_long(24, file);          // ras_depth
-		put_long(length, file);      // ras_length
+		put_long(width*height*3, file); // ras_length
 		put_long(RT_STANDARD, file); // ras_type
 		put_long(RMT_NONE, file);    // ras_maptype
 		put_long(0, file);           // ras_maplength
@@ -90,6 +89,7 @@ namespace ImageFormats {
 		const byte* gdata = data.getGData();
 		const byte* bdata = data.getBData();
 		
+		uint32 length = width*height;
 		for(size_t i = 0; i < length; i++) {
 			std::fputc(bdata[i], file);
 			std::fputc(gdata[i], file);
