@@ -2,7 +2,6 @@ include $(top_srcdir)/Makefile.global
 
 noinst_LIBRARIES = libdummy.a
 libdummy_a_SOURCES = RBTree.cc RBTree.h		\
-        Array.h				\
         Matrix.h			\
         Monom.h				\
         RefCounter.h			\
