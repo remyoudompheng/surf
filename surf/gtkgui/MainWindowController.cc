@@ -23,8 +23,6 @@
  */
 
 
-
-
 #include <assert.h>
 #include <pthread.h>
 
@@ -107,6 +105,11 @@ void MainWindowController::allowScriptExecution(bool val)
 	gtk_widget_set_sensitive (ditheredSaveButton, val && ditheredSaveButtonState);
 	gtk_widget_set_sensitive (saveColor_MenuItem, val && colorSaveButtonState);
 	gtk_widget_set_sensitive (saveDithered_MenuItem, val && ditheredSaveButtonState);
+	gtk_widget_set_sensitive (executeScript_MenuItem, val);
+	gtk_widget_set_sensitive (drawSurface_MenuItem, val);
+	gtk_widget_set_sensitive (ditherSurface_MenuItem, val);
+	gtk_widget_set_sensitive (drawCurve_MenuItem, val);
+	gtk_widget_set_sensitive (ditherCurve_MenuItem, val);
 }
 
 bool MainWindowController::mayClose()
@@ -474,6 +477,16 @@ MainWindowController::MainWindowController()
 	saveDithered_MenuItem = gtk_item_factory_get_widget(fac, "/Image/Save Dithered Image...");
 	assert(saveDithered_MenuItem);
 	gtk_widget_set_sensitive(saveDithered_MenuItem, false);
+	executeScript_MenuItem = gtk_item_factory_get_widget(fac, "/Command/Execute Script");
+	assert(executeScript_MenuItem);
+	drawSurface_MenuItem = gtk_item_factory_get_widget(fac, "/Command/Draw Surface");
+	assert(drawSurface_MenuItem);
+	ditherSurface_MenuItem = gtk_item_factory_get_widget(fac, "/Command/Dither Surface");
+	assert(ditherSurface_MenuItem);
+	drawCurve_MenuItem = gtk_item_factory_get_widget(fac, "/Command/Draw Curve");
+	assert(drawCurve_MenuItem);
+	ditherCurve_MenuItem = gtk_item_factory_get_widget(fac, "/Command/Dither Curve");
+	assert(ditherCurve_MenuItem);
 	
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	

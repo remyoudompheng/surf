@@ -22,9 +22,6 @@
  *
  */
 
-
-
-
 #ifndef MAINWINDOWCONTROLLER_H
 #define MAINWINDOWCONTROLLER_H
 
@@ -166,6 +163,11 @@ protected:
 	GtkWidget *loadedScripts;
 	GtkWidget* saveColor_MenuItem;
 	GtkWidget* saveDithered_MenuItem;
+	GtkWidget* executeScript_MenuItem;
+	GtkWidget* drawSurface_MenuItem;
+	GtkWidget* ditherSurface_MenuItem;
+	GtkWidget* drawCurve_MenuItem;
+	GtkWidget* ditherCurve_MenuItem;
 	ConfigurationWindow cw;
 
 	Document *actualDocument;
