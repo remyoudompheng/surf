@@ -213,11 +213,6 @@ void Script::executeScriptFromStdin(bool quiet)
 	
 	std::string script = "";
 	std::string line;
-#ifdef HAVE_LIBREADLINE
-	bool have_libreadline = true;
-#else
-	bool have_libreadline = false;
-#endif
 
 	bool is_a_tty = isatty(STDIN_FILENO);
 
@@ -225,7 +220,8 @@ void Script::executeScriptFromStdin(bool quiet)
 		std::cout << PACKAGE " " VERSION "\n";
 	}
 
-	if(is_a_tty && have_libreadline) {
+#ifdef HAVE_LIBREADLINE
+	if(is_a_tty) {
 		
 		rl_bind_key('\t', reinterpret_cast<Function*>(rl_insert));
 		rl_bind_key('^', reinterpret_cast<Function*>(rl_insert));
@@ -242,7 +238,10 @@ void Script::executeScriptFromStdin(bool quiet)
 			}
 		}
 		
-	} else {
+	} else
+#else
+	{
+
 		if(is_a_tty) {
 			std::cout << "Reading from stdin.\n"
 				  << PROMPT;
@@ -265,6 +264,8 @@ void Script::executeScriptFromStdin(bool quiet)
 			internalExecuteScript(script.c_str());
 		}
 	}
+
+#endif // HAVE_LIBREADLINE
 }
 
 void Script::executeScriptFromFile(const char *name)
