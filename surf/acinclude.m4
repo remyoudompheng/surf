@@ -409,7 +409,7 @@ AC_DEFUN([JOJO_INVENTOR],[
     dnl OpenGL & GLU:
     JOJO_OPENGL
 
-    if test "x$have_opengl" == "xyes"; then
+    if test "x$have_opengl" = "xyes"; then
 
       if test "x$inventor_prefix" != "x" ; then
         INVENTOR_CPPFLAGS="-I$inventor_prefix/include"
