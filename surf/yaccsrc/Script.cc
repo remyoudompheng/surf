@@ -355,6 +355,8 @@ void Script::addNewCommands()
 	replaceCommand("print_scale", printScale);
 	replaceCommand("print_sequence", printSequence);
 	replaceCommand("print_clip", printClip);
+	replaceCommand("print_curve_width", printCurveWidth);
+	replaceCommand("print_curve_gamma", printCurveGamma);
 }
 
 //
@@ -857,5 +859,21 @@ void Script::printClip()
 	std::cout << "clip:\t"
 		  << clip_data << ' '
 		  << clip_numeric.radius << '\n';
+	std::cout.flush();
+}
+
+void Script::printCurveWidth()
+{
+	using namespace ScriptVar;
+	std::cout << "curve_width:\t"
+		  << curve_width_data << '\n';
+	std::cout.flush();
+}
+
+void Script::printCurveGamma()
+{
+	using namespace ScriptVar;
+	std::cout << "curve_gamma:\t"
+		  << curve_gamma_data << '\n';
 	std::cout.flush();
 }

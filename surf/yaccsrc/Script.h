@@ -135,6 +135,8 @@ private:
 	static void printScale();
 	static void printSequence();
 	static void printClip();
+	static void printCurveWidth();
+	static void printCurveGamma();
 };
 
 #endif //!SCRIPT_H
