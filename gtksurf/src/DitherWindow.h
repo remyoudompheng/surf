@@ -41,7 +41,7 @@ public:
 		gtk_widget_hide(window);
 	}
 		
-	void set_image(gchar* pixdata, int width, int height);
+	void set_image(guint8* pixdata, int width, int height);
 
 private:
 	Glade& glade;

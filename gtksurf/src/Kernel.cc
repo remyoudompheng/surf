@@ -29,7 +29,7 @@
 #include<strstream>
 
 namespace {
-	char change_bits(char b)
+	guint8 change_bits(guint8 b)
 	{
 		return    (b >> 7) & 0x01
 			| (b >> 5) & 0x02
@@ -273,7 +273,7 @@ void Kernel::process_output()
 		is >> image.width >> image.height;
 		size_t bytesPerRow = image.width/8 + (image.width%8 ? 1 : 0);
 		image.length = image.height*bytesPerRow;
-		gchar* data = new gchar[image.length];
+		guint8* data = new guint8[image.length];
 		for(size_t i = 0; i != image.length; i++) {
 			data[i] = change_bits(receive_byte());
 		}

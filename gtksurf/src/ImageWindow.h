@@ -55,7 +55,7 @@ public:
 	
 	void clear();
 
-	void set_image(guchar* pixdata, int width, int height, size_t rowstride);
+	void set_image(guint8* pixdata, int width, int height, size_t rowstride);
 
 private:
 	Glade& glade;

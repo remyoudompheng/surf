@@ -83,7 +83,7 @@ void ImageWindow::clear()
 	show();
 }
 
-void ImageWindow::set_image(guchar* pixdata, int width, int height, size_t rowstride)
+void ImageWindow::set_image(guint8* pixdata, int width, int height, size_t rowstride)
 {
 	if(pixbuf != 0) {
 		gdk_pixbuf_unref(pixbuf);

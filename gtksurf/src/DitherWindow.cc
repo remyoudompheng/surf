@@ -62,12 +62,12 @@ void DitherWindow::set_title()
 	gtk_window_set_title(GTK_WINDOW(window), title.c_str());
 }
 
-void DitherWindow::set_image(gchar* pixdata, int width, int height)
+void DitherWindow::set_image(guint8* pixdata, int width, int height)
 {
 	if(bitmap != 0) {
 		gdk_bitmap_unref(bitmap);
 	}
-	bitmap = gdk_bitmap_create_from_data(drawingarea->window, pixdata, width, height);
+	bitmap = gdk_bitmap_create_from_data(drawingarea->window, reinterpret_cast<gchar*>(pixdata), width, height);
 	delete [] pixdata;
 
 	gtk_widget_set_usize(drawingarea, width, height);

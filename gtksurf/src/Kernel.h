@@ -70,11 +70,11 @@ public:
 		*kernel_output >> i;
 		return i;
 	}
-	void receive_bytes(unsigned char* buf, size_t len) {
+	void receive_bytes(guint8* buf, size_t len) {
 		kernel_output->read(buf, len);
 	}
-	char receive_byte() {
-		char c;
+	guint8 receive_byte() {
+		guint8 c;
 		kernel_output->get(c);
 		return c;
 	}

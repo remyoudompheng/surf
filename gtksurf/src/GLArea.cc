@@ -251,6 +251,12 @@ void GLArea::display()
 
 	glScalef(scalex, scaley, scalez);
 
+	if(wireframe) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	} else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 	if(display_list != 0) {
 		glCallList(display_list);
 	}
@@ -398,22 +404,6 @@ void GLArea::set_rot(gfloat x, gfloat y, gfloat z)
 {
 	GLfloat deg = pi/180.0;
 
-	GLfloat cx = std::cos(x*deg);
-	GLfloat sx = std::sin(x*deg);
-	GLfloat cy = std::cos(y*deg);
-	GLfloat sy = std::sin(y*deg);
-	GLfloat cz = std::cos(z*deg);
-	GLfloat sz = std::sin(z*deg);
-	GLfloat array[] = {
-		 cy*cz + sx*sy*sz,   cx*sz,  -cz*sy + cy*sx*sz, 0,
-		-cy*sz + cz*sx*sy,   cx*cz,   sy*sz + cy*cz*sx, 0,
-           	     cx*sy,          -sx,         cx*cy,        0,
-         	       0,              0,           0,          1 
-	};
-	rotMat = array;
-
-/*  Ok, this would be much better to read, but it would be slower, too:
-	
 	GLvector xaxis(1.0, 0.0, 0.0);
 	GLvector yaxis(0.0, 1.0, 0.0);
 	GLvector zaxis(0.0, 0.0, 1.0);
@@ -425,8 +415,7 @@ void GLArea::set_rot(gfloat x, gfloat y, gfloat z)
 	GLmatrix zrot(4);
 	zrot.setToRotation(z*deg, zaxis);
 	
-	rotMat = xrot*yrot*zrot;
-*/
+	rotMat = zrot*xrot*yrot;
 
 	display();
 }
