@@ -402,7 +402,7 @@ void Script::saveColorImage()
 		return;
 	}
 
-	if(!stdout_is_a_tty) {
+	if(!std::strcmp(surface_filename_data, "-") == 0) {
 		std::cout << "save_color_image\n";
 		std::cout.flush();
 	}
@@ -442,7 +442,7 @@ void Script::saveDitheredImage()
 		return;
 	}
 
-	if(!stdout_is_a_tty) {
+	if(!strcmp(surface_filename_data, "-")) {
 		std::cout << "save_dithered_image\n";
 		std::cout.flush();
 	}
@@ -460,7 +460,7 @@ void Script::save3DImage()
 		return;
 	}
 
-	if(!stdout_is_a_tty) {
+	if(!std::strcmp(surface_filename_data, "-")) {
 		std::cout << "save_three_d_image\n";
 		std::cout.flush();
 	}
