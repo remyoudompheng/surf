@@ -3,12 +3,10 @@ include $(top_srcdir)/Makefile.global
 noinst_LIBRARIES = libdummy.a
 libdummy_a_SOURCES = RBTree.cc RBTree.h		\
         Array.h				\
-        defs.h				\
         Matrix.h			\
         Monom.h				\
         RefCounter.h			\
         TreePolynom.h			\
-	doubleMath.h			\
 	resultant.cc resultant.h	\
 	RootFinder2d.cc RootFinder2d.h	\
 	RootFinder3d.cc RootFinder3d.h  \
