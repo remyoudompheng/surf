@@ -180,6 +180,7 @@ dnl ----------------------
 LIBS="$LIBS $LEXLIB"
 
 AC_OUTPUT(Makefile
+          docs/Makefile
           src/Makefile
 	  image-formats/Makefile
 	  drawfunc/Makefile

@@ -1,105 +1,42 @@
-.TH surf 1 "Mar 31 2000"
-
+.TH SURF "1" "March 2001" "surf 1.1.0"
 .SH NAME
-surf \- visualization of algebraic curves and surfaces
-
+surf \- visualization of real algebraic geometry
 .SH SYNOPSIS
 .B surf
-.B \|\-n\||\|\-\-nogui
-.IR file \ .\|.\|.
-.br
-.B surf
-.RI [\| Gtk
-.IR options \|]
-.RB [\| \-x \||\| \-\-exec \|]
-.RB [\| \-\-progress-dialog \|]
-.RB [\| \-\-auto-resize \|]
-.IR file \ .\|.\|.
-.br
-.B surf
-.B \|\-\-help
-
+[\fIOPTION\fR]... [\fIFILE\fR]...
 .SH DESCRIPTION
-.B surf
-is a tool to render algebraic curves and surfaces. It is script driven
-and has (optionally) a nifty graphical user interface using the Gtk
-widget set.
-
-The only input needed is the equation of an algebraic curve/surface in
-everyday mathematical notation. The output is a (series of) color or
-black and white image(s) in one of several file formats.
-
-.B surf
-also provides a C-style command language which helps working out more
-complicated equations.
-
-The resolution of an image is only bounded by the available
-memory. Since the image is stored as an array of floats and because some
-image processing algorithms need a copy of the image, you need at least
-width*height*12 bytes of virtual memory.
-
-.B surf
-can handle curves/surfaces up to degree 30. The main features include
-.B algebraic
-.BR curves ,
-.B algebraic
-.BR surfaces ,
-.B hyper plane
-.BR sections ,
-.B lines on
-.BR surfaces ,
-.B multiple
-.BR curves/surfaces ,
-.B adaptive anti aliasing
-and
-.BR dithering .
-
-.SH OPTIONS
-If you run
-.B surf
-with GUI support (i.\|e. without the
-.B \-n\||\|\-\-nogui
-option) the standard
-.I Gtk options
-are recognized.
+surf is a script driven visualization tool for real algebraic geometry.
 .TP
-.B \-n, \-\-nogui
-Run without a graphical user interface, just execute the scripts
-given as
-.IR file s
-and exit thereafter.
-
-In case
-.B surf
-has been compiled without GUI support this option does nothing and
-scripts are always executed non-interactively.
-
+\fB\-q\fR, \fB\-\-quiet\fR
+don't be chatty
 .TP
-.B \-x, \-\-exec
-Execute scripts passed as
-.IR file s
-immediately. Otherwise the scripts are just loaded, not executed.
-
+\fB\-h\fR, \fB\-\-help\fR
+display this help and exit
 .TP
-.B \-\-progress-dialog
-Pop up a progress dialog instead of the status bar display during
-calculations.
-
-.TP
-.B \-\-auto-reszie
-Automatically resize the image windows to the size of the image.
-Be aware that there's no check whether the image size is bigger than
-your actual screen size.
-
-.TP
-.B \-\-help
-Display usage information.
-
+\fB\-V\fR, \fB\-\-version\fR
+output version information and exit
+.SH AUTHOR
+Written by Stephan Endrass, Hans Huelf, Ruediger Oertel, Ralf Schmitt,
+Kai Schneider and Johannes Beigel.
+.SH "REPORTING BUGS"
+Report bugs to the SourceForge bug tracking system at
+http://sourceforge.net/tracker/?group_id=3275
 .SH COPYRIGHT
-Copyright (C)
-1996\-1997 Friedrich Alexander Universitaet Erlangen-Nuernberg,
-1997\-2000 Johannes Gutenberg-Universitaet Mainz
-
-.SH AUTHORS
-Stephan Endrass, Hans Huelf, Ruediger Oertel, Kai Schneider,
-Ralf Schmitt, Johannes Beigel
+Copyright \(co 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,
+1997-2001 Johannes Gutenberg-Universitaet Mainz.
+.PP
+This is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License; either version 2 of the License,
+or any later version.
+.SH "SEE ALSO"
+The full documentation for
+.B surf
+is maintained as a Texinfo manual.  If the
+.B info
+and
+.B surf
+programs are properly installed at your site, the command
+.IP
+.B info surf
+.PP
+should give you access to the complete manual.

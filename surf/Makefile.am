@@ -22,10 +22,10 @@ TRIANGULATOR_OBJ = triangulator/Triangulator.o
 
 LOCAL_OBJECTS = $(CURVE_OBJ) $(BALLS_OBJ) $(MISC_OBJ) $(DRAWFUNC_OBJ) $(IMAGE_OBJ) $(SRC_OBJ) $(YACCSRC_OBJ) $(DRAW_OBJ) $(DEBUG_OBJ) $(DITHER_OBJ) $(TRIANGULATOR_OBJ)
 
-SUBDIRS = yaccsrc src image-formats drawfunc curve draw misc debug dither triangulator
+SUBDIRS = docs yaccsrc src image-formats drawfunc curve draw misc debug dither triangulator
 
 bin_PROGRAMS = surf
-surf_SOURCES = 
+surf_SOURCES =
 
 EXTRA_DIST = Makefile.global
 

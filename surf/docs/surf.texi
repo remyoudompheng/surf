@@ -1,0 +1,507 @@
+\input texinfo
+@c $Id$
+@setfilename surf.info
+@settitle surf
+@setcontentsaftertitlepage
+
+@include version.texi
+
+@ifinfo
+This file documents surf -- the visualization tool for real algebraic geometry.
+
+Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,
+1997-2001 Johannes Gutenberg-Universitaet Mainz.
+@end ifinfo
+
+@c title page
+@c **********
+
+@titlepage
+@title surf
+@subtitle visualization of real algebraic geometry
+@author Stephan Endrass
+@author Hans H@"ulf
+@author R@"udiger @"Ortel
+@author Ralf Schmitt
+@author Kai Schneider
+@author Johannes Beigel
+
+@c copyright page
+@page
+@vskip 0pt plus 1filll
+@multitable{Copyright @copyright{}} {1996--1997 Friedrich-Alexander-Universit@"at Erlangen-N@"urnberg,XX}
+@item Copyright @copyright{}
+@tab 1996--1997 Friedrich-Alexander-Universit@"at Erlangen-N@"urnberg,
+@item
+@tab 1997--2001 Johannes Gutenberg-Universit@"at Mainz.
+@end multitable
+@end titlepage
+
+
+@c Top node
+@c ********
+
+@ifinfo
+
+@node Top, Copying, , (dir)
+@top surf
+
+This document describes the usage of surf, the visualization tool for
+real algebraic geometry.
+
+This document applies to version @value{VERSION} of @command{surf}.
+
+@menu
+* Copying::                                  License issues.
+* Abstract::                                 Aims and achievements.
+* Overview::                                 Short introduction.
+* Introduction to surfs Command Language::  surf scripts.
+@end menu
+
+@end ifinfo
+
+
+@c Copying
+@c *******
+
+@node Copying, Abstract, top, top
+@unnumbered Copying
+
+Copyright @copyright{} 1996-1997 Friedrich-Alexander-Universitaet
+Erlangen-Nuernberg, 1997-2001 Johannes Gutenberg-Universitaet Mainz.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+@c Abstract
+@c ********
+
+@node Abstract, Overview, Copying, top
+@chapter Abstract
+
+The aim was to have a tool to visualize some real algebraic geometry:
+plane algebraic curves given as zero locus of a polynomial in two
+variables, algebraic surfaces given as zero locus of a polynomial in
+three variables, hyperplane sections of surfaces: algebraic space curves
+given as zero locus of two polynomials in three variables: a polynomial
+of arbitrary degree (the surface) and a linear polynomial (the
+hyperplane), and lines on surfaces given by two points on a surface.
+
+The algorithms should be stable enough not to be confused by
+curve/surface singularities in codimension greater than one and the
+degree of the surface or curve.  This has been achieved quite a bit. We
+have drawn curves of degree up to 30 and surfaces of degree up to 20
+successfully. However, there are examples of curves/surfaces of lower
+degree where surf fails to produce perfect images. This happens
+especially if the equation of the curve/surface is not reduced. Best
+results are achieved using reduced equations. On the other hand, surf
+displays the Fermat-curves accurately for degree up to 98.
+
+@c Overview
+@c ************
+
+@node Overview, Acknowledgements, Abstract, top
+@chapter Overview
+
+@menu
+* Acknowledgements::          Thanks.
+* How to get surf::           Pointer to the surf website.
+* System Requirements::       Build dependancies.
+* Starting surf::             Command line options.
+* Scripting Language::        About surf's scripting language.
+* Output::                    Image formats.
+* Sample Scripts::            Examples included in the distribution.
+* surf and make::             Using surf together with make.
+* Oddities and Bug Reports::  Where to report bugs.
+@end menu
+
+
+@c Acknowledgements
+@c ----------------
+
+@node Acknowledgements, How to get surf, Overview, Overview
+@section Acknowledgements
+
+(by Stephan Endrass)
+
+I thank Prof. W. Barth (University Erlangen) for (en)forcing me to start
+this project. Hans H@"ulf, R@"udiger @"Ortel and Kai Schneider have
+spent lots of time on coding parts of surf.
+
+Some of the code has been copied from other places:
+
+@itemize
+@item
+Writing SUN rasterfiles has been copied from Michael L. Mauldin's Fuzzy
+PixMap (fbm) library version 1.2.
+@item
+Writing a TIFF file has been copied from John Cristy's Image Magick
+version 3.0.
+@item
+The octree color reduction algorithm is copied from Ian Ashdown's
+article <em>Octree Color Quantization</em> in the C/C++ Users Journal
+Vol. 13, Number 3, pp. 31-43.
+@end itemize
+
+We thank all these people who made their code free so that we could use
+it.
+
+@c How to get surf
+@c ---------------
+
+@node How to get surf, System Requirements, Acknowledgements, Overview
+@section Hot to get surf
+
+surf is available via http/ftp at the surf home page
+@url{http://surf.sourceforge.net}
+
+@c System Requirements
+@c -------------------
+
+@node System Requirements, Starting surf, How to get surf, Overview
+@section System Requirements
+
+To compile surf, the following software is needed:
+
+@itemize
+@item
+an ISO C++ compiler (GCC version 2.95 or higher should work, too),
+@item
+make
+@item
+GNU flex version 2.5 or higher (minor versions should
+  work also, but lex does @emph{not} suffice),
+@item
+Berkeley yacc (GNU bison should work also),
+@item
+GNU MP (gmp) version 2 or later
+@end itemize
+
+@c Starting surf
+@c -------------
+
+@node Starting surf, Scripting Language, System Requirements, Overview
+@section Starting surf
+
+surf is started by typing @kbd{surf} on the command line.
+Optional arguments are 
+
+@option{--help} prints out the usage information.
+
+
+@c Scripting Language
+@c ------------------
+
+@node Scripting Language, Output, Starting surf, Overview
+@section Scripting Language
+
+surf is designed to visualize algebraic curves and surfaces.  This can
+be done either by writing scripts in surf's command language and
+executing them interactively or from another program (for example make),
+or by using surf's graphical user interface @command{gtksurf}.
+
+@c Output
+@c ------
+
+@node Output, Sample Scripts, Scripting Language, Overview
+@section Scripts
+
+surf calculates both color and black & white images.
+
+Color images can currently be stored in the following formats: Sun
+Rasterfile, Portable Pixmap (PPM), JPEG, X Pixmap (XPM).  Additionally
+one can choose a convenient colormap among: Netscape 216 color cube (8
+bit), optimized by an octree algorithm (8 bit) and true color (24 bit).
+
+Black & white images can be stored in the following formats:
+Postscript (PS), Encapsulated Postscript (EPS), TIFF, X Bitmap (XBM),
+Portable Bitmap (PBM).
+
+@c Sample Scripts
+@c --------------
+
+@node Sample Scripts, surf and make, Output, Overview
+@section Sample Scripts
+
+You will find some sample scripts together with surf's
+distribution. They are stored in the @file{examples} directory.
+
+@c surf and make
+@c -------------
+
+@node surf and make, Oddities and Bug Reports, Sample Scripts, Overview
+@section surf and make
+
+surf can be invoked from @command{make}. This comes in quite handy when
+visualising a series of curves/surfaces. Suppose there are script files
+s1.pic, s2.pic, ... , sn.pic which create during execution images
+s1.xpm, s2.xpm, ... , sn.xpm. If for example gif is the desired image
+file format, an appropriate makefile might look like:
+
+@example
+    #!/bin/bash
+    #
+    SURF    = surf
+    RM      = /bin/rm -f
+    CONVERT = convert
+    #
+    OBJS    = s1.gif s2.gif .... sn.gif
+    #
+    .SUFFIXES: .pic .gif
+    #
+    .pic.gif:
+    	$(SURF)    $<
+    	$(CONVERT) $*.xpm $*.gif
+    	$(RM)      $*.xpm
+    #
+    all: $(OBJS)
+    #
+    clean:
+    	$(RM) *.gif
+    #
+    # end of makefile
+@end example
+
+Here convert is the Image Magick image format converter.
+
+@c Oddities and Bug Reports
+@c ------------------------
+
+@node Oddities and Bug Reports, Introduction to surfs Command Language, surf and make, Overview
+@section Oddities and Bug Reports
+
+In case you find any bug, please use the excellent bug tracking system
+on surf's project page at sourceforge:
+@url{http://sourceforge.net/tracker/?group_id=3275}
+
+
+@c Introduction to surf's Command Language
+@c ***************************************
+
+@node Introduction to surfs Command Language, , Oddities and Bug Reports, top
+@chapter Introduction to surf's Command Language
+
+@menu
+* Data Types::               @code{int}, @code{double}, @code{string} and @code{poly}
+* Operators::                @code{+}, @code{-}, @code{*}, @dots{}
+* Mathematical Functions::   @code{sqrt}, @code{pow}, @code{sin}, @dots{}
+* String Functions::         @code{itostr}, @code{itostrn}
+* Polynomial Functions::     @code{deg}, @code{len}, @dots{}
+* First Examples::           First steps.
+* Conditional Statements::   @code{if(EXPR) goto LABEL;}
+@end menu
+
+@c Data Types
+@c ----------
+
+@node Data Types, Operators, Introduction to surfs Command Language, Introduction to surfs Command Language
+@section Data Types
+
+The language used in surf's scripts is quite simple.
+It has got a (very restricted) C-like syntax and provides the four data types
+@itemize
+@item
+@code{int}         (integer),
+@item
+@code{double} (double precision float value),
+@item
+@code{string} (any &dquot;&dquot;-quoted string) and
+@item
+@code{poly} (any polynomial in x, y and z).
+@end itemize
+
+So a valid declaration/initialisation looks like:
+@itemize
+@item
+@code{int a=3;} or @code{int a; a=3;}
+@item
+@code{double b=3.3;} or @code{double b; b=3.3;}
+@item
+@code{string c="test.ppm";} or @code{string c; c="test.ppm";}
+@item
+@code{poly d=(x-3)^3-y^2+z;} or @code{poly d; d=(x-3)^3-y^2+z;}
+@end itemize
+
+There is no comma separator like in C. Declaring a name twice results in
+an error. The scope of the name begins at the point of its declaration and
+lasts until the end of the file. There is no method of undeclaring a name.
+
+@c Operators
+@c ---------
+
+@node Operators, Mathematical Functions, Data Types, Introduction to surfs Command Language
+@section Operators
+
+The following arithmetic operators are implemented:
+
+@multitable {operator} {greater or equal} {@{int,double,poly@}-@{int,double,poly@}}
+@item operator @tab meaning @tab valid data types 
+
+@item +   @tab binary plus    @tab @{int,double,poly@}+@{int,double,poly@}
+@item +   @tab concatenation  @tab @{string@}+@{string@}
+@item +   @tab unary plus     @tab +@{int,double,poly@}
+@item -   @tab binary minus   @tab @{int,double,poly@}-@{int,double,poly@}
+@item -   @tab unary minus    @tab -@{int,double,poly@}
+@item *   @tab multiplication @tab @{int,double,poly@}*@{int,double,poly@}
+@item /   @tab division       @tab @{int,double,poly@}/@{int,double@}
+@item %   @tab remainder      @tab @{int@}%@{int@}
+@item ^   @tab power          @tab @{int,double@}^@{int,double@}@*
+                                   @{poly@}^@{int@}
+@item ( ) @tab brackets       @tab (@{int,double,poly@})
+@item =   @tab assignment     @tab @{poly@}=@{int,double,poly@}@*
+                                   @{double@}=@{int,double@}@*
+                                   @{int@}=@{int@}@*
+                                   @{string@}=@{string@}
+@item ==  @tab equal          @tab @{int,double@}==@{int,double@}
+@item !=  @tab not equal      @tab @{int,double@}!=@{int,double@}
+@item <   @tab smaller than   @tab @{int,double@}<@{int,double@}
+@item <=  @tab smaller or equal @tab @{int,double@}<=@{int,double@}
+@item >   @tab greater than   @tab @{int,double@}>@{int,double@}
+@item >=  @tab greater or equal @tab @{int,double@}>=@{int,double@}
+@end multitable
+
+The precedence of operators copied from C.
+
+
+@c Mathematical Functions
+@c ----------------------
+
+@node Mathematical Functions, String Functions, Operators, Introduction to surfs Command Language
+@section Mathematical Functions
+
+There are some built-in math functions:
+
+@multitable {function} {arcus tangens} {@code{pow(@{double@},@{int,double@})}} {returns}
+@item function      @tab meaning       @tab valid arguments               @tab returns
+@item @code{sqrt}   @tab square root   @tab @code{sqrt(@{int,double@})}   @tab @code{double}
+@item @code{pow}    @tab power         @tab @code{pow(@{int@},@{int,double@})} @*
+                                    @code{pow(@{double@},@{int,double@})} @tab @code{double}
+@item @code{sin}    @tab sine          @tab @code{sin(@{int,double@})}    @tab @code{double}
+@item @code{cos}    @tab cosine        @tab @code{cos(@{int,double@})}    @tab @code{double}
+@item @code{arcsin} @tab arcus sine    @tab @code{arcsin(@{int,double@})} @tab @code{double}
+@item @code{arccos} @tab arcus cosine  @tab @code{arccos(@{int,double@})} @tab @code{double}
+@item @code{tan}    @tab tangens       @tab @code{tan(@{int,double@})}    @tab @code{double}
+@item @code{arctan} @tab arcus tangens @tab @code{arctan(@{int,double@})} @tab @code{double}
+@end multitable
+
+They take @code{int} and @code{double} as argument.
+
+@c String Functions
+@c ----------------
+
+@node String Functions, Polynomial Functions, Mathematical Functions, Introduction to surfs Command Language
+@section String Functions
+
+There are also two functions returning strings:
+
+@multitable {@code{istostrn}} {@code{itostrn(@{int@},@{int@})}} {@code{string} of spec. length}
+@item function       @tab valid arguments                 @tab returns
+@item @code{itostr}  @tab @code{itostr(@{int@})}          @tab @code{string}
+@item @code{itostrn} @tab @code{itostrn(@{int@},@{int@})} @tab @code{string} of spec. length
+@end multitable
+
+@code{itostr()} converts its argument to a @code{string} without blanks. For example
+@code{itostr(31)} returns @code{"31"}.
+@code{itostrn()} allows to specify the length of the @code{string}.
+For example:
+@itemize
+@item
+@code{itostrn(3, 88)} returns @code{"088"}
+@item
+@code{itostrn(4, 88)} returns @code{"0088"}
+@end itemize
+
+
+@c Polynomial Functions
+@c --------------------
+
+@node Polynomial Functions, First Examples, String Functions, Introduction to surfs Command Language
+@section Polynomial Functions
+
+Some functions work on polynomials:
+
+@multitable {function} {Hesse surface} {@code{rotate(@{poly@},@{double@},@{xAxis,yAxis,zAxis@})}} {returns}
+@item function      @tab meaning       @tab valid arguments                  @tab returns
+@item @code{deg}    @tab degree        @tab @code{deg(@{poly@})}             @tab @code{int}
+@item @code{len}    @tab length        @tab @code{len(@{poly@})}             @tab @code{int}
+@item @code{diff}   @tab derivative    @tab @code{diff(@{poly@},@{x,y,z@})}  @tab @code{poly}
+@item @code{rotate} @tab rotation      @tab @code{rotate(@{poly@},@{double@},@{xAxis,yAxis,zAxis@})} @tab @code{poly}
+@item @code{hesse}  @tab Hesse surface @tab @code{hesse(@{poly@})}           @tab @code{poly}
+@end multitable
+
+This enables you to work out arbitrary polynomials. 
+
+
+@c First Exapmles
+@c --------------
+
+@node First Examples, Conditional Statements, Polynomial Functions, Introduction to surfs Command Language
+@section First Examples
+
+Values can be passed to surf by setting global variables. The most
+important two global variables are @code{curve} and @code{surface},
+which should be set to the polynomial whose zero set should be
+visualized. So the shortest effective script contains only three lines,
+for example:
+@itemize
+@item
+1st example: Draw the Newton knot.
+@example
+        curve = y^2 - x^2*(x + 1);
+        draw_curve;
+        filename = "newton.ppm";
+        save_color_image;
+@end example
+@item
+2nd example: Draw a sphere.
+@example
+        surface = x^2 + y^2 + z^2 - 80;
+        draw_surface;
+        filename = "sphere.ppm";
+        save_color_image;
+@end example
+@end itemize
+
+@c Conditional Statements
+@c ----------------------
+
+@node Conditional Statements, , First Examples, Introduction to surfs Command Language
+@section Conditional Statements
+
+There are no @code{for} and no @code{while} statements.
+There is only the crude
+@example
+    if(INTEGER-EXPRESSION) goto LABEL;
+@end example
+which you might remember from your early BASIC sessions.
+
+Here @code{INTEGER-EXPRESSION} can be arbitrary complicated as long as it
+results in an integer. @code{LABEL} is something like @code{NAME}
+which has occurred before as @code{NAME:}. Consider the example
+@example
+    int i = 0;
+    loop:
+        surface = x^2 + y^2 + z^2 - (i + 1.0)/2.0;
+        clear_screen;
+        draw_surface;
+        filename = "sphere" + itostrn(2, i) + ".xpm";
+        save_color_image;
+        i = i + 1;
+    if(i < 50) goto loop;
+@end example
+which obviously draws fifty spheres of increasing radius 
+and saves them into the X Pixmap files:
+@file{sphere00.xpm}, @dots{} @file{sphere49.xpm}.
+
+@bye

@@ -50,19 +50,30 @@
 namespace {
 char usage_text[] =
 #ifdef HAVE_GETOPT_LONG
+"\n"
+"surf is a script driven visualization tool for real algebraic geometry.\n"
+"\n"
 "Usage: surf [OPTION]... [FILE]...\n"
 "\n"
 "  -q, --quiet      don't be chatty\n"
 "  -h, --help       display this help and exit\n"
 "  -V, --version    output version information and exit\n"
+"\n"
+"Report bugs to the SourceForge bug tracking system at\n"
+"http://sourceforge.net/tracker/?group_id=3275\n"
 "\n";
 #else // !HAVE_GETOPT_LONG
+"\n"
+"surf is a script driven visualization tool for real algebraic geometry.\n"
+"\n"
 "Usage: surf [OPTION]... [FILE]...\n"
 "\n"
 "  -q    don't be chatty\n"
 "  -h    display this help and exit\n"
 "  -V    output version information and exit\n"
-"\n";
+"\n"
+"Report bugs to\n"
+"http://sourceforge.net/tracker/?group_id=3275\n";
 #endif
 }
 
@@ -115,25 +126,17 @@ int main(int argc, char* argv[])
 			break;
 		case 'V':
 			std::cout <<
-"\n"
-PACKAGE " version " VERSION "\n"
-"\n"
-"Visualizing algebraic curves and algebraic surfaces\n"
+PACKAGE " " VERSION "\n"
 "\n"
 "Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,\n"
-"              1997-2001 Johannes Gutenberg-Universitaet Mainz,\n"
+"1997-2001 Johannes Gutenberg-Universitaet Mainz.\n"
 "\n"
-"Authors: Stephan Endrass, Hans Huelf, Ruediger Oertel, Ralf Schmitt,\n"
-"Kai Schneider and Johannes Beigel.\n"
+"This is free software; you can redistribute it and/or modify it under the\n"
+"terms of the GNU General Public License; either version 2 of the License,\n"
+"or any later version.\n"
 "\n"
-"This program is free software; you can redistribute it and/or modify\n"
-"it under the terms of the GNU General Public License as published by\n"
-"the Free Software Foundation; either version 2 of the License, or\n"
-"(at your option) any later version.\n"
-"\n"
-"For reporting bugs or getting news about latest developments,\n"
-"please visit our homepage at http://surf.sourceforge.net/\n"
-"\n";
+"Written by Stephan Endrass, Hans Huelf, Ruediger Oertel, Ralf Schmitt,\n"
+"Kai Schneider and Johannes Beigel.\n";
 
 			exit(0);
 			break;
