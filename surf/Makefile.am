@@ -4,7 +4,7 @@ DITHER_OBJ = dither/dither_brute.o dither/dither_clustered.o dither/dither_dispe
 
 DEBUG_OBJ = debug/debug.o
 
-MISC_OBJ = misc/mystrdup.o misc/Misc.o
+MISC_OBJ = misc/mystrdup.o misc/IO.o
 
 DRAW_OBJ = draw/NewClip.o draw/NewClipSphere.o draw/NewClipSphereCentral.o draw/NewClipSphereParallel.o draw/NewClipAlgebraic.o draw/NewClipAlgebraicCube.o draw/NewClipAlgebraicTetra.o draw/NewClipAlgebraicOcta.o draw/NewClipAlgebraicDode.o draw/NewClipAlgebraicIco.o draw/NewClipAlgebraicCyl.o draw/NewClipAlgebraicUser.o draw/NewSimpleClip.o draw/SurfaceCalc.o
 

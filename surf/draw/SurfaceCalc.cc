@@ -35,7 +35,7 @@
 #include <float_buffer.h>
 #include <antialiasing_factor.h>
 #include <debug.h>
-#include <Misc.h>
+#include <IO.h>
 
 #include <math.h>
 
@@ -275,7 +275,7 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 	
 	double stepwidth = pixel_to_user_x(1) - pixel_to_user_x(2);
 	
-	Misc::progress("Rendering surface");
+	IO::progress("Rendering surface");
 	int image_length = 3*width*height;
 	int bytes_written = 0;
 
@@ -287,7 +287,7 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 		double uy = pixel_to_user_y( py );
 
 		if(Script::isStopped()) {
-			Misc::progress(Misc::aborted);
+			IO::progress(IO::aborted);
 			return;
 		}
 				
@@ -399,10 +399,10 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 		}
 
 		bytes_written += 3*width;
-		Misc::progress(bytes_written*100/image_length);
+		IO::progress(bytes_written*100/image_length);
 	}
 
-	Misc::progress(Misc::done);
+	IO::progress(IO::done);
 
 	// ----------------
 	//  refine picture
@@ -410,14 +410,14 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 	
 	if(ScriptVar::display_ref_level_data > 1) {
 		std::string action = "Antialiasing";
-		Misc::progress(action);
+		IO::progress(action);
 		bytes_written = 0;
 
 		colorrgb i1, i2, i3, i4, i5, i6, i7, i8, i9;  		
 		for(int py = 0; py < height; py++) {
 
 			if(Script::isStopped()) {
-				Misc::progress(Misc::aborted);
+				IO::progress(IO::aborted);
 				return;
 			}
 			
@@ -471,10 +471,10 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 			}
 
 			bytes_written += 3*width;
-			Misc::progress(bytes_written*100/image_length);
+			IO::progress(bytes_written*100/image_length);
 		}
 
-		Misc::progress(Misc::done);
+		IO::progress(IO::done);
 	}
 }
 

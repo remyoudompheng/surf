@@ -27,7 +27,7 @@
 #endif
 
 #include <Script.h>
-#include <compfn.h>
+#include <IO.h>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -96,11 +96,9 @@ int main(int argc, char* argv[])
 		signal(SIGINT, sig_handler);
 	}
 
-
 #ifdef DEBUG
 	yydebug = 1;
 #endif
-
 
 	// parse options:
 #ifdef HAVE_GETOPT_LONG
@@ -108,11 +106,13 @@ int main(int argc, char* argv[])
                 { "quiet", no_argument, 0, 'q' },
 		{ "help", no_argument, 0, 'h' },
 		{ "version", no_argument, 0, 'V' },
+		{ "kernel", no_argument, 0, 'k' },
                 { 0, 0, 0, 0 }
 	};
 #endif
 
 	bool quiet = false;
+	bool kernel_mode = false;
 	
 	int c;
 	while((c = getopt_long(argc, argv, "qhV", longopts, 0)) != -1) {
@@ -141,6 +141,9 @@ PACKAGE " " VERSION "\n"
 
 			exit(0);
 			break;
+		case 'k':
+			kernel_mode = true;
+			break;
 		default:
 			std::cerr << "Unknown option!\n";
 			std::cerr << usage_text;
@@ -148,14 +151,21 @@ PACKAGE " " VERSION "\n"
 		}
 	}
 
-	Script::init(quiet);
+        IO::init(quiet, kernel_mode);
+	Script::init();
 
-	if(optind == argc) {
-		Script::executeScriptFromStdin();
+	if(kernel_mode) {
+		Script::kernel();
 	} else {
-		for(int i = optind; i < argc; ++i) {
-			std::cerr << "Processing file " << argv[i] << "\n";
-			Script::executeScriptFromFile(argv[i]);
+		if(optind == argc) {
+			Script::executeScriptFromStdin();
+		} else {
+			for(int i = optind; i < argc; ++i) {
+				if(!quiet) {
+					std::cerr << "Processing file " << argv[i] << "\n";
+				}
+				Script::executeScriptFromFile(argv[i]);
+			}
 		}
 	}
 	

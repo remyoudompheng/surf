@@ -23,8 +23,8 @@
  */
 
 
-#ifndef MISC_H
-#define MISC_H
+#ifndef IO_H
+#define IO_H
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -32,19 +32,33 @@
 
 #include<string>
 
-namespace Misc {
-	void syscall_failed(const std::string& txt, bool fatal = true);
-	void print_error(const std::string& txt, bool fatal = true);
-	void print_warning(const std::string& txt);
+namespace IO {
 
-	enum SpecialProgressType {
-		done,
-		aborted
-	};
+void init(bool quiet, bool kernel_mode);
+void print_banner();
 
-	void progress(const std::string& action);
-	void progress(int percent);
-	void progress(SpecialProgressType type);
+bool getline(std::string& line);
+
+void print(const std::string& txt);
+void print(int i);
+void print(double d);
+void kernel_msg(const std::string& txt);
+
+void syscall_failed(const std::string& txt, bool fatal = true);
+void print_error(const std::string& txt, bool fatal = true);
+void print_warning(const std::string& txt);
+void syntax_error(const std::string& txt, int line_number, int error_begin_char, int char_number);
+
+enum SpecialProgressType {
+	done,
+	aborted
 };
+void progress(const std::string& action);
+void progress(int percent);
+void progress(SpecialProgressType type);
 
-#endif //!MISC_H
+bool is_kernel_mode();
+
+}
+
+#endif //!IO_H

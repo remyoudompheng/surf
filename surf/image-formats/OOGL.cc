@@ -34,7 +34,7 @@
 #include <FileWriter.h>
 #include <Triangulator.h>
 #include <ScriptVar.h>
-#include <Misc.h>
+#include <IO.h>
 
 namespace ImageFormats {
 
@@ -47,13 +47,13 @@ namespace ImageFormats {
 		FileWriter fw(filename);
 		
 		if((file = fw.openFile()) == 0) {
-		        Misc::print_warning("Could not open file for writing.\n");
+		        IO::print_warning("Could not open file for writing.");
 			return false;
 		}
 
 		GtsSurface* surface = data.getSurface();		
 		if(surface == 0) {
-			Misc::print_warning("There was no triangulated data to save.\n");
+			IO::print_warning("There was no triangulated data to save.");
 			return false;
 		}
 

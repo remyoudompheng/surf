@@ -4,6 +4,6 @@ noinst_LIBRARIES = libdummy.a
 
 libdummy_a_SOURCES = mystrdup.cc mystrdup.h \
 	             FileWriter.h \
-	             Misc.h Misc.cc
+	             IO.h IO.cc
 
 libdummy.a:: $(libdummy_a_OBJECTS) $(libdummy_a_DEPENDENCIES)

@@ -23,7 +23,7 @@
  */
 
 #include <compfn.h>
-#include <Misc.h>
+#include <IO.h>
 
 namespace {
 
@@ -281,7 +281,7 @@ void dot_diffusion_init_struct()
 			}
 			
 			if(!found) {
-				Misc::print_error("Something weird happend while initializing dot diffusion! This is a bug.\n");
+				IO::print_error("Something weird happend while initializing dot diffusion! This is a bug.");
 			}
 			
 			//  Store position of  k  in struct:

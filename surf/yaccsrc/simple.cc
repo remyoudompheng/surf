@@ -24,7 +24,7 @@
 
 #include <simple.h>
 #include <mymemory.h>
-#include <Misc.h>
+#include <IO.h>
 
 #include<cmath>
 #include<cstdlib>
@@ -45,11 +45,11 @@ int** new_int_p(int n)
 	if(n > 0) {
 		int** i = static_cast<int**>(malloc(n*sizeof(int*)));
 		if(i == 0) {
-			Misc::print_error("Out of memory!\n");
+			IO::print_error("Out of memory!");
 		}
 		return i;
 	} else {
-		Misc::print_error("n == 0 in new_int_p()!\n");
+		IO::print_error("n == 0 in new_int_p()!");
 	}
 	return 0; // suppress warnings
 }
@@ -61,11 +61,11 @@ int** renew_int_p(int** i, int n)
 	} else if(n > 0) {
 		i = static_cast<int**>(realloc(i, n*sizeof(int*)));
 		if(i == 0) {
-			Misc::print_error("Out of memory!\n");
+			IO::print_error("Out of memory!");
 		}
 		return  i;
 	} else {
-		Misc::print_error("n == 0 in renew_int_p()!\n");
+		IO::print_error("n == 0 in renew_int_p()!");
 	}
 	return 0; // suppress warnings
 }
@@ -118,8 +118,8 @@ int binom_coeff(int n, int k)
 	} else {
 		std::ostringstream os;
 		os << "Can't compute binomial coefficient of"
-		   << n << " and " << k << "!\n";
-		Misc::print_error(os.str());
+		   << n << " and " << k << "!";
+		IO::print_error(os.str());
 	}
 	return 0; // suppress warnings
 }

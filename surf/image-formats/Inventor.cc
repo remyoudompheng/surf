@@ -33,7 +33,7 @@
 #include <Triangulator.h>
 #include <ScriptVar.h>
 #include <FileWriter.h>
-#include <Misc.h>
+#include <IO.h>
 
 #include <gts.h>
 
@@ -49,7 +49,7 @@ namespace ImageFormats {
 		FILE* file;
 		
 		if((file = fw.openFile()) == 0) {
-		        Misc::print_warning("Could not open file for writing.\n");
+		        IO::print_warning("Could not open file for writing.");
 			return false;
 		}
 

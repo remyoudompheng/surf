@@ -32,7 +32,7 @@
 #include <Triangulator.h>
 #include <ScriptVar.h>
 #include <Script.h>
-#include <Misc.h>
+#include <IO.h>
 #include <FileWriter.h>
 #include <polyarith.h>
 #include <ScriptVar.h>
@@ -82,8 +82,8 @@ void Triangulator::triangulate()
 		return;
 	}
 	
-	Misc::progress("Triangulating surface");
-	Misc::progress(0);
+	IO::progress("Triangulating surface");
+	IO::progress(0);
 
 	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
 	polyxyz_sort(&f);
@@ -102,20 +102,20 @@ void Triangulator::triangulate()
 
 	gts_isosurface_cartesian(surface, g, _iso_func, this, 0.0);
 
-	Misc::progress(Misc::done);
+	IO::progress(IO::done);
 
 	if(ScriptVar::gts_coarsen_data == 0) {
-		Misc::progress("Coarsening surface");
+		IO::progress("Coarsening surface");
 		gts_surface_coarsen(surface, 0, 0, 0, 0,
 				    GtsStopFunc(gts_coarsen_stop_cost),
 				    &ScriptVar::gts_max_cost_data, 0);
-		Misc::progress(Misc::done);
+		IO::progress(IO::done);
 	}
 
 	if(ScriptVar::clip_data != ScriptVar::clip_none_data) {
-		Misc::progress("Clipping surface");
+		IO::progress("Clipping surface");
 		clip();
-		Misc::progress(Misc::done);
+		IO::progress(IO::done);
 	}
 
 	delete hf;
@@ -138,7 +138,7 @@ void Triangulator::clip()
 	if(ScriptVar::clip_data == ScriptVar::clip_sphere_data) {
 		f = sphere_func;
 	} else {
-		Misc::print_warning("Unsupported clipping mode in Triangulator::triangulate()!");
+		IO::print_warning("Unsupported clipping mode in Triangulator::triangulate()!");
 		return;
 	}
 
@@ -216,7 +216,7 @@ void Triangulator::iso_func(gdouble** f, GtsCartesianGrid g, guint k)
 		y += g.dy;
 	}
 	
-	Misc::progress(k*100/g.nz);
+	IO::progress(k*100/g.nz);
 }
 
 Triangulator::Point Triangulator::getNormal(const Point& p)

@@ -41,15 +41,13 @@ class SymbolTable;
 class Script
 {
 public:
-	static void init(bool quiet);
+	static void init();
 	static void deinit();
 
 	static char* readFile(const char* name);
+	static void kernel();
 	static void executeScriptFromStdin();
 	static void executeScriptFromFile(const char* name);
-
-	static bool isQuiet() { return quiet; }
-	static bool stdout_is_tty() { return stdout_is_a_tty; }
 
 	static RgbBuffer* getBuffer() { return buffer; }
 	static void setBuffer(RgbBuffer* _buffer) { buffer = _buffer; }
@@ -79,17 +77,9 @@ public:
 	static bool isStopped() {
 		return stop_flag;
 	}
-	static bool isKernelMode() {
-		return kernel_mode;
-	}
 
 private:
-	static bool quiet;
-	static bool stdin_is_a_tty;
-	static bool stdout_is_a_tty;
-	
 	static bool stop_flag;
-	static bool kernel_mode;
 
 	static RgbBuffer* buffer;
 	static bit_buffer* bitbuffer;
@@ -120,17 +110,20 @@ private:
 	
 	static void clearScreen();
 	static void saveDitheredImage();
-	static void save3DImage();
 	static void ditherSurface();
 	static void ditherCurve();
 	static void reset();
-	static void triangulateSurface();
 	static void kernelModeSet();
 	static void printDefaults();
 	static void printColorImageFormats();
 	static void printDitherImageFormats();
-	static void print3DImageFormats();
 	static void printVariable();
+
+#ifdef HAVE_GTS
+	static void triangulateSurface();
+	static void save3DImage();
+	static void print3DImageFormats();
+#endif
 };
 
 #endif //!SCRIPT_H

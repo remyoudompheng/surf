@@ -135,8 +135,9 @@ SymbolTable::Node * SymbolTable::lookup (const char *key, bool insert)
 
 std::ostream & operator << (std::ostream &os, const SymbolTable &st)
 {
-	if (st.root)
+	if (st.root) {
 		st.root->print(os);
+	}
 	return os;
 }
 

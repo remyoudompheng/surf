@@ -45,37 +45,10 @@
 #include <RootFinder3d.h>
 #include <SymbolTable.h>
 #include <Triangulator.h>
+#include <IO.h>
 #include <debug.h>
 
-#ifdef HAVE_LIBREADLINE
-#  if defined(HAVE_READLINE_READLINE_H)
-#    include <readline/readline.h>
-#  elif defined(HAVE_READLINE_H)
-#    include <readline.h>
-#  else
-     extern char *readline ();
-#  endif
-#endif
-#ifdef HAVE_READLINE_HISTORY
-#  if defined(HAVE_READLINE_HISTORY_H)
-#    include <readline/history.h>
-#  elif defined(HAVE_HISTORY_H)
-#    include <history.h>
-#  else
-     extern void add_history ();
-     extern int write_history ();
-     extern int read_history ();
-#  endif
-#endif
-
-
 #include <sys/stat.h>
-#include <signal.h>
-
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif
-
 #include <assert.h>
 #include <errno.h>
 
@@ -83,15 +56,10 @@
 #include<sstream>
 #include<string>
 
-#define PROMPT "-> "
-
 using namespace ScriptVar;
 
-bool Script::quiet = false;
-bool Script::stdin_is_a_tty = false;
-bool Script::stdout_is_a_tty = false;
 bool Script::stop_flag = false;
-bool Script::kernel_mode = false;
+//bool Script::kernel_mode = false;
 RgbBuffer* Script::buffer = 0;
 bit_buffer* Script::bitbuffer = 0;
 float_buffer* Script::zbuffer = 0;
@@ -180,41 +148,33 @@ void Script::internalExecuteScript(const char* str)
 	} while (goto_flag);
 	
 	if(parse_result != 0) { // an error occured
-		if(!stdout_is_a_tty) {
-			std::cout << "error\n"
-				  << error_begin_char << ' '
-				  << char_number << '\n';
-		}
-		std::cout << "ERROR";
-		if(!stdin_is_a_tty) {
-			std::cout << " in line " << line_number;
-		}
-		std::cout << ": " << yyerrorstring << '\n';
-		std::cout.flush();
+		IO::syntax_error(yyerrorstring, line_number, error_begin_char, char_number);
 	}
 }
 
 char* Script::readFile(const char* name)
 {
+	std::ostringstream oss;
+	
 	struct stat buf;
 	if(stat(name, &buf) != 0) {
-		std::cerr << "Can't stat file '" << name << "'"
-			  << " (" << strerror(errno) << ")\n";
+		oss << "Can't stat file '" << name << "'" << " (" << strerror(errno) << ")" << std::ends;
+		IO::print_error(oss.str());
 		return 0;
 	}
 	
 	size_t size = buf.st_size;
 	FILE* f = fopen(name, "r");
 	if(f == 0) {
-		std::cerr << "Can't open file '" << name << "'"
-			  << " (" << strerror(errno) << ")\n";
+		oss << "Can't open file '" << name << "'" << " (" << strerror(errno) << ")" << std::ends;
+		IO::print_error(oss.str());
 		return 0;
 	}
 	
 	char* str = new char[size + 1];
 	if(fread(str, 1, size, f) != size) {
-		std::cerr << "Could not read from file '" << name << "'"
-			  << " (" << strerror(errno) << ")\n";
+		oss << "Could not read from file '" << name << "'" << " (" << strerror(errno) << ")" << std::ends;
+		IO::print_error(oss.str());
 		delete [] str;
 		fclose(f);
 		return 0;
@@ -225,92 +185,51 @@ char* Script::readFile(const char* name)
 	str[size] = 0;
 	if(strlen(str) < size) {
 		delete [] str;
-		std::cerr << "\"" << name << "\" contains binary data.\n";
+		oss << "\"" << name << "\" contains binary data." << std::ends;
+		IO::print_error(oss.str());
 		return 0;
 	}
 	
 	return str;
 }
 
-void Script::executeScriptFromStdin()
+void Script::kernel()
 {
+	IO::print_banner();
 	beforeScriptExecution();
-	
-	stdin_is_a_tty = isatty(STDIN_FILENO);
-	stdout_is_a_tty = isatty(STDOUT_FILENO);
-	
-	if(!quiet) {
-		if(stdin_is_a_tty && stdout_is_a_tty) {
-			std::cout <<
-"                      _____\n"
-"  ________ __________/ ____\\\n"
-" /  ___/  |  \\_  __ \\   __\\\n"
-" \\___ \\|  |  /|  | \\/|  |\n"
-"/____  >____/ |__|   |__| v" VERSION "\n"
-"     \\/\n\n";
-
-		} else {
-			std::cout << PACKAGE " " VERSION "\n";
-		}
-		std::cout.flush();
-	}
-
-	if(stdin_is_a_tty) {
-
-#ifdef HAVE_LIBREADLINE
-		rl_bind_key('\t', rl_insert);
-		rl_bind_key('^', rl_insert);
-		char* l;
-		while((l = readline(PROMPT)) != 0) {
-			if(*l) {
-				add_history(l);
-				internalExecuteScript(l);
-			}
-			free(l);
-		}
-#else
-		std::cout << PROMPT;
-		std::string line;
-		while(std::getline(std::cin, line)) {
-			if(line.length() > 0) {
-				internalExecuteScript(line.c_str());
-			}
-			std::cout << PROMPT;
-		}
-#endif
-		std::cout << "\nQuitting.\n";
-
-	} else {
-		std::string script = "";
-		std::string line;
-		while(std::getline(std::cin, line)) {
-			if(line == "execute;") { // execute immediately
-				internalExecuteScript(script.c_str());
-				script.assign(""); // gcc 2.95 doesn't have std::string::clear()
-			} else {
-				script += line + '\n';
-			}
-		}
-		if(script.length() > 0) {
+	std::string script = "";
+	std::string line;
+	while(IO::getline(line)) {
+		if(line == "execute") {
 			internalExecuteScript(script.c_str());
+			script.assign(""); // gcc 2.95 doesn't have std::string::clear()
+		} else {
+			script += line + '\n';
 		}
 	}
 }
 
+void Script::executeScriptFromStdin()
+{
+	IO::print_banner();
+	beforeScriptExecution();
+	std::string line;
+	while(IO::getline(line)) {
+		internalExecuteScript(line.c_str());
+	}
+	IO::print("Quitting.\n");
+}
+
 void Script::executeScriptFromFile(const char *name)
 {
-	stdin_is_a_tty = false;
-	stdout_is_a_tty = isatty(STDOUT_FILENO);
-
 	const char* str = readFile(name);
 	beforeScriptExecution();
 	internalExecuteScript(str);
 	delete [] str;
 }
 
-void Script::init(bool _quiet)
+void Script::init()
 {
-	quiet = _quiet;
 	init_main_variables();
 	addNewCommands();
 	buffer = new RgbBuffer(main_width_data, main_height_data);
@@ -335,7 +254,6 @@ void Script::deinit()
 
 void Script::addNewCommands()
 {
-	replaceCommand("set_kernel_mode", setKernelMode);
 	replaceCommand("set_size", setSize);
 	replaceCommand("draw_curve", drawCurve);
 	replaceCommand("dither_curve", ditherCurve);
@@ -345,27 +263,24 @@ void Script::addNewCommands()
 	replaceCommand("dither_surface", ditherSurface);
 	replaceCommand("save_color_image", saveColorImage);
 	replaceCommand("save_dithered_image", saveDitheredImage);
-	replaceCommand("save_three_d_image", save3DImage);
 	replaceCommand("clear_screen", clearScreen);
 	replaceCommand("clear_pixmap", clearScreen);
 	replaceCommand("resultant", computeResultant);
 	replaceCommand("reset", reset);
-        replaceCommand("triangulate_surface", triangulateSurface);
 	replaceCommand("print_defaults", printDefaults);
 	replaceCommand("print_color_image_formats", printColorImageFormats);
 	replaceCommand("print_dither_image_formats", printDitherImageFormats);
-	replaceCommand("print_three_d_image_formats", print3DImageFormats);
 	replaceCommand("print_variable", printVariable);
+#ifdef HAVE_GTS
+        replaceCommand("triangulate_surface", triangulateSurface);
+	replaceCommand("save_three_d_image", save3DImage);
+	replaceCommand("print_three_d_image_formats", print3DImageFormats);
+#endif
 }
 
 //
 // --- Commands
 //
-
-void Script::setKernelMode()
-{
-	kernel_mode = true;
-}
 
 void Script::setSize()
 {
@@ -382,7 +297,7 @@ void Script::drawCurve()
 	setSize();
 	draw_func_draw();
 
-	if(kernel_mode) {
+	if(IO::is_kernel_mode()) {
 		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
 	}
 }
@@ -399,7 +314,7 @@ void Script::drawSurface()
 	*zbuffer = -10.0;
 	sc.surface_calculate(*buffer);
 
-	if(kernel_mode) {
+	if(IO::is_kernel_mode()) {
 		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
 	}
 
@@ -428,7 +343,7 @@ void Script::drawSurface()
 		intensity->StereoRight(display_numeric.stereo_red, display_numeric.stereo_green,
                                        display_numeric.stereo_blue, dist, back);
 
-		if(kernel_mode) {
+		if(IO::is_kernel_mode()) {
 			ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
 		}
 	}
@@ -439,7 +354,7 @@ void Script::saveColorImage()
 	checkVariables();
 
 	if(surface_filename_data == 0) {
-		std::cerr << "No filename given.\n";
+		IO::print_error("No filename given.");
 		return;
 	}
 
@@ -451,11 +366,7 @@ void Script::clearScreen()
 {
 	checkVariables();
 
-	if(kernel_mode) {
-		std::cout << "clear_screen\n";
-		std::cout.flush();
-	}
-	
+	IO::kernel_msg("clear_screen\n");
 
 	buffer->ClearBuffer();
     
@@ -468,26 +379,26 @@ void Script::saveDitheredImage()
 	checkVariables();
 
 	if(surface_filename_data == 0) {
-		std::cerr << "No filename given.\n";
+		IO::print_error("No filename given.");
 		return;
 	}
 
 	ImageFormats::saveDitheredImage(surface_filename_data, *bitbuffer);
 }
 
+#ifdef HAVE_GTS
 void Script::save3DImage()
 {
-#ifdef HAVE_GTS
 	Triangulator* tritor = getTriangulator();
 	
 	if(surface_filename_data == 0) {
-		std::cerr << "No filename given.\n";
+		IO::print_error("No filename given.");
 		return;
 	}
 
 	ImageFormats::save3DImage(surface_filename_data, *tritor);
-#endif
 }
+#endif
 
 void Script::ditherSurface()
 {
@@ -529,10 +440,10 @@ void Script::ditherSurface()
 	} else if (print_dither_data == print_dither_smooth_dot_diffusion_data) {
   		dither_smooth_dot_diffusion (fbuffer, *bitbuffer, print_barons_data);
 	} else {
-  		std::cerr << "dithering_method out of range. No dithering done.\n";
+		IO::print_error("dithering_method out of range.");
 	}
 
-	if(kernel_mode) {
+	if(IO::is_kernel_mode()) {
 		ImageFormats::imgFmt_PBM.saveDitheredImage("-", *bitbuffer);
 	}
 }
@@ -550,7 +461,7 @@ void Script::ditherCurve()
     
 	dither_brute(fbuffer, *bitbuffer);
 
-	if(kernel_mode) {
+	if(IO::is_kernel_mode()) {
 		ImageFormats::imgFmt_PBM.saveDitheredImage("-", *bitbuffer);
 	}
 }
@@ -558,17 +469,17 @@ void Script::ditherCurve()
 void Script::checkVariables()
 {
 	if(numeric_epsilon_data <= 0) {
-		std::cerr << "WARNING: epsilon = " << numeric_epsilon_data << " <= 0. Setting epsilon to 0.00001\n";
+		IO::print_warning("epsilon <= 0. Setting epsilon to 0.00001.");
 		numeric_epsilon_data = 0.00001;
 	}
 
 	if(main_width_data <= 0) {
-		std::cerr << "WARNING: width = " << main_width_data << " <= 0. Setting width to 200\n";
+		IO::print_warning("width <= 0. Setting width to 200.");
 		main_width_data = 200;
 	}
 
 	if (main_height_data <= 0) {
-		std::cerr << "WARNING: height = " << main_height_data << " <= 0. Setting height to 200\n";
+		IO::print_warning("height <= 0. Setting height to 200.");
 		main_height_data = 200;
 	}
 }
@@ -607,7 +518,7 @@ void Script::cutWithPlane()
 				
 	draw_func_cut();
 
-	if(Script::isKernelMode()) {
+	if(IO::is_kernel_mode()) {
 		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
 	}
 	
@@ -667,7 +578,7 @@ void Script::cutWithSurface()
 
 	delete clip;
 
-	if(kernel_mode) {
+	if(IO::is_kernel_mode()) {
 		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
 	}
 
@@ -713,7 +624,7 @@ void Script::cutWithSurface()
 
 	        delete clip;
 
-		if(kernel_mode) {
+		if(IO::is_kernel_mode()) {
 			ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
 		}
 	}
@@ -733,24 +644,22 @@ void Script::reset()
 	*zbuffer = -10.0;
 }
 
+#ifdef HAVE_GTS
 void Script::triangulateSurface()
 {
-#ifdef HAVE_GTS
 	tritor->triangulate();
-	if(kernel_mode) {
+	if(IO::is_kernel_mode()) {
 		ImageFormats::imgFmt_OOGL.save3DImage("-", *tritor);
 	}
-#else
-	std::cout << "not_implemented\n";
-	std::cout.flush();
-#endif // HAVE_GTS
 }
+#endif
 
 void Script::printDefaults()
 {
-	std::cout << getDefaultValues();
-	std::cout << "\n";
-	std::cout.flush();
+	std::ostringstream oss;
+	
+	oss << getDefaultValues();
+	IO::print(oss.str() + "\n");
 }
 
 void Script::printColorImageFormats()
@@ -760,12 +669,11 @@ void Script::printColorImageFormats()
 	for(size_t i = 0; i != numAvailableFormats; i++) {
 		Format* fmt = availableFormats[i];
 		if(fmt->isColorFormat()) {
-			std::cout << fmt->getName() << '\n'
-				  << fmt->getID() << '\n';
+			IO::print(fmt->getName() + "\n");
+			IO::print(fmt->getID() + "\n");
 		}
 	}
-	std::cout << "\n";
-	std::cout.flush();
+	IO::print("\n");
 }
 
 void Script::printDitherImageFormats()
@@ -775,14 +683,14 @@ void Script::printDitherImageFormats()
 	for(size_t i = 0; i != numAvailableFormats; i++) {
 		Format* fmt = availableFormats[i];
 		if(fmt->isDitherFormat()) {
-			std::cout << fmt->getName() << '\n'
-				  << fmt->getID() << '\n';
+			IO::print(fmt->getName() + "\n");
+			IO::print(fmt->getID() + "\n");
 		}
 	}
-	std::cout << "\n";
-	std::cout.flush();
+	IO::print("\n");
 }
 
+#ifdef HAVE_GTS
 void Script::print3DImageFormats()
 {
 	using namespace ImageFormats;
@@ -790,58 +698,59 @@ void Script::print3DImageFormats()
 	for(size_t i = 0; i != numAvailableFormats; i++) {
 		Format* fmt = availableFormats[i];
 		if(fmt->is3DFormat()) {
-			std::cout << fmt->getName() << '\n'
-				  << fmt->getID() << '\n';
+			IO::print(fmt->getName() + "\n");
+			IO::print(fmt->getID() + "\n");
 		}
 	}
-	std::cout << "\n";
-	std::cout.flush();
+	IO::print("\n");
 }
+#endif
 
 void Script::printVariable()
 {
 	using namespace ScriptVar;
 
 	if(variable_data == 0) {
-		std::cerr << "Error: 'variable' not set.\n";
+		IO::print_error("Variable not set.");
 		return;
 	}
 
-	std::cout << variable_data << ": ";
+	IO::print(variable_data);
+	IO::print(": ");
+
 	symtab* st = symtab_find_name(variable_data);
 	if(st != 0) {
 		if(st->surface) {
 			switch(st->type) {
 			case SYM_STRING:
-				std::cout << *reinterpret_cast<char**>(st->ptr);
+				IO::print(*reinterpret_cast<char**>(st->ptr));
 				break;
 			case SYM_INTEGER:
-				std::cout << *reinterpret_cast<int*>(st->ptr);
+				IO::print(*reinterpret_cast<int*>(st->ptr));
 				break;
 			case SYM_DOUBLE:
-				std::cout << *reinterpret_cast<double*>(st->ptr);
+				IO::print(*reinterpret_cast<double*>(st->ptr));
 				break;
 			default:
-				std::cerr << "error";
+				IO::print_error("Variable has unknown type!");
 			}
 		} else {
 			switch(st->type) {
 			case SYM_STRING:
-				std::cout << st->str;
+				IO::print(st->str);
 				break;
 			case SYM_INTEGER:
-				std::cout << st->ival;
+				IO::print(st->ival);
 				break;
 			case SYM_DOUBLE:
-				std::cout << st->dval;
+				IO::print(st->dval);
 				break;
 			default:
-				std::cerr << "error";
+				IO::print_error("Variable has unknown type!");
 			}
 		}
 	} else {
-		std::cout << "error";
+		IO::print_error("Could not look up variable!");
 	}
-	std::cout << '\n';
-	std::cout.flush();
+	IO::print("\n");
 }

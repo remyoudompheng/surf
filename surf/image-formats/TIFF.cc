@@ -32,15 +32,10 @@
 #include <RgbBuffer.h>
 #include <FileWriter.h>
 #include <ScriptVar.h>
-#include <Misc.h>
-
-#ifdef TIFF_HEADER_34
-#include <tiff34/tiffio.h>
-#else
-#include <tiffio.h>
-#endif
-
+#include <IO.h>
 #include <TIFF.h>
+
+#include <tiffio.h>
 
 #include<iostream>
 
@@ -64,7 +59,7 @@ namespace ImageFormats {
 		
 		byte* scanline = new byte[TIFFScanlineSize(tiff)];
 		if(scanline == 0) {
-			Misc::print_warning("Couldn't allocate scanline buffer. Saving aborted!\n");
+			IO::print_warning("Couldn't allocate scanline buffer. Saving aborted!");
 			return false;
 		}
 
@@ -114,7 +109,7 @@ namespace ImageFormats {
 		
 		byte* scanline = new byte[TIFFScanlineSize(tiff)];
 		if(scanline == 0) {
-			Misc::print_warning("Couldn't allocate scanline buffer. Saving aborted!\n");
+			IO::print_warning("Couldn't allocate scanline buffer. Saving aborted!");
 			return false;
 		}
 		

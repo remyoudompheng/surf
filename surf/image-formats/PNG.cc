@@ -32,7 +32,7 @@
 #include <FileWriter.h>
 #include <RgbBuffer.h>
 #include <ScriptVar.h>
-#include <Misc.h>
+#include <IO.h>
 #include <PNG.h>
 
 #include <png.h>
@@ -64,13 +64,13 @@ namespace ImageFormats {
 		
 		png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
 		if(png_ptr == 0) {
-			Misc::print_warning("Allocation of PNG write buffer failed. Saving aborted!\n");
+			IO::print_warning("Allocation of PNG write buffer failed. Saving aborted!");
 			return false;
 		}
 
 		png_infop info_ptr = png_create_info_struct(png_ptr);
 		if(!info_ptr) {
-			Misc::print_warning("Allocation of PNG info buffer failed. Saving aborted!\n");
+			IO::print_warning("Allocation of PNG info buffer failed. Saving aborted!");
 			png_destroy_write_struct(&png_ptr, 0);
 			return false;
 		}
