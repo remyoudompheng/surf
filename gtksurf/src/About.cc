@@ -31,7 +31,7 @@ About::About(const Glade& _glade)
                            PACKAGE " " VERSION "\n"
 			   "a GTK+ based graphical frontend to surf\n"
 			   "\n"
-			   "Author: Johannes Beigel <jojo@beigel.de>\n"
+			   "Author: Johannes Beigel <jojo@users.sourceforge.net>\n"
 			   "Copyright (C) 2001 Johannes Beigel\n"
 			   "License: GPL v2 or later\n"
 			   "\n"
