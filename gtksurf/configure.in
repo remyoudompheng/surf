@@ -1,0 +1,139 @@
+dnl ------------------------
+dnl configure.in for gtksurf
+dnl ------------------------
+
+AC_PREREQ(2.13)
+AC_INIT(src/main.cc)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(gtksurf, 0.1)
+CF_VERBOSE
+
+
+dnl some standard checks:
+dnl ---------------------
+
+AC_PROG_CC
+AC_PROG_CXX
+AC_AIX
+AC_ISC_POSIX
+AC_MINIX
+AC_HEADER_STDC
+
+
+dnl check if C++ compiler really works:
+dnl -----------------------------------
+
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+
+AC_CXX_FUNCTION_NONTYPE_PARAMETERS
+if test "$ac_cv_cxx_function_nontype_parameters" = "no"; then
+	AC_MSG_ERROR(["Sorry, your compiler is not smart enough to build surf"])
+fi
+
+ICE_CXX_EXPLICIT_TEMPLATE_INSTANTIATION
+
+JOJO_CXX_WARNINGS
+JOJO_CXX_NAMESPACES
+JOJO_CXX_STDNAMESPACE
+
+AC_LANG_RESTORE
+
+if test "$GCC" = "no" ; then
+	case `uname` in
+	IRIX*)
+		CXXFLAGS="-LANG:std $CXXFLAGS"
+		;;
+	esac
+fi
+
+
+
+dnl standard headers:
+dnl =================
+
+AC_CHECK_HEADERS(unistd.h)
+
+
+dnl do we have getopt() and (optionally) GNU getopt_long()?
+dnl =======================================================
+
+AC_CHECK_FUNC(getopt,, AC_MSG_ERROR([Sorry: can't find getopt() function]))
+AC_CHECK_HEADER(getopt.h,
+	        AC_CHECK_FUNCS(getopt_long))
+
+
+dnl check if we have GTK >= 1.2.0
+dnl =============================
+
+AM_PATH_GTK(1.2.0)
+
+CFLAGS="$CFLAGS $GTK_CFLAGS"
+CXXFLAGS="$CXXFLAGS $GTK_CXXFLAGS"
+LDFLAGS="$LDFLAGS $GTK_LDFLAGS"
+LIBS="$LIBS $GTK_LIBS"
+
+dnl check for libgdk-pixbuf
+dnl =======================
+
+RS_CHECK_HEADER(gdk-pixbuf/gdk-pixbuf.h)
+RS_CHECK_LIB(gdk_pixbuf, main)
+
+dnl check for libglade
+dnl ==================
+
+RS_CHECK_HEADER(glade/glade.h)
+RS_CHECK_LIB(glade, main)
+
+dnl OpenGL/Mesa:
+dnl ============
+
+AC_ARG_WITH(GL-prefix,
+  [  --with-GL-prefix=PFX    Prefix where OpenGL/Mesa is installed],
+  GL_prefix="$withval", GL_prefix="")
+
+dnl libGL/libMesaGL:
+
+if test "x$GL_prefix" != "x" ; then
+  CFLAGS="$CFLAGS -I$GL_prefix/include"
+  LDOPTS="$LDOPTS -L$GL_prefix/lib"
+fi
+
+AC_CHECK_LIB(GL, glBegin,,
+  AC_CHECK_LIB(MesaGL, glBegin,,
+    AC_MSG_ERROR([You need OpenGL/Mesa (libGL or libMesaGL)!])))
+
+dnl libGLU/libMesaGLU:
+
+AC_CHECK_LIB(GLU, gluLookAt,,
+  AC_CHECK_LIB(MesaGLU, gluLookAt,,
+    AC_MSG_ERROR([You need GLU (libGLU or libMesaGLU)!])))
+
+
+AC_CHECK_HEADERS(GL/gl.h GL/glu.h,,
+	         AC_MSG_ERROR([You need the OpenGL header files gl.h & glu.h!]))
+
+
+dnl GtkGlArea widget.
+dnl =================
+
+AC_ARG_WITH(gtkgl-prefix,
+  [  --with-gtkgl-prefix=PFX Prefix where GtkGLArea is installed],
+  gtkgl_prefix="$withval", gtkgl_prefix="")
+
+if test "x$gtkgl_prefix" != "x" ; then
+  CFLAGS="$CFLAGS -I$gtkgl_prefix/include"
+  LDOPTS="$LDOPTS -L$gtkgl_prefix/lib"
+fi
+
+AC_CHECK_LIB(gtkgl, gtk_gl_area_new,,
+  AC_MSG_ERROR([You need GtkGLArea (libgtkgl)!]))
+
+AC_CHECK_HEADERS(gtkgl/gtkglarea.h,,
+	         AC_MSG_ERROR([You need the GtkGLArea header file (gtkgl/gtkglarea.h)!]))
+
+
+AC_OUTPUT(Makefile
+          src/Makefile
+          pkgdata/Makefile)
+

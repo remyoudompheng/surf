@@ -1,0 +1,89 @@
+/*
+ *   gtksurf
+ *       - a GTK+ based graphical frontend to surf
+ *
+ *   Author: Johannes Beigel <jojo@users.sourceforge.net>
+ *   Copyright (C) 2001 Johannes Beigel
+ *   License: GPL version >= 2
+ *
+ */
+
+
+#ifndef IMAGE_WINDOW_H
+#define IMAGE_WINDOW_H
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <Glade.h>
+#include <Kernel.h>
+
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
+#include<string>
+
+#undef MENUCB
+#define MENUCB(name) \
+        void on_##name##_activate(GtkWidget* w = 0);\
+        static void _on_##name##_activate(GtkWidget* w, GladeWindow* This) {\
+                static_cast<ImageWindow*>(This)->on_##name##_activate(w);\
+        }
+
+class ImageWindow : public GladeWindow {
+public:
+	ImageWindow(Glade& glade, Kernel& kernel);
+	virtual ~ImageWindow() {}
+
+	void show();
+	void hide();
+
+	void clear();
+	void set_image(guchar* pixdata, int width, int height, size_t rowstride);
+
+private:
+	Glade& glade;
+	Kernel& kernel;
+
+	GdkPixbuf* pixbuf;
+	
+	std::string filename;
+	std::string filetype;
+
+	// Gtk stuff follows:
+	// ==================
+
+	GtkWidget* window;
+	GtkWidget* drawingarea;
+	GtkWidget* popupmenu;
+
+	void set_title();
+
+	MENUCB(save);
+	MENUCB(save_as);
+	MENUCB(close);
+	MENUCB(copy);
+
+	MENUCB(filetype);
+
+	static int _on_delete_event(GtkWidget*, GdkEvent*, GladeWindow* This) {
+		static_cast<ImageWindow*>(This)->on_close_activate();
+		return true;
+	}
+	void on_expose_event(GdkEventExpose* event);
+	static int _on_expose_event(GtkWidget*, GdkEvent*e, GladeWindow* This) {
+		static_cast<ImageWindow*>(This)->on_expose_event((GdkEventExpose*)e);
+		return false;
+	}
+	void on_button_press_event(GdkEventButton* event);
+	static int _on_button_press_event(GtkWidget*, GdkEvent*e, GladeWindow* This) {
+		static_cast<ImageWindow*>(This)->on_button_press_event((GdkEventButton*)e);
+		return false;
+	}
+
+	static void delete_array_fn(guchar pixels[], gpointer) {
+		delete [] pixels;
+	}
+};
+
+#endif //!IMAGE_WINDOW_H

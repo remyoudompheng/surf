@@ -1,0 +1,40 @@
+-------------------------------------------------------------------------
+
+				gtksurf
+
+			      Version 0.1
+
+		   Copyright (C) 2001 Johannes Beigel
+
+	  Author: Johannes Beigel <jojo@users.sourceforge.net>
+
+-------------------------------------------------------------------------
+
+
+What is gtksurf?
+----------------
+
+gtksurf is graphical frontend to surf, the visualization tool for real
+algebraic geometry.
+
+Visit surf's homepage for more information:
+
+		      http://surf.sourceforge.net
+
+
+Basic Installation:
+-------------------
+
+As usual:
+
+./configure
+make
+(become root)
+make install
+
+
+License:
+--------
+
+gtksurf is distributed under the terms of the GNU General Public License
+version 2 or later. See also COPYING file.
