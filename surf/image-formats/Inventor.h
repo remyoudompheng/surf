@@ -30,15 +30,19 @@
 
 #include <gts.h>
 
+#include<map>
+
 class Triangulator;
 class SoCoordinate3;
 class SoNormal;
-class SoFaceSet;
+class SoIndexedFaceSet;
 
 namespace ImageFormats {
 
 	class OpenInventor : public Format {
 	public:
+		virtual ~OpenInventor() {}
+		
 		std::string getName() const {
 			return "Inventor";
 		}
@@ -59,11 +63,18 @@ namespace ImageFormats {
 		Triangulator* tritor;
 		
 		int vertex_index;
-		int face_index;
+		std::map<GtsVertex*, int> vertex_map;
+		
 		SoCoordinate3* coords;
 		SoNormal* normals;
-		SoFaceSet* faceSets;
+		SoIndexedFaceSet* faceSets;
 
+		void vertex_func(GtsVertex* f);
+		static gint _vertex_func(gpointer f, gpointer This) {
+			static_cast<OpenInventor*>(This)->vertex_func(static_cast<GtsVertex*>(f));
+			return 0;
+		}
+		
 		void face_func(GtsFace* f);
 		static gint _face_func(gpointer f, gpointer This) {
 			static_cast<OpenInventor*>(This)->face_func(static_cast<GtsFace*>(f));

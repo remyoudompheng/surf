@@ -48,7 +48,7 @@
 #include <Inventor/nodes/SoNormalBinding.h>
 #include <Inventor/nodes/SoCoordinate3.h>
 #include <Inventor/nodes/SoNormal.h>
-#include <Inventor/nodes/SoFaceSet.h>
+#include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <gts.h>
 
@@ -82,17 +82,12 @@ namespace ImageFormats {
 			}
 			SoPointLight* light = new SoPointLight;
 			light->location.setValue(l.position[0], l.position[1], l.position[2]);
-			light->on = true;
 			light->intensity = vol/100.0;
 			light->color.setValue(l.color[0]/255.0, l.color[1]/255.0, l.color[2]/255.0);
 			root->addChild(light);
 		}
 
 		// specify material:
-		SoMaterialBinding* matBind = new SoMaterialBinding;
-		matBind->value = SoMaterialBinding::OVERALL;
-		root->addChild(matBind);
-
 		SoMaterial* mat = new SoMaterial;
 		float r = ScriptVar::color_slider[0].red/255.0;
 		float g = ScriptVar::color_slider[0].green/255.0;
@@ -115,12 +110,7 @@ namespace ImageFormats {
 		root->addChild(mat);
 
 		// specify vertex & normal data:
-		SoNormalBinding* normBind = new SoNormalBinding;
-		normBind->value = SoNormalBinding::PER_VERTEX;
-		root->addChild(normBind);
-
 		GtsSurface* surface = data.getSurface();
-		
 		guint num_vertices = gts_surface_vertex_number(surface);
 		guint num_faces = gts_surface_face_number(surface);
 		
@@ -128,14 +118,16 @@ namespace ImageFormats {
 		coords->point.setNum(num_vertices);
 		normals = new SoNormal;
 		normals->vector.setNum(num_vertices);
-		faceSets = new SoFaceSet;
-		faceSets->numVertices.setNum(num_faces);
+		faceSets = new SoIndexedFaceSet;
+		faceSets->coordIndex.setNum(4*num_faces);
 
 		vertex_index = 0;
-		face_index = 0;
 		data.initNormals();
-		gts_surface_foreach_face(surface, _face_func, this);
+		gts_surface_foreach_vertex(surface, _vertex_func, this);
 		data.deinitNormals();
+
+		vertex_index = 0;
+		gts_surface_foreach_face(surface, _face_func, this);
 
 		root->addChild(coords);
 		root->addChild(normals);
@@ -148,7 +140,18 @@ namespace ImageFormats {
 		out->setBinary(true);
 		wa.apply(root);
 		
+		vertex_map.erase(vertex_map.begin(), vertex_map.end());
+		
 		return true;
+	}
+
+	void OpenInventor::vertex_func(GtsVertex* v)
+	{
+		coords->point.set1Value(vertex_index, v->p.x, v->p.y, v->p.z);
+		Triangulator::Point n = tritor->getNormal(v);
+		normals->vector.set1Value(vertex_index, n.x, n.y, n.z);
+
+		vertex_map[v] = vertex_index++;
 	}
 
 	void OpenInventor::face_func(GtsFace* face)
@@ -158,16 +161,10 @@ namespace ImageFormats {
 		GtsVertex* v3;
 		gts_triangle_vertices(&face->triangle, &v1, &v2, &v3);
 		
-		coords->point.set1Value(vertex_index, v1->p.x, v1->p.y, v1->p.z);
-		Triangulator::Point n = tritor->getNormal(v1);
-		normals->vector.set1Value(vertex_index++, n.x, n.y, n.z);
-		coords->point.set1Value(vertex_index, v2->p.x, v2->p.y, v2->p.z);
-		n = tritor->getNormal(v2);
-		normals->vector.set1Value(vertex_index++, n.x, n.y, n.z);
-		coords->point.set1Value(vertex_index, v3->p.x, v3->p.y, v3->p.z);
-		n = tritor->getNormal(v3);
-		normals->vector.set1Value(vertex_index++, n.x, n.y, n.z);
-		faceSets->numVertices.set1Value(face_index++, 3);
+		faceSets->coordIndex.set1Value(vertex_index++, vertex_map[v1]);
+		faceSets->coordIndex.set1Value(vertex_index++, vertex_map[v2]);
+		faceSets->coordIndex.set1Value(vertex_index++, vertex_map[v3]);
+		faceSets->coordIndex.set1Value(vertex_index++, -1);
 	}
 
 } // namespace ImageFormats

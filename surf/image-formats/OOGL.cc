@@ -125,6 +125,7 @@ namespace ImageFormats {
 		     << gts_surface_face_number(surface) << ' '
 		     << gts_surface_edge_number(surface) << '\n';
 
+		num_vertices = 0;
 		data.initNormals();
 		gts_surface_foreach_vertex(surface, _vertex_func, this);
 		data.deinitNormals();
@@ -135,6 +136,8 @@ namespace ImageFormats {
 		*ofs << "}\n";
 
 		delete ofs;
+
+		vertex_map.erase(vertex_map.begin(), vertex_map.end());
 
 		return true;
 	}
