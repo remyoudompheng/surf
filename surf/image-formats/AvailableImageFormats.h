@@ -27,8 +27,12 @@
 #define AVAILABLEIMAGEFMTS_H
 
 #include "ByExtension.h"
-#include "JPEG.h"
-#include "TIFF.h"
+#ifdef HAVE_LIBJPEG
+#  include "JPEG.h"
+#endif
+#ifdef HAVE_LIBTIFF
+#  include "TIFF.h"
+#endif
 #include "Postscript.h"
 #include "Sun.h"
 #include "EPS.h"
