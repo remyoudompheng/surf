@@ -244,6 +244,8 @@ void Script::executeScriptFromStdin()
 "/____  >____/ |__|   |__| v" VERSION "\n"
 "     \\/\n\n";
 
+		} else {
+			std::cout << PACKAGE " " VERSION "\n";
 		}
 		std::cout.flush();
 	}

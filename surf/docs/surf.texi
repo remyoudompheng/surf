@@ -234,13 +234,13 @@ libpng: for the PNG image format
 @item
 libreadline: for a more comfortable command line editing while
 interactively typing @emph{surf} scripts
-@item
-libgts: to use the triangulation feature of @emph{surf}. GTS stands
-for ``GNU Triangulated Surface library''. More info is available
-on the GTS homepage @url{http://gts.sourceforge.net}
-@item
-OpenGL and OpenInventor: to save triangulated surfaces in the native
-file format of OpenInventor
+@c @item
+@c libgts: to use the triangulation feature of @emph{surf}. GTS stands
+@c for ``GNU Triangulated Surface library''. More info is available
+@c on the GTS homepage @url{http://gts.sourceforge.net}
+@c @item
+@c OpenGL and OpenInventor: to save triangulated surfaces in the native
+@c file format of OpenInventor
 @end itemize
 
 @c Starting surf
@@ -337,13 +337,13 @@ true color (24 bit).
 Black & white images can be stored in the following formats:
 Postscript, Encapsulated Postscript (EPS), TIFF, XBM and PBM.
 
-If you have GTS (the GNU Triangulated Surfaces library, see the GTS
-homepage for details: @url{http://gts.sourceforge.net}) on your system
-and @emph{surf} has been built with GTS support, @emph{surf} can
-produce triangulated surfaces. The available file formats for this
-3D data are: the GTS native file format (which isn't quite optimal
-because it doesn't include any data for normal vectors at the
-vertices), OOGL and OpenInventor.
+@c If you have GTS (the GNU Triangulated Surfaces library, see the GTS
+@c homepage for details: @url{http://gts.sourceforge.net}) on your system
+@c and @emph{surf} has been built with GTS support, @emph{surf} can
+@c produce triangulated surfaces. The available file formats for this
+@c 3D data are: the GTS native file format (which isn't quite optimal
+@c because it doesn't include any data for normal vectors at the
+@c vertices), OOGL and OpenInventor.
 
 
 @c surf and make
@@ -631,7 +631,7 @@ reference to the command language, have a look at
 * Black & White Images::
 * Algorithms::
 * Image Formats::
-* Triangularization::
+@c * Triangularization::
 @end menu
 
 
@@ -1244,7 +1244,8 @@ which is used in all root finders.  Additionally the maximal number of
 @c Image Formats
 @c -------------
 
-@node Image Formats, Triangularization, Algorithms, Features
+@node Image Formats, , Algorithms, Features
+@c @node Image Formats, Triangularization, Algorithms, Features
 @section Image Formats
 
 @emph{surf} can store color images in one of several file formats. Some
@@ -1290,43 +1291,43 @@ specified by setting @code{resolution}) to the desired dpi value.
 @c Triangularization
 @c -----------------
 
-@node Triangularization, , Image Formats, Features
-@section Triangularization
-
-If GTS---the GNU Triangulated Surfaces library---is available,
-@emph{surf} can produce triangulated data from the first surface
-(@code{surface}). This data is calculated when the command
-@code{triangulate_surface} is interpreted, and it can be saved with the
-command @code{save_three_d_image}. The image format is chosen via the
-variable @code{three_d_image_format}, but the only format currently
-available is the GTS native file format so the only sensible values are
-@code{auto} and @code{gts} for now.
-
-The triangulation is done by calculating an ``isosurface'': For specific
-values of @math{x}, @math{y} and @math{z} located on a regular cartesian
-grid, samples of the polynomial @code{surface} are gathered. Afterwards,
-edges and faces are constructed. The number of samples in each direction
-can be adjusted via @code{gts_grid_size}.
-
-The resulting triangulated surface can become rather big if one chooses
-higher values for @code{gts_grid_size}: If the value is @math{n}, the
-number of vertices is
-@ifnottex
-@math{n^3}.
-@end ifnottex
-@tex
-$n^3$.
-@end tex
-On the other hand, if the value has been chosen too low, the resulting
-surface may have too many ``failures'' and even might be calculated
-in a topologically wrong way.
-
-The solution is to gather the data on a finer level and coarsen the 3D
-data in a second step. To fine tune this simplification, specify a
-maximum cost value by setting @code{gts_max_cost}. This value is the
-squared length of an edge and controls, when the coarsening algorithm
-stops collapsing edges. The coarsening of the surface can be turned off
-by setting @code{gts_coarsen} to @code{no}.
+@c @node Triangularization, , Image Formats, Features
+@c @section Triangularization
+@c 
+@c If GTS---the GNU Triangulated Surfaces library---is available,
+@c @emph{surf} can produce triangulated data from the first surface
+@c (@code{surface}). This data is calculated when the command
+@c @code{triangulate_surface} is interpreted, and it can be saved with the
+@c command @code{save_three_d_image}. The image format is chosen via the
+@c variable @code{three_d_image_format}, but the only format currently
+@c available is the GTS native file format so the only sensible values are
+@c @code{auto} and @code{gts} for now.
+@c 
+@c The triangulation is done by calculating an ``isosurface'': For specific
+@c values of @math{x}, @math{y} and @math{z} located on a regular cartesian
+@c grid, samples of the polynomial @code{surface} are gathered. Afterwards,
+@c edges and faces are constructed. The number of samples in each direction
+@c can be adjusted via @code{gts_grid_size}.
+@c 
+@c The resulting triangulated surface can become rather big if one chooses
+@c higher values for @code{gts_grid_size}: If the value is @math{n}, the
+@c number of vertices is
+@c @ifnottex
+@c @math{n^3}.
+@c @end ifnottex
+@c @tex
+@c $n^3$.
+@c @end tex
+@c On the other hand, if the value has been chosen too low, the resulting
+@c surface may have too many ``failures'' and even might be calculated
+@c in a topologically wrong way.
+@c 
+@c The solution is to gather the data on a finer level and coarsen the 3D
+@c data in a second step. To fine tune this simplification, specify a
+@c maximum cost value by setting @code{gts_max_cost}. This value is the
+@c squared length of an edge and controls, when the coarsening algorithm
+@c stops collapsing edges. The coarsening of the surface can be turned off
+@c by setting @code{gts_coarsen} to @code{no}.
 
 
 @c List Of All Reserved Words
@@ -1349,7 +1350,7 @@ parameters. Global variables are either constant or may be altered.
 * Dithering Variables::
 * Clipping Variables::
 * Algorithm Variables::
-* Triangulation Variables::
+@c * Triangulation Variables::
 * Constants::
 @end menu
 
@@ -1605,7 +1606,8 @@ $\infty$
 @c Algorithm Variables
 @c -------------------
 
-@node Algorithm Variables, Triangulation Variables, Dithering Variables, List Of All Reserved Words
+@node Algorithm Variables, Constants, Dithering Variables, List Of All Reserved Words
+@c @node Algorithm Variables, Triangulation Variables, Dithering Variables, List Of All Reserved Words
 @section Algorithm Variables
 
 @multitable {@code{root_finder}} {@code{d_chain_anderson_bjoerck, }} {@code{bezier_all_roots }} {used root finder}
@@ -1623,23 +1625,24 @@ $\infty$
 @c Triangulation Variables
 @c -----------------------
 
-@node Triangulation Variables, Constants, Algorithm Variables, List Of All Reserved Words
-@section Triangulation Variables
-
-@multitable {@code{triangulate_surface}} {@{@code{auto}, @code{gts}@}} {@code{auto}} {size of regular cartesian grid}
-@item Command/Variable @tab Range @tab Def.     @tab Description
-@item @code{triangulate_surface} @tab -- @tab -- @tab triangulate 1st surface
-@item @code{save_three_d_image}  @tab -- @tab -- @tab save 3D data
-@item @code{three_d_file_format} @tab @{@code{auto}, @code{gts}@} @tab @code{auto} @tab 3D file format
-@item @code{gts_grid_size} @tab > 0                       @tab @code{48}  @tab size of regular cartesian grid
-@item @code{gts_coarsen}   @tab @{@code{yes}, @code{no}@} @tab @code{yes} @tab do surface simplification
-@item @code{gts_max_cost}  @tab > 0                       @tab @code{0.5} @tab maximum allowed cost
-@end multitable
+@c @node Triangulation Variables, Constants, Algorithm Variables, List Of All Reserved Words
+@c @section Triangulation Variables
+@c 
+@c @multitable {@code{triangulate_surface}} {@{@code{auto}, @code{gts}@}} {@code{auto}} {size of regular cartesian grid}
+@c @item Command/Variable @tab Range @tab Def.     @tab Description
+@c @item @code{triangulate_surface} @tab -- @tab -- @tab triangulate 1st surface
+@c @item @code{save_three_d_image}  @tab -- @tab -- @tab save 3D data
+@c @item @code{three_d_file_format} @tab @{@code{auto}, @code{gts}@} @tab @code{auto} @tab 3D file format
+@c @item @code{gts_grid_size} @tab > 0                       @tab @code{48}  @tab size of regular cartesian grid
+@c @item @code{gts_coarsen}   @tab @{@code{yes}, @code{no}@} @tab @code{yes} @tab do surface simplification
+@c @item @code{gts_max_cost}  @tab > 0                       @tab @code{0.5} @tab maximum allowed cost
+@c @end multitable
 
 @c Constants
 @c ---------
 
-@node Constants, , Triangulation Variables, List Of All Reserved Words
+@node Constants, , Algorithm Variables, List Of All Reserved Words
+@c @node Constants, , Triangulation Variables, List Of All Reserved Words
 @section Constants
 
 These constants all appreared before as values for some variables
