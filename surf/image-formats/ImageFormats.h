@@ -84,9 +84,9 @@ namespace ImageFormats {
                  * Returns true if this file format supports 3D images.
                  * @return true if this class can save 3D images, otherwise false.
                  */
-//		virtual bool is3DFormat() const {
-//			return false;
-//		}
+		virtual bool is3DFormat() const {
+			return false;
+		}
 		
 		/**
                  * Save color image.
@@ -114,14 +114,14 @@ namespace ImageFormats {
                  * @param data Triangulated data.
                  * @return true: success, false: error
                  */
-//		virtual bool save3DImage(const char* filename, Triangulator& data) {
-//			return false;
-//		}
+		virtual bool save3DImage(const char* filename, Triangulator& data) {
+			return false;
+		}
 	};
 
 	bool saveColorImage(const char* filename, RgbBuffer& data);
 	bool saveDitheredImage(const char* filename, bit_buffer& data);
-//	bool save3DImage(const char* filename, Triangulator& data);
+	bool save3DImage(const char* filename, Triangulator& data);
 }
 
 #endif //!IMAGEFORMATS_H

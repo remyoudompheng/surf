@@ -32,7 +32,7 @@
 
 #include <hornerarith.h>
 
-#ifdef HAVE_LIBGTS
+#ifdef HAVE_GTS
 
 #include <gts.h>
 
@@ -96,6 +96,6 @@ private:
 	GtsSurface* surface;
 };
 
-#endif //HAVE_LIBGTS
+#endif //HAVE_GTS
 
 #endif //!TRIANGULATOR_H

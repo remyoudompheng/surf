@@ -27,7 +27,7 @@
 #  include <config.h>
 #endif
 
-#ifdef HAVE_LIBGTS
+#ifdef HAVE_GTS
 
 #include <OOGL.h>
 #include <Triangulator.h>
@@ -152,4 +152,4 @@ namespace ImageFormats {
 
 } // namespace ImageFormats
 
-#endif // HAVE_LIBGTS
+#endif // HAVE_GTS

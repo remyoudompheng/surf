@@ -47,11 +47,11 @@
 #include <PPM.h>
 #include <PBM.h>
 #include <XPM.h>
-//#ifdef HAVE_LIBGTS
-//#  include <GTS.h>
-//#  include <OOGL.h>
-//#  include <Inventor.h>
-//#endif
+#ifdef HAVE_GTS
+#  include <GTS.h>
+#  include <OOGL.h>
+#  include <Inventor.h>
+#endif
 
 namespace ImageFormats {
 	extern Format* availableFormats[];

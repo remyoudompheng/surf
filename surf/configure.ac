@@ -73,7 +73,7 @@ AC_CONFIG_FILES([Makefile \
 	  draw/Makefile \
 	  misc/Makefile \
 	  debug/Makefile \
-          dither/Makefile])
-dnl          triangulator/Makefile])
+          dither/Makefile \
+          triangulator/Makefile])
 AC_OUTPUT
 

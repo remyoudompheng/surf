@@ -85,7 +85,7 @@ namespace ImageFormats {
          * @param data Tringulated data of the surface.
          * @return false: error, true: success
          */
-/*	bool save3DImage(const char* filename, Triangulator& data)
+	bool save3DImage(const char* filename, Triangulator& data)
 	{
 		int tdff = ScriptVar::three_d_file_format_data;
 		if(tdff > int(numAvailableFormats) || tdff < 0) {
@@ -99,6 +99,5 @@ namespace ImageFormats {
 		}
 		return availableFormats[tdff]->save3DImage(filename, data);
 	}
-*/
 
 } // namespace ImageFormats

@@ -66,11 +66,6 @@ namespace ImageFormats {
 		int vertex_index;
 		std::map<GtsVertex*, int> vertex_map;
 
-#ifdef HAVE_INVENTOR		
-		SoCoordinate3* coords;
-		SoNormal* normals;
-		SoIndexedFaceSet* faceSets;
-#else
 		std::ostringstream sstr;
 		int num_vertices;
 		int num_faces;
@@ -79,7 +74,6 @@ namespace ImageFormats {
 			static_cast<OpenInventor*>(This)->normal_func(static_cast<GtsVertex*>(f));
 			return 0;
 		}
-#endif
 
 		void vertex_func(GtsVertex* f);
 		static gint _vertex_func(gpointer f, gpointer This) {

@@ -27,7 +27,7 @@
 #  include <config.h>
 #endif
 
-#ifdef HAVE_LIBGTS
+#ifdef HAVE_GTS
 
 #include <Triangulator.h>
 #include <ScriptVar.h>
@@ -55,28 +55,29 @@ Triangulator::~Triangulator()
 }
 
 namespace {
-	void sphere_func(gdouble** f, GtsCartesianGrid g, guint k, gpointer d)
-	{
-		double radius_sq = ScriptVar::clip_numeric.radius;
-		radius_sq *= radius_sq;
-		gdouble z = g.z;
-		gdouble y = g.y;
-		for(guint i = 0; i < g.ny; i++) {
-			gdouble x = g.x;
-			for(guint j = 0; j < g.nx; j++) {
-				f[j][i] = x*x + y*y + z*z - radius_sq;
-				x += g.dx;
-			}
-			y += g.dy;
-		}
-	}
 
-	gint prepend_triangle_bbox(GtsTriangle* t, GSList** bboxes)
-	{
-		*bboxes = g_slist_prepend(*bboxes, 
-					  gts_bbox_triangle(gts_bbox_class(), t));
-		return 0;
+void sphere_func(gdouble** f, GtsCartesianGrid g, guint k, gpointer d)
+{
+	double radius_sq = ScriptVar::clip_numeric.radius;
+	radius_sq *= radius_sq;
+	gdouble z = g.z;
+	gdouble y = g.y;
+	for(guint i = 0; i < g.ny; i++) {
+		gdouble x = g.x;
+		for(guint j = 0; j < g.nx; j++) {
+			f[j][i] = x*x + y*y + z*z - radius_sq;
+			x += g.dx;
+		}
+		y += g.dy;
 	}
+}
+
+gint prepend_triangle_bbox(GtsTriangle* t, GSList** bboxes)
+{
+	*bboxes = g_slist_prepend(*bboxes, 
+				  gts_bbox_triangle(gts_bbox_class(), t));
+	return 0;
+}
 
 }
 
@@ -328,4 +329,4 @@ Triangulator::Point Triangulator::getNormal(const Point& p)
 
 
 
-#endif //!HAVE_LIBGTS
+#endif // HAVE_GTS
