@@ -5,9 +5,6 @@ Here are some minor problems I can think of:
   tested for a while. Are there any implementations of pow with pow(0,0)!=1 ?
   Maybe we should exit from the configure script if we see that pow(0,0)!=1.
 
-* set_size:
-  Check that the set_size command isn't really needed any more.
-
 * OctNode::TestBit:
   What does it do and is it correct in what it does ???
   I don't believe so.

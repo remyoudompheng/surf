@@ -57,19 +57,19 @@ private:
 	bool updating;
 
 	GtkWidget* window;
-	GtkObject* xRotScaleAdj;
-	GtkObject* yRotScaleAdj;
-	GtkObject* zRotScaleAdj;
-	GtkObject* xRotSpinAdj;
-	GtkObject* yRotSpinAdj;
-	GtkObject* zRotSpinAdj;
-	GtkObject* xScaleAdj;
-	GtkObject* yScaleAdj;
-	GtkObject* zScaleAdj;
-	GtkWidget* maintAspectRatio;
-	GtkObject* xOriginAdj;
-	GtkObject* yOriginAdj;
-	GtkObject* zOriginAdj;
+	GtkAdjustment* xRotScaleAdj;
+	GtkAdjustment* yRotScaleAdj;
+	GtkAdjustment* zRotScaleAdj;
+	GtkAdjustment* xRotSpinAdj;
+	GtkAdjustment* yRotSpinAdj;
+	GtkAdjustment* zRotSpinAdj;
+	GtkAdjustment* xScaleAdj;
+	GtkAdjustment* yScaleAdj;
+	GtkAdjustment* zScaleAdj;
+	GtkToggleButton* maintAspectRatio;
+	GtkAdjustment* xOriginAdj;
+	GtkAdjustment* yOriginAdj;
+	GtkAdjustment* zOriginAdj;
 
 	const Matrix33 getRotMat();
 	void rotate(Matrix33 add);
