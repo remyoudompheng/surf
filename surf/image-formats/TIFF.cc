@@ -76,7 +76,7 @@ namespace ImageFormats {
 
 			byte* ptr = scanline;
 
-			for(int px = 0, count = 0; px < ScriptVar::main_width_data; px++) {
+			for(int px = 0; px < ScriptVar::main_width_data; px++) {
 				*ptr++ = *rdata++;
 				*ptr++ = *gdata++;
 				*ptr++ = *bdata++;
