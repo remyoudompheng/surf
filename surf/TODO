@@ -1,4 +1,3 @@
 - readline-input: tab-completion would be cool
 
-- slightly rotate around y-axis to prevent vanishing of surface/plane
-  cuts when plane has the direction of user's view
+- abs() function

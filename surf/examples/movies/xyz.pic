@@ -1,0 +1,56 @@
+// Sample script by Cezary Sliwa
+//
+// produces 128 frames of an animated surface cut
+
+width = 400;
+height = 400;
+
+int num_frames = 128;
+
+double Pi = 2*arccos(0);
+
+double t1 = -4.0;
+double t2 =  4.0;
+double dt = (t2 - t1)/(num_frames - 1);
+
+illumination = ambient_light + diffuse_light
+               + reflected_light + transmitted_light;
+
+rot_y = Pi/4;
+rot_x = Pi;
+rot_z = -Pi/8;
+
+double m = 0.40;
+
+scale_x = m;
+scale_y = m;
+scale_z = m;
+
+double d = 1.0;
+
+poly w1a = -x - y - z + 3*d;
+poly w1b = -x^2*z - x*(y^2 - y*z - d^2) - y*(z^2 - d^2) + z*d^2 - d^3;
+
+poly w2a = -x - y - z;
+poly w2b = x^2*(y - d) - x*(y*(z + d) - z^2 + d*z - d^2)
+           + y^2*(z - d) - y*(d*z - d^2) - d*z^2 + z*d^2;
+
+surface = w1a*w2b-w1b*w2a;
+
+double t = t1;
+int i = 0;
+
+loop:
+
+  draw_surface;
+
+  cutsurface = w1a*(t*w1a+w1b) + w2a*(t*w2a+w2b);
+  cut_with_surface;
+
+  filename = "xyz" + itostrn(3, i) + ".ras";
+  save_color_image;
+
+  t = t + dt;
+  i = i + 1;
+
+if (t <= t2) goto loop;

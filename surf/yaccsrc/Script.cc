@@ -598,9 +598,9 @@ void Script::cutWithPlane()
 		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
 	}
 	
-	position_numeric.rot_x -= save_x; // undo the rotation made above
-	position_numeric.rot_y -= save_y;
-	position_numeric.rot_z -= save_z;
+	position_numeric.rot_x = save_x; // undo the rotation made above
+	position_numeric.rot_y = save_y;
+	position_numeric.rot_z = save_z;
 }
 
 void Script::cutWithSurface()
@@ -705,9 +705,9 @@ void Script::cutWithSurface()
 		}
 	}
 
-	position_numeric.rot_x -= save_x; // undo the rotation made above
-	position_numeric.rot_y -= save_y;
-	position_numeric.rot_z -= save_z;
+	position_numeric.rot_x = save_x; // undo the rotation made above
+	position_numeric.rot_y = save_y;
+	position_numeric.rot_z = save_z;
 }
 
 void Script::reset()
