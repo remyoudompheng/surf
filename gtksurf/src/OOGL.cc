@@ -151,10 +151,10 @@ void read_header(Kernel& kernel)
 				kernel.receive_string();
 			} else if(token == "}") {
 				GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-				glLightfv(GL_LIGHT0 + num_lights, GL_DIFFUSE, cur_light.col);
-				glLightfv(GL_LIGHT0 + num_lights, GL_SPECULAR, white);
-				glLightfv(GL_LIGHT0 + num_lights, GL_POSITION, cur_light.pos);
-				glEnable(GL_LIGHT0 + num_lights);
+				glLightfv(GLenum(GL_LIGHT0 + num_lights), GL_DIFFUSE, cur_light.col);
+				glLightfv(GLenum(GL_LIGHT0 + num_lights), GL_SPECULAR, white);
+				glLightfv(GLenum(GL_LIGHT0 + num_lights), GL_POSITION, cur_light.pos);
+				glEnable(GLenum(GL_LIGHT0 + num_lights));
 				num_lights++;
 				state = lighting;
 			}

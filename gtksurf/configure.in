@@ -140,15 +140,15 @@ RS_CHECK_LIB(glade, main)
 dnl OpenGL/Mesa:
 dnl ============
 
-AC_ARG_WITH(GL-prefix,
-  [  --with-GL-prefix=PFX    Prefix where OpenGL/Mesa is installed],
-  GL_prefix="$withval", GL_prefix="")
+AC_ARG_WITH(gl-prefix,
+  [  --with-gl-prefix=PFX    Prefix where OpenGL/Mesa is installed],
+  gl_prefix="$withval", gl_prefix="")
 
 dnl libGL/libMesaGL:
 
-if test "x$GL_prefix" != "x" ; then
-  CPPFLAGS="$CPPFLAGS -I$GL_prefix/include"
-  LDOPTS="$LDOPTS -L$GL_prefix/lib"
+if test "x$gl_prefix" != "x" ; then
+  CPPFLAGS="$CPPFLAGS -I$gl_prefix/include"
+  LDOPTS="$LDOPTS -L$gl_prefix/lib"
 fi
 
 AC_CHECK_LIB(GL, glBegin,,

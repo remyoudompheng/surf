@@ -187,10 +187,10 @@ void Kernel::process_output()
 		return;
 	}
 
-	if(s.compare(0, 7, "status ") == 0) {
+	if(s.substr(0, 7) == "status ") {
 		scriptwin->set_status(s.substr(7));
 		scriptwin->progress_mode(true);
-	} else if(s.compare(0, 9, "progress ") == 0) {
+	} else if(s.substr(0, 9) == "progress ") {
 		s = s.substr(9);
 		if(s == "done") {
 			scriptwin->progress_mode(false);
