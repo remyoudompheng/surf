@@ -1,0 +1,65 @@
+
+-------------------------------------------------------------------------
+
+				  surf
+
+			     Version 1.1.0
+
+	Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet
+  Erlangen-Nuernberg, 1997-2000 Johannes Gutenberg-Universitaet Mainz
+
+  Authors: Stephan Endrass, Hans Huelf, Ruediger Oertel, Ralf Schmitt,
+	  Kai Schneider and Johannes Beigel (see AUTHORS file)
+
+-------------------------------------------------------------------------
+
+
+What is surf?
+-------------
+
+surf is a tool to visualize algebraic curves and algebraic surfaces.
+surf is script driven and has a graphical user interface using the Gtk
+widget set.
+
+Documentation can be found in the docs/ directory.
+
+Visit surf's homepage for more information:
+
+		      http://surf.sourceforge.net
+
+
+Basic Installation:
+-------------------
+
+(see INSTALL for a more complete description)
+
+   $ cd surf-1.1.0
+   $ ./configure
+   [ wait.. ]
+   $ make
+   [ ..wait even longer.. ]
+   $ su
+   [ enter root's password ]
+   # make install
+   # logout
+
+This will install the binary, some data and surf's man page.
+
+
+Getting Started:
+----------------
+
+To get a first impression start surf in an xterm:
+
+   $ surf
+
+Then click on the "load script..." button to load one of the distributed
+example scripts in the examples/ directory. Press the "execute script"
+button, wait a few seconds and enjoy the output :)
+
+
+License:
+--------
+
+surf is distributed under the terms of the GNU General Public License
+version 2 or later. See also COPYING file.
