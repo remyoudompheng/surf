@@ -24,21 +24,20 @@
 
 
 
-#include <iostream.h>
-#include <string.h>
+#include<iostream>
+#include<cstring>
 
-#include "debug.h"
+#include <debug.h>
 
 static int level=0;
 int offlevel=0;
-class ostream & dos = cerr; 
-
+class std::ostream & dos = std::cerr; 
 
 void spaces()
 {
-	int i;
-	for (i=0; i<level; i++)
+	for (int i=0; i<level; i++) {
 		dos << "    ";
+	}
 }
 
 FunctionCall::FunctionCall()
@@ -50,10 +49,10 @@ FunctionCall::FunctionCall()
 FunctionCall::FunctionCall(const char *bla)
 {
 	off = 0;
-	strcpy (str, bla);
+	std::strcpy(str, bla);
 	if (offlevel == 0) {
 		spaces();
-		dos << "BEGIN: " << str << endl;
+		dos << "BEGIN: " << str << std::endl;
 	}
 	level++;
 }
@@ -67,6 +66,6 @@ FunctionCall::~FunctionCall()
 	level--;
 	if (offlevel == 0) {
 		spaces();
-		dos << "END: " << str << endl;
+		dos << "END: " << str << std::endl;
 	}
 }

@@ -22,15 +22,10 @@
  *
  */
 
-
-
-
 #ifndef IMAGEFORMATS_H
 #define IMAGEFORMATS_H
 
-#include <stdio.h>
-
-#include<string>
+#include <string>
 
 class bit_buffer;
 class RgbBuffer;

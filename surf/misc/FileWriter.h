@@ -30,7 +30,6 @@
 #  include <config.h>
 #endif
 
-#include<assert.h>
 #include<cstdio>
 
 class FileWriter
@@ -59,7 +58,6 @@ public:
 		if(str) {
 			name = str;
 		}
-		assert(name);
 		if (name[0] == '|') {
 			f = popen(name + 1, "w");
 		} else {
@@ -69,12 +67,10 @@ public:
 	}
 
 	const char* getName() {
-		assert(name);
 		return name[0]=='|' ? "surf_picture" : name; 				
 	}
 
 	bool isWritingToPipe() {
-		assert(name);
 		return name[0]=='|';
 	}
 
