@@ -1,7 +1,5 @@
 include $(top_srcdir)/Makefile.global
 
-CXXFLAGS=$(CXXFLAGS_WITHOUT_WALL)
-
 noinst_LIBRARIES = libdummy.a
 libdummy_a_SOURCES = ImageFormats.h ImageFormats.cc \
         AvailableImageFormats.h AvailableImageFormats.cc \

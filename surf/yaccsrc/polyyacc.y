@@ -1158,9 +1158,9 @@ d_expression:       '(' d_expression ')'
 i_expression:       '(' i_expression ')'
                         { $$ = $2; }
                   | DEGREE '(' p_expression ')'
-                        { $$ = $3.deg; };
+                        { $$ = $3.deg; }
                   | LENGTH '(' p_expression ')'
-                        { $$ = $3.n; };
+                        { $$ = $3.n; }
                   | i_expression AND i_expression
                         { $$ = ( $1 && $3 ); }
                   | i_expression OR i_expression

@@ -27,7 +27,7 @@ SUBDIRS = yaccsrc src image-formats drawfunc curve draw misc debug dither docs #
 bin_PROGRAMS = surf
 surf_SOURCES =
 
-surf: $(LOCAL_OBJECTS)
+surf$(EXEEXT): $(LOCAL_OBJECTS)
 	$(CXX) $(LOCAL_OBJECTS) -o surf $(LDFLAGS) $(LIBS)
 
 EXTRA_DIST = aclocal.m4 Makefile.global defaults.pic

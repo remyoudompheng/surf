@@ -1,5 +1,5 @@
 #!/bin/sh
-test -e Makefile && (echo "running make distclean..." && make distclean)
+test -e Makefile && make distclean
 rm -f install-sh
 rm -f mkinstalldirs
 rm -f missing
@@ -8,7 +8,7 @@ rm -f config.sub
 rm -f configure
 rm -f Makefile.in */Makefile.in
 rm -f aclocal.m4
-rm -f config.log config.cache
+rm -rf config.log config.cache autom4te.cache
 rm -f stamp-h.in
 rm -f config.h.in
 find . -name \*~ -exec rm \{\} \;

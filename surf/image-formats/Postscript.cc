@@ -49,9 +49,9 @@
 #include <FileWriter.h>
 #include <ScriptVar.h>
 
-#ifdef NO_GETHOSTNAME_PROTO
-extern "C" int gethostname (char *, int);
-#endif
+//#ifdef NO_GETHOSTNAME_PROTO
+//extern "C" int gethostname (char *, int);
+//#endif
 
 #include <Postscript.h>
 
@@ -85,16 +85,16 @@ namespace ImageFormats {
 		char* name_user = passwd_user->pw_name;
 		char* info_user = passwd_user->pw_gecos;
 		
-		char hostname[MAXHOSTNAMELEN];
-		
-		gethostname(hostname, MAXHOSTNAMELEN);
+//		char hostname[MAXHOSTNAMELEN];
+//		gethostname(hostname, MAXHOSTNAMELEN);
 		
 		time_t time_local = time(0);
 		char* the_time = ctime(&time_local);
 		
 		fprintf( file,"%%!PS-Adobe-1.0\n" );
 		fprintf( file,"%%%%BoundingBox: %d %d %d %d\n",x1-1,y1-1,x2+1,y2+1 );
-		fprintf( file,"%%%%Creator: %s:%s (%s)\n",hostname,name_user,info_user );
+//		fprintf( file,"%%%%Creator: %s:%s (%s)\n",hostname,name_user,info_user );
+		fprintf( file,"%%%%Creator: %s (%s)\n",name_user,info_user );
 		fprintf( file,"%%%%Title: image created with surf\n");
 		fprintf( file,"%%%%CreationDate: %s",the_time );
 		fprintf( file,"%%%%EndComments\n" );

@@ -63,11 +63,7 @@
 #include <errno.h>
 
 #include<iostream>
-#ifdef HAVE_STRINGSTREAM
-#  include<sstream>
-#else
-#  include<strstream>
-#endif
+#include<sstream>
 #include<string>
 
 #define PROMPT "-> "
@@ -126,18 +122,10 @@ void Script::beforeScriptExecution()
 		main_formula_pxyz_data[i].n = 0;
 	}
 
-#ifdef HAVE_STRINGSTREAM
 	std::ostringstream str;
-#else
-	std::ostrstream str;
-#endif
 	str << getDefaultValues() << std::ends;
 
-#ifdef HAVE_STRINGSTREAM	
 	internalExecuteScript(str.str().c_str());
-#else
-	internalExecuteScript(str.str());
-#endif
 	error_begin_char = 0;
 	char_number = 0;
 	symtab_delete_user_names();

@@ -50,9 +50,9 @@
 
 #include<iostream>
 
-#ifdef NO_GETHOSTNAME_PROTO
-extern "C" int gethostname (char *, int);
-#endif
+//#ifdef NO_GETHOSTNAME_PROTO
+//extern "C" int gethostname (char *, int);
+//#endif
 
 using namespace std;
 
@@ -80,15 +80,16 @@ namespace ImageFormats {
 		char* name_user = passwd_user->pw_name;
 		char* info_user = passwd_user->pw_gecos;
 		
-		char hostname[MAXHOSTNAMELEN];
-		gethostname(hostname, MAXHOSTNAMELEN);
+//		char hostname[MAXHOSTNAMELEN];
+//		gethostname(hostname, MAXHOSTNAMELEN);
 		
 		time_t time_local = time(0);
 		char* the_time = ctime(&time_local);
 		
 		fprintf(file, "%%!PS-Adobe-3.0 EPSF-2.0\n");
 		fprintf(file, "%%%%Title: Image created with surf.\n");
-		fprintf(file, "%%%%Creator: %s:%s (%s)\n", hostname, name_user, info_user);
+//		fprintf(file, "%%%%Creator: %s:%s (%s)\n", hostname, name_user, info_user);
+		fprintf(file, "%%%%Creator: %s (%s)\n", name_user, info_user);
 		fprintf(file, "%%%%CreationDate: %s",the_time );
 		fprintf(file, "%%%%BoundingBox: 0 0 %d %d\n", width, height);
 		fprintf(file, "%%%%Pages: 1\n");

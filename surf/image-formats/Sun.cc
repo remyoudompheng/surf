@@ -26,9 +26,10 @@
 #include <FileWriter.h>
 #include <RgbBuffer.h>
 
-#ifdef HTONL_IN_NETINET_IN_H
+#ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
-#else
+#endif
+#ifdef SYS_PARAM_H
 #  include <sys/param.h>
 #endif
 

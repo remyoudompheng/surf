@@ -28,12 +28,7 @@
 
 #include<cmath>
 #include<cstdlib>
-
-#ifdef HAVE_STRINGSTREAM
-#  include<sstream>
-#else
-#  include<strstream>
-#endif
+#include<sstream>
 
 namespace {
 
@@ -121,11 +116,7 @@ int binom_coeff(int n, int k)
 	} else if(k > n && n >= 0) {
 		return  0;
 	} else {
-#ifdef HAVE_STRINGSTREAM
 		std::ostringstream os;
-#else
-		std::ostrstream os;
-#endif
 		os << "Can't compute binomial coefficient of"
 		   << n << " and " << k << "!\n";
 		Misc::print_error(os.str());

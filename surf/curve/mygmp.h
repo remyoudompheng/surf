@@ -27,11 +27,7 @@
 #ifndef MYGMP_H
 #define MYGMP_H
 
-#ifdef GMP2_PREFIX
-#include <gmp2/gmp.h>
-#else
 #include <gmp.h>
-#endif
 
 #include<iostream>
 
