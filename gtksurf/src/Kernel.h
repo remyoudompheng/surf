@@ -138,32 +138,16 @@ public:
 //		return three_d_image_formats;
 //	}
 
-	static void update_position();
-	static void get_orig(double& x, double& y, double& z) {
-		x = orig_x;
-		y = orig_y;
-		z = orig_z;
-	}
-	static void get_rotation(double& x, double& y, double& z) {
-		x = rot_x;
-		y = rot_y;
-		z = rot_z;
-	}
-	static void get_scale(double& x, double& y, double& z) {
-		x = scale_x;
-		y = scale_y;
-		z = scale_z;
-	}
+	static void get_orig(double& x, double& y, double& z);
+	static void get_rotation(double& x, double& y, double& z);
+	static void get_scale(double& x, double& y, double& z);
+	static void get_clip(int& clip, double& radius);
 	enum Sequence {
 		rotate,
 		translate,
 		scale
 	};
-	static void get_sequence(Sequence& first, Sequence& second, Sequence& third) {
-		first = sequence[0];
-		second = sequence[1];
-		third = sequence[2];
-	}
+	static void get_sequence(Sequence sequence[3]);
 
 private:
 	static int kernel_pid;
@@ -192,6 +176,8 @@ private:
 	static double scale_x;
 	static double scale_y;
 	static double scale_z;
+	static int clip;
+	static double clip_radius;
 	static Sequence sequence[3];
 	
 	static void skip_space() {

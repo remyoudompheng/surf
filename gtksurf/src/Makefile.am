@@ -9,6 +9,7 @@ gtksurf_SOURCES = main.cc \
 		  PrefsWindow.h PrefsWindow.cc \
 		  ImageWindow.h ImageWindow.cc \
                   DitherWindow.h DitherWindow.cc \
+		  CurvePropsWindow.h CurvePropsWindow.cc \
                   gdk_draw_bitmap.h gdk_draw_bitmap.cc \
 		  About.h About.cc \
                   Misc.h Misc.cc

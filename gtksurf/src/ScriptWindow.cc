@@ -28,6 +28,7 @@ char modified_txt[] = "The current script has been modified.\n"
 ScriptWindow::ScriptWindow()
 	: prefswin(this),
 	  imagewin(this),
+	  curvepropswin(this),
 //	  navigationwin(this),
 	  dirty(false)
 {

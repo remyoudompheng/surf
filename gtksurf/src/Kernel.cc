@@ -53,6 +53,8 @@ double Kernel::rot_z;
 double Kernel::scale_x;
 double Kernel::scale_y;
 double Kernel::scale_z;
+int Kernel::clip;
+double Kernel::clip_radius;
 Kernel::Sequence Kernel::sequence[3];
 	
 guint Kernel::handler_id;
@@ -181,47 +183,120 @@ void Kernel::reset()
 	send("reset;\n");
 }
 
-void Kernel::update_position()
+void Kernel::get_orig(double& x, double& y, double& z)
 {
 	disconnect_handler();
-
-	send("print_position;\n");
-
-	for(int i = 0; i != 4; i++) {
-		std::string line;
-		line = receive_line();
+	send("print_origin;\n");
+	std::string line;
+	line = receive_line();
 #ifdef HAVE_STRINGSTREAM
-		std::istringstream is(line);
+	std::istringstream is(line);
 #else
-		std::istrstream is(line.c_str());
+	std::istrstream is(line.c_str());
 #endif
-		std::string head;
-		is >> head;
-		if(head == "origin:") {
-			is >> orig_x >> orig_y >> orig_z;
-		} else if(head == "rotation:") {
-			is >> rot_x >> rot_y >> rot_z;
-		} else if(head == "scale:") {
-			is >> scale_x >> scale_y >> scale_z;
-		} else if(head == "sequence:") {
-			for(int i = 0; i != 3; i++) {
-				std::string s;
-				is >> s;
-				if(s == "rotate") {
-					sequence[i] = rotate;
-				} else if(s == "scale") {
-					sequence[i] = scale;
-				} else if(s == "translate") {
-					sequence[i] = translate;
-				} else {
-					Misc::print_warning("Unkown sequence command!");
-				}
-			}
-		} else {
-			Misc::print_warning("Scrambled kernel output!?");
-		}
+	std::string head;
+	is >> head;
+	if(head == "origin:") {
+		is >> x >> y >> z;
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
 	}
+	connect_handler();
+}
 
+void Kernel::get_rotation(double& x, double& y, double& z)
+{
+	disconnect_handler();
+	send("print_rotation;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "rotation:") {
+		is >> x >> y >> z;
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
+	connect_handler();
+}
+
+void Kernel::get_scale(double& x, double& y, double& z)
+{
+	disconnect_handler();
+	send("print_scale;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "scale:") {
+		is >> x >> y >> z;
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
+	connect_handler();
+}
+
+void Kernel::get_clip(int& clip, double& radius)
+{
+	disconnect_handler();
+	send("print_clip;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "clip:") {
+		is >> clip >> radius;
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
+	connect_handler();
+}
+
+void Kernel::get_sequence(Sequence sequence[3])
+{
+	disconnect_handler();
+	send("print_sequence;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "sequence:") {
+		for(int i = 0; i != 3; i++) {
+			std::string s;
+			is >> s;
+			if(s == "rotate") {
+				sequence[i] = rotate;
+			} else if(s == "scale") {
+				sequence[i] = scale;
+			} else if(s == "translate") {
+				sequence[i] = translate;
+			} else {
+				Misc::print_warning("Unkown sequence command!");
+			}
+		}
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
 	connect_handler();
 }
 

@@ -19,6 +19,7 @@
 #include <Glade.h>
 #include <PrefsWindow.h>
 #include <ImageWindow.h>
+#include <CurvePropsWindow.h>
 //#include <NavigationWindow.h>
 
 #include<string>
@@ -56,6 +57,7 @@ public:
 private:
 	PrefsWindow prefswin;
 	ImageWindow imagewin;
+	CurvePropsWindow curvepropswin;
 //	NavigationWindow navigationwin;
 
 	bool dirty; // was script changed since last save?
