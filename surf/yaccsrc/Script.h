@@ -78,6 +78,8 @@ public:
 	static void ppm_to_stdout(bool isSurface);
 
 private:
+	static bool is_a_tty;
+	
 	static bool stop_flag;
 	static bool kernelMode;
 

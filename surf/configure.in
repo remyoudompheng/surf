@@ -145,17 +145,9 @@ JOJO_GTS
 
 if test "x$have_gts" == "xyes"; then
 
-  dnl OpenGL & GLU:
+  dnl OpenInventor:
   dnl -------------
-  JOJO_OPENGL
-
-  if test "x$have_opengl" == "xyes"; then
-
-    dnl OpenInventor:
-    dnl -------------
-    JOJO_INVENTOR
-
-  fi
+  JOJO_INVENTOR
 
 fi
 

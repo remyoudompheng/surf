@@ -342,14 +342,14 @@ AC_DEFUN(JOJO_OPENGL, [
   save_ldflags=$LDFLAGS
 
   AC_ARG_WITH(gl-prefix,
-    [  --with-GL-prefix=PFX    Prefix where OpenGL/Mesa & GLU are installed],
+    [  --with-gl-prefix=PFX    Prefix where OpenGL/Mesa & GLU are installed],
     gl_prefix="$withval",
     gl_prefix="")
-  AC_ARG_ENABLE(opengl,
-    [  --disable-OpenGL        Do not try to find any GL/GLU includes and libraries],
-    , enable_opengl=yes)
+dnl  AC_ARG_ENABLE(opengl,
+dnl    [  --disable-opengl        Do not try to find any GL/GLU includes and libraries],
+dnl    , enable_opengl=yes)
 
-  if test "x$enable_opengl" = "xyes" ; then
+dnl  if test "x$enable_opengl" = "xyes" ; then
 
     if test "x$gl_prefix" != "x" ; then
       GL_CPPFLAGS="-I$gl_prefix/include"
@@ -369,7 +369,7 @@ AC_DEFUN(JOJO_OPENGL, [
 
     LIBS="$LIBS $GL_LIBS"
 
-    if test "x$have_opengl" == "xyes"; then
+    if test "x$have_opengl" = "xyes"; then
       dnl libGLU/libMesaGLU:
       AC_CHECK_LIB(GLU, gluLookAt,
         GL_LIBS="$GL_LIBS -lGLU",
@@ -378,13 +378,13 @@ AC_DEFUN(JOJO_OPENGL, [
           have_opengl=no))
     fi
 
-    if test "x$have_opengl" == "xyes"; then
+    if test "x$have_opengl" = "xyes"; then
       dnl GL & GLU header files:
       AC_CHECK_HEADERS(GL/gl.h GL/glu.h,
         AC_DEFINE(HAVE_OPENGL),
         have_opengl=no)
     fi
-  fi
+dnl  fi
 
   CPPFLAGS=$save_cppflags
   LIBS=$save_libs
@@ -396,38 +396,64 @@ AC_DEFUN([JOJO_INVENTOR],[
   save_libs=$LIBS
   save_ldflags=$LDFLAGS
 
-  dnl X
-  AC_PATH_X
+  AC_ARG_WITH(inventor-prefix,
+    [  --with-Inventor-prefix=PFX Prefix where OpenInventor is installed],
+    inventor_prefix="$withval",
+    inventor_prefix="")
+  AC_ARG_ENABLE(inventor,
+    [  --disable-inventor      Do not try to find Inventor includes and libraries],
+    , enable_inventor=yes)
 
-  if test x"$no_x" != "xyes"; then
-    CPPFLAGS="$CPPFLAGS $GL_CPPFLAGS -I$x_includes"
-    LDFLAGS="$LDFLAGS $GL_LDFLAGS -L$x_libraries"
-    LIBS="$LIBS $GL_LIBS -lX11 -lInventor"
+  if test "x$enable_inventor" = "xyes" ; then
 
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+    dnl OpenGL & GLU:
+    JOJO_OPENGL
 
-    AC_MSG_CHECKING([for SoDB::init in -lInventor])
+    if test "x$have_opengl" == "xyes"; then
 
-    AC_TRY_COMPILE([
-      #include <Inventor/SoDB.h>
-    ], [
-      SoDB::init();
-    ],
-    have_inventor=yes,
-    have_inventor=no)
+      if test "x$inventor_prefix" != "x" ; then
+        INVENTOR_CPPFLAGS="-I$inventor_prefix/include"
+        INVENTOR_LDFLAGS="-L$inventor_prefix/lib"
+        CPPFLAGS="$CPPFLAGS $GL_CPPFLAGS"
+        LDFLAGS="$LDFLAGS $GL_LDFLAGS"
+      fi
 
-    AC_MSG_RESULT($have_inventor)
+      dnl X
+      AC_PATH_X
 
-    AC_LANG_RESTORE
+      if test x"$no_x" != "xyes"; then
+        CPPFLAGS="$CPPFLAGS $GL_CPPFLAGS -I$x_includes"
+        LDFLAGS="$LDFLAGS $GL_LDFLAGS -L$x_libraries"
+        LIBS="$LIBS $GL_LIBS -lX11 -lInventor"
 
-  fi
+        AC_LANG_SAVE
+        AC_LANG_CPLUSPLUS
 
-  if test x"$have_inventor" == "xno"; then
-    CPPFLAGS=$save_cppflags
-    LDFLAGS=$save_ld_flags
-    LIBS=$save_libs
+        AC_MSG_CHECKING([for SoDB::init in -lInventor])
+
+        AC_TRY_COMPILE([
+          #include <Inventor/SoDB.h>
+        ], [
+          SoDB::init();
+        ],
+        have_inventor=yes,
+        have_inventor=no)
+
+        AC_MSG_RESULT($have_inventor)
+
+        AC_LANG_RESTORE
+
+      fi
+
+      if test x"$have_inventor" = "xno"; then
+        CPPFLAGS=$save_cppflags
+        LDFLAGS=$save_ld_flags
+        LIBS=$save_libs
+      else
+        AC_DEFINE(HAVE_INVENTOR)
+      fi
+    fi
   else
-    AC_DEFINE(HAVE_INVENTOR)
+    have_inventor=no
   fi
 ])

@@ -52,9 +52,7 @@ namespace ImageFormats {
 #ifdef HAVE_LIBGTS
 		&imgFmt_GTS,
 		&imgFmt_OOGL,
-#  ifdef HAVE_INVENTOR
                 &imgFmt_Inventor,
-#  endif
 #endif
 
 		0 // last element is 0

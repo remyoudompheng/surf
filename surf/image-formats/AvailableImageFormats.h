@@ -50,9 +50,7 @@
 #ifdef HAVE_LIBGTS
 #  include <GTS.h>
 #  include <OOGL.h>
-#  ifdef HAVE_INVENTOR
-#    include <Inventor.h>
-#  endif
+#  include <Inventor.h>
 #endif
 
 namespace ImageFormats {

@@ -31,6 +31,7 @@
 #include <gts.h>
 
 #include<map>
+#include<fstream>
 
 class Triangulator;
 class SoCoordinate3;
@@ -64,10 +65,21 @@ namespace ImageFormats {
 		
 		int vertex_index;
 		std::map<GtsVertex*, int> vertex_map;
-		
+
+#ifdef HAVE_INVENTOR		
 		SoCoordinate3* coords;
 		SoNormal* normals;
 		SoIndexedFaceSet* faceSets;
+#else
+		std::ofstream* ofs;
+		int num_vertices;
+		int num_faces;
+		void normal_func(GtsVertex* f);
+		static gint _normal_func(gpointer f, gpointer This) {
+			static_cast<OpenInventor*>(This)->normal_func(static_cast<GtsVertex*>(f));
+			return 0;
+		}
+#endif
 
 		void vertex_func(GtsVertex* f);
 		static gint _vertex_func(gpointer f, gpointer This) {

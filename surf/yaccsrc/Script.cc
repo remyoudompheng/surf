@@ -66,10 +66,11 @@
 #include<strstream>
 #include<string>
 
-#define PROMPT "surf> "
+#define PROMPT "-> "
 
 using namespace ScriptVar;
 
+bool Script::is_a_tty = false;
 bool Script::stop_flag = false;
 bool Script::kernelMode = false;
 RgbBuffer* Script::buffer = 0;
@@ -98,6 +99,7 @@ void replaceCommand(const char* name, void (*func)())
 	
 	symtab_add_surface_name(name, SYM_COMMAND, 1, (void*)func);
 }
+
 }
 
 
@@ -163,8 +165,10 @@ void Script::internalExecuteScript(const char* str)
 				  << error_begin_char << ' '
 				  << char_number << '\n';
 		} else {
-			std::cerr << "ERROR in line " << line_number << ": "
-				  << yyerrorstring << '\n';
+			if(!is_a_tty) {
+				std::cerr << "ERROR in line " << line_number << ": ";
+			}
+			std::cerr << yyerrorstring << '\n';
 		}
 	}
 }
@@ -211,9 +215,16 @@ void Script::executeScriptFromStdin(bool quiet)
 {
 	beforeScriptExecution();
 	
-	bool is_a_tty = isatty(STDIN_FILENO);
+	is_a_tty = isatty(STDIN_FILENO);
 	if(is_a_tty && !quiet) {
-		std::cout << PACKAGE " " VERSION "\n";
+		std::cout <<
+"                      _____\n"
+"  ________ __________/ ____\\\n"
+" /  ___/  |  \\_  __ \\   __\\\n"
+" \\___ \\|  |  /|  | \\/|  |\n"
+"/____  >____/ |__|   |__| " VERSION "\n"
+"     \\/\n\n";
+
 	}
 
 	if(is_a_tty) {
@@ -221,18 +232,21 @@ void Script::executeScriptFromStdin(bool quiet)
 #ifdef HAVE_LIBREADLINE
 		rl_bind_key('\t', reinterpret_cast<Function*>(rl_insert));
 		rl_bind_key('^', reinterpret_cast<Function*>(rl_insert));
-		char* line;
-		while((line = readline(PROMPT)) != 0) {
-			add_history(line);
-			internalExecuteScript(line);
-			free(line);
+		char* l;
+		while((l = readline(PROMPT)) != 0) {
+			if(*l) {
+				add_history(l);
+				internalExecuteScript(l);
+			}
+			free(l);
 		}
 #else
-		std::cout << "Reading from stdin.\n"
-			  << PROMPT;
+		std::cout << PROMPT;
 		std::string line;
 		while(std::getline(std::cin, line)) {
-			internalExecuteScript(line.c_str());
+			if(line.length() > 0) {
+				internalExecuteScript(line.c_str());
+			}
 			std::cout << PROMPT;
 		}
 #endif
@@ -257,6 +271,7 @@ void Script::executeScriptFromStdin(bool quiet)
 
 void Script::executeScriptFromFile(const char *name)
 {
+	is_a_tty = false;
 	const char* str = readFile(name);
 	beforeScriptExecution();
 	internalExecuteScript(str);

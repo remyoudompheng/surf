@@ -28,13 +28,17 @@
 #endif
 
 #ifdef HAVE_LIBGTS
-#ifdef HAVE_INVENTOR
 
 #include <Inventor.h>
 #include <Triangulator.h>
 #include <ScriptVar.h>
 #include <FileWriter.h>
 #include <Misc.h>
+
+#include <gts.h>
+
+
+#ifdef HAVE_INVENTOR
 
 #ifdef max
 #  undef max
@@ -50,7 +54,6 @@
 #include <Inventor/nodes/SoNormal.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/actions/SoWriteAction.h>
-#include <gts.h>
 
 namespace ImageFormats {
 
@@ -169,5 +172,149 @@ namespace ImageFormats {
 
 } // namespace ImageFormats
 
+#else// HAVE_INVENTOR
+
+namespace ImageFormats {
+
+	OpenInventor imgFmt_Inventor;
+
+	bool OpenInventor::save3DImage(const char* filename, Triangulator& data)
+	{
+		tritor = &data;
+		
+		FileWriter fw(filename);
+		FILE* file;
+		
+		if((file = fw.openFile()) == 0) {
+		        Misc::print_warning("Could not open file for writing.\n");
+			return false;
+		}
+
+		ofs = new std::ofstream(fileno(file));
+		if(!*ofs) {
+			Misc::print_warning("Couldn't associate C++ stream with output file.\n");
+			return false;
+		}
+
+		*ofs << "#Inventor V2.1 ascii\n"
+                        "\n"
+                        "Separator {\n";
+
+                // specify lights:
+		for(int i = 0; i != LIGHT_SOURCE_MAX_VALUE; i++) {
+			light_data_t& l = ScriptVar::light_data[i];
+			int vol = l.volume;
+			if(vol == 0) {
+				continue;
+			}
+			*ofs << "    PointLight {\n"
+                                      "\tintensity\t" << vol/100.0 << "\n"
+				      "\tcolor\t" << l.color[0]/255.0 << ' ' << l.color[1]/255.0 << ' ' << l.color[2]/255.0 << "\n"
+                                      "\tlocation\t" << l.position[0] << ' ' << l.position[1] << ' ' << l.position[2] << "\n"
+                                "    }\n";
+		}
+
+		// specify material:
+		*ofs << "    Material {\n";
+		float r = ScriptVar::color_slider[0].red/255.0;
+		float g = ScriptVar::color_slider[0].green/255.0;
+		float b = ScriptVar::color_slider[0].blue/255.0;
+		int illumination = ScriptVar::light_illumination_data;
+		if(illumination & ScriptVar::light_illumination_ambient_data) {
+			*ofs << "\tambientColor\t" << r << ' ' << g << ' ' << b << '\n';
+		}
+		if(illumination & ScriptVar::light_illumination_diffuse_data) {
+			*ofs << "\tdiffuseColor\t" << r << ' ' << g << ' ' << b << '\n';
+		}
+		if(illumination & ScriptVar::light_illumination_reflected_data) {
+			*ofs << "\tspecularColor\t1 1 1\n"
+                                "\tshininess\t" << ScriptVar::light_settings[0].reflected/100.0 << '\n';
+		}
+		if(illumination & ScriptVar::light_illumination_transmitted_data) {
+			*ofs << "\ttransparency\t" << ScriptVar::light_settings[0].transparence/100.0 << '\n';
+		}
+		*ofs << "    }\n";
+
+		// specify vertex & normal data:
+		*ofs << "    Coordinate3 {\n"
+                              "\tpoint [\n";
+		GtsSurface* surface = data.getSurface();
+
+		num_vertices = gts_surface_vertex_number(surface);
+		num_faces = gts_surface_face_number(surface);
+		
+		vertex_index = 0;
+		gts_surface_foreach_vertex(surface, _vertex_func, this);
+		*ofs <<       "\t]\n"
+                        "    }\n"
+                        "    Normal {\n"
+                              "\tvector [\n";
+		
+		vertex_index = 0;
+		data.initNormals();
+		gts_surface_foreach_vertex(surface, _normal_func, this);
+		data.deinitNormals();
+		*ofs <<       "\t]\n"
+                        "    }\n"
+                        "    IndexedFaceSet {\n"
+			      "\tcoordIndex [\n";
+
+		vertex_index = 0;
+		gts_surface_foreach_face(surface, _face_func, this);
+                *ofs <<       "\t]\n"
+                        "    }\n"
+                        "}\n";
+
+		ofs->flush();
+		delete ofs;
+		
+		vertex_map.erase(vertex_map.begin(), vertex_map.end());
+		
+		return true;
+	}
+
+	void OpenInventor::vertex_func(GtsVertex* v)
+	{
+		*ofs << "\t\t" << v->p.x << ' ' << v->p.y << ' ' << v->p.z;
+		vertex_map[v] = vertex_index++;
+		if(vertex_index != num_vertices) {
+			*ofs << ',';
+		}
+		*ofs << '\n';
+	}
+
+	void OpenInventor::normal_func(GtsVertex* v)
+	{
+		Triangulator::Point n = tritor->getNormal(v);
+		*ofs << "\t\t" << n.x << ' ' << n.y << ' ' << n.z;
+
+		vertex_index++;
+		if(vertex_index != num_vertices) {
+			*ofs << ',';
+		}
+		*ofs << '\n';
+	}
+
+	void OpenInventor::face_func(GtsFace* face)
+	{
+		GtsVertex* v1;
+		GtsVertex* v2;
+		GtsVertex* v3;
+		gts_triangle_vertices(&face->triangle, &v1, &v2, &v3);
+		*ofs << "\t\t"
+		     << vertex_map[v1] << ", "
+		     << vertex_map[v2] << ", "
+		     << vertex_map[v3] << ", -1";
+
+		vertex_index++;
+		if(vertex_index != num_faces) {
+			*ofs << ',';
+		}
+		*ofs << '\n';
+	}
+
+} // namespace ImageFormats
+
 #endif // HAVE_INVENTOR
+
 #endif // HAVE_LIBGTS
