@@ -1,40 +1,98 @@
 -------------------------------------------------------------------------
+              ____ _____ _  __                      _____ 
+             / ___|_   _| |/ /  ________ __________/ ____\
+            | |  _  | | | ' /  /  ___/  |  \_  __ \   __\ 
+            | |_| | | | | . \  \___ \|  |  /|  | \/|  |   
+             \____| |_| |_|\_\/____  >____/ |__|   |__|
+                                   \/                     
+
 
 				gtksurf
 
 			      Version 0.1
 
 		   Copyright (C) 2001 Johannes Beigel
-
 	  Author: Johannes Beigel <jojo@users.sourceforge.net>
 
 -------------------------------------------------------------------------
 
 
 What is gtksurf?
-----------------
+-----------------
 
-gtksurf is graphical frontend to surf, the visualization tool for real
-algebraic geometry.
+gtksurf is GTK+-based graphical frontend to surf, the visualization tool
+for real algebraic geometry. While surf is (meanwhile) a purely script-
+driven kernel, gtksurf provides a nifty user interface to control most
+features of the surf kernel.
+
+Documentation can be found in the docs/ directory. If gtksurf is
+installed correctly, a Texinfo-Manual will be available by typing
+"info gtksurf" in a shell.
 
 Visit surf's homepage for more information:
 
 		      http://surf.sourceforge.net
 
 
+Requirements
+------------
+
+These are real requirements:
+
+- (Kinda) ISO C++ compiler. This implies a working standard library with
+  STL, too. g++ from the GCC 2.95 suite should suffice nevertheless.
+
+- A make tool, preferably GNU make.
+
+- GTK+ 1.2.0 or better.
+
+- libglade (not to be confused with Glade). This is a library which
+  allows applications to read in XML-files (*created* with Glade)
+  containing a desription of their GUI and build up that GUI
+  dynamically at run-time.
+
+- OpenGL & GLU (or Mesa or some other OpenGL or OpenGL-like
+  implementation).
+
+- The GtkGLArea widget (which is in the libgtkgl library).
+
+
+And these "requirements" are actually optional:
+
+- If STLport includes and/or library are found at configure-time,
+  they're used. This may be useful for people who don't have a
+  sufficiently standard-conformable C++ compiler.
+
+- An available gdk-pixbuf library will be used automatically.
+  It's really recommended to have this library (and header files)
+  installed, because the display of large images can become
+  significantly faster.
+
+- If you want to have "long versions" of the command line options,
+  you'll need GNU's getopt_long() function. The configure script
+  checks for libgnugetopt.
+
+
+
 Basic Installation:
 -------------------
 
-As usual:
+If you installed all of the required stuff mentioned above, compilation
+and installation below /usr/local/ should work "as usual":
 
-./configure
-make
-(become root)
-make install
+    ./configure
+    make
+    (become root)
+    make install
+
+Type "./configure --help" to get a list of customization options.
+More detailed (but generic) help can be found in the INSTALL file.
 
 
 License:
 --------
 
-gtksurf is distributed under the terms of the GNU General Public License
-version 2 or later. See also COPYING file.
+See COPYING file.
+
+
+-jojo

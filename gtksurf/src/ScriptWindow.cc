@@ -312,10 +312,7 @@ void ScriptWindow::on_navigation_activate()
 	prelude_length = script.length();
 	script += glade.get_chars(text_script);
 	script += "surface_run_commands = 1;\n"
-		  "triangulate_surface;\n"
-                  "filename = \"-\";\n"
-                  "three_d_file_format = oogl;\n"
-                  "save_three_d_image;\n";
+		  "triangulate_surface;\n";
 	kernel.send(script);
 	navigationwin.show();
 }
@@ -328,10 +325,7 @@ void ScriptWindow::on_render_curve_activate()
 	script += glade.get_chars(text_script);
 	script += "surface_run_commands = 1;\n"
 		  "clear_screen;\n"
-		  "draw_curve;\n"
-                  "filename = \"-\";\n"
-		  "color_file_format = ppm;\n"
-		  "save_color_image\n";
+		  "draw_curve;\n";
 	imagewin.set_mode(ImageWindow::CURVE);
 	kernel.send(script);
 }
@@ -343,10 +337,7 @@ void ScriptWindow::on_render_surface_activate()
 	prelude_length = script.length();
 	script += glade.get_chars(text_script);
 	script += "surface_run_commands = 1;\n"
-		  "draw_surface;\n"
-                  "filename = \"-\";\n"
-                  "color_file_format = ppm;\n"
-                  "save_color_image;\n";
+		  "draw_surface;";
 	imagewin.set_mode(ImageWindow::SURFACE);
 	kernel.send(script);
 }

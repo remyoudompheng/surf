@@ -90,6 +90,8 @@ Kernel::Kernel(const std::string& kernel_path)
 	}
 	std::string version = receive_line();
 
+	send("set_kernel_mode;");
+
 	send("print_defaults;");
 	defaults.assign("");
 	std::string line;
