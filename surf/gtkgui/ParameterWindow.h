@@ -36,11 +36,7 @@
 class ParameterWindow
 {
 public:
-	ParameterWindow() 
-		{
-			container = 0;
-			windowName =0;
-		}
+	ParameterWindow() : container(0), windowName(0) { }
 	virtual ~ParameterWindow()			{}
 	virtual const char *getName()
 		{

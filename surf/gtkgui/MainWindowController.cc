@@ -288,13 +288,7 @@ void MainWindowController::internalExecuteScript (const char *before, const char
 
 void MainWindowController::executeScript()
 {	
-	SymbolTable st;
-	cw.writeSymbols (st);
-	wrw.writeSymbols(st);
-
-	ostrstream ostr;
-	ostr << st << ends;
-	internalExecuteScript (ostr.str(), tw.getContents(), "", true);
+	internalExecuteScript (0, tw.getContents(), "", true);
 }
 
 void MainWindowController::destroy() 
@@ -709,16 +703,9 @@ void MainWindowController::enableSaveButton(SaveButtonType which)
 
 void MainWindowController::drawSurfaceWithParams()
 {
-	ostrstream str;
-	str <<  "rot_x=" <<position_numeric.rot_x 
-	    << ";rot_y=" << position_numeric.rot_y
-	    << ";rot_z=" << position_numeric.rot_z
-	    << ";scale_x=" << position_numeric.scale_x
-	    << ";scale_y=" << position_numeric.scale_y
-	    << ";scale_z=" << position_numeric.scale_z
-	    << ";origin_x=" << position_numeric.orig_x
-	    << ";origin_y=" << position_numeric.orig_y
-	    << ";origin_z=" << position_numeric.orig_z
-	    << ";draw_surface;";
-	internalExecuteScript(0, tw.getContents(), str.str(), false);
+	ostrstream ostr;
+	SymbolTable st;
+	navwin.writeSymbols(st);
+	ostr << st << "draw_surface;" << ends;
+	internalExecuteScript(0, tw.getContents(), ostr.str(), false);
 }
