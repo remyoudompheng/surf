@@ -501,7 +501,6 @@ MainWindowController::MainWindowController()
 	VOIDCONNECT(filesel->cancel_button, "clicked", fileSelectionCancelled);
 	gtk_signal_connect (GTK_OBJECT(filesel), "delete_event", GTK_SIGNAL_FUNC(fileSelectionDelete), this);
 
-
 	buttons = gtk_vbox_new (FALSE, 5);
 	gtk_container_border_width(GTK_CONTAINER(buttons), 5);
 
@@ -582,23 +581,23 @@ MainWindowController::MainWindowController()
 	VOIDCONNECT(tmpbutton, "clicked", saveScript);
 
 
-
+	GtkWidget* handlebox = gtk_handle_box_new();
+	gtk_handle_box_set_handle_position(GTK_HANDLE_BOX(handlebox), GTK_POS_TOP);
 	frame = gtk_frame_new ("Command");
+	gtk_container_border_width(GTK_CONTAINER(frame), 5);
+	gtk_container_add(GTK_CONTAINER(handlebox), frame);
 
 	gtk_container_add (GTK_CONTAINER(frame), buttons);
 
 	mainBox = gtk_hbox_new (FALSE,5);
+	gtk_container_border_width(GTK_CONTAINER(tw.getContainer()), 5);
 	gtk_box_pack_start (GTK_BOX(mainBox), tw.getContainer(), TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX(mainBox), frame, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX(mainBox), handlebox, FALSE, FALSE, 0);
 
 	
 
 	gtk_window_set_title (GTK_WINDOW(window), PACKAGE " " VERSION);
 	VOIDCONNECT(window, "destroy", destroy);
-
-
-	
-
 	
 	GtkWidget *preview = gtk_hbox_new (TRUE, 5);
 
@@ -608,8 +607,6 @@ MainWindowController::MainWindowController()
 //  	rbb.addButton ("3x3",0);
 //  	rbb.addButton ("9x9",0);
 //  	rbb.addButton ("27x27",0);
-
-
 
 	previewButtons[0] = gtk_toggle_button_new_with_label ("3x3");
 	previewButtons[1] = gtk_toggle_button_new_with_label ("9x9");
@@ -643,17 +640,16 @@ MainWindowController::MainWindowController()
 	gtk_container_border_width(GTK_CONTAINER(previewContainer), 5);
 	mygtk_set_tip (previewContainer, "toller tip");
 
-	GtkWidget *dummy = gtk_vbox_new(FALSE,5);
-	gtk_box_pack_start(GTK_BOX(dummy), wid, FALSE, FALSE,0);
+	GtkWidget* dummy = gtk_vbox_new(false, 0);
+	handlebox = gtk_handle_box_new();
+	gtk_container_add(GTK_CONTAINER(handlebox), wid);
+	gtk_box_pack_start(GTK_BOX(dummy), handlebox, false, false, 0);
 	gtk_box_pack_start(GTK_BOX(dummy), mainBox, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(dummy), previewContainer, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(previewContainer), sizeContainer, FALSE, FALSE, 0);
 
 
-	
-
-
-	gtk_container_border_width(GTK_CONTAINER(mainBox), 5);
+//	gtk_container_border_width(GTK_CONTAINER(mainBox), 5);
 
 	gtk_container_add (GTK_CONTAINER(window), dummy);
 
