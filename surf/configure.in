@@ -74,7 +74,9 @@ dnl --------------
 dnl do we have getopt() and (optionally) GNU getopt_long()?
 
 AC_CHECK_FUNC(getopt,, AC_MSG_ERROR([Sorry: can't find getopt() function]))
-AC_CHECK_HEADER(getopt.h, AC_CHECK_FUNCS(getopt_long))
+AC_CHECK_HEADER(getopt.h)
+AC_CHECK_LIB(gnugetopt, main)
+AC_CHECK_FUNCS(getopt_long)
 
 dnl check for gethostname prototype in unistd.h:
 

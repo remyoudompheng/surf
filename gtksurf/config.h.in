@@ -47,6 +47,9 @@
 /* Define if you have the glade library (-lglade).  */
 #undef HAVE_LIBGLADE
 
+/* Define if you have the gnugetopt library (-lgnugetopt).  */
+#undef HAVE_LIBGNUGETOPT
+
 /* Define if you have the gtkgl library (-lgtkgl).  */
 #undef HAVE_LIBGTKGL
 
