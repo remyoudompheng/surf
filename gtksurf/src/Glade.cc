@@ -48,6 +48,11 @@ Glade::Glade(int argc, char* argv[], const std::string& gladefile)
 	gtk_box_pack_start(GTK_BOX(fsel->main_vbox), saveopts_frame, false, false, 0);
 	gtk_widget_show_all(saveopts_frame);
 	
+	fontsel = reinterpret_cast<GtkFontSelectionDialog*>(get_widget("fontselectiondialog"));
+	sig_connect(fontsel->ok_button, "clicked", _on_fontselok_clicked, this);
+	sig_connect(fontsel->cancel_button, "clicked", _on_fontselcancel_clicked, this);
+	sig_connect(GTK_WIDGET(fontsel), "delete_event", _on_fontsel_delete_event, this);
+
 	gmainloop = g_main_new(false);
 }
 
@@ -61,6 +66,7 @@ Glade::~Glade()
 bool Glade::ask_user(const std::string& txt) const
 {
 	gtk_label_set_text(GTK_LABEL(get_widget("label_yesno")), txt.c_str());
+	gtk_widget_grab_focus(get_widget("button_yes"));
 	gtk_widget_show(yesnodlg);
 	gtk_grab_add(yesnodlg);
 	g_main_run(gmainloop);
@@ -72,6 +78,7 @@ bool Glade::ask_user(const std::string& txt) const
 void Glade::show_message(const std::string& txt) const
 {
 	gtk_label_set_text(GTK_LABEL(get_widget("label_ok")), txt.c_str());
+	gtk_widget_grab_focus(get_widget("button_ok"));
 	gtk_widget_show(okdlg);
 	gtk_grab_add(okdlg);
 	g_main_run(gmainloop);
@@ -96,4 +103,15 @@ bool Glade::fileselect(const std::string& title, GtkWidget* menu)
 	gtk_widget_hide(GTK_WIDGET(fsel));
 	filename.assign(gtk_file_selection_get_filename(fsel));
 	return fselok_clicked;
+}
+
+bool Glade::fontselect()
+{
+	gtk_widget_show(GTK_WIDGET(fontsel));
+	gtk_grab_add(GTK_WIDGET(fontsel));
+	g_main_run(gmainloop);
+	gtk_grab_remove(GTK_WIDGET(fontsel));
+	gtk_widget_hide(GTK_WIDGET(fontsel));
+	fontname.assign(gtk_font_selection_dialog_get_font_name(fontsel));
+	return fontselok_clicked;
 }

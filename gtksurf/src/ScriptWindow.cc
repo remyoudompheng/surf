@@ -71,7 +71,33 @@ ScriptWindow::ScriptWindow(Glade& _glade, Kernel& _kernel)
 	
 	pbar = glade.get_widget("progressbar_script");
 
+	gtk_widget_show(window);
+
 	on_new_activate();
+}
+
+void ScriptWindow::get_geometry(int& xpos, int& ypos, int& width, int& height)
+{
+	GtkWidget* window = glade.get_widget("window_script");
+	int depth;
+	gdk_window_get_geometry(window->window, &xpos, &ypos, &width, &height, &depth);
+
+}
+
+void ScriptWindow::set_geometry(int xpos, int ypos, int width, int height)
+{
+	GtkWidget* window = glade.get_widget("window_script");
+	gtk_widget_set_uposition(window, xpos, ypos);
+	gtk_window_set_default_size(GTK_WINDOW(window), width, height);
+}
+
+void ScriptWindow::set_font(const std::string& font)
+{
+	GtkStyle* style = gtk_style_copy(gtk_widget_get_default_style());
+	if(font.length() > 0) {
+		style->font = gdk_font_load(font.c_str());
+	}
+	gtk_widget_set_style(glade.get_widget("text_script"), style);
 }
 
 void ScriptWindow::load_file(const std::string& fname)

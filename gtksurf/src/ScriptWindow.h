@@ -46,6 +46,14 @@ public:
 
 	void insert(const std::string& str);
 
+	void get_geometry(int& xpos, int& ypos, int& width, int& height);
+	void set_geometry(int xpos, int ypos, int width, int height);
+	void set_font(const std::string& font);
+	void set_toolbar_style(GtkToolbarStyle style) {
+		gtk_toolbar_set_style(GTK_TOOLBAR(glade.get_widget("toolbar")),
+				      prefswin.getToolbarStyle());
+	}
+
 private:
 	Glade& glade;
 

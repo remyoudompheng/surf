@@ -15,6 +15,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>window_script</name>
+  <visible>False</visible>
   <signal>
     <name>delete_event</name>
     <handler>on_window_delete_event</handler>
@@ -26,7 +27,7 @@
   <modal>False</modal>
   <default_width>512</default_width>
   <default_height>480</default_height>
-  <allow_shrink>False</allow_shrink>
+  <allow_shrink>True</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
 
@@ -678,7 +679,10 @@
       <widget>
 	<class>GtkButton</class>
 	<name>button_yes</name>
+	<can_default>True</can_default>
+	<has_default>True</has_default>
 	<can_focus>True</can_focus>
+	<has_focus>True</has_focus>
 	<label>Yes</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
@@ -691,6 +695,7 @@
       <widget>
 	<class>GtkButton</class>
 	<name>button_no</name>
+	<can_default>True</can_default>
 	<can_focus>True</can_focus>
 	<label>No</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
@@ -791,7 +796,10 @@
       <widget>
 	<class>GtkButton</class>
 	<name>button_ok</name>
+	<can_default>True</can_default>
+	<has_default>True</has_default>
 	<can_focus>True</can_focus>
+	<has_focus>True</has_focus>
 	<label>Okay.</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
@@ -2020,13 +2028,27 @@
 	    </widget>
 	  </widget>
 	</widget>
+
+	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>checkbutton_pos</name>
+	  <can_focus>True</can_focus>
+	  <label>Remember Window Position and Dimensions</label>
+	  <active>True</active>
+	  <draw_indicator>True</draw_indicator>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+	</widget>
       </widget>
 
       <widget>
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>label13</name>
-	<label>Appearance</label>
+	<label>Script Window Appearance</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -2039,9 +2061,9 @@
     <widget>
       <class>GtkHBox</class>
       <name>hbox4</name>
-      <border_width>5</border_width>
-      <homogeneous>True</homogeneous>
-      <spacing>0</spacing>
+      <border_width>4</border_width>
+      <homogeneous>False</homogeneous>
+      <spacing>8</spacing>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
@@ -2050,33 +2072,8 @@
 
       <widget>
 	<class>GtkButton</class>
-	<name>button_prefs_ok</name>
-	<can_focus>True</can_focus>
-	<label>Okay</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<name>button_prefs_apply</name>
-	<can_focus>True</can_focus>
-	<label>Apply</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
 	<name>button_prefs_cancel</name>
+	<can_default>True</can_default>
 	<can_focus>True</can_focus>
 	<label>Cancel</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
@@ -2084,6 +2081,24 @@
 	  <padding>0</padding>
 	  <expand>False</expand>
 	  <fill>False</fill>
+	  <pack>GTK_PACK_END</pack>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button_prefs_ok</name>
+	<can_default>True</can_default>
+	<has_default>True</has_default>
+	<can_focus>True</can_focus>
+	<has_focus>True</has_focus>
+	<label>Okay</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	  <pack>GTK_PACK_END</pack>
 	</child>
       </widget>
     </widget>

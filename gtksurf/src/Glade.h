@@ -71,12 +71,18 @@ public:
 
 	bool ask_user(const std::string& txt) const;
         void show_message(const std::string& txt) const;
+
 	bool fileselect(const std::string& title, GtkWidget* menu = 0);
 	std::string get_filename() const {
 		return filename;
 	}
 	std::string get_filetype() const {
 		return filetype;
+	}
+
+	bool fontselect();
+	std::string get_fontname() const {
+		return fontname;
 	}
 
 private:
@@ -142,6 +148,29 @@ private:
 	}
 	static int _on_fsel_delete_event(GtkWidget* w, GdkEvent* e, GladeWindow* This) {
 		static_cast<Glade*>(This)->on_fselcancel_clicked();
+		return true;
+	}
+
+	// FontSelectionDialog stuff:
+	GtkFontSelectionDialog* fontsel;
+	bool fontselok_clicked;
+	std::string fontname;
+	void on_fontselok_clicked() {
+		fontselok_clicked = true;
+		g_main_quit(gmainloop);
+	}
+	static void _on_fontselok_clicked(GtkWidget* w, GladeWindow* This) {
+		static_cast<Glade*>(This)->on_fontselok_clicked();
+	}
+	void on_fontselcancel_clicked() {
+		fontselok_clicked = false;
+		g_main_quit(gmainloop);
+	}
+	static void _on_fontselcancel_clicked(GtkWidget* w, GladeWindow* This) {
+		static_cast<Glade*>(This)->on_fontselcancel_clicked();
+	}
+	static int _on_fontsel_delete_event(GtkWidget* w, GdkEvent* e, GladeWindow* This) {
+		static_cast<Glade*>(This)->on_fontselcancel_clicked();
 		return true;
 	}
 };
