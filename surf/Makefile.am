@@ -50,9 +50,5 @@ dist-hook::
 	absdistdir=`cd $(distdir) && pwd` && \
 	(cd $(top_srcdir) && find examples docs | grep -v CVS | cpio -pad $$absdistdir)
 
-#install-data-local:: surf.xpm
-#	$(mkinstalldirs) $(pkgdatadir)
-#	@(test -s surf.xpm && $(INSTALL) -m 644 surf.xpm $(pkgdatadir)) || echo "WARNING: background picture not installed"
-#
-#surf.xpm: surf $(srcdir)/background.pic
-#	./surf --no-gui $(srcdir)/background.pic
+surf.xpm: surf $(srcdir)/background.pic
+	./surf --no-gui $(srcdir)/background.pic
