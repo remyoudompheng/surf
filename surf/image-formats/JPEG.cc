@@ -46,6 +46,13 @@ namespace ImageFormats {
 
 	bool JPEG::saveColorImage(const char* fname, RgbBuffer& data, bool fromDlg)
 	{
+#ifndef NO_GUI
+		if (shown) {
+			return false;
+		}
+		shown = true;
+#endif
+		
 		filename = std::strdup(fname); // preserve data
 		buffer = &data;
 		
@@ -57,6 +64,7 @@ namespace ImageFormats {
 		       {
 			quality = 90;
 			reallySave();
+			std::free(filename);
 		}
 		return true;
 	}
@@ -102,9 +110,7 @@ namespace ImageFormats {
 	void JPEG::handle_ok()
 	{
 		quality = int(GTK_ADJUSTMENT(qualityAdj)->value);
-		
 		destroyDialog();
-		
 		reallySave();
 	}
 

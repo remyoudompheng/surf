@@ -40,6 +40,8 @@ namespace ImageFormats {
 
 	class XWD : public Format {
 	public:
+		XWD() : shown(false) { }
+		
 		const char* getName() {
 			return "XWD";
 		}
@@ -62,11 +64,14 @@ namespace ImageFormats {
 		}
 
 		void destroyDialog() {
-			gtk_widget_hide(dialog);
 			gtk_widget_destroy(dialog);
+			std::free(filename);
+			shown = false;
 		}
 
 	private:
+		bool shown;
+		
 		char* filename;
 		RgbBuffer* buffer;
 
@@ -75,7 +80,7 @@ namespace ImageFormats {
 		bool dither;
 		double ditherval;
 
-#ifndef NO_GUI		
+#ifndef NO_GUI	
 		void showDialog();
 		GtkWidget* dialog;
 
@@ -90,7 +95,6 @@ namespace ImageFormats {
 		VOIDCALL(handle_ok, XWD);
 		VOIDCALL(handle_cancel, XWD) {
 			destroyDialog();
-			std::free(filename);
 		}
 		VOIDCALL(handle_indexed, XWD) {
 			gtk_widget_set_sensitive(indexedFrame,

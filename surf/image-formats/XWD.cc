@@ -49,6 +49,13 @@ namespace ImageFormats {
 
 	bool XWD::saveColorImage(const char* fname, RgbBuffer& data, bool fromDlg)
 	{
+#ifndef NO_GUI
+		if (shown) {
+			return false;
+		}
+		shown = true;
+#endif
+		
 		filename = std::strdup(fname);
 		buffer = &data;
 		
@@ -60,6 +67,7 @@ namespace ImageFormats {
 		       {
 			bool indexed = false;
 			reallySave();
+			std::free(filename);
 		}
 		return true;
 	}

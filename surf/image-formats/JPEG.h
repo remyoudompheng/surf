@@ -41,6 +41,8 @@ namespace ImageFormats {
 
 	class JPEG : public Format {
 	public:
+		JPEG() : shown(false) { }
+		
 		const char* getName() {
 			return "JPEG";
 		}
@@ -65,9 +67,13 @@ namespace ImageFormats {
 
 		void destroyDialog() {
 			gtk_widget_destroy(dialog);
+			std::free(filename);
+			shown = false;
 		}
 		
 	private:
+		bool shown;
+
 		char* filename;
 		RgbBuffer* buffer;
 		
@@ -82,7 +88,6 @@ namespace ImageFormats {
 		VOIDCALL(handle_ok, JPEG);
 		VOIDCALL(handle_cancel, JPEG) {
 			destroyDialog();
-			std::free(filename);
 		}
 #endif
 
