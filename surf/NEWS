@@ -18,13 +18,14 @@ Triangulation Support
 =====================
 
 It is highly recommended that you install GTS---the GNU Triangulated
-Surface library---before compiling surf, since then the surf kernel will
-have some nifty new features allowing you to produce triangulated data
-of algebraic surfaces. Images produced with this data (for example by
-Geomview, an excellent 3D image viewer) aren't as nice as the rendered
-images by surf but you can realize stuff like interactive real-time
-animations. gtksurf uses this feature in its Naviagation window, where
-you can rotate/translate/scale surfaces interactively.
+Surface library---before compiling surf (GLIB 1.2 is needed, too,
+because it's required by GTS), since then the surf kernel will have some
+nifty new features allowing you to produce triangulated data of
+algebraic surfaces. Images produced with this data (for example by
+Geomview, a 3D image viewer) aren't as nice as the rendered images by
+surf but you can realize stuff like interactive real-time animations.
+gtksurf uses this feature in its Naviagation window, where you can
+rotate/translate/scale surfaces interactively.
 
 GTS is available from   http://gts.sourceforge.net
 
@@ -45,26 +46,25 @@ the following new file formats:
 - 24bit true color TIFF images (libtiff and tiffio.h needed)
 
 - If you have GTS and thus access to the triangulation mentioned above,
-  you may save the 3D data as .srf files (the native GTS file format)
-  or OOGL/OFF files (the Geomview file format).
-
-- If you have (additionally to GTS) X, OpenGL & GLU and OpenInventor
-  libraries and header files on your system, you can save 3D files as
-  Inventor (.iv) files.
+  you may save the 3D data as .srf files (the native GTS file format),
+  ad OOGL/OFF files (the Geomview file format) or as .if files (the
+  (OpenInventor file format).
 
 Note: Support for the XWD format has been removed since that would have
-required some (otherwise unnecessary) X dependancies.
+required some (otherwise unnecessary) dependancies to X11 header files
+and libraries.
 
 
 Changes Concerning the Requirements
 ===================================
 
 As a pure kernel, surf doesn't need any GTK+ or X libraries any more.
-(On the other hand gtksurf does need them of course..)
+(gtksurf, the separate GUI for surf, *does* need them of course.)
 
 It is highly recommended---but not mandatory---to have GTS, the GNU
-Triangulated Surfaces library, because you won't be able to use any of
-the triangulation features mentioned above. Note: GTS needs GLIB.
+Triangulated Surfaces library, installed, because otherwise you won't be
+able to use any of the triangulation features mentioned above. (Note:
+GTS itself needs GLIB.)
 
 surf doesn't use threads any more, so the pthreads dependancy has
 vanished.
