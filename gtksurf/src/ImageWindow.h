@@ -20,7 +20,9 @@
 #include <Kernel.h>
 #include <DitherWindow.h>
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#ifdef HAVE_LIBGDK_PIXBUF
+#  include <gdk-pixbuf/gdk-pixbuf.h>
+#endif
 
 #include<string>
 #include<fstream>
@@ -66,7 +68,13 @@ private:
 	ScriptWindow* scriptwin;
 	DitherWindow ditherwin;
 
+	int width;
+	int height;
+	int rowstride;
+	char* pixdata;
+#ifdef HAVE_LIBGDK_PIXBUF
 	GdkPixbuf* pixbuf;
+#endif
 
 	ImageMode mode;
 	

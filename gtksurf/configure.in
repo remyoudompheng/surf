@@ -119,8 +119,8 @@ if test x"$gdkpixbuf_prefix" != x ; then
 	CPPFLAGS="-I$gdkpixbuf_prefix/include $CPPFLAGS"
 fi
 
-RS_CHECK_HEADER(gdk-pixbuf/gdk-pixbuf.h)
-RS_CHECK_LIB(gdk_pixbuf, main)
+AC_CHECK_HEADER(gdk-pixbuf/gdk-pixbuf.h,
+  AC_CHECK_LIB(gdk_pixbuf, main))
 
 dnl check for libglade
 dnl ==================
