@@ -1,0 +1,18 @@
+- write manual
+
+- better handling of "update script"
+
+- saving of triangulated images?
+
+- prefs: gts_grid_size, gts_coarsen...
+
+- do the clipping of triangulated surfaces after transformation (so
+  we cant't let the kernel do it)
+
+- testing
+
+- testing
+
+- testing
+
+- fix all bugs
