@@ -263,29 +263,6 @@
 
 	    <widget>
 	      <class>GtkMenuItem</class>
-	      <name>navigation</name>
-	      <accelerator>
-		<modifiers>0</modifiers>
-		<key>GDK_F5</key>
-		<signal>activate</signal>
-	      </accelerator>
-	      <signal>
-		<name>activate</name>
-		<handler>on_navigation_activate</handler>
-		<last_modification_time>Sat, 10 Feb 2001 13:15:19 GMT</last_modification_time>
-	      </signal>
-	      <label>Navigation...</label>
-	      <right_justify>False</right_justify>
-	    </widget>
-
-	    <widget>
-	      <class>GtkMenuItem</class>
-	      <name>separator6</name>
-	      <right_justify>False</right_justify>
-	    </widget>
-
-	    <widget>
-	      <class>GtkMenuItem</class>
 	      <name>render_curve</name>
 	      <accelerator>
 		<modifiers>0</modifiers>
@@ -416,18 +393,6 @@
 	  <tooltip>Save Script</tooltip>
 	  <label>Save</label>
 	  <icon>save.xpm</icon>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <child_name>Toolbar:button</child_name>
-	  <name>button_navigation</name>
-	  <tooltip>Navigate</tooltip>
-	  <label>Navigate</label>
-	  <icon>navigate.xpm</icon>
-	  <child>
-	    <new_group>True</new_group>
-	  </child>
 	</widget>
 
 	<widget>

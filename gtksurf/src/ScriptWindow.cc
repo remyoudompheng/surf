@@ -28,7 +28,7 @@ char modified_txt[] = "The current script has been modified.\n"
 ScriptWindow::ScriptWindow()
 	: prefswin(this),
 	  imagewin(this),
-	  navigationwin(this),
+//	  navigationwin(this),
 	  dirty(false)
 {
 	Kernel::set_scriptwin(this);
@@ -51,8 +51,8 @@ ScriptWindow::ScriptWindow()
 	Glade::sig_connect("copy", "activate", _on_copy_activate, this);
 	Glade::sig_connect("paste", "activate", _on_paste_activate, this);
 	Glade::sig_connect("clear", "activate", _on_clear_activate, this);
-	Glade::sig_connect("navigation", "activate", _on_navigation_activate, this);
-	Glade::sig_connect("button_navigation", "clicked", _on_navigation_activate, this);
+//	Glade::sig_connect("navigation", "activate", _on_navigation_activate, this);
+//	Glade::sig_connect("button_navigation", "clicked", _on_navigation_activate, this);
 	Glade::sig_connect("render_curve", "activate", _on_render_curve_activate, this);
 	Glade::sig_connect("button_render_curve", "clicked", _on_render_curve_activate, this);
 	Glade::sig_connect("render_surface", "activate", _on_render_surface_activate, this);
@@ -301,7 +301,7 @@ void ScriptWindow::on_clear_activate()
 	gtk_editable_delete_selection(GTK_EDITABLE(text_script));
 }
 
-void ScriptWindow::on_navigation_activate()
+/*void ScriptWindow::on_navigation_activate()
 {
 	Kernel::reset();
 	std::string script = "surface_run_commands = 0;\n";
@@ -312,6 +312,7 @@ void ScriptWindow::on_navigation_activate()
 	Kernel::send(script);
 	navigationwin.show();
 }
+*/
 
 void ScriptWindow::on_render_curve_activate()
 {

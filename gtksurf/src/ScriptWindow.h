@@ -19,7 +19,7 @@
 #include <Glade.h>
 #include <PrefsWindow.h>
 #include <ImageWindow.h>
-#include <NavigationWindow.h>
+//#include <NavigationWindow.h>
 
 #include<string>
 
@@ -56,7 +56,7 @@ public:
 private:
 	PrefsWindow prefswin;
 	ImageWindow imagewin;
-	NavigationWindow navigationwin;
+//	NavigationWindow navigationwin;
 
 	bool dirty; // was script changed since last save?
 	std::string filename;
@@ -86,7 +86,7 @@ private:
 	MENUCB(copy);
 	MENUCB(paste);
 	MENUCB(clear);
-	MENUCB(navigation);
+//	MENUCB(navigation);
 	MENUCB(render_curve);
 	MENUCB(render_surface);
 	MENUCB(execute);

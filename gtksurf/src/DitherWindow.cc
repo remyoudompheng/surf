@@ -17,6 +17,7 @@
 #include <ScriptWindow.h>
 #include <Misc.h>
 #include <gdk_draw_bitmap.h>
+#include <Kernel.h>
 
 #include <gdk/gdkkeysyms.h>
 

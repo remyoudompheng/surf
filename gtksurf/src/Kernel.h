@@ -34,7 +34,7 @@
 class ScriptWindow;
 class ImageWindow;
 class DitherWindow;
-class GLArea;
+//class GLArea;
 
 class Kernel {
 public:
@@ -50,9 +50,9 @@ public:
 	static void set_ditherwin(DitherWindow* dw) {
 		ditherwin = dw;
 	}
-	static void set_glarea(GLArea* gl) {
-		glarea = gl;
-	}
+//	static void set_glarea(GLArea* gl) {
+//		glarea = gl;
+//	}
 
 	static void connect_handler() {
 		handler_id = gtk_input_add_full(kernel_output_fd, GDK_INPUT_READ,
@@ -134,9 +134,9 @@ public:
 	static std::list<std::string>& get_dither_image_formats() {
 		return dither_image_formats;
 	}
-	static std::list<std::string>& get_three_d_image_formats() {
-		return three_d_image_formats;
-	}
+//	static std::list<std::string>& get_three_d_image_formats() {
+//		return three_d_image_formats;
+//	}
 
 	static void update_position();
 	static void get_orig(double& x, double& y, double& z) {
@@ -175,7 +175,7 @@ private:
 	static ScriptWindow* scriptwin;
 	static ImageWindow* imagewin;
 	static DitherWindow* ditherwin;
-	static GLArea* glarea;
+//	static GLArea* glarea;
 
 	static std::string defaults;
 

@@ -18,7 +18,7 @@
 #include <ScriptWindow.h>
 #include <ImageWindow.h>
 #include <DitherWindow.h>
-#include <GLArea.h>
+//#include <GLArea.h>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -36,13 +36,13 @@ FILE* Kernel::kernel_output;
 ScriptWindow* Kernel::scriptwin;
 ImageWindow* Kernel::imagewin;
 DitherWindow* Kernel::ditherwin;
-GLArea* Kernel::glarea;
+//GLArea* Kernel::glarea;
 
 std::string Kernel::defaults;
 
 std::list<std::string> Kernel::color_image_formats;
 std::list<std::string> Kernel::dither_image_formats;
-std::list<std::string> Kernel::three_d_image_formats;
+//std::list<std::string> Kernel::three_d_image_formats;
 
 double Kernel::orig_x;
 double Kernel::orig_y;
@@ -75,7 +75,6 @@ void Kernel::init(const std::string& kernel_path)
 		Misc::syscall_failed("pipe()");
 	}
 
-	
 	// catch SIGCHILDs:
 	struct sigaction sa;
 	std::memset(static_cast<void*>(&sa), 0, sizeof(sa));
@@ -103,6 +102,7 @@ void Kernel::init(const std::string& kernel_path)
 		   dup2(from_kernel[1], STDOUT_FILENO) == -1) {
 			Misc::syscall_failed("dup2()");
 		}
+
 		execl(kernel_path.c_str(), kernel_path.c_str(), 0);
 		std::cerr << "\nERROR: Did you install the surf kernel properly?\n\n";
 		std::string s = "execl(\"";
@@ -117,8 +117,10 @@ void Kernel::init(const std::string& kernel_path)
 	if(receive_string() != "surf") {
 		Misc::print_error("This isn't a surf kernel on the other side of the pipe, is it?");
 	}
+
 	check_version(receive_string());
 	receive_line();
+
 
 	send("set_kernel_mode;");
 
@@ -147,13 +149,14 @@ void Kernel::init(const std::string& kernel_path)
 		line = receive_line();
 	}
 
-	send("print_three_d_image_formats;");
+/*	send("print_three_d_image_formats;");
 	line = receive_line();
 	while(line.length() > 0) {
 		three_d_image_formats.push_back(line); // name
 		three_d_image_formats.push_back(receive_line()); // id
 		line = receive_line();
 	}
+*/
 
 	connect_handler();
 }
@@ -262,8 +265,8 @@ void Kernel::process_output()
 		imagewin->read_data();
 	} else if(s == "P4") { // PBM image
 		ditherwin->read_data();
-	} else if(s == "{") { // OOF data follows
-		glarea->read_data();
+//	} else if(s == "{") { // OOF data follows
+//		glarea->read_data();
 	} else if(s == "clear_screen") {
 		imagewin->clear();
 	} else if(s == "not_implemented") {

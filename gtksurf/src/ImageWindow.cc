@@ -16,6 +16,7 @@
 #include <ImageWindow.h>
 #include <ScriptWindow.h>
 #include <Misc.h>
+#include <Kernel.h>
 
 #include <gdk/gdkkeysyms.h>
 

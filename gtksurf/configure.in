@@ -102,13 +102,13 @@ LIBS="$LIBS $LIBGLADE_LIBS"
 dnl check for gtkgl
 dnl ===============
 
-AM_PATH_GTKGL
-if test "x$have_gtkgl" = "xyes"; then
-  LIBS="$LIBS $GTKGL_LIBS"
-  CPPFLAGS="$CPPFLAGS $GTKGL_CFLAGS"
-else
-  AC_MSG_ERROR([You don't have GtkGLArea!])
-fi
+dnl AM_PATH_GTKGL
+dnl if test "x$have_gtkgl" = "xyes"; then
+dnl   LIBS="$LIBS $GTKGL_LIBS"
+dnl   CPPFLAGS="$CPPFLAGS $GTKGL_CFLAGS"
+dnl else
+dnl   AC_MSG_ERROR([You don't have GtkGLArea!])
+dnl fi
 
 
 AM_MISSING_PROG(HELP2MAN, help2man, $missing_dir)
