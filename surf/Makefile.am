@@ -31,7 +31,8 @@ endif
 
 bin_PROGRAMS = surf
 surf_SOURCES = 
-EXTRA_DIST = background.pic Makefile.global
+EXTRA_DIST = background.pic Makefile.global aclocal.m4 surf.1
+man_MANS = surf.1
 
 if GUI
 surf: $(LOCAL_OBJECTS) $(GTKGUI_OBJ)
@@ -46,7 +47,7 @@ clean-local::
 
 dist-hook::
 	absdistdir=`cd $(distdir) && pwd` && \
-	(cd $(top_srcdir) && find examples doc man xpm | grep -v CVS | cpio -pad $$absdistdir)
+	(cd $(top_srcdir) && find examples docs | grep -v CVS | cpio -pad $$absdistdir)
 
 install-data-local:: surf.xpm
 	$(mkinstalldirs) $(pkgdatadir)
