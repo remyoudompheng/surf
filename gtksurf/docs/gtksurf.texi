@@ -39,14 +39,14 @@ This document describes the usage of @emph{gtksurf}, the graphical
 frontend to @emph{surf}.
 
 This document applies to version @value{VERSION} of @emph{gtksurf}.
-Although it may hopefully be well readable in info format with any info
-reader (preferably XEmacs) or in HTML format, it will look best as DVI
-file produced by @command{texi2dvi}: Just do a @kbd{make dvi} in the
-@file{docs/} directory of the @emph{gtksurf} distribution.
 
 @menu
 * Copying::
-* Overview::
+* Introduction::
+* A Guided Tour::
+* The Script Window::
+* The Image Window::
+* The Navigation Window::
 @end menu
 
 @end ifinfo
@@ -54,7 +54,7 @@ file produced by @command{texi2dvi}: Just do a @kbd{make dvi} in the
 @c Copying
 @c *******
 
-@node Copying, Overview, top, top
+@node Copying, Introduction, top, top
 @unnumbered Copying
 
 Copyright @copyright{} 2001 Johannes Beigel
@@ -73,10 +73,130 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-@c Overview
-@c ********
+@c Introduction
+@c ************
 
-@node Overview, , Copying, top
-@chapter Overview
+@node Introduction, A Guided Tour, Copying, top
+@chapter Introduction
+
+Although the aim in the development of @emph{gtksurf} was to create an
+easy-to-use graphical tool for controlling the @emph{surf} kernel, it is
+really recommended---if not required---to know the underlying
+@emph{surf} kernel and its scripting language. At least you should be
+familiar with the syntax and the most important variables and
+commands. The "Script Window" where you load, save and edit @emph{surf}
+scripts is the main part of @emph{gtksurf} after all.
+
+So, @emph{gtksurf} can shorten your working time with @emph{surf} or
+make some steps easier or more comfortable, but you still need to know
+some "internals" if you don't want to experience surprises.
+
+Hopefully, the appearance of @emph{gtksurf} looks somewhat familiar to
+you. Not everything will be explained in this manual, because we assume
+some basic knowledge of using GUI based applications or parts like file
+selection dialogs and stuff like that. Instead, after a short
+"guided tour", the different parts of of @emph{gtksurf} will be
+explained.
+
+If you have any questions you are invited to join the @emph{surf} users
+mailing list. Instructions and more information about @emph{gtksurf}
+and @emph{surf} can be found at the @emph{surf} homepage:
+@url{http://surf.sourceforge.net}.
+
+@c A Guided Tour
+@c *************
+
+@node A Guided Tour, The Script Window, Introduction, top
+@chapter A Guided Tour
+
+After having started @emph{gtksurf} successfully, the "Script Window"
+pops up. Type the following line in the big empty text entry area:
+@example
+    curve = y^2 - x^3 - x^2;
+@end example
+If you know @emph{something} about @emph{surf} you should recognize that
+this defines a polynomial for a plane algebraic curve. But notice that
+you don't have to enter the (usually following) @code{draw_curve}
+command. Simply press the button on the toolbar with the little curve on
+it. @code{gtksurf} will send your script (ok it's only one line of code,
+but it's still a perfectly valid @emph{surf} script) together with the
+commands @code{clear_screen} and @code{draw_surface} to the @emph{surf}
+kernel. If everything goes well, an "Image Window" with the so-called
+"Newton knot" will pop up. The Newton know is the curve described by the
+polynomial you entered above. If you want to save or dither the just
+rendered image, simply right-click on the Image Window and select the
+apporpriate action. So, all you have to do to render one single curve,
+is to specify the describing polynomial and press the "Render Curve"
+button.
+
+Of course things can get more complicated: You may want to construct
+your polynomials in a more sophisiticated way, scale your image, change
+the color or even use loops. For these tasks, the "Render Curve" button is
+not well-suited. Instead, you will want to add all the commands you wish
+to be executed to your script and press the "Execute Script" button from
+the toolpar (the one with the gears on it). Note that you still don't
+need to call @code{save_color_image} or @code{save_dither_image} to see
+a result.
+
+Now, let's try out rendering a surface: As you might have already
+guessed you need to set @code{surface} to some polynomial and press the
+"Render Surface" button from the toolbar. To make things a bit more
+complicated, we will @emph{load} a script file instead (Wow!). Click on
+the "Open Script" button on the toolbar or select "Open Script..."  from
+the "File" menu. Probably a dialog will pop up that asks you if you want
+to save your changes. Just click on "no" to get rid of that thing. A
+file selection dialog appears where you can choose some @emph{surf}
+script file which describes an algebraic surfaces (algebraic curves have
+been handled above, ok?). If you don't know what file to load, simply
+choose one of the script files in the @file{examples/surfaces/}
+directory of the @emph{surf} distribution. @file{clebsch.pic} ist my
+favorite one. After having loaded some script file. Press the "Render
+Surface" button wait some seconds for the @emph{surf} kernel to finish
+its calculations and admire the resulting image.
+
+For surfaces, @emph{surf} scripts usually get even more complicated
+than for plane algebraic curves. For example you can specify more than
+one surface or fiddle with all that lighting parameters. But since
+mostly everything is tuned by setting variables, the "Render Surface"
+button will still do a good job. Only when you want to use commands like
+@code{cut_with_plane} or @code{cut_with_surface}, you have to fall back
+to the "Execute Script" button.
+
+To finish this guided tour, click on the "Navigate" button on the
+toolbar (the one with the arrows on it) while still having loaded the
+surface-describing script file from the previous step. The "Navigation
+Window" will pop up, and the @emph{surf} kernel will start to calculate
+a triangulated model of your surface. Depending on the complexity of
+that surface, the calculation will last shorter or longer and the result
+will look better or worse. If the kernel is finished, you should see an
+OpenGL-rendered model somewhat resembling your surface. If your can't
+recognize it at all, click on the "Get From Script" button to get at
+least the right roation/translation/scaling values from the script.  Now
+left-click on the triangulated surface and start rotating it by dragging
+it with the mouse. Right click on the surface to change some options
+like the perspective. That's way cool, isn't it? If you are satisfied
+with your rotation and scaling/translation set in the right part of the
+Navigation Window, press "Update Script" to automatically insert these
+values at the beginning of the current script file.
+
+
+
+@c The Script Window
+@c *****************
+
+@node The Script Window, The Image Window, A Guided Tour, top
+@chapter The Script Window
+
+@c The Image Window
+@c ****************
+
+@node The Image Window, The Navigation Window, The Script Window, top
+@chapter The Image Window
+
+@c The Navigation Window
+@c *********************
+
+@node The Navigation Window, , The Image Window, top
+@chapter The Navigation Window
 
 @bye
