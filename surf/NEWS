@@ -1,29 +1,5 @@
-This file describes what's new in version 1.0.x of surf. It is meant
-as a companion to the documentation found in docs. The documentation
-describes version 0.91 and has yet to be updated to match version
-1.0.x (writing documentation is one of the worst things I can think
-of, but I'll hope that I find the time and enough beer to do it.).
-The examples/new directory contains scripts showing the new features.
+Version 1.1.0 - ??? 2000
 
+* save image dialog and image-formats API have changed
 
-Version 1.0.0
-=============
-
-* autoconf/automake build system. See INSTALLATION.
-
-* Uses the GTK toolkit instead of the outdated XView.
-
-* New supported image formats: 
-  color pictures      : ppm jpeg  
-  black&white pictures: pbm pgm
-
-* Support for bm2font picture format removed. TeX has no problems
-  using postscript. Anyone out there with bm2font installed ???
-
-* Support for drawing intersections of surfaces added. See the
-  examples/new directory for some examples.
-
-* Script mode added. Surf can now be started without a GUI (--no-gui
-  command line option)
-
-* lot's of other changes, I can't remember.
+* Navigation window added
