@@ -54,15 +54,19 @@ namespace ImageFormats {
 		width = w;
 		height = h;
 
+#ifndef NO_GUI
 		if (fromDlg) {
 			qualityDialog();
-		} else {
+		} else
+#endif
+		       {
 			quality = 90;
 			reallySave();
 		}
 		return true;
 	}
 
+#ifndef NO_GUI
 	void JPEG::qualityDialog()
 	{
 		dialog = gtk_dialog_new();
@@ -113,6 +117,7 @@ namespace ImageFormats {
 		This->destroyDialog();
 		return true;
 	}
+#endif
 
 	void JPEG::reallySave()
 	{

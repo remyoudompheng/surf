@@ -139,33 +139,18 @@ fi
 dnl RS_CHECK_LIB(z,main)
 
 
-dnl Check for jpeg library and jpeglib.h
+dnl Check for JPEG library and jpeglib.h
 dnl ------------------------------------
 
-RS_CHECK_LIB(jpeg,main)
-RS_CHECK_HEADER(jpeglib.h)
+AC_CHECK_LIB(jpeg, main)
+AC_CHECK_HEADER(jpeglib.h)
 
 
-dnl ----------------------------------------------------------------------
-dnl --- CHECK FOR TIFF LIBRARY AND HEADER FILES
-dnl --- 	FreeBSD 3.0 has tiff34.so instead of tiff.so and the
-dnl --- 	header files are in /usr/local/lib/tiff34
-dnl ---		here is the code to check this
+dnl Check for TIFF library and tiff.h
+dnl ---------------------------------
 
-TIFF_LIB="no"
-AC_CHECK_LIB(tiff, main, [LIBS="-ltiff $LIBS"; TIFF_LIB=""])
-
-if test "$TIFF_LIB" = "no"; then
-	AC_CHECK_LIB(tiff34, main,[LIBS="-ltiff34 $LIBS"; TIFF_LIB="34"])
-fi
-
-if test "$TIFF_LIB" = "no"; then
-	AC_MSG_ERROR("Sorry: can´t link with -ltiff/-ltiff34")
-fi
-
-
-
-
+AC_CHECK_LIB(tiff, main)
+AC_CHECK_HEADER(tiffio.h)
 
 dnl ----------------------------------------------------------------------
 dnl --- CHECK FOR GMP LIBRARAY AND HEADER FILES

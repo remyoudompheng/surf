@@ -22,6 +22,8 @@
  *
  */
 
+#ifndef NO_GUI  // this whole thing makes only sense with GUI-support
+
 
 #include "Misc.h"
 #include "FileWriter.h"
@@ -147,3 +149,5 @@ namespace ImageFormats {
 
 
 } // namespace ImageFormats
+
+#endif //!NO_GUI

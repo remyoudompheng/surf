@@ -26,6 +26,8 @@
 #ifndef IMAGEFORMAT_PIPE_H
 #define IMAGEFORMAT_PIPE_H
 
+#ifndef NO_GUI  // this whole thing makes only sense with GUI-support
+
 #include <gtk/gtk.h>
 #include "mygtk.h"
 
@@ -53,7 +55,7 @@ namespace ImageFormats {
 		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg);
 		
 		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
-		
+
 		void showDialog();
 		void destroyDialog() {
 			gtk_widget_destroy(dialog);
@@ -89,5 +91,8 @@ namespace ImageFormats {
 
 	gint Pipe_handle_delete(GtkWidget*, GdkEvent*, gpointer data);
 }
+
+
+#endif //!NO_GUI
 
 #endif //!IMAGEFORMAT_PIPE_H

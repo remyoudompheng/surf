@@ -29,8 +29,10 @@
 
 #include "ImageFormats.h"
 
+#ifndef NO_GUI
 #include <gtk/gtk.h>
 #include "mygtk.h"
+#endif
 
 #include <cstring>
 #include <cstdlib>
@@ -61,10 +63,12 @@ namespace ImageFormats {
 			return false;
 		}
 
+#ifndef NO_GUI
 		void qualityDialog();
 		void destroyDialog() {
 			gtk_widget_destroy(dialog);
 		}
+#endif
 
 	private:
 		char* filename;
@@ -74,7 +78,8 @@ namespace ImageFormats {
 		int width, height;
 		
 		int quality;
-		
+
+#ifndef NO_GUI		
 		GtkWidget* dialog;
 		GtkObject* qualityAdj;
 
@@ -83,11 +88,14 @@ namespace ImageFormats {
 			destroyDialog();
 			std::free(filename);
 		}
+#endif
 
 		void reallySave();
 	};
 
+#ifndef NO_GUI
 	gint JPEG_handle_delete(GtkWidget*, GdkEvent*, gpointer data);
+#endif
 }
 
 #endif //!IMAGEFORMAT_JPEG_H

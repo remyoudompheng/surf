@@ -37,7 +37,10 @@
 #include "XBitmap.h"
 #include "PPM.h"
 #include "PBM.h"
+
+#ifndef NO_GUI
 #include "Pipe.h"
+#endif
 
 namespace ImageFormats {
 	extern ByExtension imgFmt_ByExtension;
@@ -50,7 +53,10 @@ namespace ImageFormats {
 	extern XBitmap imgFmt_XBitmap;
 	extern PPM imgFmt_PPM;
 	extern PBM imgFmt_PBM;
+
+#ifndef NO_GUI
 	extern Pipe imgFmt_Pipe;
+#endif
 
 	Format* availableFormats[] = {
 		&imgFmt_ByExtension,
@@ -70,7 +76,9 @@ namespace ImageFormats {
 		&imgFmt_XBitmap,
 		&imgFmt_XWD,
 		&imgFmt_Sun,
+#ifndef NO_GUI
 		&imgFmt_Pipe,
+#endif
 		0 // last element is 0
 	};
 
