@@ -1,7 +1,5 @@
 If you read this file, you probably have obtained surf from its cvs
-repository. We are at the process of creating a 1.0 release of surf
-and hope to release it in the end of March 2000. So please be patient
-or try the following:
+repository. To compile the source try the following:
 
 ./autogen.sh      This will create and run the configure script. You
                   need autoconf, automake, gtk, gmp and lot's of other
