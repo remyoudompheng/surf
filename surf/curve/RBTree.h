@@ -28,16 +28,14 @@
 #define RBTREE_H
 
 #include <assert.h>
-#include <iostream.h>
 
-#include "debug.h"
-
-class RBNode;
-typedef void (*copyNodeFunc)(RBNode *dst, const RBNode *src);
-typedef void (*freeNodeFunc)(RBNode *node);
-typedef RBNode* (*newNodeFunc) (void);
+#include<iostream>
 
 class RBNode;
+
+typedef void (*copyNodeFunc)(RBNode* dst, const RBNode* src);
+typedef void (*freeNodeFunc)(RBNode* node);
+typedef RBNode* (*newNodeFunc)();
 
 #define NIL &RBNode::sentinel
 
@@ -46,44 +44,44 @@ class RBNode;
 class RBNode
 {
 public:
-	RBNode () {left=right=NIL; parent=0; color=RED;};
+	RBNode() : left(NIL), right(NIL), parent(0), color(RED) {}
 
-	RBNode *left;
-	RBNode *right;
-	RBNode *parent;
-	enum {BLACK, RED} color;
+	RBNode* left;
+	RBNode* right;
+	RBNode* parent;
+
+	enum {
+		BLACK,
+		RED
+	} color;
 
 	static RBNode sentinel;
+	
 private:
-
-	RBNode(int) {left=right=NIL; parent=0; color = BLACK;};
-
-
+	RBNode(int) : left(NIL), right(NIL), parent(0), color(BLACK) {}
 };
 
-inline void iteratorInit (RBNode *&iterator, RBNode *root)
+inline void iteratorInit(RBNode*& iterator, RBNode* root)
 {
 	assert(root);
 	iterator = root;
-	while (iterator->right != NIL) 
-		iterator=iterator->right;
+	while(iterator->right != NIL) {
+		iterator = iterator->right;
+	}
 }
 
-inline int iteratorIsValid (RBNode *iterator)
+inline bool iteratorIsValid(RBNode* iterator)
 {
 	return iterator != NIL;
 }
 
-extern void iteratorNext (RBNode *&iterator);
+extern void iteratorNext(RBNode*& iterator);
 
+extern void deleteNode(RBNode* z, RBNode*& root, copyNodeFunc copyNode, freeNodeFunc freeNode);
+void insertFixup(RBNode* x, RBNode*& root); 
 
+RBNode* cloneTree(RBNode* root, RBNode* parent, newNodeFunc newNode, copyNodeFunc copyNode);
 
-extern void deleteNode	(RBNode *z, RBNode *&root,  copyNodeFunc copyNode, freeNodeFunc freeNode);
-void insertFixup(RBNode *x, RBNode *&root) ; 
+extern int countNodes(RBNode* root);
 
-RBNode * cloneTree (RBNode *root, RBNode *parent, newNodeFunc newNode, copyNodeFunc copyNode);
-
-extern int countNodes (RBNode *root);
-
-
-#endif
+#endif // !RBTREE_H

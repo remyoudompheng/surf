@@ -22,117 +22,113 @@
  *
  */
 
+#ifndef BEZOUT_H
+#define BEZOUT_H
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-#ifndef Bezout_h
-#define Bezout_h
+#include <TreePolynom.h>
+#include <Monom.h>
+#include <Matrix.h>
 
-#include <iostream.h>
-
-#include "TreePolynom.h"
-#include "Monom.h"
-#include "Matrix.h"
+#include <assert.h>
 
 template<class Coeff>
 class Bezout
 {
 public:
-	typedef CMonom<Coeff,2> Coeff2Monom;
-	typedef CMonom<Coeff,3> Coeff3Monom;
+	typedef CMonom<Coeff, 2> Coeff2Monom;
+	typedef CMonom<Coeff, 3> Coeff3Monom;
 	typedef TreePoly<Coeff2Monom> Coeff2Poly;
 	typedef TreePoly<Coeff3Monom> Coeff3Poly;
 
-	struct FillArrayStruct 
-	{
-		Coeff2Poly *bezoutArray;
+	struct FillArrayStruct {
+		Coeff2Poly* bezoutArray;
 		int bezoutDegree;
 	};
 
-	static void fillArray (Coeff3Monom *mon, void *ptr)
-		{
-			FillArrayStruct *fillArrayStruct = (FillArrayStruct *) ptr;
-			assert(mon);
-			Coeff2Monom mon2;
-			mon2.getCoeff() = mon->getCoeff();
-			mon2.getExponent(0) = mon->getExponent(0);
-			mon2.getExponent(1) = mon->getExponent(1);
-			fillArrayStruct->bezoutArray[fillArrayStruct->bezoutDegree-mon->getExponent(2)].addMonom(mon2);
-		}
+	static void fillArray(Coeff3Monom* mon, void* ptr) {
+		FillArrayStruct* fillArrayStruct = static_cast<FillArrayStruct*>(ptr);
+		assert(mon);
+		Coeff2Monom mon2;
+		mon2.getCoeff() = mon->getCoeff();
+		mon2.getExponent(0) = mon->getExponent(0);
+		mon2.getExponent(1) = mon->getExponent(1);
+		fillArrayStruct->bezoutArray[fillArrayStruct->bezoutDegree-mon->getExponent(2)].addMonom(mon2);
+	}
 
 	// compute the bezout matrix
-	static Matrix<Coeff2Poly> * computeBezoutMatrix (Coeff3Poly f, Coeff3Poly g)
-		{
-			int n = f.degreeInVariable(2);
-			int m = g.degreeInVariable(2);
-			if (n<m)
-				return computeBezoutMatrix (g,f);
-			assert (n>=m);
-			
-			Coeff2Poly *a = new Coeff2Poly [n+1];
-			Coeff2Poly *b = new Coeff2Poly [m+1];
-
-			FillArrayStruct fillArrayStruct;
-
-			fillArrayStruct.bezoutArray = a;
-			fillArrayStruct.bezoutDegree = n;
-			f.withMonomsPerform(fillArray, &fillArrayStruct);
-	
-			fillArrayStruct.bezoutArray = b;
-			fillArrayStruct.bezoutDegree = m;
-			g.withMonomsPerform(fillArray, &fillArrayStruct);
-
-			
-			Matrix<Coeff2Poly> *matrix = new Matrix<Coeff2Poly> (n);
-
-			int i;
-			for (i=1; i<m+1; i++) {
-				int j1;
-				int j2;
-				for (j1=i; j1<m+1; j1++) {
-					for (j2=0; j2<i; j2++) {
-						matrix->getElement(m-i, j1+j2-i) += b[j1]*a[j2];
-					}
-				} 
-				
-				for (j1=i; j1<n+1; j1++) {
-					for (j2=0; j2<i; j2++) {
-						matrix->getElement(m-i, j1+j2-i) -= a[j1]*b[j2];
-					}
-				}
-			}
-	
-			for(i=m+1; i<n+1; i++) {
-				int j;
-				for (j=1; j<=m+1; j++) {
-					matrix->getElement(i-1, i-m-1+j-1) = b[j-1];
-				}
-			}
-
-			delete [] a;
-			delete [] b;
-			
-			return matrix;
+	static Matrix<Coeff2Poly>* computeBezoutMatrix(Coeff3Poly f, Coeff3Poly g) {
+		int n = f.degreeInVariable(2);
+		int m = g.degreeInVariable(2);
+		if(n < m) {
+			return computeBezoutMatrix(g,f);
 		}
+		Coeff2Poly* a = new Coeff2Poly[n + 1];
+		Coeff2Poly* b = new Coeff2Poly[m + 1];
+
+		FillArrayStruct fillArrayStruct;
+
+		fillArrayStruct.bezoutArray = a;
+		fillArrayStruct.bezoutDegree = n;
+		f.withMonomsPerform(fillArray, &fillArrayStruct);
+	
+		fillArrayStruct.bezoutArray = b;
+		fillArrayStruct.bezoutDegree = m;
+		g.withMonomsPerform(fillArray, &fillArrayStruct);
+
+		Matrix<Coeff2Poly>* matrix = new Matrix<Coeff2Poly>(n);
+
+		for(int i = 1; i < m +1; i++) {
+			for(int j1 = i; j1 < m + 1; j1++) {
+				for(int j2 = 0; j2 < i; j2++) {
+					matrix->getElement(m - i, j1 + j2 - i) += b[j1]*a[j2];
+				}
+			} 
+			for(int j1 = i; j1 < n + 1; j1++) {
+				for(int j2 = 0; j2 < i; j2++) {
+					matrix->getElement(m - i, j1 + j2 - i) -= a[j1]*b[j2];
+				}
+			}
+		}
+
+		for(int i = m + 1; i < n + 1; i++) {
+			for(int j = 1; j <= m + 1; j++) {
+				matrix->getElement(i - 1, i - m - 1 + j - 1) = b[j - 1];
+			}
+		}
+
+		delete [] a;
+		delete [] b;
+			
+		return matrix;
+	}
 
 	// compute the resultant
-	static Coeff2Poly resultant (Coeff3Poly f, Coeff3Poly g)
-		{
-			int n = f.degreeInVariable(2);
-			int m = g.degreeInVariable(2);
+	static Coeff2Poly resultant(Coeff3Poly f, Coeff3Poly g) {
+		// What the hell..?
 
-			Matrix<Coeff2Poly> * matrix = n>=m ? computeBezoutMatrix (f,g) : computeBezoutMatrix (f,g);	
+		//int n = f.degreeInVariable(2);
+		//int m = g.degreeInVariable(2);
+		// Matrix<Coeff2Poly>* matrix = n >= m ? computeBezoutMatrix(f, g) : computeBezoutMatrix(f, g);
+
+		// This is a little bit simpler:
+		Matrix<Coeff2Poly>* matrix = computeBezoutMatrix(f, g);
 	
 #if 0
-			// threadedDeterminant does not work. See Matrix.h.
-			Coeff2Poly det = matrix->threadedDeterminant();
+		// threadedDeterminant does not work. See Matrix.h.
+		Coeff2Poly det = matrix->threadedDeterminant();
 #else
-			Coeff2Poly det = matrix->det();
+		Coeff2Poly det = matrix->det();
 #endif
-			TRACE(det);
-			delete matrix;
-			
-			return det;
-		}
+		TRACE(det);
+		delete matrix;
+		
+		return det;
+	}
 
 };
-#endif
+
+#endif // !BEZOUT_H

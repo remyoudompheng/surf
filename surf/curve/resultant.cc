@@ -26,50 +26,47 @@
 #  include <config.h>
 #endif
 
-#include <resultant.h>
 #include <Bezout.h>
 #include <BigInteger.h>
 
-// #define DEBUG
-#include <debug.h>
+#include <resultant.h>
 
-static Bezout<BigInteger>::Coeff3Poly convertToBigIntPoly ( const Polyxyz &p)
+static Bezout<BigInteger>::Coeff3Poly convertToBigIntPoly(const Polyxyz& p)
 {
 	Bezout<BigInteger>::Coeff3Poly result;
-	MonomXYZ mon;
 
-	int i;
-	for (i=0; i<p.GetNumber(); i++) {
-		mon = p.Monom(i);
+	for(int i = 0; i < p.GetNumber(); i++) {
+		MonomXYZ mon = p.Monom(i);
 		BigInteger rat;
 		rat = mon.Coeff()*1e15;
-		if (!rat.isNull())
-		    result.addMonom (monom(rat, mon.Exponent(0), mon.Exponent(1), mon.Exponent(2)));
+		if(!rat.isNull()) {
+		    result.addMonom(monom(rat, mon.Exponent(0), mon.Exponent(1), mon.Exponent(2)));
+		}
 	}
 	return result;
 }
 
-static void addMonomFromBigInt (CMonom<BigInteger,2> *monom, void *ptr)
+namespace {
+void addMonomFromBigInt(CMonom<BigInteger, 2>* monom, void* ptr)
 {
-	Polyxy *poly = (Polyxy *) ptr;
+	Polyxy* poly = static_cast<Polyxy*>(ptr);
 	MonomXY monxy;
-	monxy.SetCoeff (monom->getCoeff().asDouble());
-	monxy.Exponent (0, monom->getExponent(0));
-	monxy.Exponent (1, monom->getExponent(1));
+	monxy.SetCoeff(monom->getCoeff().asDouble());
+	monxy.Exponent(0, monom->getExponent(0));
+	monxy.Exponent(1, monom->getExponent(1));
 	*poly += monxy;
-
+}
 }
 
-Polyxy resultant (const Polyxyz &p1, const Polyxyz &p2)
+Polyxy resultant(const Polyxyz& p1, const Polyxyz& p2)
 {
-	Bezout<BigInteger>::Coeff3Poly ip1 = convertToBigIntPoly (p1) ;
-	Bezout<BigInteger>::Coeff3Poly ip2 = convertToBigIntPoly (p2) ;
+	Bezout<BigInteger>::Coeff3Poly ip1 = convertToBigIntPoly(p1) ;
+	Bezout<BigInteger>::Coeff3Poly ip2 = convertToBigIntPoly(p2) ;
 
-
-	Bezout<BigInteger>::Coeff2Poly ires = Bezout<BigInteger>::resultant (ip1, ip2);
+	Bezout<BigInteger>::Coeff2Poly ires = Bezout<BigInteger>::resultant(ip1, ip2);
 
 	Polyxy retval2;
-	ires.withMonomsPerform (addMonomFromBigInt, &retval2);
+	ires.withMonomsPerform(addMonomFromBigInt, &retval2);
 	retval2.Norm();
 	return retval2;
 }

@@ -110,7 +110,7 @@ protected:
 };
 
 template<class Coeff, int num> 
-ostream& operator<<(ostream& os, const CMonom<Coeff, num>& m)
+std::ostream& operator<<(std::ostream& os, const CMonom<Coeff, num>& m)
 {
 	m.print(os);
  	return os;

@@ -23,7 +23,6 @@
  */
 
 
-
 #ifndef RESULTANT_H
 #define RESULTANT_H
 
@@ -33,7 +32,6 @@
 
 #include <MultiVariatePolynom.h>
 
-
-extern Polyxy resultant (const Polyxyz &p1, const Polyxyz &p2);
+extern Polyxy resultant(const Polyxyz& p1, const Polyxyz& p2);
 
 #endif

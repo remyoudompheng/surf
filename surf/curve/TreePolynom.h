@@ -22,12 +22,13 @@
  *
  */
 
-
-
 #ifndef TREEPOLYNOM_H
 #define TREEPOLYNOM_H
 
-#include <debug.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <RBTree.h>
 #include <RefCounter.h>
 
@@ -39,12 +40,16 @@ class TreePolynomNode : public RBNode
 public:
 	Monom monom;
 	
-	static void free (RBNode *node) {delete ((TreePolynomNode*)node);};
-	static void copy (RBNode *dst, const RBNode *node) 
-		{
-			((TreePolynomNode*)dst)->monom=((TreePolynomNode*)node)->monom;
-		};
-	static RBNode *newNode () {return new TreePolynomNode();};
+	static void free(RBNode* node) {
+		delete static_cast<TreePolynomNode*>(node);
+	}
+	static void copy(RBNode* dst, const RBNode* node) {
+		TreePolynomNode* d = static_cast<TreePolynomNode*>(dst);
+		d->monom = static_cast<const TreePolynomNode*>(node)->monom;
+	}
+	static RBNode* newNode() {
+		return new TreePolynomNode();
+	}
 };
 
 
@@ -53,117 +58,119 @@ class TreePolynom : public RefCounter
 {
 
 public:
-	TreePolynom() {root=NIL;};
-	~TreePolynom(){freeNodes ((TreePolynomNode<Monom> *)root);};
+	TreePolynom() : root(NIL) {}
+	~TreePolynom() {
+		freeNodes(static_cast<TreePolynomNode<Monom>*>(root));
+	}
 	
-	void addMonom(const Monom &mon);
-	void subMonom(const Monom &mon);
-	void mulMonom(const Monom &mon);
+	void addMonom(const Monom& mon);
+	void subMonom(const Monom& mon);
+	void mulMonom(const Monom& mon);
 
-	void addPoly(const TreePolynom &tp);
-	void subPoly(const TreePolynom &tp);
+	void addPoly(const TreePolynom& tp);
+	void subPoly(const TreePolynom& tp);
 	
-	const Monom &lmonom() const;
-	TreePolynom *clone() const;
+	const Monom& lmonom() const;
+	TreePolynom* clone() const;
 
-	int degreeInVariable (int var) 
-		{
-			RBNode *it;
-			int degree=-1;
-			iteratorInit(it, root);
-			while (iteratorIsValid(it)) {
-				TreePolynomNode<Monom> *node = (TreePolynomNode<Monom>*) it;
-				int tmp;
-				if ((tmp = node->monom.getExponent(var)) > degree)
-					degree=tmp;
-				iteratorNext(it);
+	int degreeInVariable(int var) {
+		RBNode* it;
+		int degree = -1;
+		iteratorInit(it, root);
+		while(iteratorIsValid(it)) {
+			TreePolynomNode<Monom>* node = static_cast<TreePolynomNode<Monom>*>(it);
+			int tmp;
+			if((tmp = node->monom.getExponent(var)) > degree) {
+				degree = tmp;
 			}
-			return degree;
+			iteratorNext(it);
 		}
-	void swapVariables(int var1, int var2) 
-		{
-			RBNode *it;
-			iteratorInit(it, root);
-			while(iteratorIsValid(it)) {
-				TreePolynomNode<Monom> *node = (TreePolynomNode<Monom>*) it;
-				swap(node->monom.getExponent(var1), node->monom.getExponent(var2));
-				iteratorNext(it);
-			}
-		};
+		return degree;
+	}
+	
+	void swapVariables(int var1, int var2) {
+		RBNode* it;
+		iteratorInit(it, root);
+		while(iteratorIsValid(it)) {
+			TreePolynomNode<Monom>* node = static_cast<TreePolynomNode<Monom>*>(it);
+			std::swap(node->monom.getExponent(var1), node->monom.getExponent(var2));
+			iteratorNext(it);
+		}
+	}
 
-	int _isNull() const {return root == NIL;};
+	int _isNull() const {
+		return root == NIL;
+	}
 
-	void print (class std::ostream &os) const;
+	void print(class std::ostream& os) const;
 
-	static TreePolynom* multiply (TreePolynom *tp1, TreePolynom *tp2);
+	static TreePolynom* multiply(TreePolynom* tp1, TreePolynom* tp2);
 
 
-	void withMonomsPerform ( void (*action) (Monom *, void *), void *data)
-		{
-			RBNode *it;
-			iteratorInit(it, root);
-			while(iteratorIsValid(it)) {
-				TreePolynomNode<Monom> *node = (TreePolynomNode<Monom>*) it;
-				action(&node->monom, data);
-				iteratorNext(it);
-			}
+	void withMonomsPerform(void (*action)(Monom*, void*), void*data ) {
+		RBNode* it;
+		iteratorInit(it, root);
+		while(iteratorIsValid(it)) {
+			TreePolynomNode<Monom>* node = static_cast<TreePolynomNode<Monom>*>(it);
+			action(&node->monom, data);
+			iteratorNext(it);
+		}
+	}
 
-		};
+	void withAllMonomsPerform( void (*action)(Monom*)) {
+		RBNode* it;
+		iteratorInit(it, root);
+		while(iteratorIsValid(it)) {
+			TreePolynomNode<Monom>* node = static_cast<TreePolynomNode<Monom>*>(it);
+			action(&node->monom);
+			iteratorNext(it);
+		}
+	}
 
-	void withAllMonomsPerform ( void (*action) (Monom *) )
-		{
-			RBNode *it;
-			iteratorInit(it, root);
-			while(iteratorIsValid(it)) {
-				TreePolynomNode<Monom> *node = (TreePolynomNode<Monom>*) it;
-				action(&node->monom);
-				iteratorNext(it);
-			}
-		};
 protected:
-	RBNode *root;
+	RBNode* root;
 
-
-	void freeNodes(TreePolynomNode<Monom> *node)
-		{
-			if (node == NIL)
-				return;
-			freeNodes ((TreePolynomNode<Monom> *)node->left);
-			freeNodes ((TreePolynomNode<Monom> *)node->right);
-			delete node;
+	void freeNodes(TreePolynomNode<Monom>* node) {
+		if (node == NIL) {
+			return;
 		}
+		freeNodes(static_cast<TreePolynomNode<Monom>*>(node->left));
+		freeNodes(static_cast<TreePolynomNode<Monom>*>(node->right));
+		delete node;
+	}
 };
 
 template<class Monom> 
-void TreePolynom<Monom>::addMonom (const Monom &mon)
+void TreePolynom<Monom>::addMonom(const Monom& mon)
 {
-	int cmp=0; // FIXME...just to suppress compiler warnings
-	TreePolynomNode<Monom> *current=(TreePolynomNode<Monom> *) root;
-	TreePolynomNode<Monom> *parent=0;
+	int cmp = 0; // FIXME...just to suppress compiler warnings
+	TreePolynomNode<Monom>* current = static_cast<TreePolynomNode<Monom>*>(root);
+	TreePolynomNode<Monom>* parent = 0;
 
-	while (current != NIL) {
+	while(current != NIL) {
 		cmp = mon.lexcmp(current->monom);
-		if (cmp == 0) {
+		if(cmp == 0) {
 			current->monom += mon;
-			if (current->monom.isNull()) {
+			if(current->monom.isNull()) {
 				deleteNode(current, root, TreePolynomNode<Monom>::copy, TreePolynomNode<Monom>::free); 
 			}
 			return;
 		}
 		
-		parent=current;
-		current = (TreePolynomNode<Monom>*)(cmp < 0 ? current->left : current->right);
+		parent = current;
+		current = static_cast<TreePolynomNode<Monom>*>(cmp < 0 ? current->left : current->right);
 	}
 	
-	TreePolynomNode<Monom> *x = new TreePolynomNode<Monom>();
+	TreePolynomNode<Monom>* x = new TreePolynomNode<Monom>();
 	x->monom = mon;
-	if (parent) {
+	if(parent) {
 		// cmp might not be used uninitialized, because if parent != 0 we made a
 		// call to cmp = lexorder(mon, current->monom) (see above)
-		if (cmp<0)
+		if(cmp < 0) {
 			parent->left = x;
-		else
+		} else {
 			parent->right = x;
+		}
 	} else {
 		root = x;
 	}
@@ -178,36 +185,37 @@ void TreePolynom<Monom>::addMonom (const Monom &mon)
 
 
 template<class Monom> 
-void TreePolynom<Monom>::subMonom (const Monom &mon)
+void TreePolynom<Monom>::subMonom(const Monom& mon)
 {
-	int cmp=0; // FIXME ...no compiler warnings
-	TreePolynomNode<Monom> *current=(TreePolynomNode<Monom> *) root;
-	TreePolynomNode<Monom> *parent=0;
+	int cmp = 0; // FIXME ...no compiler warnings
+	TreePolynomNode<Monom>* current = static_cast<TreePolynomNode<Monom>*>(root);
+	TreePolynomNode<Monom>* parent = 0;
 
-	while (current != NIL) {
+	while(current != NIL) {
 		cmp = mon.lexcmp(current->monom);
-		if (cmp == 0) {
+		if(cmp == 0) {
 			current->monom -= mon;
-			if (current->monom.isNull()) {
+			if(current->monom.isNull()) {
 				deleteNode(current, root, TreePolynomNode<Monom>::copy, TreePolynomNode<Monom>::free); 
 			}
 			return;
 		}
 		
-		parent=current;
-		current = (TreePolynomNode<Monom>*)(cmp < 0 ? current->left : current->right);
+		parent = current;
+		current = static_cast<TreePolynomNode<Monom>*>(cmp < 0 ? current->left : current->right);
 	}
 	
-	TreePolynomNode<Monom> *x = new TreePolynomNode<Monom>();
+	TreePolynomNode<Monom>* x = new TreePolynomNode<Monom>();
 	x->monom = mon;
 	x->monom.negate();
-	if (parent) {
+	if(parent) {
 		// cmp might not be used uninitialized, because if parent != 0 we made a
 		// call to cmp = lexorder(mon, current->monom) (see above)
-		if (cmp<0)
+		if (cmp<0) {
 			parent->left = x;
-		else
+		} else {
 			parent->right = x;
+		}
 	} else {
 		root = x;
 	}
@@ -221,103 +229,102 @@ void TreePolynom<Monom>::subMonom (const Monom &mon)
 }
 
 template<class Monom> 
-void TreePolynom<Monom>::mulMonom(const Monom &mon)
+void TreePolynom<Monom>::mulMonom(const Monom& mon)
 {
-	RBNode *it;
+	RBNode* it;
 	iteratorInit (it, root);
-	while (iteratorIsValid(it)) {
-		TreePolynomNode<Monom> *node = (TreePolynomNode<Monom> *)it;
+	while(iteratorIsValid(it)) {
+		TreePolynomNode<Monom>* node = static_cast<TreePolynomNode<Monom>*>(it);
 		node->monom *= mon;
 		iteratorNext(it);
 	}
 }
 
 template<class Monom> 
-void TreePolynom<Monom>::addPoly (const TreePolynom &tp)
+void TreePolynom<Monom>::addPoly (const TreePolynom& tp)
 {
-	RBNode *it;
+	RBNode* it;
 	iteratorInit (it, tp.root);
-	while (iteratorIsValid(it)) {
-		addMonom( ((TreePolynomNode<Monom>*)it)->monom);
+	while(iteratorIsValid(it)) {
+		addMonom(static_cast<TreePolynomNode<Monom>*>(it)->monom);
 		iteratorNext(it);
 	}
 }
 
 template<class Monom> 
-void TreePolynom<Monom>::subPoly (const TreePolynom &tp)
+void TreePolynom<Monom>::subPoly(const TreePolynom& tp)
 {
-	RBNode *it;
+	RBNode* it;
 	iteratorInit (it, tp.root);
-	while (iteratorIsValid(it)) {
-		subMonom( ((TreePolynomNode<Monom>*)it)->monom);
+	while(iteratorIsValid(it)) {
+		subMonom(static_cast<TreePolynomNode<Monom>*>(it)->monom);
 		iteratorNext(it);
 	}
 }
 
 
-
 template<class Monom> 
-const Monom & TreePolynom<Monom>::lmonom() const
+const Monom& TreePolynom<Monom>::lmonom() const
 {
-	RBNode *it;
+	RBNode* it;
 	iteratorInit(it, root);
 	assert(iteratorIsValid(it));
 	
-	return ((TreePolynomNode<Monom> *) it)->monom;
+	return static_cast<TreePolynomNode<Monom>*>(it)->monom;
 }
 
 template<class Monom>
-TreePolynom<Monom> * TreePolynom<Monom>::clone() const
+TreePolynom<Monom>* TreePolynom<Monom>::clone() const
 {
-	TreePolynom *tp = new TreePolynom();
+	TreePolynom* tp = new TreePolynom();
 	tp->root = cloneTree(root, 0, TreePolynomNode<Monom>::newNode, TreePolynomNode<Monom>::copy);
 	return tp;
 }
 
 
 template<class Monom>
-void TreePolynom<Monom>::print (ostream &os) const
+void TreePolynom<Monom>::print(std::ostream& os) const
 {
-	RBNode *it;
-	iteratorInit (it, root);
-	if (!iteratorIsValid(it)) {
+	RBNode* it;
+	iteratorInit(it, root);
+	if(!iteratorIsValid(it)) {
 		os << "0";
 		return;
 	}
-	while (iteratorIsValid(it)) {
-		TreePolynomNode<Monom> *node = (TreePolynomNode<Monom> *)it;
+	while(iteratorIsValid(it)) {
+		TreePolynomNode<Monom>* node = static_cast<TreePolynomNode<Monom>*>(it);
 		os << node->monom;
 		iteratorNext(it);
-		if (iteratorIsValid(it))
+		if(iteratorIsValid(it)) {
 			os << "+";
+		}
 	}
 }
 
 template<class Monom> 
-ostream & operator << (ostream &os, const TreePolynom<Monom> &tp)
+std::ostream& operator<<(std::ostream& os, const TreePolynom<Monom>& tp)
 {
 	tp.print(os);
 	return os;
 }
 
 template<class Monom> 
-TreePolynom<Monom> * TreePolynom<Monom>::multiply (TreePolynom<Monom> *tp1, TreePolynom<Monom> *tp2)
+TreePolynom<Monom>* TreePolynom<Monom>::multiply (TreePolynom<Monom>* tp1, TreePolynom<Monom>* tp2)
 {
 	assert(tp1);
 	assert(tp2);
 
-
-	TreePolynom<Monom> *result = new TreePolynom<Monom>();
+	TreePolynom<Monom>* result = new TreePolynom<Monom>();
 	
-	RBNode *it1, *it2;
-	
+	RBNode* it1;
 	iteratorInit(it1, tp1->root);
-	while (iteratorIsValid(it1)) {
+	while(iteratorIsValid(it1)) {
+		RBNode* it2;
 		iteratorInit(it2, tp2->root);
-		Monom &it1mon = ((TreePolynomNode<Monom> *)it1)->monom;
-		while (iteratorIsValid(it2)) {
-			Monom m (it1mon);
-			m *= ((TreePolynomNode<Monom>*)it2)->monom;
+		Monom& it1mon = static_cast<TreePolynomNode<Monom>*>(it1)->monom;
+		while(iteratorIsValid(it2)) {
+			Monom m(it1mon);
+			m *= static_cast<TreePolynomNode<Monom>*>(it2)->monom;
 			result->addMonom(m);
 			iteratorNext(it2);
 		}
@@ -327,9 +334,9 @@ TreePolynom<Monom> * TreePolynom<Monom>::multiply (TreePolynom<Monom> *tp1, Tree
 }
 
 template<class Monom> 
-TreePolynom<Monom> * multiply (TreePolynom<Monom> *tp1, TreePolynom<Monom> *tp2)
+TreePolynom<Monom>* multiply(TreePolynom<Monom>* tp1, TreePolynom<Monom>* tp2)
 {
-	return TreePolynom<Monom>::multiply (tp1, tp2);
+	return TreePolynom<Monom>::multiply(tp1, tp2);
 }
 
 
@@ -337,96 +344,104 @@ template<class Monom>
 class TreePoly
 {
 public:
-	TreePoly(TreePolynom<Monom> *p) : poly(p) {};
+	TreePoly(TreePolynom<Monom>* p) : poly(p) {};
 	TreePoly() : poly(new TreePolynom<Monom>()) {};
-	TreePoly(const TreePoly &tp) : poly(tp.poly) {retain(poly);};
-	~TreePoly() {release(poly);};
+	TreePoly(const TreePoly& tp) : poly(tp.poly) { retain(poly); }
+	~TreePoly() { release(poly); }
 	
-	TreePoly & operator = (const TreePoly &tp) {assert(&tp!=this);release(poly); poly=tp.poly; retain(poly); return *this;};
+	TreePoly& operator=(const TreePoly& tp) {
+		assert(&tp != this);
+		release(poly);
+		poly = tp.poly;
+		retain(poly);
+		return *this;
+	}
 
-	TreePoly clone() const {return TreePoly(poly->clone());};
+	TreePoly clone() const { return TreePoly(poly->clone()); }
 
-	TreePoly operator += (const TreePoly p) {poly->addPoly(*p.poly); return *this;};
-	TreePoly operator -= (const TreePoly p) {poly->subPoly(*p.poly); return *this;};
-	TreePoly operator + (const TreePoly &p) const 
-		{
-			
-			TreePolynom<Monom> *result = poly->clone();
-			result->addPoly(*p.poly);
+	TreePoly operator+=(const TreePoly p) {
+		poly->addPoly(*p.poly);
+		return *this;
+	}
+	TreePoly operator-=(const TreePoly p) {
+		poly->subPoly(*p.poly);
+		return *this;
+	}
+	TreePoly operator+(const TreePoly& p) const {
+		TreePolynom<Monom>* result = poly->clone();
+		result->addPoly(*p.poly);
+		return result;
+	}
 
-			return result;
-		};
+	TreePoly operator-(const TreePoly& p) const {
+		TreePolynom<Monom>* result = poly->clone();
+		result->subPoly(*p.poly);
+		return result;
+	}
 
-	TreePoly operator - (const TreePoly &p) const 
-		{
-			TreePolynom<Monom> *result = poly->clone();
-			result->subPoly(*p.poly);
-			return result;
-		};
+	TreePoly operator*(const TreePoly& p) const {
+		TreePolynom<Monom>* retval = multiply(poly, p.poly);
+		return retval;
+	}
 
-	TreePoly operator * (const TreePoly &p) const 
-		{
-			TreePolynom<Monom> *retval = multiply(poly, p.poly);
-			return retval;
-		}
-
-	void addMonom(const Monom &mon) {poly->addMonom(mon);};
-	int degreeInVariable(int var) {return poly->degreeInVariable(var);};
-	void swapVariables(int var1, int var2) {poly->swapVariables(var1, var2);};
-	const Monom &lmonom () const {return poly->lmonom();};
+	void addMonom(const Monom& mon) { poly->addMonom(mon); }
+	int degreeInVariable(int var) { return poly->degreeInVariable(var); }
+	void swapVariables(int var1, int var2) { poly->swapVariables(var1, var2); }
+	const Monom& lmonom() const { return poly->lmonom(); }
 	
-	
 
-	// friend class ostream &operator<<(ostream &os, const TreePoly<Monom> &tp);
-	int _isNull () const {return poly->_isNull();};
+	// friend class std::ostream &operator<<(std::ostream& os, const TreePoly<Monom> &tp);
+	int _isNull() const { return poly->_isNull(); }
 
- 	void withAllMonomsPerform ( void (*action) (Monom *) ) 
- 		{poly->withAllMonomsPerform(action);};
+ 	void withAllMonomsPerform(void (*action)(Monom*)) {
+ 		poly->withAllMonomsPerform(action);
+	}
 
-	void withMonomsPerform ( void (*action) (Monom *, void *), void *data ) 
-		{poly->withMonomsPerform(action,data);};
+	void withMonomsPerform(void (*action)(Monom*, void*), void* data) {
+		poly->withMonomsPerform(action,data);
+	}
 
-	void print (class std::ostream &os) const { os << *poly;}
+	void print(class std::ostream &os) const { os << *poly; }
 
 protected:
-	TreePolynom<Monom> *poly;
+	TreePolynom<Monom>* poly;
 };
 
 
 template<class Monom> 
-int isNull (const TreePoly<Monom> &tp)
+int isNull(const TreePoly<Monom>& tp)
 {
 	return tp._isNull();
 }
 
 template<class Monom> 
-void setNull (TreePoly<Monom> &tp)
+void setNull(TreePoly<Monom>& tp)
 {
 	// todo
 }
 
 template<class Monom> 
-ostream &operator<<(ostream &os, const TreePoly<Monom> &tp)
+std::ostream& operator<<(std::ostream& os, const TreePoly<Monom>& tp)
 {
 	tp.print(os);
 	return os;
 	//return os << *tp.poly;
 }
 
-
 template<class Monom> 
-TreePoly<Monom> divide (TreePoly<Monom> f, TreePoly<Monom> g)
+TreePoly<Monom> divide(TreePoly<Monom> f, TreePoly<Monom> g)
 {
 	TreePoly<Monom> result;
-	while (!isNull(f)) {
+	while(!isNull(f)) {
 		Monom m = f.lmonom();
 		m /= g.lmonom();
 		result.addMonom(m);
 		
 		TreePoly<Monom> tmp;
 		tmp.addMonom(m);
-		f = f-g*tmp;
+		f = f - g*tmp;
 	}
 	return result;
 }
-#endif
+
+#endif // !TREE_POLYNOM_H

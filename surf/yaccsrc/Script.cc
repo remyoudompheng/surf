@@ -253,8 +253,8 @@ void Script::executeScriptFromStdin()
 	if(stdin_is_a_tty) {
 
 #ifdef HAVE_READLINE
-		rl_bind_key('\t', reinterpret_cast<Function*>(rl_insert));
-		rl_bind_key('^', reinterpret_cast<Function*>(rl_insert));
+		rl_bind_key('\t', rl_insert);
+		rl_bind_key('^', rl_insert);
 		char* l;
 		while((l = readline(PROMPT)) != 0) {
 			if(*l) {

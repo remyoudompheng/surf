@@ -48,7 +48,7 @@ const double epsilon = 1e-5;
 
 inline bool double_equal(double s, double t)
 {
-	return fabs(s - t) < epsilon;
+	return std::fabs(s - t) < epsilon;
 }
 
 }

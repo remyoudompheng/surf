@@ -31,7 +31,7 @@
 #include <gts.h>
 
 #include<map>
-#include<fstream>
+#include<sstream>
 
 class Triangulator;
 class SoCoordinate3;
@@ -71,7 +71,7 @@ namespace ImageFormats {
 		SoNormal* normals;
 		SoIndexedFaceSet* faceSets;
 #else
-		std::ofstream* ofs;
+		std::ostringstream sstr;
 		int num_vertices;
 		int num_faces;
 		void normal_func(GtsVertex* f);

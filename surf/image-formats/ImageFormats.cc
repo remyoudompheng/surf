@@ -23,15 +23,22 @@
  */
 
 
-
-
 #include <AvailableImageFormats.h>
 #include <ScriptVar.h>
 
 #include<iostream>
 
+/// Namespace which contains general functions to save images and special classes for each image format.
 namespace ImageFormats {
 
+	/**
+         * Save color image.
+         * Determines current color file format and calls the appropriate
+         * image format class to save the image in this format.
+         * @param filename Filename of the image file to be written
+         * @param data The RGB data of the curve/surface
+         * @return false if something went wrong, otherwise true
+         */
 	bool saveColorImage(const char* filename, RgbBuffer& data)
 	{
 		int cff = ScriptVar::color_file_format_data;
@@ -47,6 +54,14 @@ namespace ImageFormats {
 		return availableFormats[cff]->saveColorImage(filename, data);
 	}
 
+        /**
+         * Save dithered image.
+         * Determines current dither file format and calls the appropriate
+         * image format class to save the image in this format.
+         * @param filename Filename of the image file to be written
+         * @param data The bitplane data of the dithered curve/surface
+         * @return false if something went wrong, otherwise true
+         */
 	bool saveDitheredImage(const char* filename, bit_buffer& data)
 	{
 		int dff = ScriptVar::dither_file_format_data;
@@ -62,6 +77,14 @@ namespace ImageFormats {
 		return availableFormats[dff]->saveDitheredImage(filename, data);
 	}
 
+        /**
+         * Save 3D image.
+         * Determines 3D file format and saves the triangulated data of the
+         * surface by calling the appropriate image format class.
+         * @param filename Filename to save the data to.
+         * @param data Tringulated data of the surface.
+         * @return false: error, true: success
+         */
 	bool save3DImage(const char* filename, Triangulator& data)
 	{
 		int tdff = ScriptVar::three_d_file_format_data;

@@ -23,64 +23,59 @@
  */
 
 
-
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include<iostream>
 #include <assert.h>
-
-// #define DEBUG
-#include "debug.h"
 
 template<class Type> 
 class Matrix
 {
 private:
-	Matrix(const Matrix &);
-	void operator=(const Matrix &);
+	Matrix(const Matrix&);
+	void operator=(const Matrix&);
 
 public:
-	Matrix(int newSize) : size(newSize), elems(new Type[newSize*newSize])	
-		{}
-	~Matrix()
-		{ delete []elems;	};
+	Matrix(int newSize) : size(newSize), elems(new Type[newSize*newSize]) {}
+	~Matrix() { delete [] elems; }
 
-	
-	Type &      getElement (int row, int column)       
-		{ return elems[getIndex(row,column)];	};
+	Type& getElement(int row, int column) {
+		return elems[getIndex(row,column)];
+	}
 
-	const Type& getElement (int row, int column) const 
-		{ return elems[getIndex(row, column)];	};
+	const Type& getElement(int row, int column) const {
+		return elems[getIndex(row, column)];
+	}
 
 	Type det() const;
-	int getSize() const	{return size;	};
+	
+	int getSize() const { return size; }
+	
 	Type threadedDeterminant() const;
 	
 protected:
 	int size;
-	Type *elems;
+	Type* elems;
 
+	int getIndex(int row, int col) const {
+		assert(row >= 0 && col >= 0 && row < size && col < size);
+		return row*size + col;
+	}
 
-	inline int getIndex (int row, int col) const
-		{
-			assert(row >= 0 && col >= 0 && row<size && col<size);
-			return row*size+col;
-		};
+	void deleteRowAndColumn(int row, int col, Matrix<Type>& m) const;
 
-	void deleteRowAndColumn (int row,  int col, Matrix<Type>& m) const;
+	void getBestRow(int& row, int& zeros) const;
+	void getBestColumn (int& col, int& zeros) const;
 
-	void getBestRow (int &row, int &zeros) const;
-	void getBestColumn (int &col, int &zeros) const;
-
-
-	static void *computeDeterminant(void *ptr);
+	static void* computeDeterminant(void* ptr);
 };
 
 template<class Type>
-void * Matrix<Type>::computeDeterminant(void *ptr)
+void* Matrix<Type>::computeDeterminant(void* ptr)
 {
-	Matrix<Type> *matrix = (Matrix<Type> *) ptr;
-	Type *retval = new Type (matrix->det());
+	Matrix<Type>* matrix = static_cast<Matrix<Type>*>(ptr);
+	Type* retval = new Type(matrix->det());
 	delete matrix;
 	return retval;
 }
@@ -93,7 +88,7 @@ void * Matrix<Type>::computeDeterminant(void *ptr)
 // - Ralf
 
 template<class Type>
-Type Matrix<Type>::threadedDeterminant () const
+Type Matrix<Type>::threadedDeterminant() const
 {
 	if (size==1)
 		return elems[0];
@@ -191,44 +186,40 @@ Type Matrix<Type>::threadedDeterminant () const
 
 
 template<class Type>
-void Matrix<Type>::getBestRow (int &row, int &zeros) const
+void Matrix<Type>::getBestRow(int& row, int& zeros) const
 {
-	int minNonZero=getSize();
-	int bestRow=0;
+	int minNonZero = getSize();
+	int bestRow = 0;
 	
-	int r;
-	for (r=0; r<getSize(); r++) {
+	for(int r = 0; r < getSize(); r++) {
 		int nonZero=0;
-		int c;
-
-		for (c=0; c<getSize() && nonZero<minNonZero; c++) {
-			if (!isNull(getElement(r,c))) {
+		
+		for(int c = 0; c < getSize() && nonZero < minNonZero; c++) {
+			if(!isNull(getElement(r, c))) {
 				nonZero++;
 			}
 		}
 		
-		if (nonZero < minNonZero) {
+		if(nonZero < minNonZero) {
 			minNonZero = nonZero;
 			bestRow = r;
 		}
 	}
 	
 	row = bestRow;
-	zeros = getSize()-minNonZero;
+	zeros = getSize() - minNonZero;
 }
 
 template<class Type>
-void Matrix<Type>::getBestColumn (int &col, int &zeros) const
+void Matrix<Type>::getBestColumn(int& col, int& zeros) const
 {
-	int minNonZero=getSize();
-	int bestCol=0;
+	int minNonZero = getSize();
+	int bestCol = 0;
 	
-	int c;
-	for (c=0; c<getSize(); c++) {
+	for(int c = 0; c < getSize(); c++) {
 		int nonZero=0;
-		int r;
 
-		for (r=0; r<getSize() && nonZero<minNonZero; r++) {
+		for(int r = 0; r < getSize() && nonZero < minNonZero; r++) {
 			if (!isNull(getElement(r,c))) {
 				nonZero++;
 			}
@@ -241,54 +232,48 @@ void Matrix<Type>::getBestColumn (int &col, int &zeros) const
 	}
 	
 	col = bestCol;
-	zeros = getSize()-minNonZero;
+	zeros = getSize() - minNonZero;
 }
 
 template<class Type> 
-ostream & operator << (ostream &os, const Matrix<Type> &m)
+std::ostream& operator<<(std::ostream& os, const Matrix<Type>& m)
 {
-	int size=m.getSize();
-	int i;
-	int j;
-	for (i=0; i<size; i++) {
-		os << endl << "Zeile " << i << ":";
-		for (j=0; j<size; j++)
+	int size = m.getSize();
+	for(int i = 0; i < size; i++) {
+		os << std::endl << "Zeile " << i << ":";
+		for(int j = 0; j < size; j++)
 			os << m.getElement(i,j) << "    ";
 	}
 	return os;
 }
 
 template<class Type> 
-void Matrix<Type>::deleteRowAndColumn (int row,  int col, Matrix<Type> &m) const
+void Matrix<Type>::deleteRowAndColumn(int row, int col, Matrix<Type>& m) const
 {
 	BEGIN("deleteRowAndColumn");
-	int r;
-	int c;
-	assert(m.getSize()==getSize()-1);
+	assert(m.getSize() == getSize() - 1);
 
-
-	for (r=0; r<row; r++) {
-		for (c=0; c<col; c++) {
-			m.getElement(r,c) = getElement(r,c);
+	for(int r = 0; r < row; r++) {
+		for(int c = 0; c < col; c++) {
+			m.getElement(r, c) = getElement(r, c);
 		}
 	}
 	
-
-	for (r=row+1; r<getSize(); r++) {
-		for (c=0; c<col; c++) {
-			m.getElement(r-1, c) = getElement(r,c);
+	for(int r = row + 1; r < getSize(); r++) {
+		for(int c = 0; c < col; c++) {
+			m.getElement(r - 1, c) = getElement(r, c);
 		}
 	}
 
-	for (r=row+1; r<getSize(); r++) {
-		for (c=col+1; c<getSize(); c++) {
-			m.getElement(r-1, c-1) = getElement(r,c);
+	for(int r = row + 1; r < getSize(); r++) {
+		for(int c = col + 1; c < getSize(); c++) {
+			m.getElement(r - 1, c - 1) = getElement(r, c);
 		}
 	}
 	
-	for (r=0; r<row; r++) {
-		for (c=col+1; c<getSize(); c++) {
-			m.getElement(r, c-1) = getElement(r,c); 
+	for(int r = 0; r < row; r++) {
+		for(int c = col + 1; c < getSize(); c++) {
+			m.getElement(r, c - 1) = getElement(r, c); 
 		}
 	}
 }
@@ -296,15 +281,16 @@ void Matrix<Type>::deleteRowAndColumn (int row,  int col, Matrix<Type> &m) const
 template<class Type> 
 Type Matrix<Type>::det() const
 {
-	if (size==1)
+	if(size == 1) {
 		return elems[0];
-	else if (size==2)
-		return elems[0]*elems[3]-elems[1]*elems[2];
+	} else if(size == 2) {
+		return elems[0]*elems[3] - elems[1]*elems[2];
+	}
 	// return threadedDeterminant();
 	Type result;
 	setNull(result);
 
-	Matrix m (size-1);
+	Matrix m(size - 1);
 #if 1
 	int bestRow;
 	int bestRowZeros;
@@ -321,29 +307,31 @@ Type Matrix<Type>::det() const
 	TRACE(bestCol);
 	TRACE(bestColZeros);
 
-	if (bestRowZeros > bestColZeros) {
+	if(bestRowZeros > bestColZeros) {
 		DMESS("enwickle nach Zeile");
-		int col;
-		for (col=0; col<getSize(); col++) {
-			if (isNull(getElement(bestRow, col)))
+		for(int col = 0; col < getSize(); col++) {
+			if(isNull(getElement(bestRow, col))) {
 				continue;
+			}
 			deleteRowAndColumn(bestRow, col, m);
-			if ((bestRow+col) % 2 == 0)
+			if((bestRow + col) % 2 == 0) {
 				result += m.det()*getElement(bestRow, col);
-			else
+			} else {
 				result -= m.det()*getElement(bestRow, col);
+			}
 		}
 	} else {
 		DMESS("entwickle nach Spalte");
-		int row;
-		for (row=0; row<getSize(); row++) {
-			if (isNull(getElement(row, bestCol)))
+		for(int row = 0; row < getSize(); row++) {
+			if(isNull(getElement(row, bestCol))) {
 				continue;
+			}
 			deleteRowAndColumn(row, bestCol, m);
-			if ((row+bestCol) % 2 == 0) 
+			if((row + bestCol) % 2 == 0) {
 				result += m.det()*getElement(row, bestCol);
-			else
+			} else {
 				result -= m.det()*getElement(row, bestCol);
+			}
 			    
 		}
 		
@@ -352,25 +340,28 @@ Type Matrix<Type>::det() const
 	return result;
 #else
 
-	int i;
-	for (i=0; i<size; i++) {
+	for(int i = 0; i < size; i++) {
 		// Zeile i loeschen
-		int j,k;
-		for (j=0; j<i; j++) 
-			for (k=0; k<size-1; k++) 
-				m.getElement(j,k) = getElement(j,k+1);
+		for(int j = 0; j < i; j++) {
+			for(int k = 0; k < size - 1; k++) {
+				m.getElement(j, k) = getElement(j, k + 1);
+			}
+		}
 		
-		for (j=i+1; j<size; j++)
-			for (k=0; k<size-1; k++) 
-				m.getElement(j-1,k) = getElement(j,k+1);
+		for(int j = i + 1; j < size; j++) {
+			for(int k = 0; k < size - 1; k++) {
+				m.getElement(j - 1, k) = getElement(j, k + 1);
+			}
+		}
 
-		if (i % 2 == 0)
-			result+=m.det()*getElement(i,0);
-		else
-			result-=m.det()*getElement(i,0);
+		if(i % 2 == 0) {
+			result += m.det()*getElement(i, 0);
+		} else {
+			result -= m.det()*getElement(i, 0);
+		}
 	}
 	return result;
 #endif
 }
 
-#endif
+#endif // !MATRIX_H
