@@ -755,8 +755,13 @@ series of images to the movie format of your choice.
     if( i < 100 ) goto loop;                    // repeat 100 times
 </code>
 Here some 100 SUN rasterfiles are created.  Afterwards you could use
-some tool to convert these single images to a movie.
-
+some tool to convert these single images to a movie. For example with
+the <tt>convert</tt> program from the <em>ImageMagick</em> suite you
+could type
+<verb>
+convert -delay 5 cubic*.ras cubic.gif
+</verb>
+to create a GIF animation.
 
 <sect1>Stereo pictures
 <p>
