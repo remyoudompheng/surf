@@ -29,6 +29,7 @@
 #include "mygtk.h"
 #include "Matrix33.h"
 #include "WidgetReadWriter.h"
+#include <cmath>
 
 class MainWindowController;
 
@@ -53,9 +54,7 @@ private:
 	WidgetReadWriter wrw;
 
 	bool shown;
-	bool rotationUpdating;
-	bool scaleUpdating;
-	bool originUpdating;
+	bool updating;
 
 	GtkWidget* window;
 	GtkObject* xRotSpinAdj;
@@ -77,6 +76,9 @@ private:
 	void updateAngles();
 	void updateScales();
 	void updateOrigin();
+	double trimAngle(double rad);
+	double trimScale(double scl);
+	double trimOrig(double orig);
 
 	// Gtk callbacks:
 	static gint handle_delete(GtkWidget* w, GdkEvent* e, gpointer d);
@@ -100,6 +102,13 @@ private:
 	double rotX, rotY, rotZ;
 	double scaleX, scaleY, scaleZ;
 	double origX, origY, origZ;
+
+	static const double minRot = 0;
+	static const double maxRot = 2*M_PI;
+	static const double minScale = 0.001;
+	static const double maxScale = 100;
+	static const double minOrig = -100;
+	static const double maxOrig = 200;
 };
 
 

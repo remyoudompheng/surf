@@ -708,9 +708,14 @@ void MainWindowController::enableSaveButton(SaveButtonType which)
 
 void MainWindowController::drawSurfaceWithParams()
 {
-	ostrstream ostr;
+	std::ostrstream ostr;
 	SymbolTable st;
 	navwin.writeSymbols(st);
-	ostr << st << "draw_surface;" << ends;
+	ostr << st << "draw_surface;" << std::ends;
 	internalExecuteScript(0, tw.getContents(), ostr.str(), false);
+}
+
+void MainWindowController::evaluateScript()
+{
+	internalExecuteScript(0, tw.getContents(), "", false);
 }

@@ -63,6 +63,7 @@ public:
 	void enableSaveButton(SaveButtonType which);
 
 	void drawSurfaceWithParams();
+	void evaluateScript();
 
 protected:
 	MENUCALLBACK(showAbout, MainWindowController);
