@@ -28,18 +28,19 @@
 #include "NewClipSphereParallel.h"
 #include "def.h"
 
-int NewClipSphereParallel::clip_user_y (double uy)
+bool NewClipSphereParallel::clip_user_y (double uy)
 {
 	// return  fabs( uy - cy ) <= r;
-	if (fabs( uy - cy ) > r)
-		return FALSE;
+	if (fabs( uy - cy ) > r) {
+		return false;
+	}
 
 	A0 = uy - cy;
 	A0 *= A0;
-	return TRUE;
+	return true;
 }
 
-int NewClipSphereParallel::clip_user_xy (double ux, double uy, double &zmin, double &zmax)
+bool NewClipSphereParallel::clip_user_xy (double ux, double uy, double &zmin, double &zmax)
 {
 	double  g = ux - cx;
 	double  h = g*g + A0;
@@ -53,13 +54,13 @@ int NewClipSphereParallel::clip_user_xy (double ux, double uy, double &zmin, dou
 		zmin = max( zmin,cb /*-10.0*/ /*cb*/);
 		zmax = min( zmax,cf /*10.0*/ /*cf*/ );
 		
-		return  TRUE;
+		return  true;
 	} else {
-		return  FALSE;
+		return  false;
 	}
 }
 
-int NewClipSphereParallel::clip_user_xyz (double uz)
+bool NewClipSphereParallel::clip_user_xyz (double uz)
 {
-    return  TRUE;
+	return true;
 }

@@ -28,74 +28,30 @@
 #ifndef IMAGEFORMAT_XPM_H
 #define IMAGEFORMAT_XPM_H
 
-#include "ImageFormats.h"
-
-#ifndef NO_GUI
-#include <gtk/gtk.h>
-#include "mygtk.h"
-#endif
-
-#include <cstring>
-#include <cstdlib>
+#include <ImageFormats.h>
 
 namespace ImageFormats {
 
 	class XPM : public Format {
 	public:
-		XPM() : shown(false) { }
-		
-		const char* getName() {
-			return "XPM (8 bit)";
+		std::string getName() const {
+			return "X Pixmap (8 bit)";
 		}
-		
-		ColorType getColorType() {
+		std::string getID() const {
+			return "xpm";
+		}
+		ColorType getColorType() const {
 			return color;
 		}
+		bool isExtension(const std::string& ext) const {
+			return ext == "xpm";
+		}
 
-		bool isExtension(const char* ext) {
-			if (std::strcasecmp(ext, "xpm") == 0) {
-				return true;
-			}
+		bool saveColorImage(const char* filename, RgbBuffer& data);
+		
+		bool saveDitheredImage(const char* filename, bit_buffer& data) {
 			return false;
 		}
-
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
-		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) {
-			return false;
-		}
-
-	private:
-		bool shown;
-		bool save;
-
-		bool optimized;
-		bool dither;
-		double ditherval;
-
-#ifndef NO_GUI		
-		GtkWidget* dialog;
-		GtkWidget* optimizedRB;
-		GtkWidget* ditherHBox;
-		GtkWidget* ditherCB;
-		GtkObject* ditherAdj;
-		GtkWidget* ditherSpin;
-		GMainLoop* gmainloop;
-		
-		VOIDCALL(handle_ok, XPM);
-		VOIDCALL(handle_cancel, XPM);
-		VOIDCALL(handle_optimized, XPM) {
-			gtk_widget_set_sensitive(ditherHBox,
-						 GTK_TOGGLE_BUTTON(optimizedRB)->active);
-		}
-		VOIDCALL(handle_dither, XPM) {
-			gtk_widget_set_sensitive(ditherSpin,
-						 GTK_TOGGLE_BUTTON(ditherCB)->active);
-		}
-		EVENTCALL(handle_delete_event, XPM);
-#endif
-
-		void reallySave(const char* filename, RgbBuffer& buffer);
 	};
 
 	extern XPM imgFmt_XPM;

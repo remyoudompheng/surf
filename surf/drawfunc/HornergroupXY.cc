@@ -27,25 +27,22 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "HornergroupXY.h"
-#include "HornergroupXYZ.h"
-#include "RationalHornerXY.h"
-
-#include "Horner.h"
-#include "MultiVariatePolynom.h"
-#include "Position.h"
+#include <Hornergroup.h>
+#include <Horner.h>
+#include <MultiVariatePolynom.h>
+#include <Position.h>
 
 // ----------------------------------------------------------------------------
 // class for bivariate horner polynom -- used for curve
 // ----------------------------------------------------------------------------
 
-HornergroupXY::HornergroupXY( HornergroupXYZ* Surface, 
-			      RationalHornerXY* Plane )
+HornergroupXY::HornergroupXY(HornergroupXYZ* Surface, 
+			     RationalHornerXY* Plane)
 {
-	Polyxy* Funct = Plane->Subst( Surface->Polynom );
+	Polyxy* Funct = Plane->Subst(Surface->Polynom);
 	state = Funct->Check();
 
-	if( !state ) {
+	if(!state) {
 		Funct->Norm();                 // norm coeffs
 		Polyxy Temp = *Funct;          // copy to temporary
 		Orig[VARIABLE_X] = Temp;       // convert to hornerpoly
@@ -59,13 +56,14 @@ HornergroupXY::HornergroupXY( HornergroupXYZ* Surface,
 	}
 }
 
-HornergroupXY::HornergroupXY( polyxyz* Pol, Position* position)
+HornergroupXY::HornergroupXY(polyxyz* Pol, Position* position)
 {
 	Polyxy Funct = *Pol;                     // copy polyxyz to Polyxy 
 	state = Funct.Check();
-	if( !state ) {                             // check for zero degree etc.
-		if (position)
-			Funct = position->Adjust( Funct );   // turn, scale and shift
+	if(!state) {                             // check for zero degree etc.
+		if(position) {
+			Funct = position->Adjust(Funct);   // turn, scale and shift
+		}
 		Funct.Norm();                        // norm coeffs
 		Polyxy Temp = Funct;                 // copy to temporary
 		Orig[VARIABLE_X] = Temp;             // convert to horner
@@ -79,12 +77,13 @@ HornergroupXY::HornergroupXY( polyxyz* Pol, Position* position)
 	}
 }
 
-HornergroupXY::HornergroupXY (Polyxy Funct, Position *pos)
+HornergroupXY::HornergroupXY(Polyxy Funct, Position *pos)
 {
 	state = Funct.Check();
-	if( !state ) {				// check for zero degree etc.
-		if (pos)
-			Funct=pos->Adjust( Funct );   // turn, scale and shift
+	if(!state) {				// check for zero degree etc.
+		if(pos) {
+			Funct=pos->Adjust(Funct);   // turn, scale and shift
+		}
 
 		Funct.Norm();                        // norm coeffs
 		Polyxy Temp = Funct;                 // copy to temporary
@@ -99,39 +98,29 @@ HornergroupXY::HornergroupXY (Polyxy Funct, Position *pos)
 	}
 
 }
-// ----------------------------------------------------------------------------
-// cleanup
-// ----------------------------------------------------------------------------
 
-HornergroupXY::~HornergroupXY()
-{
-// 	delete [] Orig;
-// 	delete [] Derivate;
-}
-
-void HornergroupXY::SetVar( int dir, double val )
+void HornergroupXY::SetVar(int dir, double val)
 {
 	assert(dir == 0 || dir == 1);
 
-	Orig[dir].SetVar( val );
-	Derivate[dir].SetVar( val );
+	Orig[dir].SetVar(val);
+	Derivate[dir].SetVar(val);
 }
 
 
-int HornergroupXY::Zero( int dir, double a, double b,
-			 double* c, double* d, int e )
+int HornergroupXY::Zero(int dir, double a, double b, double* c, double* d, int e)
 {
 	assert(dir==0 || dir == 1);
-	return Orig[dir].Zero( a,b,c,d,e );
+	return Orig[dir].Zero(a, b, c, d, e);
 }
 
-double HornergroupXY::EstimateDelta( int dir, double val )
+double HornergroupXY::EstimateDelta(int dir, double val)
 {
 	assert(dir == 0 || dir == 1);
 
-	double res = Orig[dir].HornerDerived( val );
-	if( res != 0.0 ) {
-		double tmp = Derivate[dir].Horner( val );
+	double res = Orig[dir].HornerDerived(val);
+	if(res != 0.0) {
+		double tmp = Derivate[dir].Horner(val);
 		res = tmp / res;
 	}
   

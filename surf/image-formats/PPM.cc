@@ -25,24 +25,23 @@
 
 
 
-#include "Misc.h"
-#include "FileWriter.h"
-#include "RgbBuffer.h"
+#include <FileWriter.h>
+#include <RgbBuffer.h>
+#include <PPM.h>
 
-#include "PPM.h"
+#include<iostream>
 
 namespace ImageFormats {
 
 	PPM imgFmt_PPM;
 
-
-	bool PPM::saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg)
+	bool PPM::saveColorImage(const char* filename, RgbBuffer& data)
 	{
 		FileWriter fw(filename);
 		FILE *file;
 
 		if((file = fw.openFile()) == 0) {
-			Misc::alert ("Could not open file for writing...");
+			std::cerr << "Could not open file for writing.\n";
 			return false;
 		}
 	
@@ -55,9 +54,9 @@ namespace ImageFormats {
 		const guint8* gdata = data.getGData();
 		const guint8* bdata = data.getBData();
 		
-		int n = width*height;
+		size_t n = width*height;
 
-		for (int i = 0; i < n; i++) {
+		for(size_t i = 0; i < n; i++) {
 			fprintf (file, "%c%c%c", rdata[i], gdata[i], bdata[i]);
 		}
 		

@@ -27,10 +27,9 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "NewClipAlgebraic.h"
-#include "NewClipAlgebraicIco.h"
-
-#include "gui_config.h"
+#include <NewClipAlgebraic.h>
+#include <NewClipAlgebraicIco.h>
+#include <ScriptVar.h>
 
 
 void NewClipAlgebraicIco::init( void )

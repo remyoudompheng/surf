@@ -51,45 +51,6 @@ AC_DEFUN(LF_CHECK_CC_FLAG,[
 ])
 
 
-AC_DEFUN(RS_CHECK_HAVE_BOOL,[
-	AC_CACHE_CHECK(whether $CXX supports bool, rs_cv_have_bool, [
-		AC_LANG_SAVE
-		AC_LANG_CPLUSPLUS
-		AC_TRY_COMPILE(,[bool a=false; bool b=true; return 0;],
-		rs_cv_have_bool="yes",	
-		rs_cv_have_bool="no")
-		
-		AC_LANG_RESTORE
-	])
-])
-
-AC_DEFUN([RS_CHECK_PTHREADS],
-[
-AC_CACHE_CHECK(if compilation of multithreaded programs works, rs_cv_have_pthread, 
-[
-	AC_TRY_LINK(,pthread_create();, rs_cv_have_pthread="yes", rs_cv_have_pthread="no")
-])
-
-if test "$rs_cv_have_pthread" = "no"
-then
-	AC_MSG_ERROR("You need an implementation of posix threads \(did you give me the necessary flags to compile multithreaded programs ?\)")
-fi
-])
-
-
-
-AC_DEFUN([RS_CHECK_POW],
-[
-	AC_MSG_CHECKING(if pow(0,0)!=1)
-	AC_TRY_RUN(
-		[#include <math.h>
-		int main() { if (pow(0.0,0.0)==1.0) return 0; else return 10;}],
-                POW_IS_BROKEN=no, POW_IS_BROKEN=yes, POW_IS_BROKEN=yes)
-	AC_MSG_RESULT("$POW_IS_BROKEN")
-	test "$POW_IS_BROKEN" = "yes" &&
-		AC_DEFINE(POW_IS_BROKEN)
-])
-
 AC_DEFUN([RS_CHECK_LIB], 
 [
 	AC_CHECK_LIB($1, main,, AC_MSG_ERROR([Sorry: can't link with library lib$1.\(a\|so\).]))
@@ -222,7 +183,7 @@ dnl check if C++ compiler supports namespaces:
 dnl (inspired by Gtk-- 1.2.1 configure.in)
 dnl ------------------------------------------
 
-AC_DEFUN(JB_CXX_NAMESPACES, [
+AC_DEFUN(JOJO_CXX_NAMESPACES, [
 	AC_MSG_CHECKING(whether ${CXX} supports namespaces)
 	AC_TRY_COMPILE([
 		namespace Foo { struct A {}; }
@@ -237,7 +198,7 @@ AC_DEFUN(JB_CXX_NAMESPACES, [
 	])
 ])
 
-AC_DEFUN(JB_CXX_STDNAMESPACE, [
+AC_DEFUN(JOJO_CXX_STDNAMESPACE, [
 	AC_MSG_CHECKING(whether ${CXX} uses std namespace)
 	AC_TRY_COMPILE([
 		#include <iostream>
@@ -262,3 +223,80 @@ AC_DEFUN(JB_CXX_STDNAMESPACE, [
 		])
 	])
 ])
+
+
+dnl JOJO_COMPILE_WARNINGS
+dnl Turn on many useful compiler warnings
+dnl For now, only works on GCC
+dnl (this is almost entirely GNOME_COMPILE_WARNINGS..)
+
+AC_DEFUN([JOJO_COMPILE_WARNINGS],[
+  if test "x$GCC" = xyes; then
+    AC_MSG_CHECKING(what warning flags to pass to the C compiler)
+
+    warnCFLAGS=
+    case " $CFLAGS " in
+      *[\ \	]-Wall[\ \	]*) ;;
+      *) warnCFLAGS="-Wall" ;;
+    esac
+
+    warnCFLAGS="$warnCFLAGS -Wmissing-prototypes -Wmissing-declarations"
+    
+    AC_MSG_RESULT($warnCFLAGS)
+
+    AC_MSG_CHECKING(what language compliance flags to pass to the C compiler)
+
+dnl    complCFLAGS=
+dnl    case " $CFLAGS " in
+dnl      *[\ \	]-ansi[\ \	]*) ;;
+dnl      *) complCFLAGS="$complCFLAGS -ansi" ;;
+dnl    esac
+
+    case " $CFLAGS " in
+      *[\ \	]-pedantic[\ \	]*) ;;
+      *) complCFLAGS="$complCFLAGS -pedantic" ;;
+    esac
+    
+    AC_MSG_RESULT($complCFLAGS)
+    
+    CFLAGS="$CFLAGS $warnCFLAGS $complCFLAGS"
+  fi
+])
+
+dnl For C++, do basically the same thing.
+
+AC_DEFUN([JOJO_CXX_WARNINGS],[
+  if test "x$GCC" = xyes; then
+    AC_MSG_CHECKING(what warning flags to pass to the C++ compiler)
+  
+    warnCXXFLAGS=
+    
+    case " $CXXFLAGS " in
+      *[\ \	]-Wall[\ \	]*) ;;
+      *) warnCXXFLAGS="-Wall" ;;
+    esac
+
+    warnCXXFLAGS="$warnCXXFLAGS -Wmissing-prototypes -Wmissing-declarations -Woverloaded-virtual"
+
+    AC_MSG_RESULT($warnCXXFLAGS)
+
+    AC_MSG_CHECKING(what language compliance flags to pass to the C++ compiler)
+   
+    complCXXFLAGS=
+
+dnl    case " $CXXFLAGS " in
+dnl      *[\ \	]-ansi[\ \	]*) ;;
+dnl      *) complCXXFLAGS="$complCXXFLAGS -ansi" ;;
+dnl    esac
+
+    case " $CXXFLAGS " in
+      *[\ \	]-pedantic[\ \	]*) ;;
+      *) complCXXFLAGS="$complCXXFLAGS -pedantic" ;;
+    esac
+ 
+    AC_MSG_RESULT($complCXXFLAGS)
+
+    CXXFLAGS="$CXXFLAGS $warnCXXFLAGS $complCXXFLAGS"
+  fi
+])
+

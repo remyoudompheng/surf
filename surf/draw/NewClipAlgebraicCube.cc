@@ -24,11 +24,11 @@
 
 
 
-#include "stdio.h"
-#include "NewClipAlgebraic.h"
-#include "NewClipAlgebraicCube.h"
+#include <stdio.h>
 
-#include "gui_config.h"
+#include <NewClipAlgebraic.h>
+#include <NewClipAlgebraicCube.h>
+#include <ScriptVar.h>
 
 
 void NewClipAlgebraicCube::init( void )
@@ -45,7 +45,7 @@ void NewClipAlgebraicCube::init( void )
     //  cz = clip_numeric.center_z
     // ----------------------------
 
-    int i,j;
+	int i;
 
     for( i=0; i<3; i++ )
     {

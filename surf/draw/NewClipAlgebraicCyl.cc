@@ -24,11 +24,11 @@
 
 
 
-#include "stdio.h"
-#include "NewClipAlgebraic.h"
-#include "NewClipAlgebraicCyl.h"
+#include <stdio.h>
 
-#include "gui_config.h"
+#include <NewClipAlgebraic.h>
+#include <NewClipAlgebraicCyl.h>
+#include <ScriptVar.h>
 
 
 void NewClipAlgebraicCyl::init( void )
@@ -44,7 +44,7 @@ void NewClipAlgebraicCyl::init( void )
     //  cz = clip_numeric.center_z
     // ----------------------------
 
-    int i,j;
+	int i;
 
     new_coeff_polyxyz( &p[0],7 );
     new_coeff_polyxyz( &p[1],4 );

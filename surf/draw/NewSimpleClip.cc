@@ -24,9 +24,8 @@
 
 
 
-#include "NewSimpleClip.h"
-
-#include "gui_config.h"
+#include <NewSimpleClip.h>
+#include <ScriptVar.h>
 
 void NewSimpleClip::init()
 {

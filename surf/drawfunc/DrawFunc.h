@@ -23,24 +23,20 @@
  */
 
 
-
-
 #ifndef DRAWFUNC_H
 #define DRAWFUNC_H
 
+enum {
+	CURVE_INIT = 0,
+	CURVE_ROWS,
+	CURVE_COLS,
+	CURVE_SHUTDOWN,
+	CURVE_ZERO,
+	CURVE_CONST,
+	CURVE_DEG_HIGH
+};
 
-#define CURVE_INIT       0
-#define CURVE_ROWS       1
-#define CURVE_COLS       2
-#define CURVE_SHUTDOWN   3
-#define CURVE_ZERO       4
-#define CURVE_CONST      5
-#define CURVE_DEG_HIGH   6    
+extern void draw_func_draw();
+extern void draw_func_cut();
 
-class Polyxyz;
-
-void draw_func_init_parser( void );
-void draw_func_draw( void );
-void draw_func_cut( void );
-
-#endif
+#endif // !DRAWFUNC_H

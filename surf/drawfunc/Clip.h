@@ -29,8 +29,8 @@
 #ifndef CLIP_H
 #define CLIP_H
 
-#include "WindowGeometry.h"
-#include "gui_config.h"
+#include <WindowGeometry.h>
+#include <ScriptVar.h>
 
 class Position;
 class Vector;

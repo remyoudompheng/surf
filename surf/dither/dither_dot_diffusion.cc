@@ -31,7 +31,6 @@
 #include "float_buffer.h"
 #include "bit_buffer.h"
 #include "compfn.h"
-#include "stop.h"
 
 // ----------------------------------------------------------------------------
 //  Perform the dot-diffusion algorithm from intensity to pixel
@@ -51,9 +50,9 @@ void    dither_dot_diffusion( float_buffer &intensity, bit_buffer &pixel, int pr
 	float   value;
 	float   err; 
 	
-	for( k = 0; k < 64 && !stop; k++ ) {
+	for( k = 0; k < 64; k++ ) {
 		for( y = (*d_d_s[print_barons_data])[k].y;
-		     y < main_height_data && !stop;
+		     y < main_height_data;
 		     y += 8 ) {
 			for( x = (*d_d_s[print_barons_data])[k].x;
 			     x < main_width_data;

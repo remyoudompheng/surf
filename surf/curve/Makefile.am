@@ -17,5 +17,4 @@ libdummy_a_SOURCES = RBTree.cc RBTree.h		\
 	BigInteger.cc BigInteger.h	\
 	Bezout.h
 
-EXTRA_DIST = examples.txt
 libdummy.a:: $(libdummy_a_OBJECTS) $(libdummy_a_DEPENDENCIES)

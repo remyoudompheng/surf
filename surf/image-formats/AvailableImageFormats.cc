@@ -45,11 +45,11 @@ namespace ImageFormats {
 		&imgFmt_XBitmap,
 		&imgFmt_XWD,
 		&imgFmt_Sun,
-#ifndef NO_GUI
-		&imgFmt_Pipe,
-#endif
+
 		0 // last element is 0
 	};
 
-	int numAvailableFormats = sizeof(availableFormats) / sizeof(Format) - 1;
+	size_t numAvailableFormats = sizeof(availableFormats)/sizeof(Format) - 1;
+
+	int image_formats_data[sizeof(availableFormats)/sizeof(Format) - 1];
 }

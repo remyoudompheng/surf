@@ -23,32 +23,19 @@
  */
 
 
-
-
-
-/* ------------------------------------------------------------------------- */
 /* polylexyacc.h: include scanner                                            */
 /* Author:   Stephan Endrass                                                 */
-/* Address:  endrass@mi.uni-erlangen.de                                      */
-/* Date:     14.8.94                                                         */
-/* ------------------------------------------------------------------------- */
 
 #ifndef POLYLEXYACC_H
 #define POLYLEXYACC_H
 
 #include <stdio.h>
-#include "monomarith.h"
-#include "polyarith.h"
+#include <monomarith.h>
+#include <polyarith.h>
 
-/* ------------------------------------------------------------------------- */
-/*  Define the pointer to void function taking void                          */
-/* ------------------------------------------------------------------------- */
+typedef void (*f_v_v_p)(void);
 
-typedef void    (*f_v_v_p)(void);
-
-/* ------------------------------------------------------------------------- */
-/*  Decide which types of variables I do have                                */
-/* ------------------------------------------------------------------------- */
+/* types of variables we have  */
 
 typedef enum
 {
@@ -63,9 +50,8 @@ typedef enum
 
 } symtyp;
 
-/* ------------------------------------------------------------------------- */
-/*  This is an entry in the symbol table                                     */
-/* ------------------------------------------------------------------------- */
+
+/*  This is an entry in the symbol table */
 
 struct  sym_i_tab
 {
@@ -89,66 +75,50 @@ struct  sym_i_tab
     struct sym_i_tab  *prev;            /* If  NULL, first element           */
 };
 
-/* ------------------------------------------------------------------------- */
-/*  Strange, but g++ is very buggy                                           */
-/* ------------------------------------------------------------------------- */
+/*  Strange, but g++ is very buggy: */
 
 typedef struct sym_i_tab symtab;
 
-extern  int     control;
+extern int control;
 
-/* ------------------------------------------------------------------------- */
-/*  Global data                                                              */
-/* ------------------------------------------------------------------------- */
+/*  Global data: */
 
-extern  int     yyleng;
-extern int error_begin_char;
-extern  long    int     char_number;
-extern  long    int     line_number;
-extern  long    int     goto_label;
-extern  long    int     goto_line;
-extern  int     goto_flag;
-extern  char    yyerrorstring[1024];
+extern int yyleng;
+extern long error_begin_char;
+extern long char_number;
+extern long line_number;
+extern long goto_label;
+extern long goto_line;
+extern int goto_flag;
+extern char yyerrorstring[];
 
 
-/* ------------------------------------------------------------------------- */
-/*  Prototypes                                                               */
-/* ------------------------------------------------------------------------- */
+/* Prototypes: */
 
 #ifdef  __cplusplus
 extern "C" {
 #endif  /* __cplusplus */
 
-void    yyrestart( FILE* );
-int     yyparse( void );
-void    set_the_yyinput( char*,long int,long int );
+void yyrestart(FILE*);
+int yyparse(void);
+void set_the_yyinput(char*, long, long);
 
+symtab* symtab_add_name(const char*);
+symtab* symtab_add_surface_name(const char*, symtyp, int, void*);
+symtab* symtab_find_name(const char*);
+symtab* symtab_lookup_name(const char*);
 
+void symtab_delete_name(const char*);
+void symtab_delete_user_names(void);
+void symtab_delete_surface_names(void);
+void symtab_delete_total(void);
+void symtab_clean(symtab*);
 
-symtab  *symtab_add_name        ( const char* );
-symtab  *symtab_add_surface_name( const char*,symtyp,int,void*);
-symtab  *symtab_find_name       ( const char* );
-symtab  *symtab_lookup_name     ( const char* );
-
-void    symtab_delete_name         ( const char* );
-void    symtab_delete_user_names   ( void );
-void    symtab_delete_surface_names( void );
-void    symtab_delete_total        ( void );
-void    symtab_clean               ( symtab* );
-#if 0
-void    symtab_set_default         ( void );
-void    symtab_write_default       ( FILE* );
-#endif
-
-void    scan_labels( char* );
-void    yyerror( const char* );
+void scan_labels(char*);
+void yyerror(const char*);
 
 #ifdef  __cplusplus
 }
 #endif  /* __cplusplus */
 
 #endif  /* POLYLEXYACC_H */
-
-/* ------------------------------------------------------------------------- */
-/* end of file: polylexyacc.h                                                */
-/* ------------------------------------------------------------------------- */

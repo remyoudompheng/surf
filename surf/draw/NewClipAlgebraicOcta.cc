@@ -24,11 +24,11 @@
 
 
 
-#include "stdio.h"
-#include "NewClipAlgebraic.h"
-#include "NewClipAlgebraicOcta.h"
+#include <stdio.h>
 
-#include "gui_config.h"
+#include <NewClipAlgebraic.h>
+#include <NewClipAlgebraicOcta.h>
+#include <ScriptVar.h>
 
 
 void NewClipAlgebraicOcta::init( void )

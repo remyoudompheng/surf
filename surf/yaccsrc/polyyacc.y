@@ -31,12 +31,8 @@
 
 
 %{
-/* ------------------------------------------------------------------------- */
 /* polyyacc.y: polynomial parser                                             */
 /* Author:   Stephan Endrass                                                 */
-/* Address:  endrass@mi.uni-erlangen.de                                      */
-/* Date:     14.8.94                                                         */
-/* ------------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include <math.h>
@@ -45,15 +41,12 @@
 
 #define  POLYYACC_L
 
-/* #include "simple.h"*/
-#include "mymemory.h"
-#include "monomarith.h"
-#include "polyarith.h"
-#include "polylexyacc.h"
-#include "cthread.h"
+#include <mymemory.h>
+#include <monomarith.h>
+#include <polyarith.h>
+#include <polylexyacc.h>
 
-extern  int     surface_run_commands;
-/* static  char    ascii[26]="abcdefghijklmnopqrstuvwxyz";*/
+extern int surface_run_commands;
 
 
 int    itotexascii( int i,char *s,int l )
@@ -83,8 +76,7 @@ int    itotexascii( int i,char *s,int l )
 
 		while( length > 0 ) {
 			length--;
-/* 			s[length]= ascii[i%26]; */
-			s[length]= 'a'+(i%26);
+			s[length]= 'a' + (i%26);
 			i = i/26;
 		}
 
@@ -194,17 +186,15 @@ include:            INCLUDE s_expression
 
 statement:          NAME_COMMAND
                         {
-                            if( surface_run_commands && !thread_should_stop())
-                            {
-                                ((f_v_v_p)$1->ptr)( );
+			    if(surface_run_commands) {
+                                ((f_v_v_p)$1->ptr)();
                             }
                         }
                   | SYSTEM s_expression
 			{
-				if( surface_run_commands && !thread_should_stop()) {
-					thread_set_doing ("executing system command", -1.0);
-					system ($2);
-				}
+			    if(surface_run_commands) {
+                                system ($2);
+                            }
 			}
                   | TYPE_POLYXYZ NAME
                         {
@@ -485,11 +475,11 @@ statement:          NAME_COMMAND
                         }
                   | IF '(' i_expression ')' GOTO NAME_LABEL
                         {
-                            if( $3 == TRUE )
+                            if($3 == 1)
                             {
 				goto_label  = $6->label;
                                 goto_line   = $6->lineno;
-                                goto_flag   = TRUE;
+                                goto_flag   = 1;
                                 YYACCEPT;
 			    }
                         }
@@ -497,7 +487,7 @@ statement:          NAME_COMMAND
 		        {
 				goto_label  = $2->label;
                                 goto_line   = $2->lineno;
-                                goto_flag   = TRUE;
+                                goto_flag   = 1;
                                 YYACCEPT;
                         }
                   ;

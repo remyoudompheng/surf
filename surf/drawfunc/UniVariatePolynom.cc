@@ -35,16 +35,13 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "def.h"
-#include "simple.h"
-#include "gui_enum.h"
-#include "UniVariatePolynom.h"
-#include "Sturmchain.h"
-#include "Bezier.h"
-
-#include "monomarith.h"
-#include "polyarith.h"
-#include "polyroot.h"
+#include <ScriptVar.h>
+#include <simple.h>
+#include <UniVariatePolynom.h>
+#include <Sturmchain.h>
+#include <Bezier.h>
+#include <monomarith.h>
+#include <polyroot.h>
 
 // ----------------------------------------------------------------------------
 // --------- definition of class statics --------------------------------------
@@ -148,10 +145,11 @@ void Polyx::SetRootFunctionPointer()
 {
 	switch( Algorithm ) {
 	case NUMERIC_ROOT_D_BISECTION :
-		if( Multiflag )
+		if( Multiflag ) {
 			ZeroFunction = &Polyx::ZeroSturmMulti;
-		else
+		} else {
 			ZeroFunction = &Polyx::ZeroSturmSingle;
+		}
 		OneZeroFunction = &Polyx::ZeroSturmSingle;
 		ZeroSturmFunction = &Polyx::Bisect;
 		break;
@@ -534,7 +532,7 @@ int Polyx::ZeroSturmSingle( double Left, double Right, double *Roots,
 // ----------------------------------------------------------------------------
 
 int Polyx::Bisect(double a, double b, double fa, double fb,
-		  double *Root, int &NumberOfRoots ) const
+		   double *Root, int &NumberOfRoots ) const
 {
 	double ab = 0.0, fab = 0.0;
 	int i = 0;
@@ -552,13 +550,13 @@ int Polyx::Bisect(double a, double b, double fa, double fb,
 	}
 	if( i < MaxIterations ) {
 		Root[NumberOfRoots++] = ab;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 int Polyx::Pegasus(double a, double b, double fa, double fb,
-		   double *Root, int &NumberOfRoots ) const
+		    double *Root, int &NumberOfRoots ) const
 {
 	double ab = 0.0, fab = 0.0;
 	int i = 0;
@@ -582,13 +580,13 @@ int Polyx::Pegasus(double a, double b, double fa, double fb,
 
 	if( i < MaxIterations ) {
 		Root[NumberOfRoots++] = ab;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 int Polyx::Anderson(double a, double b, double fa, double fb,
-		    double *Root, int &NumberOfRoots ) const
+		     double *Root, int &NumberOfRoots ) const
 {
 	double s = 0.0, ab = 0.0, fab = 0.0;
 	int i = 0;
@@ -608,9 +606,9 @@ int Polyx::Anderson(double a, double b, double fa, double fb,
 
 	if( i < MaxIterations ) {
 		Root[NumberOfRoots++] = ( fabs( fa ) < fabs( fb ) ? a : b  );
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 //-----------------------------------------------------------------------------

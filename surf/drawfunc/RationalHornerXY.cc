@@ -22,10 +22,12 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-
-#include "RationalHornerXY.h"
-#include "Position.h"
+#include <RationalHornerXY.h>
+#include <Position.h>
 
 // ----------------------------------------------------------------------------
 // class for rational horner polynom -- used for the plane

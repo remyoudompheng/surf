@@ -27,83 +27,71 @@
 #ifndef SCRIPT_H
 #define SCRIPT_H
 
-
-class TSDrawingArea;
 class RgbBuffer;
 class bit_buffer;
-class float_buffer;
 class SymbolTable;
 
-#include "TSDrawingArea.h"
-#include "ExecuteScriptStruct.h"
-#include "Preview.h"
-#include "float_buffer.h"
+#include <float_buffer.h>
 
 class Script
 {
 public:
-	static bool isScriptRunning();
-	// returns true if Script can be executed (that means no other thread is
-	// executing an script), false otherwise
-	static bool startScriptExecution(ExecuteScriptStruct *ess, bool stop);
-
-	// thread execution starts here
-	static void *startThread (void *data);
-
 	static void init();
 	static void deinit();
 
-	static char *readFile (const char *name);
-	static void executeScriptFromFile (const char *name);
+	static char* readFile(const char* name);
+	static void executeScriptFromStdin();
+	static void executeScriptFromFile(const char* name);
 
-	static TSDrawingArea *getDisplay();
-	static void setDisplay (TSDrawingArea *display);
-	
-	static RgbBuffer *getBuffer() {return buffer;};
-	static void setBuffer (RgbBuffer *_buffer) {buffer = _buffer;};
+	static bool isKernelMode() { return kernelMode; }
 
-	static bit_buffer *getBitBuffer() {return bitbuffer;};
+	static RgbBuffer* getBuffer() { return buffer; }
+	static void setBuffer(RgbBuffer* _buffer) { buffer = _buffer; }
 
-	static float_buffer *getZBuffer() {return zbuffer;};
-	static float_buffer *getZBuffer3d() 
-		{
-			if (!zbuffer3d) {
-				zbuffer3d = new float_buffer();
-			}
-			return zbuffer3d;
+	static bit_buffer* getBitBuffer() { return bitbuffer; }
+
+	static float_buffer* getZBuffer() { return zbuffer; }
+	static float_buffer* getZBuffer3d() {
+		if(!zbuffer3d) {
+			zbuffer3d = new float_buffer();
 		}
+		return zbuffer3d;
+	}
 
-	static void setRootFinderStatics ();
+	static void setRootFinderStatics();
 	static void checkVariables();
-	// this one checks if the variables are out of range (e.g. epsilon <= 0)
-	// 
 
-	static /*const*/ SymbolTable & getDefaultValues();
+	static SymbolTable& getDefaultValues();
 
-	static const Preview &getPreview()
-		{ return preview;}
+	static void stop() {
+		stop_flag = true;
+	}
+	static bool isStopped() {
+		return stop_flag;
+	}
 
-protected:
-	static TSDrawingArea *display;
-	static RgbBuffer *buffer;
-	static bit_buffer *bitbuffer;
-	static float_buffer *zbuffer;
-	static float_buffer *zbuffer3d;
+	static void ppm_to_stdout();
 
-	static SymbolTable *defaultValues;
-	static Preview preview;
+private:
+	static bool stop_flag;
+	static bool kernelMode;
 
-protected:
+	static RgbBuffer* buffer;
+	static bit_buffer* bitbuffer;
+	static float_buffer* zbuffer;
+	static float_buffer* zbuffer3d;
+
+	static SymbolTable* defaultValues;
+
 	static void addNewCommands();
 
 
-private:
 	static void beforeScriptExecution();
-	static int internalExecuteScript (const char *str, bool runCommands=true);
+	static void internalExecuteScript(const char* str);
 
-protected:
 	// Commands....
 	static void setSize();
+	static void drawCurve();
 	static void drawSurface();
 	static void saveColorImage();
 
@@ -114,7 +102,12 @@ protected:
 	static void saveDitheredImage();
 	static void ditherSurface();
 	static void ditherCurve();
-	static void clearPixmap();
+	static void reset();
+	static void kernelModeSet();
+	static void printDefaults();
+	static void printColorImageFormats();
+	static void printDitherImageFormats();
+	static void printPosition();
 };
 
-#endif
+#endif //!SCRIPT_H

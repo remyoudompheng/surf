@@ -22,25 +22,25 @@
  *
  */
 
-
-
-
-
 #ifndef CLMULTIPOLY_H
 #define CLMULTIPOLY_H
 
-#include <iostream.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #define  VARIABLE_X         0
 #define  VARIABLE_Y         1
 #define  VARIABLE_Z         2
 
+#include <monomarith.h>
+#include <polyarith.h>
+#include <Monomial.h>
+#include <UniVariatePolynom.h>
+
+#include<iostream>
 
 
-#include "monomarith.h"
-#include "polyarith.h"
-#include "Monomial.h"
-#include "UniVariatePolynom.h"
 
 template<class Mon>
 class MultiPoly
@@ -70,8 +70,8 @@ public:
 	MultiPoly& operator+=(const MultiPoly& );
 	MultiPoly  operator*(const MultiPoly& Pol2) const;
 	MultiPoly  operator*(const Mon &m) const;
-	int        operator==( const MultiPoly& ) const;
-	int        operator!=( const MultiPoly& ) const;
+	bool operator==( const MultiPoly& ) const;
+	bool operator!=( const MultiPoly& ) const;
 	
 	// ---------------- element functions ----------------------------
 	
@@ -92,8 +92,9 @@ public:
 	void    Norm()
 		{ 
 			double a = MaxabsCoeff(); 
-			if(!(fabs(a) < epsilon))
+			if(!(fabs(a) < epsilon)) {
 				*this *= (10.0/a) ; 
+			}
 		}
 
 	Mon     Monom(const int num) const
@@ -176,8 +177,8 @@ public:
 	void      Shift(double,double,double);
 	void      Print (ostream &os) const;
 
-	int       Check(void) const;
-	void      Collect(void);
+	int       Check() const;
+	void      Collect();
 	void      Subst( const MultiPoly* );
 	MultiPoly Subst( const MultiPoly&, const int ) const;
 	void      SwapXY();
@@ -214,14 +215,14 @@ public:
 	Polyxy(const polyxyz alt)  : MultiPoly<MonomXY>(alt) {}
 	Polyxy(const Polyxy& alt)  : MultiPoly<MonomXY>(alt) {}
 	Polyxy(const MultiPoly<MonomXY>& alt)  : MultiPoly<MonomXY>(alt) {}
-	Polyxy(const MultiPoly<MonomXYZ>& alt) : MultiPoly<MonomXY>(alt.GetNumber())
-		{ 
-			for(int i = 0; i < Number; i++ ) 
-				Monomial[i] = MonomXY( alt.Monom( i ) );
-			Collect();
+	Polyxy(const MultiPoly<MonomXYZ>& alt) : MultiPoly<MonomXY>(alt.GetNumber()) { 
+		for(int i = 0; i < Number; i++) {
+			Monomial[i] = MonomXY(alt.Monom(i));
 		}
+		Collect();
+	}
 
-	void   Transform( Polyx*, int*, Polyx*, int ) const;
+	void Transform(Polyx*, int*, Polyx*, int) const;
 };
 
 class Polyxyz : public MultiPoly<MonomXYZ>

@@ -28,80 +28,32 @@
 #ifndef IMAGEFORMAT_XWD_H
 #define IMAGEFORMAT_XWD_H
 
-#include "ImageFormats.h"
-
-#ifndef NO_GUI
-#include <gtk/gtk.h>
-#include "mygtk.h"
-#endif
-
-#include <cstring>
+#include <ImageFormats.h>
 
 namespace ImageFormats {
 
 	class XWD : public Format {
 	public:
-		XWD() : shown(false) { }
-		
-		const char* getName() {
+		std::string getName() const {
 			return "XWD";
 		}
-		
-		ColorType getColorType() {
+		std::string getID() const {
+			return "xwd";
+		}
+		ColorType getColorType() const {
 			return color;
 		}
-
-		bool isExtension(const char* ext) {
-			if (std::strcasecmp(ext, "xwd") == 0) {
-				return true;
-			}
-			return false;
+		bool isExtension(const std::string& ext) const {
+			return ext == "xwd";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
+		bool saveColorImage(const char* filename, RgbBuffer& data);
 		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) {
+		bool saveDitheredImage(const char* filename, bit_buffer& data) {
 			return false;
 		}
 
 	private:
-		bool shown;
-		bool save;
-		
-		bool indexed;
-		bool optimized;
-		bool dither;
-		double ditherval;
-
-#ifndef NO_GUI	
-		GtkWidget* dialog;
-		GtkWidget* indexedRB;
-		GtkWidget* indexedFrame;
-		GtkWidget* optimizedRB;
-		GtkWidget* ditherHBox;
-		GtkWidget* ditherCB;
-		GtkObject* ditherAdj;
-		GtkWidget* ditherSpin;
-		GMainLoop* gmainloop;
-		
-		VOIDCALL(handle_ok, XWD);
-		VOIDCALL(handle_cancel, XWD);
-		VOIDCALL(handle_indexed, XWD) {
-			gtk_widget_set_sensitive(indexedFrame,
-						 GTK_TOGGLE_BUTTON(indexedRB)->active);
-		}
-		VOIDCALL(handle_optimized, XWD) {
-			gtk_widget_set_sensitive(ditherHBox,
-						 GTK_TOGGLE_BUTTON(optimizedRB)->active);
-		}
-		VOIDCALL(handle_dither, XWD) {
-			gtk_widget_set_sensitive(ditherSpin,
-						 GTK_TOGGLE_BUTTON(ditherCB)->active);
-		}
-		EVENTCALL(handle_delete_event, XWD);
-#endif
-
-		void reallySave(const char* filename, RgbBuffer& buffer);
 		void saveAsTrueColor(FILE* file, RgbBuffer& buffer);
 		void saveAsIndexed(FILE* file, RgbBuffer& buffer);
 	};

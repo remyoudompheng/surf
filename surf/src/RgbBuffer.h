@@ -23,11 +23,6 @@
  */
 
 
-
-
-
-
-
 // ----------------------------------------------------------------------------
 //  File                rgb_buffer.H
 //  implementation by kai
@@ -55,12 +50,9 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "color.h"
-#include "gui_enum.h"
-
-#include "ImageFormats.h"
-
-#include "mytypes.h"
+#include <color.h>
+#include <ImageFormats.h>
+#include <mytypes.h>
 
 
 // ----------------------------------------------------------------------------

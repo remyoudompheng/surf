@@ -28,19 +28,15 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "def.h"
-#include "simple.h"
-#include "monomarith.h"
-#include "polyarith.h"
-#include "hornerarith.h"
-#include "roots.h"
-#include "polylexyacc.h"
-#include "color.h"               //sk24
-#include "gui_enum.h"
-#include "MultiVariatePolynom.h"
-#include "Vector.h"
-#include "MappingMatrix.h"
-#include "Position.h"
+#include <ScriptVar.h>
+#include <simple.h>
+#include <monomarith.h>
+#include <roots.h>
+#include <color.h>
+#include <MultiVariatePolynom.h>
+#include <Vector.h>
+#include <MappingMatrix.h>
+#include <Position.h>
 
 extern double Y_AXIS_LR_ROTATE;
 extern double  display_numeric_data[DISPLAY_NUMERIC_NUM];

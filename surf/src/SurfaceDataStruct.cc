@@ -26,10 +26,9 @@
 
 #include <string.h> 
 
-#include "SurfaceDataStruct.h"
-#include "gui_config.h"
-#include "cube.h"
-//  using namespace globals;
+#include <SurfaceDataStruct.h>
+#include <ScriptVar.h>
+#include <cube.h>
 
 SurfaceDataStruct::SurfaceDataStruct()
 {

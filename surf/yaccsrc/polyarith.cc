@@ -644,7 +644,7 @@ polyxyz polyxyz_power( polyxyz *p,int s )
 
         int     last = n - 1;
         int     bef  = n - 2;
-        int     stop_flag = FALSE;
+        bool stop_flag = false;
 
         polyxyz r = NULLPOLYXYZ;
         monxyz  dummy;
@@ -705,7 +705,7 @@ polyxyz polyxyz_power( polyxyz *p,int s )
 
                 if( j <= 0 )
                 {
-                    stop_flag = TRUE;
+			stop_flag = true;
                 }
                 else
                 {

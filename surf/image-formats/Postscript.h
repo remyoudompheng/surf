@@ -28,34 +28,36 @@
 #ifndef IMAGEFORMAT_POSTSCRIPT_H
 #define IMAGEFORMAT_POSTSCRIPT_H
 
-#include "ImageFormats.h"
 
-#include <cstring>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+
+#include <ImageFormats.h>
 
 namespace ImageFormats {
 
 	class Postscript : public Format {
 	public:
-		const char* getName() {
+		std::string getName() const {
 			return "Postscript";
 		}
-		
-		ColorType getColorType() {
+		std::string getID() const {
+			return "postscript";
+		}
+		ColorType getColorType() const {
 			return dithered;
 		}
-
-		bool isExtension(const char* ext) {
-			if (std::strcasecmp(ext, "ps") == 0) {
-				return true;
-			}
-			return false;
+		bool isExtension(const std::string& ext) const {
+			return ext == "ps";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg) {
+		bool saveColorImage(const char* filename, RgbBuffer& data) {
 			return false;
 		}
 		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+		bool saveDitheredImage(const char* filename, bit_buffer& data);
 	};
 
 	extern Postscript imgFmt_Postscript;

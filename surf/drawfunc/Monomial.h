@@ -84,12 +84,14 @@ public:
 
 	// --------------------------------------------------------------------------
 	// check equality of exponents
-	int    operator>=( const Monom &m ) const 
+	bool operator>=( const Monom &m ) const 
 		{
-			int result = TRUE;
-			for( int i = 0; (i < dimen) &&  (result == TRUE); i++ ) 
-				if( k[i] != m.k[i] ) 
-					result = FALSE; 
+			bool result = true;
+			for( int i = 0; (i < dimen) &&  (result == true); i++ ) {
+				if( k[i] != m.k[i] ) {
+					result = false; 
+				}
+			}
 			return result;
 		}
 
@@ -158,10 +160,11 @@ public:
 
 
 	// compare exponents of variable nr. var
-	int    CompareDeg( const Monom &m, const int Var ) const
+	bool CompareDeg( const Monom &m, const int Var ) const
 		{ 
-			if( Var >= dimen ) 
-				return FALSE;
+			if( Var >= dimen ) {
+				return false;
+			}
 			return (k[Var] == m.k[Var]); 
 		}
 

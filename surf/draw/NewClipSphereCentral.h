@@ -27,14 +27,15 @@
 #ifndef CLIPSPHERECENTRAL_H
 #define CLIPSPHERECENTRAL_H
 
-#include "NewSimpleClip.h"
+#include <NewSimpleClip.h>
+
 class NewClipSphereCentral : public NewSimpleClip
 {
 public:
 	void init();
-	int clip_user_y (double uy);
-	int clip_user_xy (double ux, double uy, double &zmin, double &zmax);
-	int clip_user_xyz (double uz);
+	bool clip_user_y(double uy);
+	bool clip_user_xy(double ux, double uy, double& zmin, double& zmax);
+	bool clip_user_xyz(double uz);
 
 protected:
 	// initialized by init
@@ -50,6 +51,6 @@ protected:
 	double b6,b7,b8;
 	double discr1,discr2;
 	double a7,a8,a9;
-	
 };
+
 #endif

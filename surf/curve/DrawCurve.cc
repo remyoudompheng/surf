@@ -95,7 +95,7 @@ bool DrawCurve::foundRoot (double CoordX, double CoordY, double CoordZ)
 	doRow( px, py, CoordZ, 0, MantX, MantY);
 	
 	// do other rows
-	int active = TRUE;
+	bool active = true;
 	int DistY = 1;
 	
 	while( active ) {
@@ -124,7 +124,7 @@ int DrawCurve::doRow( int px, int py, double CoordZ, int DistY,
 	int active = doPixel( px, ay, uy, CoordZ, 0, MantX, DistanceY);
 
 	// do rest of row
-	int working = TRUE;
+	bool working = true;
 	int DistX = 1;
 
 	while( working ) {
@@ -184,8 +184,9 @@ int DrawCurve::doPixel( int px,
 	//    PUNKTes (siehe oben) im Kreis   	 
 	double distance=sqrt(DistanceX*DistanceX+DistanceY*DistanceY);
   
-	if( radius < distance ) 
-		return FALSE;
+	if( radius < distance ) {
+		return false;
+	}
 
 	// sk:rechne z-Wert vom derzeitigen Punkt zum Kugelrand    
 	double D =sqrt( radius*radius - distance*distance ); // in Pixeln
@@ -231,10 +232,12 @@ int DrawCurve::doPixel( int px,
 		// sk :wenn noch innerhalb relativen Radius
 		if ( eps_min < DU  ) {  
 			// clip pixel in z range
-			if( zEstimate > zMaximal ) 
-				return FALSE;
-			if( zEstimate < zMinimal )
-				return FALSE;
+			if( zEstimate > zMaximal ) {
+				return false;
+			}
+			if( zEstimate < zMinimal ) {
+				return false;
+			}
 			
 				// sk : setze brightness je nach dem wie
 				// weit entfernt der Punkt vom Mittelpkt ist
@@ -244,7 +247,7 @@ int DrawCurve::doPixel( int px,
 			
 		} else { // end if NUS in "BrushBall"
 			
-			return FALSE;
+			return false;
 		} 
 	} else { // end if NUS
 		
@@ -254,13 +257,13 @@ int DrawCurve::doPixel( int px,
 		//  Plane liegt. 
 
 			
-		return FALSE;
+		return false;
 	}
 
   
 	// skip pixel if dark
 	if( brightness <= 0.0 ) {
-		return FALSE;
+		return false;
 	}
 	
 	// sk :     wenn nur Kurve ohne Fläche gezeichnet wird ...
@@ -270,7 +273,7 @@ int DrawCurve::doPixel( int px,
 		setCurvePixel( ax,ay,1.0 - pow( brightness,/*curve_*/ gamma_data ) );   
 	}
 
-	return TRUE;
+	return true;
 }
 
 

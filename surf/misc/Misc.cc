@@ -23,54 +23,26 @@
  */
 
 
+#include <Misc.h>
 
-#include <iostream.h>
+#include <errno.h>
+#include<iostream>
 
-#include "Misc.h"
-
-#ifndef NO_GUI
-#include "Requester.h"
-#include "GuiThread.h"
-#endif
-
-
-
-bool Misc::haveGUI ()
+void Misc::syscall_failed(const std::string& txt, bool fatal)
 {
-#ifdef NO_GUI
-	return false;
-#else
-	return GuiThread::haveGUI();
-#endif
+	std::string errstr = txt + " failed: " + strerror(errno);
+	print_error(errstr, fatal);
 }
 
-
-void Misc::alert (const char * str)
+void Misc::print_error(const std::string& txt, bool fatal)
 {
-#ifdef NO_GUI
-	cerr << "ALERT: " << str << endl;
-#else
-	if (haveGUI()) {
-		showAlert (str);
-	} else {
-		cerr << "ALERT: " << str << endl;
+	std::cerr << "ERROR: " << txt << "\n";
+	if(fatal) {
+		abort();
 	}
-#endif
 }
 
-void Misc::alert (ostrstream &ostr)
+void Misc::print_warning(const std::string& txt)
 {
-	ostr << ends;
-	alert(ostr.str());
-	//	ostr.freeze(0);
-}
-
-void Misc::setDoing (const char *str, double val)
-{
-	
-}
-
-void Misc::setDone (double done)
-{
-	cout << done << "       " << "\r";
+	std::cerr << "WARNING: " << txt << "\n";
 }

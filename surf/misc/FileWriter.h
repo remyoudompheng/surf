@@ -23,65 +23,64 @@
  */
 
 
-
-
-
 #ifndef FILEWRITER_H
 #define FILEWRITER_H
 
-#include <stdio.h>
-#include <assert.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include<assert.h>
+#include<cstdio>
 
 class FileWriter
 {
 private:
 	FileWriter (const FileWriter &);
 	void operator=(const FileWriter &);
+
 public:
-	FileWriter(const char *str=0)
-		{
-			name = str;
-			f=0;
+	FileWriter(const char* str = 0) : name(str), f(0) {}
+	~FileWriter() {
+		if(!f) {
+			return;
 		}
-	~FileWriter()
-		{
-			if (!f)
-				return;
-
-			if (name[0]=='|')
-				pclose(f);
-			else
-				fclose(f);
+		if(name[0]=='|') {
+			std::pclose(f);
+		} else {
+			std::fclose(f);
 		}
+	}
 
-	FILE *openFile(const char *str=0)
-		{
-			if (f)
-				return f;
-			if (str)
-				name = str;
-
-			assert(name);
-			if (name[0] == '|') {
-				f = popen (name+1, "w");
-			} else {
-				f = fopen(name, "w");
-			}
+	FILE* openFile(const char* str = 0) {
+		if(f) {
 			return f;
 		}
-	const char *getName()
-		{
-			assert(name);
-			return name[0]=='|' ? "surf_picture" : name; 				
+		if(str) {
+			name = str;
 		}
-	bool isWritingToPipe()
-		{
-			assert(name);
-			return name[0]=='|';
+		assert(name);
+		if (name[0] == '|') {
+			f = std::popen(name + 1, "w");
+		} else {
+			f = std::fopen(name, "w");
 		}
+		return f;
+	}
+
+	const char* getName() {
+		assert(name);
+		return name[0]=='|' ? "surf_picture" : name; 				
+	}
+
+	bool isWritingToPipe() {
+		assert(name);
+		return name[0]=='|';
+	}
+
 private:
-	const char *name;
-	FILE *f;
+	const char* name;
+	FILE* f;
 };
 
 #endif

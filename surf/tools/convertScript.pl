@@ -7,4 +7,4 @@ while (<>) {
     /\s*(\S*)\s*=\s*(\S*)\s*;/ || die "fail";
     print ("\tst.insert(\"$1\",\"$2\");\n");
 }
-print ("};");
+print ("};\n");

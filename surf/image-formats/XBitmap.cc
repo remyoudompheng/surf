@@ -28,12 +28,12 @@
 #include <stdio.h>
 #include <limits.h>
 
-#include "bit_buffer.h"
+#include <bit_buffer.h>
+#include <FileWriter.h>
+#include <ScriptVar.h>
+#include <XBitmap.h>
 
-#include "Misc.h"
-#include "FileWriter.h"
-
-#include "XBitmap.h"
+#include<iostream>
 
 namespace ImageFormats {
 
@@ -51,33 +51,30 @@ namespace ImageFormats {
 	}
 	
 	
-	bool XBitmap::saveDitheredImage(const char* filename,
-					bit_buffer& pixel,
-					int paper_width, int paper_height, int resolution,
-					bool fromDlg)
+	bool XBitmap::saveDitheredImage(const char* filename, bit_buffer& pixel)
 	{
 		FileWriter fw(filename);
 		FILE* file;
 
 		if ((file = fw.openFile()) == 0) {
-			Misc::alert("Couldn't open file for writing.");
+			std::cerr << "Couldn't open file for writing.\n";
 			return false;
 		}
 		
-		int bytes_per_line = paper_width/8 + (paper_width%8 == 0 ? 0 : 1);
+		int bytes_per_line = ScriptVar::main_width_data/8 + (ScriptVar::main_width_data%8 == 0 ? 0 : 1);
 		int bits_per_line = bytes_per_line*8;
 		
 		fprintf(file,"#define %s_width %d\n", filename, bits_per_line);
-		fprintf(file,"#define %s_height %d\n", filename, paper_height);
+		fprintf(file,"#define %s_height %d\n", filename, ScriptVar::main_height_data);
 		fprintf(file,"static char %s_bits[] = {\n", filename);
 		
-		int komma_end = paper_height*bytes_per_line - 1;
+		int komma_end = ScriptVar::main_width_data*bytes_per_line - 1;
 		int count = 0;
 
-		for(int py = 0; py < paper_height; py++) {
+		for(int py = 0; py < ScriptVar::main_height_data; py++) {
 			fprintf(file, "   ");		
 			
-			for(int px = 0; px < paper_width; px += 8) {
+			for(int px = 0; px < ScriptVar::main_width_data; px += 8) {
 				int byte = rotateByte(pixel.getByte(px,py));
 				fprintf(file, " 0x%.2x",byte);
 				count++;

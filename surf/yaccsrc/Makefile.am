@@ -4,7 +4,9 @@ EXTRA_DIST = polyyacc.h
 YACC = @YACC@ -d
 
 noinst_LIBRARIES = libdummy.a
-libdummy_a_SOURCES =	bezierarith.cc bezierarith.h	\
+libdummy_a_SOURCES =	polyyacc.y polylex.l polylexyacc.h degree.h \
+			lexfunc.cc			\
+			bezierarith.cc bezierarith.h	\
 			hornerarith.cc hornerarith.h	\
 			monomarith.cc monomarith.h	\
 			mymemory.cc mymemory.h		\
@@ -12,11 +14,9 @@ libdummy_a_SOURCES =	bezierarith.cc bezierarith.h	\
 			polyroot.cc polyroot.h		\
 			polyx.cc polyx.h		\
 			simple.cc simple.h		\
-			polyyacc.y polylex.l polylexyacc.h degree.h \
-			lexfunc.cc			\
 			SymbolTable.cc SymbolTable.h	\
+                        ScriptVar.cc ScriptVar.h        \
 			Script.cc Script.h		\
-			ExecuteScriptStruct.cc ExecuteScriptStruct.h \
 			addDefaultSymbols.cc addDefaultSymbols.h
 
 libdummy.a:: $(libdummy_a_OBJECTS) $(libdummy_a_DEPENDENCIES)

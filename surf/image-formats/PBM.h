@@ -28,34 +28,32 @@
 #ifndef IMAGEFORMAT_PBM_H
 #define IMAGEFORMAT_PBM_H
 
-#include "ImageFormats.h"
+#include <ImageFormats.h>
 
-#include <cstring>
+#include<string>
 
 namespace ImageFormats {
 
 	class PBM : public Format {
 	public:
-		const char* getName() {
+		std::string getName() const {
 			return "Portable Bitmap (PBM)";
 		}
-		
-		ColorType getColorType() {
+		std::string getID() const {
+			return "pbm";
+		}
+		ColorType getColorType() const {
 			return dithered;
 		}
-
-		bool isExtension(const char* ext) {
-			if (std::strcasecmp(ext, "pbm") == 0) {
-				return true;
-			}
-			return false;
+		bool isExtension(const std::string& ext) const {
+			return ext == "pbm";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg) {
+		bool saveColorImage(const char* filename, RgbBuffer& data) {
 			return false;
 		}
 		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+		bool saveDitheredImage(const char* filename, bit_buffer& data);
 	};
 
 	extern PBM imgFmt_PBM;

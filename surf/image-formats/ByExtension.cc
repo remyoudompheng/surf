@@ -24,14 +24,15 @@
 
 
 
-#include "AvailableImageFormats.h"
-#include "Misc.h"
+#include <AvailableImageFormats.h>
+
+#include<iostream>
 
 namespace ImageFormats {
 
 	ByExtension imgFmt_ByExtension;
 
-	bool ByExtension::saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg)
+	bool ByExtension::saveColorImage(const char* filename, RgbBuffer& data)
 	{
 		const char* newfilename;
 		Format* fmt = guessFormat(filename, color, &newfilename);
@@ -39,13 +40,10 @@ namespace ImageFormats {
 		if (fmt == 0) {
 			return false;
 		}
-		return fmt->saveColorImage(newfilename, data, fromDlg);
+		return fmt->saveColorImage(newfilename, data);
 	}
 
-	bool ByExtension::saveDitheredImage(const char* filename,
-					    bit_buffer& pixel,
-					    int paper_width, int paper_height, int resolution,
-					    bool fromDlg)
+	bool ByExtension::saveDitheredImage(const char* filename, bit_buffer& pixel)
 	{
 		const char* newfilename;
 		Format* fmt = guessFormat(filename, dithered, &newfilename);
@@ -53,7 +51,7 @@ namespace ImageFormats {
 		if (fmt == 0) {
 			return false;
 		}
-		return fmt->saveDitheredImage(newfilename, pixel, paper_width, paper_height, resolution, fromDlg);
+		return fmt->saveDitheredImage(newfilename, pixel);
 	}
 
 	Format* ByExtension::guessFormat(const char* filename, ColorType type,
@@ -109,18 +107,18 @@ namespace ImageFormats {
 
 	Format* ByExtension::findFormatByExt(const char* ext, ColorType type)
 	{
-		for (int i = 0; i != numAvailableFormats; ++i) {
+		for (size_t i = 0; i != numAvailableFormats; ++i) {
 			if (availableFormats[i]->isExtension(ext)) {
 				ColorType fmtType = availableFormats[i]->getColorType();
 				if (fmtType == both || fmtType == type) {
 					return availableFormats[i];
 				} else {
-					Misc::alert("You chose the wrong extension.");
+					std::cerr << "Unrecognized file extension!\n";
 					return 0;
 				}
 			}
 		}
-		Misc::alert("Couldn't determine file type by extension.");
+		std::cerr << "Couldn't determine file type by extension.\n";
 		return 0;
 	}
 	

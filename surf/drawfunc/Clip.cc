@@ -30,29 +30,30 @@
 #include <stdlib.h>
 
 
-#include "def.h"
-#include "simple.h"
-#include "monomarith.h"
-#include "polyarith.h"
-#include "hornerarith.h"
-#include "Vector.h"
-#include "roots.h"
-#include "polylexyacc.h"
-#include "color.h"               //sk24
+#include <def.h>
+#include <simple.h>
+#include <monomarith.h>
+#include <polyarith.h>
+#include <hornerarith.h>
+#include <Vector.h>
+#include <roots.h>
+#include <polylexyacc.h>
+#include <color.h>
 
+#include <Vector.h>
+#include <Clip.h>
+#include <MultiVariatePolynom.h>
+#include <MappingMatrix.h>
+#include <Position.h>
 
-#include "Vector.h"
-#include "Clip.h"
-#include "MultiVariatePolynom.h"
-#include "MappingMatrix.h"
-#include "Position.h"
-
+// FIXME!!! These values are different from the clip constants
+//  defined in ScriptVar!
 #define SPHERE       0
 #define CYLH         1
 #define CYLV         2
 #define CYLZ         3
 #define CUBE         4
-#define NONE         5
+#define NONE         8 // changed from 5 to 8 my jojo
 
 // ----------------------------------------------------------------------------
 // ---------------- constructor for general base class ------------------------
@@ -111,25 +112,27 @@ ClipSphere::ClipSphere( const clip_numeric_t &ClipData,
 int ClipSphere::ClipXY( int dir, double uv, double &min, double &max )
 {
 	if( dir == 0 || dir == 1 ) {
-		if( fabs( uv - Center[dir] ) > Radius ) 
-			return FALSE;
+		if( fabs( uv - Center[dir] ) > Radius ) {
+			return false;
+		}
 		double h = sqrt( RadQuad - (uv - Center[dir])*(uv - Center[dir]) );
 		min = Center[1-dir] - h;
 		max = Center[1-dir] + h;
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipSphere::ClipXYZ( double ux, double uy, double &min, double &max )
 {
 	double h = ( ux - Center[0] ) * ( ux - Center[0] )
 		+ ( uy - Center[1] ) * ( uy - Center[1] );
-	if ( h > RadQuad ) 
-		return FALSE;
+	if ( h > RadQuad ) {
+		return false;
+	}
 	h = sqrt( RadQuad - h );
 	min = max( Center[2] - h, Back );
 	max = min( Center[2] + h, Front );
-	return TRUE;
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -149,23 +152,25 @@ int ClipCylH::ClipXY( int dir, double uv, double &min, double &max )
 		min = Center[1] - Radius;
 		max = Center[1] + Radius;
 	} else if( dir == 1 ) {
-		if( fabs( uv - Center[1] ) > Radius ) 
-			return FALSE;
+		if( fabs( uv - Center[1] ) > Radius ) {
+			return false;
+		}
 		min = WinMin[0];
 		max = WinMax[0];
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipCylH::ClipXYZ( double, double uy, double &min, double &max )
 {
 	double h = ( uy - Center[1] ) * ( uy - Center[1] );
-	if ( h > RadQuad ) 
-		return FALSE;
+	if ( h > RadQuad ) {
+		return false;
+	}
 	h = sqrt( RadQuad - h );
 	min = max( Center[2] - h, Back );
 	max = min( Center[2] + h, Front );
-	return TRUE;
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -182,26 +187,28 @@ ClipCylV::ClipCylV( const clip_numeric_t &ClipData,
 int ClipCylV::ClipXY( int dir, double uv, double &min, double &max )
 {
 	if( dir == 0 ) {
-		if( fabs( uv - Center[0] ) > Radius ) 
-			return FALSE;
+		if( fabs( uv - Center[0] ) > Radius ) {
+			return false;
+		}
 		min = WinMin[1];
 		max = WinMax[1];
 	} else if( dir == 1 ) {
 		min = Center[0] - Radius;
 		max = Center[0] + Radius;
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipCylV::ClipXYZ( double ux, double, double &min, double &max )
 {
 	double h = ( ux - Center[0] ) * ( ux - Center[0] );
-	if ( h > RadQuad ) 
-		return FALSE;
+	if ( h > RadQuad ) {
+		return false;
+	}
 	h = sqrt( RadQuad - h );
 	min = max( Center[2] - h, Back );
 	max = min( Center[2] + h, Front );
-	return TRUE;
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -218,24 +225,26 @@ ClipCylZ::ClipCylZ( const clip_numeric_t &ClipData,
 int ClipCylZ::ClipXY( int dir, double uv, double &min, double &max )
 {
 	if( dir == 0 || dir == 1 ) {
-		if( fabs( uv - Center[dir] ) > Radius ) 
-			return FALSE;
+		if( fabs( uv - Center[dir] ) > Radius ) {
+			return false;
+		}
 		double h = sqrt( RadQuad - (uv - Center[dir])*(uv - Center[dir]) );
 		min = Center[1-dir] - h;
 		max = Center[1-dir] + h;
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipCylZ::ClipXYZ( double ux, double uy, double &min, double &max )
 {
 	double h = ( ux - Center[0] ) * ( ux - Center[0] )
 		+ ( uy - Center[1] ) * ( uy - Center[1] );
-	if ( h > RadQuad ) 
-		return FALSE;
+	if ( h > RadQuad ) {
+		return false;
+	}
 	min = Back;
 	max = Front;
-	return TRUE;
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -272,7 +281,7 @@ int ClipCube::ClipXY( int dir, double, double &min, double &max )
 		min = WinMin[1-dir];
 		max = WinMax[1-dir];
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipCube::ClipXYZ( double ux, double uy, double &min, double &max )
@@ -314,14 +323,14 @@ int ClipNone::ClipXY( int dir, double, double &min, double &max )
 		min = WinMin[1-dir];
 		max = WinMax[1-dir];
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipNone::ClipXYZ( double, double, double &min, double &max )
 {
 	min = Back;
 	max = Front;
-	return TRUE;
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -376,34 +385,39 @@ int ClipSphereCentral::ClipXY( int dir, double uv, double &min, double &max )
 {
 	if( dir == 0 || dir == 1) {
 
-		if( Disc[1-dir] < 0.0 ) 
-			return FALSE;
+		if( Disc[1-dir] < 0.0 ) {
+			return false;
+		}
 
-		if( uv < B[dir+dir] || uv > B[dir+dir+1] ) 
-			return FALSE;
+		if( uv < B[dir+dir] || uv > B[dir+dir+1] ) {
+			return false;
+		}
 
 		double uvsq = uv * uv;
 		double discr = a[2] * ( -A[2] * uvsq + a[dir+dir+1] * uv + a[5] );
 
-		if( discr < 0.0 ) 
-			return FALSE;
+		if( discr < 0.0 ) {
+			return false;
+		}
       
 		double hh = sqrt(discr);
 		double h = a[0] * uv + A[dir+dir+dir];
 		min = max( ( h - hh ) / Disc[1-dir], WinMin[1-dir] );
 		max = min( ( h + hh ) / Disc[1-dir], WinMax[1-dir] );
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipSphereCentral::ClipXYZ( double ux, double uy,
 				double &min, double &max )
 {
-	if( uy <= B[2] || uy >= B[3] ) 
-		return FALSE;
+	if( uy <= B[2] || uy >= B[3] ) {
+		return false;
+	}
 
-	if( ux <= B[0] || ux >= B[1] ) 
-		return FALSE;
+	if( ux <= B[0] || ux >= B[1] ) {
+		return false;
+	}
 
 	double uxsq = ux * ux;
 	double uysq = uy * uy;
@@ -417,7 +431,7 @@ int ClipSphereCentral::ClipXYZ( double ux, double uy,
 	
 	min = max( (a-h)*aa, Back );
 	max = min( (a+h)*aa, Front );
-	return TRUE;
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -461,33 +475,36 @@ ClipCylHCentral::~ClipCylHCentral()
 
 int ClipCylHCentral::ClipXY( int dir, double uv, double &min, double &max )
 {
-	if( Disc[0] < 0.0 ) 
-		return FALSE;
+	if( Disc[0] < 0.0 ) {
+		return false;
+	}
 	if( dir == 0 ) {
 		min = max( B[0], WinMin[1] );
 		max = min( B[1], WinMax[1] );
 	}      
 
 	if( dir == 1 ) {
-		if( uv < B[0] || uv > B[1] ) 
-			return FALSE;
+		if( uv < B[0] || uv > B[1] ) {
+			return false;
+		}
 		min = WinMin[0];
 		max = WinMax[0];
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipCylHCentral::ClipXYZ( double, double uy, double &min, double &max )
 {
-	if( uy < B[0] || uy > B[1] ) 
-		return FALSE;
+	if( uy < B[0] || uy > B[1] ) {
+		return false;
+	}
 	double uysq = uy*uy;
 	double discr = SpectatorZ * sqrt( -A[2] * uysq + a[3] * uy + a[4] );
 	double h = a[0] + uysq + a[1] * uy + a[2];
 	double hh = uysq + SpecZSquare;
 	min = max((h-discr)/hh,Back);
 	max = min((h+discr)/hh,Front);
-	return TRUE;
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -530,12 +547,14 @@ ClipCylVCentral::~ClipCylVCentral()
 
 int ClipCylVCentral::ClipXY( int dir, double uv, double &min, double &max )
 {
-	if( Disc[0] < 0.0 )
-		return FALSE;
+	if( Disc[0] < 0.0 ) {
+		return false;
+	}
 
 	if( dir == 0 ) {
-		if( uv < B[0] || uv > B[1] ) 
-			return FALSE;
+		if( uv < B[0] || uv > B[1] ) {
+			return false;
+		}
 		min = WinMin[1];
 		max = WinMax[1];
 	}
@@ -543,13 +562,14 @@ int ClipCylVCentral::ClipXY( int dir, double uv, double &min, double &max )
 		min = max( B[0], WinMin[0] );
 		max = min( B[1], WinMax[0] );
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipCylVCentral::ClipXYZ( double ux, double, double &min, double &max )
 {
-	if( ux < B[0] || ux > B[1] ) 
-		return FALSE;
+	if( ux < B[0] || ux > B[1] ) {
+		return false;
+	}
 	double uxsq = ux * ux;
 	double discr = -A[2] * uxsq + a[3] * ux + a[4];
 	if( discr < 0.0 ) discr = 0.0;
@@ -558,7 +578,7 @@ int ClipCylVCentral::ClipXYZ( double ux, double, double &min, double &max )
 	double hh = uxsq * SpecZSquare;
 	min = max( (h - discr)/hh, Back );
 	max = min( (h + discr)/hh, Front );
-	return TRUE;
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -580,14 +600,14 @@ int ClipCylZCentral::ClipXY( int dir, double, double &min, double &max )
 		min = WinMin[1-dir];
 		max = WinMax[1-dir];
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipCylZCentral::ClipXYZ( double, double, double &min, double &max )
 {
 	min = Back;
 	max = Front;
-	return TRUE;
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -628,7 +648,7 @@ int ClipCubeCentral::ClipXY( int dir, double, double &min, double &max )
 		min = WinMin[1-dir];
 		max = WinMax[1-dir];
 	}
-	return TRUE;
+	return true;
 }
 
 int ClipCubeCentral::ClipXYZ( double ux, double uy, double &min, double &max )

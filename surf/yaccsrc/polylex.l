@@ -34,15 +34,19 @@
 /* Date:     14.8.94                                                         */
 /* ------------------------------------------------------------------------- */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "mymemory.h"
-#include "monomarith.h"
-#include "polyarith.h"
-#include "polylexyacc.h"
-#include "polyyacc.h"
+#include <mymemory.h>
+#include <monomarith.h>
+#include <polyarith.h>
+#include <polylexyacc.h>
+#include <polyyacc.h>
 
 int the_yyinput( char*,int );
 

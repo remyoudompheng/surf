@@ -29,18 +29,15 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "DrawfuncData.h"
-#include "MultiVariatePolynom.h"
-#include "Hornergroup.h"
-#include "Clip.h"
-#include "gui_config.h"
-#include "def.h"
-#include "float_buffer.h"
-#include "RgbBuffer.h"
+#include <DrawfuncData.h>
+#include <MultiVariatePolynom.h>
+#include <Hornergroup.h>
+#include <Clip.h>
+#include <ScriptVar.h>
+#include <float_buffer.h>
+#include <RgbBuffer.h>
 
-// #define DEBUG
-#include "debug.h"
-#include "stop.h"
+#include <debug.h>
 
 
 #define TOLERANZ_LOESCHE_LAY2      0.1
@@ -104,7 +101,7 @@ void DrawfuncData::PrintCurve( int direction )
 	GetBorders( direction, min, max );
 
 	// go through all lines resp. columns
-	for( int Pixel = min; Pixel < max && !stop ; Pixel++ ) {
+	for( int Pixel = min; Pixel < max; Pixel++ ) {
 
 		// transform pixel y to y coordinate
 		Coord[direction] = ToUser( direction, Pixel );
@@ -211,7 +208,7 @@ void DrawfuncData::PaintPoint( double CoordX, double CoordY )
 	DoRow( px, py, CoordZ, 0, MantX, MantY, ZDelta );
 	
 	// do other rows
-	int active = TRUE;
+	bool active = true;
 	int DistY = 1;
 	
 	while( active ) {
@@ -225,8 +222,8 @@ void DrawfuncData::PaintPoint( double CoordX, double CoordY )
 //  sk1:lösche HiddenLine flag, nicht mehr nötig, da nun möglich durch transparence
 // ----------------------------------------------------------------------------
 
-int DrawfuncData::DoRow( int px, int py, double CoordZ, int DistY,
-			  double MantX, double MantY, double *ZDelta )
+bool DrawfuncData::DoRow(int px, int py, double CoordZ, int DistY,
+			 double MantX, double MantY, double *ZDelta)
 {
 	int ay = py + DistY;
 	double DistanceY = MantY - (double)DistY;
@@ -235,16 +232,17 @@ int DrawfuncData::DoRow( int px, int py, double CoordZ, int DistY,
   
 	// if drawing on surface with hidden line enabled
 	// set variable y in surface polynom
-	if( Surface )							/* sk1*/
+	if( Surface ) {
 		Surface->SetRow( uy );
+	}
 
 	// starting with the mid pixel do all pixels in this row
 	// that are touched by the brush
 	// do mid pixel
-	int active = DoPixel( px, ay, uy, CoordZ, 0, MantX, DistanceY, ZDelta );
+	bool active = DoPixel( px, ay, uy, CoordZ, 0, MantX, DistanceY, ZDelta );
 
 	// do rest of row
-	int working = TRUE;
+	bool working = true;
 	int DistX = 1;
 
 	while( working ) {
@@ -266,14 +264,14 @@ int DrawfuncData::DoRow( int px, int py, double CoordZ, int DistY,
 //  sk1:lösche HiddenLine flag, nicht mehr nötig, da nun möglich durch transparence
 // ----------------------------------------------------------------------------
   
-int DrawfuncData::DoPixel( int px,
+bool DrawfuncData::DoPixel(int px,
 			   int ay,
 			   double uy,
 			   double CoordZ,
 			   int DistX,
 			   double MantX,
 			   double DistanceY,
-			   double *ZDelta )
+			   double *ZDelta)
 {
 	int ax = px + DistX;
 
@@ -309,8 +307,9 @@ int DrawfuncData::DoPixel( int px,
 	//    PUNKTes (siehe oben) im Kreis   	 
 	double distance=sqrt(DistanceX*DistanceX+DistanceY*DistanceY);
   
-	if( radius < distance ) 
-		return FALSE;
+	if( radius < distance ) {
+		return false;
+	}
 
 	// sk:rechne z-Wert vom derzeitigen Punkt zum Kugelrand    
 	double D =sqrt( radius*radius - distance*distance ); // in Pixeln
@@ -328,13 +327,16 @@ int DrawfuncData::DoPixel( int px,
 	
 	// get z range at pixel and clip
 	double zMin,zMax;
-	if( !clip->ClipXYZ( ux, uy, zMin, zMax ) ) 
-		return FALSE;
+	if( !clip->ClipXYZ( ux, uy, zMin, zMax ) ) {
+		return false;
+	}
 	
-	if( zMaximal > zMax ) 
+	if( zMaximal > zMax ) {
 		zMaximal = zMax;
-	if( zMinimal < zMin ) 
+	}
+	if( zMinimal < zMin ) {
 		zMinimal = zMin; 
+	}
 	double brightness=0.0;
 	
 	if( Surface ) {
@@ -367,10 +369,12 @@ int DrawfuncData::DoPixel( int px,
 			// sk :wenn noch innerhalb relativen Radius
 			if ( eps_min < DU  ) {  
 				// clip pixel in z range
-				if( zEstimate > zMaximal ) 
-					return FALSE;
-				if( zEstimate < zMinimal )
-					return FALSE;
+				if( zEstimate > zMaximal ) {
+					return false;
+				}
+				if( zEstimate < zMinimal ) {
+					return false;
+				}
 
 				// sk : setze brightness je nach dem wie
 				// weit entfernt der Punkt vom Mittelpkt ist
@@ -380,7 +384,7 @@ int DrawfuncData::DoPixel( int px,
 
 			} else { // end if NUS in "BrushBall"
 
-				return FALSE;
+				return false;
 			} 
 		} else { // end if NUS
 
@@ -398,7 +402,7 @@ int DrawfuncData::DoPixel( int px,
 // 					DistanceX*DistanceX 
 // 					+DistanceY*DistanceY  )/PointDiv;
 // 			} else {
-				return FALSE;
+			return false;
 // 			}
 		}
 	} else {//end if surface
@@ -409,7 +413,7 @@ int DrawfuncData::DoPixel( int px,
   
 	// skip pixel if dark
 	if( brightness <= 0.0 ) {
-		return FALSE;
+		return false;
 	}
 	
 	// sk :     wenn nur Kurve ohne Fläche gezeichnet wird ...
@@ -419,7 +423,7 @@ int DrawfuncData::DoPixel( int px,
 		SetCurvePixel( ax,ay,1.0 - pow( brightness, ScriptVar::curve_gamma_data ) );   
 	}
 
-	return TRUE;
+	return true;
 }
 
 

@@ -28,7 +28,6 @@
 
 #include "float_buffer.h"
 #include "bit_buffer.h"
-#include "stop.h"
 
 // ----------------------------------------------------------------------------
 //  Perform the stucki algorithm from intensity to pixel
@@ -65,7 +64,7 @@ void dither_stucki (float_buffer &intensity, bit_buffer &pixel,
 	}
 
 	for( py = 0, py_p1 = 1, py_p2 = 2;
-	     py < intensity.getHeight() && !stop;
+	     py < intensity.getHeight();
 	     py++,   py_p1++,   py_p2++, even = !even ) {    
 		if( print_serpentine_raster_data == 0 && !even ) {
 			px_m2 = intensity.getWidth() + 1;

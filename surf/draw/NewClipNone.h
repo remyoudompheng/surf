@@ -27,27 +27,24 @@
 #ifndef NEWCLIPNONE_H
 #define NEWCLIPNONE_H
 
-#include "NewClip.h"
-#include "gui_config.h"
+#include <NewClip.h>
+#include <ScriptVar.h>
 
 class NewClipNone : public NewClip
 {
 	void init() {}
 
-	int clip_user_y (double uy)
-		{
-			return true;
-		}
-	int clip_user_xy (double ux, double uy, double &zmin, double &zmax)
-		{
-			zmin = ScriptVar::clip_numeric.clip_back;
-			zmax = ScriptVar::clip_numeric.clip_front;
-			return true;
-		}
-	int clip_user_xyz (double uz)
-	        {
-                        return true;
-	        }	
+	bool clip_user_y (double uy) {
+		return true;
+	}
+	bool clip_user_xy (double ux, double uy, double &zmin, double &zmax) {
+		zmin = ScriptVar::clip_numeric.clip_back;
+		zmax = ScriptVar::clip_numeric.clip_front;
+		return true;
+	}
+	bool clip_user_xyz (double uz) {
+		return true;
+	}
 };
 
 #endif

@@ -37,14 +37,10 @@
 #include <math.h>
 
 
-#include "def.h"
-#include "simple.h"
-#include "monomarith.h"
-#include "polyarith.h"
-#include "hornerarith.h"
-#include "polylexyacc.h"
-#include "gui_config.h"
-#include "cube.h"
+#include <ScriptVar.h>
+#include <simple.h>
+#include <monomarith.h>
+#include <cube.h>
 
 //  using namespace globals;
 // -------------

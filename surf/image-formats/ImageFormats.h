@@ -28,18 +28,16 @@
 #ifndef IMAGEFORMATS_H
 #define IMAGEFORMATS_H
 
-#ifndef NO_GUI
-#  include <gtk/gtk.h>
-#else
 typedef unsigned char guint8;   // this _could_ be dangerous..
 typedef unsigned short guint16; // this *is* dangerous!
 typedef unsigned long guint32;  // and this one, too.
 
 // If we really want to go for sure, we had to configure this in
-// configure (like Gtk's does for glibconfig.h)
+// configure (like glib does for glibconfig.h)
 
-#endif
 #include <stdio.h>
+
+#include<string>
 
 class bit_buffer;
 class RgbBuffer;
@@ -51,20 +49,18 @@ namespace ImageFormats {
 	
 	class Format {
 	public:
-		virtual const char* getName() = 0;
-		virtual bool isExtension(const char* ext) = 0;
-		virtual ColorType getColorType() = 0;
+		virtual std::string getName() const = 0;
+		virtual std::string getID() const = 0;
+		virtual bool isExtension(const std::string& ext) const = 0;
+		virtual ColorType getColorType() const = 0;
 		
-		virtual bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg) = 0;
-		virtual bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) = 0;
+		virtual bool saveColorImage(const char* filename, RgbBuffer& data) = 0;
+		virtual bool saveDitheredImage(const char* filename, bit_buffer& data) = 0;
 	};
 
-#ifndef NO_GUI
-	GtkWidget* makeFormatMenu(ColorType type);
-	Format* getSelection(GtkWidget* menu);
-#endif
-	bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
-	bool saveDitheredImage(const char* filename, bit_buffer& data, int pw, int ph, int res, bool fromDlg);
+	bool saveColorImage(const char* filename, RgbBuffer& data);
+	bool saveDitheredImage(const char* filename, bit_buffer& data);
+
 	void put_long(long word, FILE* f, int order);
 	void swapshort(char* bp, unsigned int n);
 	void swaplong(char*bp, unsigned int n);

@@ -27,7 +27,11 @@
 #ifndef RESULTANT_H
 #define RESULTANT_H
 
-#include "MultiVariatePolynom.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <MultiVariatePolynom.h>
 
 
 extern Polyxy resultant (const Polyxyz &p1, const Polyxyz &p2);

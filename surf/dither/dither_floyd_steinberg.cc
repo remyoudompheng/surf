@@ -28,7 +28,6 @@
 
 #include "float_buffer.h"
 #include "bit_buffer.h"
-#include "stop.h"
 
 void dither_floyd_steinberg (float_buffer &intensity, bit_buffer &pixel, 
 			     bool print_random_weights_data, double print_weight_data, bool print_serpentine_raster_data)
@@ -50,7 +49,7 @@ void dither_floyd_steinberg (float_buffer &intensity, bit_buffer &pixel,
 	}
 	
 	for( py = 0, py_p1 = 1;
-	     py < intensity.getHeight() && !stop;        	
+	     py < intensity.getHeight();
 	     py++,   py_p1++,
 		     even = !even ) {
 		if( print_serpentine_raster_data == 0 && !even ) {

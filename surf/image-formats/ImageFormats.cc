@@ -25,48 +25,41 @@
 
 
 
-#include "AvailableImageFormats.h"
-#include "Misc.h"
+#include <AvailableImageFormats.h>
+#include <ScriptVar.h>
 
-#include <iostream>
-#include <endian.h>
+#include<iostream>
 
 namespace ImageFormats {
 
-#ifndef NO_GUI
-	GtkWidget* makeFormatMenu(ColorType type)
+	bool saveColorImage(const char* filename, RgbBuffer& data)
 	{
-		GtkWidget* menu = gtk_menu_new();
-		GSList* group = 0;
-
-		for (int i = 0; i != numAvailableFormats; ++i) {
-			ColorType fmtType = availableFormats[i]->getColorType();
-			if (fmtType != both && fmtType != type) {
-				continue;
-			}
-			
-			GtkWidget* menuitem = gtk_radio_menu_item_new_with_label(group, availableFormats[i]->getName());
-			gtk_object_set_user_data(GTK_OBJECT(menuitem), availableFormats[i]);
-			group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(menuitem));
-			gtk_menu_append(GTK_MENU(menu), menuitem);
+		int cff = ScriptVar::color_file_format_data;
+		if(cff > int(numAvailableFormats) || cff < 0) {
+			std::cerr << "color_file_format out of range!\n";
+			return false;
 		}
-		return menu;
+		Format* fmt = availableFormats[cff];
+		if(fmt->getColorType() == dithered) {
+			std::cerr << "You didn't choose a valid color file format!\n";
+			return false;
+		}
+		return availableFormats[cff]->saveColorImage(filename, data);
 	}
 
-	Format* getSelection(GtkWidget* menu)
+	bool saveDitheredImage(const char* filename, bit_buffer& data)
 	{
-		GtkWidget* actItem = gtk_menu_get_active(GTK_MENU(menu));
-		return (Format*)gtk_object_get_user_data(GTK_OBJECT(actItem));
-	}
-#endif // !NO_GUI
-	bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg)
-	{
-		return imgFmt_ByExtension.saveColorImage(filename, data, fromDlg);
-	}
-
-	bool saveDitheredImage(const char* filename, bit_buffer& data, int pw, int ph, int res, bool fromDlg)
-	{
-		return imgFmt_ByExtension.saveDitheredImage(filename, data, pw, ph, res, fromDlg);
+		int dff = ScriptVar::dither_file_format_data;
+		if(dff > int(numAvailableFormats) || dff < 0) {
+			std::cerr << "dither_file_format out of range!\n";
+			return false;
+		}
+		Format* fmt = availableFormats[dff];
+		if(fmt->getColorType() == color) {
+			std::cerr << "You didn't choose a valid dithered file format!\n";
+			return false;
+		}
+		return availableFormats[dff]->saveDitheredImage(filename, data);
 	}
 
 	

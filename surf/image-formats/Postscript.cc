@@ -23,13 +23,19 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 
 #include <sys/param.h>
 #include <pwd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+
+#ifdef HAVE_UNISTD_H
+#  include <unistd.h>
+#endif
 
 #include <netdb.h>
 #include <time.h>
@@ -39,96 +45,60 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "bit_buffer.h"
-#include "Misc.h"
-#include "FileWriter.h"
+#include <bit_buffer.h>
+#include <FileWriter.h>
+#include <ScriptVar.h>
 
 #ifdef NO_GETHOSTNAME_PROTO
 extern "C" int gethostname (char *, int);
 #endif
 
-#include "Postscript.h"
+#include <Postscript.h>
 
-using namespace std;
+#include<iostream>
 
 namespace ImageFormats {
 
 	Postscript imgFmt_Postscript;
 	
-	
-	bool Postscript::saveDitheredImage(const char* filename,
-					   bit_buffer& pixel,
-					   int paper_width, int paper_height, int resolution,
-					   bool fromDlg)
+	bool Postscript::saveDitheredImage(const char* filename, bit_buffer& pixel)
 	{
 		FileWriter fw(filename);
 		FILE* file;
 
 		if ((file = fw.openFile()) == 0) {
-			Misc::alert("Couldn't open file for writing.");
+		        std::cerr << "Couldn't open file for writing.\n";
 			return false;
 		}
 
-		// --------------------------------------------------
 		//  Bounding box: center by default, assume a4 paper
-		// --------------------------------------------------
+		int resolution = ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data];
+		int width  = (ScriptVar::main_width_data*72)/resolution;
+		int height = (ScriptVar::main_height_data*72)/resolution;
+		int x1 = (595 - width)/2;
+		int x2 = width + x1;
+		int y1 = (839 - height)/2;
+		int y2 = height + y1;
 		
-		int     width  = ( paper_width*72 )/resolution;
-		int     height = ( paper_height*72 )/resolution;
-		int     x1 = (595 - width)/2;
-		int     x2 = width + x1;
-		int     y1 = (839 - height)/2;
-		int     y2 = height + y1;
+		passwd* passwd_user = getpwuid( getuid( ) );
 		
-		// --------------------
-		//  User name and info
-		// --------------------
+		char* name_user = passwd_user->pw_name;
+		char* info_user = passwd_user->pw_gecos;
 		
-		struct  passwd  *passwd_user;
+		char hostname[MAXHOSTNAMELEN];
 		
-		passwd_user = getpwuid( getuid( ) );
+		gethostname(hostname, MAXHOSTNAMELEN);
 		
-		char    *name_user = passwd_user->pw_name;
-		char    *info_user = passwd_user->pw_gecos;
-		
-		// ----------
-		//  Hostname
-		// ----------
-		
-		char    hostname[MAXHOSTNAMELEN];
-		
-		gethostname( hostname,MAXHOSTNAMELEN );
-		
-		// ---------------
-		//  Time and date
-		// ---------------
-		
-		time_t  time_local;
-		char    *the_time;
-		
-		time_local = time( NULL );
-		the_time   = ctime( &time_local );
-		
-		// ---------------
-		//  Picture title
-		// ---------------
-		
-		const char    *title = "algebraic surface (dithered image)";
-		
-		
-		// -----------------
-		//  Number of pages
-		// -----------------
-		
-		int     pages = 1;
+		time_t time_local = time(0);
+		char* the_time = ctime(&time_local);
 		
 		fprintf( file,"%%!PS-Adobe-1.0\n" );
 		fprintf( file,"%%%%BoundingBox: %d %d %d %d\n",x1-1,y1-1,x2+1,y2+1 );
 		fprintf( file,"%%%%Creator: %s:%s (%s)\n",hostname,name_user,info_user );
-		fprintf( file,"%%%%Title: %s\n",title );
+		fprintf( file,"%%%%Title: image created with surf\n");
 		fprintf( file,"%%%%CreationDate: %s",the_time );
 		fprintf( file,"%%%%EndComments\n" );
-		fprintf( file,"%%%%Pages: %d\n",pages );
+		fprintf( file,"%%%%Pages: 1\n");
 		fprintf( file,"%%%%EndProlog\n" );
 		fprintf( file,"%%%%Page: 1 1\n" );
 		fprintf( file,"\n" );
@@ -157,10 +127,10 @@ namespace ImageFormats {
 		fprintf( file,"} def\n" );
 		fprintf( file,"72 %d div dup scale\n",resolution );
 		fprintf( file,"%d %d translate\n",x1*resolution/72,y1*resolution/72 );
-		fprintf( file,"%d %d 1 bitdump\n",paper_width,paper_height );
+		fprintf( file,"%d %d 1 bitdump\n", ScriptVar::main_width_data, ScriptVar::main_height_data);
 		
-		for (int py = 0; py < paper_height; py++) {
-			for (int px = 0; px < paper_width; px += 8) {
+		for (int py = 0; py < ScriptVar::main_height_data; py++) {
+			for (int px = 0; px < ScriptVar::main_width_data; px += 8) {
 				fprintf(file, "%.2x", 255 - pixel.getByte(px,py));
 			}
 			fprintf(file, "\n");

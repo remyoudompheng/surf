@@ -85,8 +85,9 @@ Bezier::Bezier( const Polyx &Polynom, double le, double ri )
 int Bezier::LargestRoot( double* Roots, int& NumberOfRoots) const
 {
 	double width = Right - Left, sadd = 0.0, tt = 0.0, r = 0.0;
-	if( width <= 0.0 || !PolygonCrossing( sadd ) ) 
-		return FALSE;
+	if( width <= 0.0 || !PolygonCrossing( sadd ) ) {
+		return false;
+	}
 
 	// return no if zero interval width or no crossing
   
@@ -102,16 +103,17 @@ int Bezier::LargestRoot( double* Roots, int& NumberOfRoots) const
 
 	if( r - Left < Epsilon || Right - r < Epsilon ) {
 		// if close enough to interval borders
-		if( NumberOfRoots == 0 || fabs( Roots[NumberOfRoots-1] - r ) > 1.0e-7 )
+		if( NumberOfRoots == 0 || fabs( Roots[NumberOfRoots-1] - r ) > 1.0e-7 ) {
 			Roots[NumberOfRoots++] = r;
-		return TRUE;
+		}
+		return true;
 	}
 
 	Bezier Sub[2];                    // subdivide interval at polygon crossing
 	DivideBezier( Sub, sadd, r );     // de casteljau
                                     // search upper and then lower subinterval
 
-	return ( Sub[1].LargestRoot( Roots, NumberOfRoots ) ? TRUE :
+	return ( Sub[1].LargestRoot( Roots, NumberOfRoots ) ? true :
 		 Sub[0].LargestRoot( Roots, NumberOfRoots ) );
 }
 
@@ -225,8 +227,9 @@ int Bezier::PolygonCrossing(double &s) const
 	while( found && *cf * (*cf2) > 0.0 )
 		found--, cf--, cf2--;                   // find crossing descending
 
-	if( !found )                              // no crossing in interval
-		return FALSE;
+	if( !found ) {                             // no crossing in interval
+		return false;
+	}
 
 	s = (double)(found-1);                    // crossing at left knot
 	double diff  = ( *cf - *cf2 );            // knot difference
@@ -235,7 +238,7 @@ int Bezier::PolygonCrossing(double &s) const
 
 	s /= (double)(Number - 1);                // rescale in interval
 	
-	return TRUE;
+	return true;
 }
 
 

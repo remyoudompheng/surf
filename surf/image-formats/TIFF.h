@@ -28,37 +28,36 @@
 #ifndef IMAGEFORMAT_TIFF_H
 #define IMAGEFORMAT_TIFF_H
 
-#include "ImageFormats.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-#include <cstring>
+#include <ImageFormats.h>
 
 namespace ImageFormats {
 
 	class Tiff : public Format {
 	public:
-		const char* getName() {
+		std::string getName() const {
 			return "TIFF";
 		}
-		
-		ColorType getColorType() {
+		std::string getID() const {
+			return "tiff";
+		}
+		ColorType getColorType() const {
 			return dithered;
 
 			// this could be "both", I have to implement saveColorImage()
 		}
-
-		bool isExtension(const char* ext) {
-			if (std::strcasecmp(ext, "tif") == 0 ||
-			    std::strcasecmp(ext, "tiff") == 0) {
-				return true;
-			}
-			return false;
+		bool isExtension(const std::string& ext) const {
+			return ext == "tif" || ext == "tiff";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg) {
+		bool saveColorImage(const char* filename, RgbBuffer& data) {
 			return false;
 		}
 		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+		bool saveDitheredImage(const char* filename, bit_buffer& data);
 
 	};
 

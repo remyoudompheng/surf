@@ -22,12 +22,10 @@
  *
  */
 
-
-
 #ifndef NEWSIMPLECLIP_H
 #define NEWSIMPLECLIP_H
 
-#include "NewClip.h"
+#include <NewClip.h>
 
 class NewSimpleClip : public NewClip
 {
@@ -36,17 +34,17 @@ public:
 
 protected:
 
-	double cx,cy,cz;  // Center
-	double r;         // radius
-	double sz;        // spectator z-position
-	double d1;        // sz-cz
-        double cb,cf;     // clip-back -front
+	double cx, cy, cz;  // center
+	double r;           // radius
+	double sz;          // spectator z-position
+	double d1;          // sz-cz
+        double cb, cf;      // clip-back, -front
 
 	// squares of the above...
-	double cxsq,cysq,czsq;
+	double cxsq, cysq, czsq;
 	double rsq;
 	double szsq;
 	double d1sq;
 };
 
-#endif
+#endif //!NEWSIMPLECLIP_H

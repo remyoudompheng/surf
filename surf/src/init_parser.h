@@ -23,36 +23,11 @@
  */
 
 
+#ifndef INIT_PARSER_H
+#define INIT_PARSER_H
 
-
-
-// ===========================================================================
-// File:     init_parser.cc
-// Author:   Stephan Endrass
-// Address:  endrass@mi.uni-erlangen.de
-// Date:     3.2.95
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-//  Function prototypes
-// ----------------------------------------------------------------------------
-
-void    init_surface_main_commands ( void );
-void    init_surface_main_variables( void );
-
-extern void addCommand (const char *name, void (*func) (void));
-extern void addConstant (const char *name, const int *ptr);
-extern void addConstant (const char *name, double *ptr);
-extern void addNumber (const char *name, int *ptr);
-extern void addNumber (const char *name, double *ptr);
-
-extern const char *getColorSliderPicString (int surfaceNr, bool inside, int color);
-extern const char *getLightSliderPicString (int lightNr, int color);
-
+extern void init_main_variables();
 
 extern double sym_cut_distance;
 
-
-// ============================================================================
-// End of init_parser.cc
-// ============================================================================
+#endif //!INIT_PARSER_H

@@ -38,10 +38,10 @@
 class Polyx
 {
 private:
-	int   (Polyx::*ZeroFunction)( double, double, double*, double*, int ) const;
-	int   (Polyx::*ZeroSturmFunction)(double, double, double, double,
+	int (Polyx::*ZeroFunction)( double, double, double*, double*, int ) const;
+        int (Polyx::*ZeroSturmFunction)(double, double, double, double,
 					  double*, int& ) const;
-	int   (Polyx::*OneZeroFunction)( double, double, double*,
+	int (Polyx::*OneZeroFunction)( double, double, double*,
 					 double*, int ) const;
 	// --------------- rootfinders ----------------------------------------------
 	int   ZeroSimplePoly( const double, const double, double*, const int ) const;
@@ -49,8 +49,8 @@ private:
 				 double*, const int ) const;
 
 	// ------------- group one ---- sturmchain version --------------------------
-	int   ZeroSturmMulti( double, double, double*, double*, int ) const;
-	int   ZeroSturmSingle( double, double, double*, double*, int ) const;
+        int ZeroSturmMulti( double, double, double*, double*, int ) const;
+	int  ZeroSturmSingle( double, double, double*, double*, int ) const;
 
 	// ------------- used by group two ------------------------------------------
 	void  GetAllZeroesInRange( double,double, double*,int&, double*, int ) const;
@@ -61,9 +61,9 @@ private:
 	int   ZeroBezierSingle( double, double, double*, double*, int ) const;
 
 	// ------------- sturmchain root finders ------------------------------------
-	int   Bisect(double,double,double,double,double*,int&) const;
-	int   Pegasus(double,double,double,double,double*,int&) const;
-	int   Anderson(double,double,double,double,double*,int&) const;
+	int Bisect(double,double,double,double,double*,int&) const;
+	int Pegasus(double,double,double,double,double*,int&) const;
+	int Anderson(double,double,double,double,double*,int&) const;
 	
 	// ------------- choose root finding algorithm ------------------------------
 	void  SetRootFunctionPointer();

@@ -22,17 +22,13 @@
  *
  */
 
-
-
-
-
 #ifndef DRAWFUNCDATA_H
 #define DRAWFUNCDATA_H
 
 #include <assert.h>
 
-#include "polyarith.h"
-#include "WindowGeometry.h"
+#include <polyarith.h>
+#include <WindowGeometry.h>
 
 
 class Clip;
@@ -47,86 +43,77 @@ class RgbBuffer;
 class DrawfuncData
 {
 private:
-	DrawfuncData(const DrawfuncData &);
-	void operator=(const DrawfuncData &);
+	DrawfuncData(const DrawfuncData&);
+	void operator=(const DrawfuncData&);
 
 public:
-	DrawfuncData( RgbBuffer *intensity, float_buffer *zbuff,
-		      RationalHornerXY*, HornergroupXYZ*, HornergroupXY*,
-		      Clip*, Position*,
-		      double );
+	DrawfuncData(RgbBuffer* intensity, float_buffer* zbuff,
+		     RationalHornerXY*, HornergroupXYZ*, HornergroupXY*,
+		     Clip*, Position*, double);
 	~DrawfuncData();
 
-	void SetBorders (int xmin, int xmax, int ymin, int ymax)
-		{
-			min[0]=xmin;
-			min[1]=ymin;
-			max[0]=xmax;
-			max[1]=ymax;
-		}
+	void SetBorders(int xmin, int xmax, int ymin, int ymax) {
+		min[0] = xmin;
+		min[1] = ymin;
+		max[0] = xmax;
+		max[1] = ymax;
+	}
 
-	void setGeometry (const WindowGeometry &wg)
-		{ wingeo = wg;};
-
+	void setGeometry(const WindowGeometry& wg) {
+		wingeo = wg;
+	}
 
 	// draw curves or cutlines working x/y direction
-	void PrintCurve( int );
+	void PrintCurve(int);
 
 	// paint point if visible at user coordinates
-	void PaintPoint( double, double );
-	int  DoRow( int, int, double, int, double, double, double* );
-	int  DoPixel( int, int, double, double, int, double, double, double* );
+	void PaintPoint(double, double);
+	bool DoRow(int, int, double, int, double, double, double*);
+        bool DoPixel(int, int, double, double, int, double, double, double*);
 
 private:
 	// set min and max pixel value
-	void   GetBorders( int dir, int &vmin, int &vmax )
-		{
-			assert(dir==0||dir==1);
+	void GetBorders(int dir, int& vmin, int& vmax) {
+		assert(dir == 0 || dir == 1);
+		vmin = min[dir];
+		vmax = max[dir];
+	}
 
-			vmin = min[dir];
-			vmax = max[dir];
-		}
-
-	bool SetZbuffer (int x, int y, double val);
-// 		{
-// 			return mywindow->SetZbuffer(x,y,val);
-// 		};
+	bool SetZbuffer(int x, int y, double val);
 	
-	void SetCurvePixel (int x, int y, double val);
-// 		{
-// 			mywindow->SetCurvePixel(x,y,val);
-// 		};
+	void SetCurvePixel(int x, int y, double val);
 
-	double ToUser (int dir, double pix)
-		{ return wingeo.pixelToUser(dir,pix);};
+	double ToUser(int dir, double pix) {
+		return wingeo.pixelToUser(dir, pix);
+	}
 
-	double ToPixel (int dir, double u)
-		{return wingeo.userToPixel(dir,u);};
+	double ToPixel(int dir, double u) {
+		return wingeo.userToPixel(dir, u);
+	}
 
-	double GetDelta (int dir)
-		{return wingeo.getDelta(dir);};
+	double GetDelta (int dir) {
+		return wingeo.getDelta(dir);
+	}
+	
 private:
 	RationalHornerXY* Plane;         // rational equation for plane solved to z
 	HornergroupXYZ* Surface;         // surface with derivates
 	HornergroupXY*    Curve;         // curve with orth derivative,
 	                                 //  xy and yx
 	Clip            *clip;                   // clipping
-// 	Mywindow        *mywindow;               // window 
 	Position        *position;               // position : turn shift and scale
 
-	double          PointWidth;              // width of curve
-	double          PointDiv;                // 4*pointwidth
-	double          MaxDist;                 // calculated from pointwidth
-	double          Delta[2];                // distance between rows/cols
-	double          WinSizeFactor;	   // for relative PointWidth (Size of Window)
+	double PointWidth;              // width of curve
+	double PointDiv;                // 4*pointwidth
+	double MaxDist;                 // calculated from pointwidth
+	double Delta[2];                // distance between rows/cols
+	double WinSizeFactor;	   // for relative PointWidth (Size of Window)
 	
 	WindowGeometry wingeo;
 
-	RgbBuffer *intensity;
-	float_buffer *zbuffer;
-	int min[2],max[2];
-
+	RgbBuffer* intensity;
+	float_buffer* zbuffer;
+	int min[2], max[2];
 };
 
-
-#endif
+#endif //!DRAWFUNCDATA_H

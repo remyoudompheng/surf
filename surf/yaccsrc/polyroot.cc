@@ -34,17 +34,15 @@
 /* ------------------------------------------------------------------------- */
 
 #include <math.h>
-
-
 #include <stdio.h>
-#include "degree.h"
-#include "mymemory.h"
-#include "simple.h"
-#include "monomarith.h"
-#include "polyarith.h"
-#include "polyx.h"
-#include "polyroot.h"
-#include "gui_config.h"
+
+#include <degree.h>
+#include <mymemory.h>
+#include <simple.h>
+#include <monomarith.h>
+#include <polyx.h>
+#include <polyroot.h>
+#include <ScriptVar.h>
 
 /* ------------------------------------------------------------------------- */
 /*  External C++ data                                                        */
@@ -80,7 +78,7 @@ static  int     polyx_bisection( polyx *f,double a,double b,
         if( fab == 0.0 )
 	{
             *root = ab;
-            return  TRUE;
+            return true;
         }
 
         if( fa < 0.0 )
@@ -156,7 +154,7 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
                 if( fab_eps <= 0.0 )
 		{
                     *root = ( ab_eps + ab )/2.0;
-                    return  TRUE;
+                    return true;
 		}
                 
                 b  = ab_eps;
@@ -170,7 +168,7 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
                 if( fab_eps >= 0.0 )
 		{
                     *root = ( ab + ab_eps )/2.0;
-                    return  TRUE;
+                    return true;
 		}
                 
                 a = ab_eps;
@@ -187,7 +185,7 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
                 if( fab_eps >= 0.0 )
 		{
                     *root = ( ab_eps + ab )/2.0;
-                    return  TRUE;
+                    return true;
 		}
 
                 b = ab_eps;
@@ -201,7 +199,7 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
                 if( fab_eps <= 0.0 )
 		{
                     *root = ( ab + ab_eps )/2.0;
-                    return  TRUE;
+                    return true;
 		}
                 
                  a = ab_eps;
@@ -256,7 +254,7 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
                 if( fab_eps <= 0.0 )
 	        {
                     *root = ( ab_eps + ab )/2.0;
-                    return  TRUE;
+                    return true;
 		}
                
                 b  = ab_eps;
@@ -272,7 +270,7 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
                 if( fab_eps >= 0.0 )
 	        {
                     *root = ( ab + ab_eps )/2.0;
-                    return  TRUE;
+                    return true;
 		}
                
                 a  = ab_eps;
@@ -289,7 +287,7 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
                 if( fab_eps >= 0.0 )
 	        {
                     *root = ( ab_eps + ab )/2.0;
-                    return  TRUE;
+                    return true;
 		}
                
                 b = ab;
@@ -305,7 +303,7 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
                 if( fab_eps <= 0.0 )
 	        {
                     *root = ( ab + ab_eps )/2.0;
-                    return  TRUE;
+                    return true;
 		}
                
                 a  = ab_eps;
@@ -427,7 +425,7 @@ static  int     polyx_newton_right( polyx *f,double b,
         if( dfb == 0.0 )
 	{
             *root = b;
-            return  TRUE;
+            return true;
 	}
 
         b     -= fb/dfb + ScriptVar::numeric_epsilon_data;
@@ -453,7 +451,7 @@ static  int     polyx_newton_left( polyx *f,double a,
         if( dfa == 0.0 )
 	{
             *root = a;
-            return  TRUE;
+            return true;
 	}
 
         a     -= fa/dfa - ScriptVar::numeric_epsilon_data;
@@ -670,14 +668,14 @@ int     polyx_all_extreme( polyx *f,double a,double b,
 
             roots[0] = b;
             flags[0]  = 1;
-            return  TRUE;
+            return true;
 
         /* --------------------- */
         /*  constant polynomial  */
         /* --------------------- */
         case 0:
 
-            return FALSE;
+		return false;
 
         /* ------------------- */
         /*  linear polynomial  */
@@ -688,13 +686,13 @@ int     polyx_all_extreme( polyx *f,double a,double b,
 
             if( r < a || r > b )
 	    {
-                return  FALSE;
+		    return false;
             }
             else
 	    {
                 roots[0] = r;
                 flags[0] = 1;
-                return  TRUE;
+                return true;
             }
         }
 
@@ -821,7 +819,7 @@ int     polyx_all_roots( polyx *f,double a,double b,
         if( hflags[i] > 0 )
 	{
             roots[num] = hroots[i];
-            flags[num] = hroots[i];
+            flags[num] = int(hroots[i]);
             num++;
 	}
     }

@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include "dither_pixel_radius_adjust.h"
 #include "float_buffer.h"
-#include "stop.h"
+
 // ----------------------------------------------------------------------------
 //  Perform pixel-radius-correction (printer) on intensity
 // ----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ void dither_pixel_radius_adjust (float_buffer &intensity, float rel_radius)
 	float   m3 = 1.0/4/( alpha3 - alpha2 );
 	float   m4 = 1.0/4/( -alpha3 );
 	
-	for( i = 0; i < intensity.getHeight() && !stop; i++ ) {
+	for( i = 0; i < intensity.getHeight(); i++ ) {
 		for( int j = 0; j < intensity.getWidth(); j++ ) {
 			float value = intensity.Get( j, i );
 			if( value < b1 )

@@ -23,21 +23,19 @@
  */
 
 
-
 #ifndef MISC_H
 #define MISC_H
 
-#include <strstream.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-class Misc
-{
-public:
-	static bool haveGUI ();
-	static void alert (const char *);
-	static void alert (ostrstream &ostr);
-	static void setDoing (const char *str, double val=-1.0);
-	static void setDone (double done);
+#include<string>
 
+namespace Misc {
+	void syscall_failed(const std::string& txt, bool fatal = true);
+	void print_error(const std::string& txt, bool fatal = true);
+	void print_warning(const std::string& txt);
 };
 
-#endif
+#endif //!MISC_H

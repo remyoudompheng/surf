@@ -24,12 +24,12 @@
 
 
 
-#include "stdio.h"
-#include "NewClipAlgebraic.h"
+#include <stdio.h>
 
-#include "gui_config.h"
+#include <NewClipAlgebraic.h>
+#include <ScriptVar.h>
 
-int NewClipAlgebraic::clip_user_y( double uy )
+bool NewClipAlgebraic::clip_user_y( double uy )
 {
     for( int i=0; i<MAIN_CLIP_AMOUNT_NUM; i++ )
     {
@@ -38,10 +38,10 @@ int NewClipAlgebraic::clip_user_y( double uy )
 	    hp[i]->setRow (uy);
 	}
     }
-    return  TRUE;
+    return true;
 }
 
-int NewClipAlgebraic::clip_user_xy( double ux,double uy,double &zmin,double &zmax )
+bool NewClipAlgebraic::clip_user_xy( double ux,double uy,double &zmin,double &zmax )
 {
     zmin = ScriptVar::clip_numeric.clip_back;
     zmax = ScriptVar::clip_numeric.clip_front;
@@ -53,10 +53,10 @@ int NewClipAlgebraic::clip_user_xy( double ux,double uy,double &zmin,double &zma
 	    hp[i]->setColumn( ux );
 	}
     }
-    return  TRUE;
+    return true;
 }
 
-int NewClipAlgebraic::clip_user_xyz( double uz )
+bool NewClipAlgebraic::clip_user_xyz( double uz )
 {
     for( int i=0; i<MAIN_CLIP_AMOUNT_NUM; i++ )
     {
@@ -64,19 +64,18 @@ int NewClipAlgebraic::clip_user_xyz( double uz )
 	{
             if( hp[i]->pZ.horner( uz ) < 0.0 )
 	    {
-                return  FALSE;
+                return false;
 	    }
 	}
     }
-    return  TRUE;
+    return true;
 }
 
 extern double Y_AXIS_LR_ROTATE;
 
-void    NewClipAlgebraic::polyxyz_adjust( polyxyz *q )
+void NewClipAlgebraic::polyxyz_adjust( polyxyz *q )
 {
-    for( int ind = 0; ind < POSITION_SEQUENCE_NUM; ind++ )
-    {
+    for( int ind = 0; ind < POSITION_SEQUENCE_NUM; ind++ ) {
         switch( ScriptVar::position_sequence_data[ind] ) {
 	    case 0:
 	        polyxyz_shift_self ( q,	

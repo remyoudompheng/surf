@@ -32,9 +32,9 @@
 class NewClipSphereParallel : public NewSimpleClip
 {
 public:
-	int clip_user_y  (double uy);
-	int clip_user_xy (double ux, double uy, double &zmin, double &zmax);
-	int clip_user_xyz(double uz );
+	bool clip_user_y  (double uy);
+	bool clip_user_xy (double ux, double uy, double &zmin, double &zmax);
+	bool clip_user_xyz(double uz );
 	
 protected:
 

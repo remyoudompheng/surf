@@ -27,9 +27,8 @@
 #ifndef HORNERGROUPXY_H
 #define HORNERGROUPXY_H
 
-
-#include "polyarith.h"
-#include "Horner.h"
+#include <polyarith.h>
+#include <Horner.h>
 
 class Position;
 class HornergroupXYZ;
@@ -38,24 +37,25 @@ class RationalHornerXY;
 class HornergroupXY
 {
 private:
-	HornergroupXY (const HornergroupXY &);
-	void operator=(const HornergroupXY &);
+	HornergroupXY(const HornergroupXY&);
+	void operator=(const HornergroupXY&);
 public:
-	HornergroupXY( HornergroupXYZ*, RationalHornerXY* ); 
-	HornergroupXY( polyxyz*, Position* );
-	HornergroupXY (Polyxy Funct, Position *pos=0);
-
-	~HornergroupXY();
-	int getState() {return state;}
-	void SetVar( int, double );
-	int Zero( int, double, double, double*, double*, int );
-	double EstimateDelta( int, double );
+	HornergroupXY(HornergroupXYZ*, RationalHornerXY*); 
+	HornergroupXY(polyxyz*, Position*);
+	HornergroupXY(Polyxy Funct, Position* pos = 0);
+	
+	int getState() {
+		return state;
+	}
+	void SetVar(int, double);
+	int Zero(int, double, double, double*, double*, int);
+	double EstimateDelta(int, double);
 
 private:
-	Hornerxy Orig [2];
-	Hornerxy Derivate [2];
+	Hornerxy Orig[2];
+	Hornerxy Derivate[2];
 
 	int state;
 };
 
-#endif
+#endif // !HORNERGROUPXY_H

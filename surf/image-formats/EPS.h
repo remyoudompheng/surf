@@ -28,34 +28,34 @@
 #ifndef IMAGEFORMAT_EPS_H
 #define IMAGEFORMAT_EPS_H
 
-#include "ImageFormats.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-#include <cstring>
+#include <ImageFormats.h>
 
 namespace ImageFormats {
 
 	class EPS : public Format {
 	public:
-		const char* getName() {
+		std::string getName() const {
 			return "EPS";
 		}
-		
-		ColorType getColorType() {
+		std::string getID() const {
+			return "eps";
+		}
+		ColorType getColorType() const {
 			return dithered;
 		}
-
-		bool isExtension(const char* ext) {
-			if (std::strcasecmp(ext, "eps") == 0) {
-				return true;
-			}
-			return false;
+		bool isExtension(const std::string& ext) const {
+			return ext == "eps";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg) {
+		bool saveColorImage(const char* filename, RgbBuffer& data) {
 			return false;
 		}
 		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+		bool saveDitheredImage(const char* filename, bit_buffer& data);
 	};
 
 	extern EPS imgFmt_EPS;

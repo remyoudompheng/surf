@@ -23,23 +23,20 @@
  */
 
 
-
 #ifndef NEWCLIP_H
 #define NEWCLIP_H
 
-extern double cb,cf;
+extern double cb, cf;
 
 class NewClip
 {
 public:
-	static NewClip *createSimpleClip( int perspective,int clipmode );
+	static NewClip *createSimpleClip(int perspective, int clipmode);
 	
-	virtual void init()=0;
-	virtual int clip_user_y  (double uy)=0;
-	virtual int clip_user_xy (double ux, double uy, double &zmin, double &zmax)=0;
-        virtual int clip_user_xyz(double uz)=0;
-	
-protected:
+	virtual void init() = 0;
+	virtual bool clip_user_y(double uy) = 0;
+	virtual bool clip_user_xy(double ux, double uy, double &zmin, double &zmax) = 0;
+        virtual bool clip_user_xyz(double uz) = 0;
 };
 
-#endif
+#endif //!NEWCLIP_H

@@ -24,11 +24,11 @@
 
 
 
-#include "stdio.h"
-#include "NewClipAlgebraic.h"
-#include "NewClipAlgebraicTetra.h"
+#include <stdio.h>
 
-#include "gui_config.h"
+#include <NewClipAlgebraic.h>
+#include <NewClipAlgebraicTetra.h>
+#include <ScriptVar.h>
 
 
 void NewClipAlgebraicTetra::init( void )

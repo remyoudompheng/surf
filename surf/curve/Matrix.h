@@ -28,8 +28,6 @@
 #define MATRIX_H
 
 #include <assert.h>
-#include "Thread.h"
-#include <pthread.h>
 
 // #define DEBUG
 #include "debug.h"
@@ -104,12 +102,6 @@ Type Matrix<Type>::threadedDeterminant () const
 
 	Type result;
 	setNull(result);
-	if (Thread::shouldStop()) {
-		return result;
-	}
-
-
-
 
 	int bestRow;
 	int bestRowZeros;
@@ -318,9 +310,7 @@ Type Matrix<Type>::det() const
 	// return threadedDeterminant();
 	Type result;
 	setNull(result);
-	if (Thread::shouldStop()) {
-		return result;
-	}
+
 	Matrix m (size-1);
 #if 1
 	int bestRow;

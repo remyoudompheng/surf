@@ -32,11 +32,12 @@
 #include <errno.h>
 #include <string.h>
 
-#include "Misc.h"
-#include "FileWriter.h"
-#include "RgbBuffer.h"
+#include <FileWriter.h>
+#include <RgbBuffer.h>
 
-#include "Sun.h"
+#include <Sun.h>
+
+#include<iostream>
 
 
 #ifdef SUN
@@ -74,14 +75,13 @@ namespace ImageFormats {
 
 	Sun imgFmt_Sun;
 
-
-	bool Sun::saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg)
+	bool Sun::saveColorImage(const char* filename, RgbBuffer& data)
 	{
 		FileWriter fw(filename);
 		FILE *file;
 		
 		if((file = fw.openFile()) == 0) {
-			Misc::alert ("Could not open file for writing...");
+			std::cerr << "Could not open file for writing.\n";
 			return false;
 		}
 	
@@ -89,7 +89,7 @@ namespace ImageFormats {
 		RASHDR rhdr;
 		int width = data.getWidth();
 		int height = data.getHeight();
-		int length = width*height;
+		size_t length = width*height;
 		
 		/* Initialize Sun raster header */
 		
@@ -117,7 +117,7 @@ namespace ImageFormats {
 		const guint8* gdata = data.getGData();
 		const guint8* bdata = data.getBData();
 		
-		for(int i = 0; i < length; i++) {
+		for(size_t i = 0; i < length; i++) {
 			fputc(bdata[i], file);
 			fputc(gdata[i], file);
 			fputc(rdata[i], file);

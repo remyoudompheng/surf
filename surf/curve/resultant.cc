@@ -22,16 +22,16 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-
-#include "resultant.h"
-
-#include "Bezout.h"
-#include "BigInteger.h"
-#include "Timer.h"
+#include <resultant.h>
+#include <Bezout.h>
+#include <BigInteger.h>
 
 // #define DEBUG
-#include "debug.h"
+#include <debug.h>
 
 static Bezout<BigInteger>::Coeff3Poly convertToBigIntPoly ( const Polyxyz &p)
 {
@@ -62,8 +62,6 @@ static void addMonomFromBigInt (CMonom<BigInteger,2> *monom, void *ptr)
 
 Polyxy resultant (const Polyxyz &p1, const Polyxyz &p2)
 {
-	Thread::setDoing ("computing resultant");
-
 	Bezout<BigInteger>::Coeff3Poly ip1 = convertToBigIntPoly (p1) ;
 	Bezout<BigInteger>::Coeff3Poly ip2 = convertToBigIntPoly (p2) ;
 

@@ -28,13 +28,12 @@
 #include "RgbBuffer.h"
 #include "float_buffer.h"
 
-#include "stop.h"
 
 void copy_rgb_to_float (RgbBuffer &intensity, float_buffer& gray, double print_background_data)
 {
 	int i,j;
 
-	for( i = 0; i < intensity.getHeight() && !stop; i++ ) {
+	for( i = 0; i < intensity.getHeight(); i++ ) {
 		for(  j = 0; j < intensity.getWidth(); j++ ) {
 			gray.Set( j,i,( intensity.GetTag( j,i,DATABIT ) ?
 					intensity.Get_Gray_value( j,i ) :

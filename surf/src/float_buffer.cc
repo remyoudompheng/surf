@@ -31,8 +31,6 @@
 
 #include "def.h"
 #include "float_buffer.h"
-#include "Thread.h"
-#include "stop.h"
 
 // ----------------------------------------------------------------------------
 // --------- constructors for old float_buffer --------------------------------
@@ -167,7 +165,7 @@ void float_buffer::EnhanceEdges (double alpha)
   
 	buffer.Copy( *this );
 
-	for( int y = 0; y < height - 2 && !stop; y++ ) {
+	for( int y = 0; y < height - 2; y++ ) {
 		int pos = y*width;
 		for( int x = 0; x < width - 2; x++, pos++ ) {
 			// calculate new value from data in temp buffer

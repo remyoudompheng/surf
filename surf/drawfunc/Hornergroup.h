@@ -22,15 +22,11 @@
  *
  */
 
-
-
-
-
 #ifndef HORNERGROUP_H
 #define HORNERGROUP_H
 
-#include "HornergroupXY.h"
-#include "HornergroupXYZ.h"
-#include "RationalHornerXY.h"
+#include <HornergroupXY.h>
+#include <HornergroupXYZ.h>
+#include <RationalHornerXY.h>
 
-#endif // HORNGRP_H
+#endif //!HORNERGROUP_H

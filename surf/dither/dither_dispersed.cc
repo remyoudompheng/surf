@@ -30,7 +30,6 @@
 #include "float_buffer.h"
 #include "bit_buffer.h"
 #include "compfn.h"
-#include "stop.h"
 
 
 // ----------------------------------------------------------------------------
@@ -45,7 +44,7 @@ void dither_dispersed (float_buffer &intensity, bit_buffer &pixel, int print_pat
 	int     px;
 	int     py;
 
-	for( py = 0; py < intensity.getHeight() && !stop; py++ ) {
+	for( py = 0; py < intensity.getHeight(); py++ ) {
 		for( px = 0; px < intensity.getWidth(); px++ ) {
 			pixel.setPixel (px,py,
 					intensity.Get( px,py ) > cmp(px,py) ? PIXEL_WHITE : PIXEL_BLACK );

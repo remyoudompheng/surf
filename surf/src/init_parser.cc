@@ -23,29 +23,20 @@
  */
 
 
-
-
-
-// ===========================================================================
-// File:     init_parser.cc
-// Author:   Stephan Endrass
-// Address:  endrass@mi.uni-erlangen.de
-// Date:     3.2.95
-// ============================================================================
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
 
-#include "init_parser.h"
+#include <init_parser.h>
+#include <ScriptVar.h>
+#include <monomarith.h>
+#include <AvailableImageFormats.h>
 
-#include "def.h"
-#include "monomarith.h"
-#include "polyarith.h"
-#include "hornerarith.h"
-#include "polylexyacc.h"
-#include "gui_config.h"
-#include "symtab.h"
+#include<string>
 
 
 using namespace ScriptVar;
@@ -53,377 +44,180 @@ using namespace ScriptVar;
 double Y_AXIS_LR_ROTATE;
 double sym_cut_distance;
 
-const char    *POSITION_SEQUENCE_PIC_STRING[POSITION_SEQUENCE_NUM] =
-{
-    "first",
-    "second",
-    "third"
-};
-
-const char *LIGHT_VOLUME_PIC_STRING[LIGHT_SOURCE_MAX_VALUE] =
-{
-    "light1_vol",
-    "light2_vol",
-    "light3_vol",
-    "light4_vol",
-    "light5_vol",
-    "light6_vol",
-    "light7_vol",
-    "light8_vol",
-    "light9_vol"
-};
-
-
-const char  *LIGHT_POSITION_PIC_STRING
-                           [LIGHT_SOURCE_MAX_VALUE][LIGHT_POSITION_NUM] =
-{
-    { "light1_x", "light1_y", "light1_z" },
-    { "light2_x", "light2_y", "light2_z" },
-    { "light3_x", "light3_y", "light3_z" },
-    { "light4_x", "light4_y", "light4_z" },
-    { "light5_x", "light5_y", "light5_z" },
-    { "light6_x", "light6_y", "light6_z" },
-    { "light7_x", "light7_y", "light7_z" },
-    { "light8_x", "light8_y", "light8_z" },
-    { "light9_x", "light9_y", "light9_z" }
-};
-
-
-const char *LIGHT_SETTINGS_SECOND_PIC_STRING[MAIN_SURFACE_AMOUNT_NUM] [LIGHT_SETTINGS_SECOND_NUM] =
-{
-    { "smoothness",  "transparence",  "thickness"  },
-    { "smoothness2", "transparence2", "thickness2" },
-    { "smoothness3", "transparence3", "thickness3" },
-    { "smoothness4", "transparence4", "thickness4" },
-    { "smoothness5", "transparence5", "thickness5" },
-    { "smoothness6", "transparence6", "thickness6" },
-    { "smoothness7", "transparence7", "thickness7" },
-    { "smoothness8", "transparence8", "thickness8" },
-    { "smoothness9", "transparence9", "thickness9" }
-};
-
-const char *LIGHT_SETTINGS_FIRST_PIC_STRING[MAIN_SURFACE_AMOUNT_NUM][LIGHT_SETTINGS_FIRST_NUM] =
-{
-    { "ambient",  "diffuse",  "reflected",  "transmitted"  },
-    { "ambient2", "diffuse2", "reflected2", "transmitted2" },
-    { "ambient3", "diffuse3", "reflected3", "transmitted3" },
-    { "ambient4", "diffuse4", "reflected4", "transmitted4" },
-    { "ambient5", "diffuse5", "reflected5", "transmitted5" },
-    { "ambient6", "diffuse6", "reflected6", "transmitted6" },
-    { "ambient7", "diffuse7", "reflected7", "transmitted7" },
-    { "ambient8", "diffuse8", "reflected8", "transmitted8" },
-    { "ambient9", "diffuse9", "reflected9", "transmitted9" }
-};
-
-const char *COLOR_GRADIENT_END_PIC_STRING[COLOR_GRADIENT_END_NUM] =
-{
-    "gradient_red",
-    "gradient_green",
-    "gradient_blue"
-};
-
-
-const char *COLOR_BACKGROUND_PIC_STRING[COLOR_BACKGROUND_NUM] =
-{ 
-    "background_red",
-    "background_green",
-    "background_blue"
-};
-
-
-const char *LIGHT_SLIDER_PIC_STRING[LIGHT_SOURCE_MAX_VALUE][LIGHT_SLIDER_NUM] =
-{
-    { "light1_red", "light1_green", "light1_blue" },
-    { "light2_red", "light2_green", "light2_blue" },
-    { "light3_red", "light3_green", "light3_blue" },
-    { "light4_red", "light4_green", "light4_blue" },
-    { "light5_red", "light5_green", "light5_blue" },
-    { "light6_red", "light6_green", "light6_blue" },
-    { "light7_red", "light7_green", "light7_blue" },
-    { "light8_red", "light8_green", "light8_blue" },
-    { "light9_red", "light9_green", "light9_blue" }      
-};
-
-const char *CURVE_COLOR_SLIDER_PIC_STRING[CURVE_COLOR_SLIDER_NUM] =
-{
-    "curve_red"  ,
-    "curve_green",
-    "curve_blue"
-};
-
-static const char *MAIN_FORMULA_PXYZ_PIC_STRING[MAIN_SURFACE_AMOUNT_NUM] =
-{
-    "surface",
-    "surface2",
-    "surface3",
-    "surface4",
-    "surface5",
-    "surface6",
-    "surface7",
-    "surface8",
-    "surface9"
-};	
-
-static const char *MAIN_CLIP_PXYZ_PIC_STRING[MAIN_CLIP_AMOUNT_NUM] =
-{
-    "clip_surface" ,
-    "clip_surface2",
-    "clip_surface3",
-    "clip_surface4",
-    "clip_surface5",
-    "clip_surface6",
-    "clip_surface7",
-    "clip_surface8",
-    "clip_surface9",
-    "clip_surface10",
-    "clip_surface11",
-    "clip_surface12"
-};	
-
-const char *getColorSliderPicString (int surfaceNr, bool inside, int color)
-{
-	static char str[64];
-	const char *first = inside ? "inside" : "surface";
-
-	const char *cstr = 0;
-	switch (color) {
-	case 0:
-		cstr = "red";
-		break;
-	case 1:
-		cstr = "green";
-		break;
-	case 2:
-		cstr = "blue";
-		break;
-	default:
-		assert(0);
-		
-	}
-	
-	if (surfaceNr>1) {
-		sprintf (str, "%s%d_%s", first, surfaceNr, cstr);
-	} else
-		sprintf (str, "%s_%s", first, cstr);
-
-	return str;
-}
-
-const char *getLightSliderPicString (int lightNr, int color )
-{
-	static char str[64];
-
-	const char *cstr = 0;
-	switch (color) {
-	case 0:
-		cstr = "red";
-		break;
-	case 1:
-		cstr = "green";
-		break;
-	case 2:
-		cstr = "blue";
-		break;
-	default:
-		assert(0);
-		
-	}
-	
-	sprintf (str,"light%d_%s",lightNr,cstr);
-
-	return str;
-}
-
-static const char *COLOR_SLIDER_PIC_STRING[MAIN_SURFACE_AMOUNT_NUM][SURFS_COLOR_SLIDER_NUM] =
-{
-    { "surface_red",  "surface_green",  "surface_blue",  "inside_red",  "inside_green",  "inside_blue"},
-    { "surface2_red", "surface2_green", "surface2_blue", "inside2_red", "inside2_green", "inside2_blue"},
-    { "surface3_red", "surface3_green", "surface3_blue", "inside3_red", "inside3_green", "inside3_blue"},
-    { "surface4_red", "surface4_green", "surface4_blue", "inside4_red", "inside4_green", "inside4_blue"},
-    { "surface5_red", "surface5_green", "surface5_blue", "inside5_red", "inside5_green", "inside5_blue"},
-    { "surface6_red", "surface6_green", "surface6_blue", "inside6_red", "inside6_green", "inside6_blue"},
-    { "surface7_red", "surface7_green", "surface7_blue", "inside7_red", "inside7_green", "inside7_blue"},
-    { "surface8_red", "surface8_green", "surface8_blue", "inside8_red", "inside8_green", "inside8_blue"},
-    { "surface9_red", "surface9_green", "surface9_blue", "inside9_red", "inside9_green", "inside9_blue"}
-};
-
 // ----------------------------------------------------------------------------
 //  Create command names for scanner-parser
 // ----------------------------------------------------------------------------
 
-void addCommand (const char *name, void (*func) (void))
+void addCommand(const char* name, void (*func)())
 {
-	symtab_add_surface_name(name, SYM_COMMAND, TRUE, (void*)func);
+	symtab_add_surface_name(name, SYM_COMMAND, true, (void*)func);
 }
 
 void addConstant (const char *name, const int *ptr)
 {
-	symtab_add_surface_name(name, SYM_INTEGER, TRUE, (void*)ptr);
+	symtab_add_surface_name(name, SYM_INTEGER, true, (void*)ptr);
+}
+
+void addConstant (const std::string& name, const int *ptr)
+{
+	symtab_add_surface_name(name.c_str(), SYM_INTEGER, true, (void*)ptr);
 }
 
 void addConstant (const char *name, const double *ptr)
 {
-	symtab_add_surface_name(name, SYM_DOUBLE, TRUE, (void *)ptr);
+	symtab_add_surface_name(name, SYM_DOUBLE, true, (void *)ptr);
 }
 
 void addNumber (const char *name, int *ptr)
 {
-	symtab_add_surface_name(name, SYM_INTEGER, FALSE, ptr);
+	symtab_add_surface_name(name, SYM_INTEGER, false, ptr);
+}
+
+void addNumber(const std::string& name, int* ptr)
+{
+	symtab_add_surface_name(name.c_str(), SYM_INTEGER, false, ptr);
 }
 
 void addNumber (const char *name, double *ptr)
 {
-	symtab_add_surface_name(name, SYM_DOUBLE, FALSE, ptr);
+	symtab_add_surface_name(name, SYM_DOUBLE, false, ptr);
 }
 
-
-
-void    init_surface_main_commands( void )
+void addNumber (const std::string& name, double *ptr)
 {
-#if 0
-	addCommand("draw_surface",		surface_3d);
-	addCommand("cut_surface",		surface_cut);
-	addCommand("dither_surface",		main_button_surface_print);
-	addCommand("dither_curve",		main_button_curve_print);
-	addCommand("save_dithered_image",	main_command_save_print);
-	addCommand("save_color_image",		main_command_save_xwd);
-	addCommand("create_movie",		main_command_create_movie);
-	addCommand("quit",			main_button_quit);
-	addCommand("set_size",			set_size);
-	addCommand("set_width",			set_width);
-	addCommand("set_height",		set_height);
-	addCommand("set_color",			set_color);
-	addCommand("enable_zbuffer",		activate_zbuffer);
-	addCommand("disable_zbuffer",		disable_zbuffer);
-	addCommand("clear_zbuffer",		reset_zbuffer);
-	addCommand("clear_screen",		clear_screen);
-	addCommand("optimize_colormap",		refresh_picture);
-#endif
+	symtab_add_surface_name(name.c_str(), SYM_DOUBLE, false, ptr);
 }
+
+void addString(const char* name, char** ptr)
+{
+	symtab_add_surface_name(name, SYM_STRING, false, ptr);
+}
+
+void addPoly(const char* name, polyxyz* ptr)
+{
+	symtab_add_surface_name(name, SYM_POLYXYZ, false, ptr);
+}
+
+void addPoly(const std::string& name, polyxyz* ptr)
+{
+	symtab_add_surface_name(name.c_str(), SYM_POLYXYZ, false, ptr);
+}
+
 
 // ----------------------------------------------------------------------------
 //  Create variable names for scanner-parser
 // ----------------------------------------------------------------------------
 
-void    init_surface_main_variables( void )
+void init_main_variables()
 {
-
 	addNumber ("cut_distance", &sym_cut_distance);
 
-
-	unsigned int i;
-	int    j;
-
-	// -------------------------
-	//  Miscellaneous variables
-	// --------------------------
-
-	symtab_add_surface_name( "filename", SYM_STRING, FALSE,
-				 (void*)&surface_filename_data);
+	addString("filename", &surface_filename_data);
    
-	// ------------------------------------
-	//  Main window variables (9 surfaces)
-	// ------------------------------------
-	for( i = 0; i < MAIN_SURFACE_AMOUNT_NUM; i++ ) {
-		
-		symtab_add_surface_name( MAIN_FORMULA_PXYZ_PIC_STRING[i],
-					 SYM_POLYXYZ,
-					 FALSE,
-					 (void*)&main_formula_pxyz_data[i]);
-	}
-	
-	// ----------------------------------------
-	//  Main window variables (12 clip surfaces)
-	// ----------------------------------------
-
-	for( i = 0; i < MAIN_CLIP_AMOUNT_NUM; i++ ) {
-		
-		symtab_add_surface_name( MAIN_CLIP_PXYZ_PIC_STRING[i],
-					 SYM_POLYXYZ,
-					 FALSE,
-					 (void*)&main_clip_pxyz_data[i]);
-	}
-
 	addNumber("width", &main_width_data);
 	addNumber("height", &main_height_data);
+
+	addConstant("yes", &global_yes_data);
+	addConstant("no", &global_no_data);
+
+	// curve & plane:
+	addPoly("curve", &draw_func_function_data);
+	addPoly("plane", &draw_func_plane_data);
+
+	// surfaces:
+	std::string surface = "surface";
+	for(size_t i = 0; i < MAIN_SURFACE_AMOUNT_NUM; i++) {
+		std::string suff = "";
+		if(i > 0) {
+			suff += '1' + i;
+		}
+		addPoly(surface + suff, &main_formula_pxyz_data[i]);
+	}
 	
-	// ------------------------------
-	//  Light variables (9 surfaces)
-	// ------------------------------
-	for( i = 0; i < MAIN_SURFACE_AMOUNT_NUM; i++ ) {
-		addNumber (COLOR_SLIDER_PIC_STRING[i][0], &color_slider[i].red);
-		addNumber (COLOR_SLIDER_PIC_STRING[i][1], &color_slider[i].green);
-		addNumber (COLOR_SLIDER_PIC_STRING[i][2], &color_slider[i].blue);
-		addNumber (COLOR_SLIDER_PIC_STRING[i][3], &color_slider[i].inside_red);
-		addNumber (COLOR_SLIDER_PIC_STRING[i][4], &color_slider[i].inside_green);
-		addNumber (COLOR_SLIDER_PIC_STRING[i][5], &color_slider[i].inside_blue);
+	// clip surfaces:
+	std::string clip_surface = "clip_surface";
+	for(size_t i = 0; i < MAIN_CLIP_AMOUNT_NUM; i++) {
+		std::string suff = "";
+		if(i > 0) {
+			suff += '1' + i;
+		}
+		addPoly(clip_surface + suff, &main_clip_pxyz_data[1]);
 	}
 
-	for( i = 0; i < LIGHT_SOURCE_MAX_VALUE; i++ ) {
-		for( j = 0; j < LIGHT_SLIDER_NUM; j++ ) {
-			addNumber(LIGHT_SLIDER_PIC_STRING[i][j], 
-				  &light_data[i].color[j]);
+	// surface colors:
+	std::string inside = "inside";
+	for(size_t i = 0; i < MAIN_SURFACE_AMOUNT_NUM; i++) {
+		std::string suff;
+		if(i > 0) {
+			suff += '1' + i;
 		}
+		addNumber(surface + suff + "_red",   &color_slider[i].red);
+		addNumber(surface + suff + "_green", &color_slider[i].green);
+		addNumber(surface + suff + "_blue",  &color_slider[i].blue);
+		addNumber(inside + suff + "_red",   &color_slider[i].inside_red);
+		addNumber(inside + suff + "_green", &color_slider[i].inside_green);
+		addNumber(inside + suff + "_blue",  &color_slider[i].inside_blue);
+	}
+
+	// light sources:
+	std::string light = "light";
+	for(size_t i = 0; i < LIGHT_SOURCE_MAX_VALUE; i++) {
+		char suff = '1' + i;
+		addNumber(light + suff + "_red",   &light_data[i].color[0]);
+		addNumber(light + suff + "_green", &light_data[i].color[1]);
+		addNumber(light + suff + "_blue",  &light_data[i].color[2]);
 	} 
 	
-	for( i = 0; i < COLOR_BACKGROUND_NUM; i++ ) {
-		addNumber(COLOR_BACKGROUND_PIC_STRING[i], &color_background_data[i]);
-	}
+	addNumber("background_red",   &color_background_data[0]);
+	addNumber("background_green", &color_background_data[1]);
+	addNumber("background_blue",  &color_background_data[2]);
 	
 	addNumber("do_background", &color_do_background_data);
 	addNumber("gradient", &color_gradient_data);
 	
+	addNumber("gradient_red",   &color_gradient_end_data[0]);
+	addNumber("gradient_green", &color_gradient_end_data[1]);
+	addNumber("gradient_blue",  &color_gradient_end_data[2]);
 
-
-	for( i = 0; i < COLOR_GRADIENT_END_NUM; i++ ) {
-		addNumber(COLOR_GRADIENT_END_PIC_STRING[i], 
-			   &color_gradient_end_data[i]);
-	}
+	addNumber("illumination", &light_illumination_data);
+	addConstant("ambient_light", &light_illumination_ambient_data);
+	addConstant("diffuse_light", &light_illumination_diffuse_data);
+	addConstant("reflected_light", &light_illumination_reflected_data);
+	addConstant("transmitted_light", &light_illumination_transmitted_data);
 	
-	addNumber ("illumination", &light_illumination_data);
-	addConstant ("ambient_light", &light_illumination_ambient_data);
-	addConstant ("diffuse_light", &light_illumination_diffuse_data);
-	addConstant ("reflected_light", &light_illumination_reflected_data);
-	addConstant ("transmitted_light", &light_illumination_transmitted_data);
-	
-	for( i = 0; i < MAIN_SURFACE_AMOUNT_NUM; i++ ) {
-		addNumber (LIGHT_SETTINGS_FIRST_PIC_STRING[i][0],
-			   &light_settings[i].ambient);
-		addNumber (LIGHT_SETTINGS_FIRST_PIC_STRING[i][1],
-			   &light_settings[i].diffuse);
-		addNumber (LIGHT_SETTINGS_FIRST_PIC_STRING[i][2],
-			   &light_settings[i].reflected);
-		addNumber (LIGHT_SETTINGS_FIRST_PIC_STRING[i][3],
-			   &light_settings[i].transmitted);
-		
-
-		addNumber (LIGHT_SETTINGS_SECOND_PIC_STRING[i][0],
-			   &light_settings[i].smoothness);
-		addNumber (LIGHT_SETTINGS_SECOND_PIC_STRING[i][1],
-			   &light_settings[i].transparence);
-		addNumber (LIGHT_SETTINGS_SECOND_PIC_STRING[i][2],
-			   &light_settings[i].thickness);
-	} 
-        
-    
-	for( i = 0; i < LIGHT_SOURCE_MAX_VALUE; i++ ) {
-		for( j = 0; j < LIGHT_POSITION_NUM; j++ ) {
-			addNumber( LIGHT_POSITION_PIC_STRING[i][j], 
-				   &light_data[i].position[j]);
+	std::string ambient = "ambient";
+	std::string diffuse = "diffuse";
+	std::string reflected = "reflected";
+	std::string transmitted = "transmitted";
+	std::string smoothness = "smoothness";
+	std::string transparence = "transparence";
+	std::string thickness = "thickness";
+	for(size_t i = 0; i < MAIN_SURFACE_AMOUNT_NUM; i++) {
+		std::string suff = "";
+		if(i > 0) {
+			suff += '1' + i;
 		}
-		
-		addNumber(LIGHT_VOLUME_PIC_STRING[i],&light_data[i].volume);
+		addNumber(ambient + suff, &light_settings[i].ambient);
+		addNumber(diffuse + suff, &light_settings[i].diffuse);
+		addNumber(reflected + suff, &light_settings[i].reflected);
+		addNumber(transmitted + suff, &light_settings[i].transmitted);
+		addNumber(smoothness + suff, &light_settings[i].smoothness);
+		addNumber(transparence + suff, &light_settings[i].transparence);
+		addNumber(thickness + suff, &light_settings[i].thickness);
+	} 
+
+	// light positions:
+	for(size_t i = 0; i < LIGHT_SOURCE_MAX_VALUE; i++ ) {
+		char suff = '1' + i;
+		addNumber(light + suff + "_x", &light_data[i].position[0]);
+		addNumber(light + suff + "_y", &light_data[i].position[1]);
+		addNumber(light + suff + "_z", &light_data[i].position[2]);
+		addNumber(light + suff + "_vol", &light_data[i].volume);
 	}
 
-	// -----------------
-	//  Print variables
-	// -----------------
-	
-	addConstant ("yes", &global_yes_data);
-	addConstant ("no", &global_no_data);
-
+	//  print variables:
 	addNumber("dithering_method", &print_dither_data);
-	addConstant("floyd_steinberg_filter",&print_dither_floyd_steinberg_data);
+	addConstant("floyd_steinberg_filter", &print_dither_floyd_steinberg_data);
 	addConstant("jarvis_judis_ninke_filter", &print_dither_jarvis_judis_ninke_data);
 	addConstant("stucki_filter", &print_dither_stucki_data);
 	addConstant("clustered_dot_ordered_dither", &print_dither_ordered_dither_data);
@@ -431,16 +225,16 @@ void    init_surface_main_variables( void )
 	addConstant("dot_diffusion", &print_dither_dot_diffusion_data);
 	addConstant("smooth_dot_diffusion", &print_dither_smooth_dot_diffusion_data);
 
-	addNumber ("serpentine_raster", &print_serpentine_raster_data);
+	addNumber("serpentine_raster", &print_serpentine_raster_data);
 
-	addNumber ("random_weights", &print_random_weights_data);
+	addNumber("random_weights", &print_random_weights_data);
 
- 	addNumber ("weight", &print_weight_data);
-	addNumber ("barons", &print_barons_data);
-	addConstant ("one_baron", &print_barons_one_baron_data);
-	addConstant ("two_baron", &print_barons_two_baron_data);
+ 	addNumber("weight", &print_weight_data);
+	addNumber("barons", &print_barons_data);
+	addConstant("one_baron", &print_barons_one_baron_data);
+	addConstant("two_baron", &print_barons_two_baron_data);
 
-	addNumber ("pattern_size", &print_pattern_size_data);
+	addNumber("pattern_size", &print_pattern_size_data);
 	addConstant("pattern_4x4", &print_pattern_size_4_x_4_data);
 	addConstant("pattern_8x8", &print_pattern_size_8_x_8_data);
 	addConstant("pattern_16x16", &print_pattern_size_16_x_16_data);
@@ -452,6 +246,7 @@ void    init_surface_main_variables( void )
 	addNumber("gamma", &print_gamma_data);
 	addNumber("gamma_correction", &print_gamma_correction_data);
 	addNumber("resolution", &print_resolution_data);
+
 	addConstant("res_75dpi", &print_resolution_75dpi_data);
 	addConstant("res_100dpi", &print_resolution_100dpi_data);
 	addConstant("res_150dpi", &print_resolution_150dpi_data);
@@ -460,50 +255,49 @@ void    init_surface_main_variables( void )
 	addConstant("res_1200dpi", &print_resolution_1200dpi_data);
 
 	addNumber("pixel_size", &print_p_radius_data);
-	addNumber("color_file_format", &color_output_data);
-	addConstant("xwd", &color_output_xwd_data);
-	addConstant("sun", &color_output_sun_data);
-	addConstant("ppm", &color_output_ppm_data);
-	addConstant("jpg", &color_output_jpeg_data);
+
+	using namespace ImageFormats;
+	
+	addNumber("color_file_format", &color_file_format_data);
+	addNumber("dither_file_format", &dither_file_format_data);
+	size_t num = ImageFormats::numAvailableFormats;
+	for(size_t i = 0; i != num; i++) {
+		using namespace ImageFormats;
+		
+		Format* fmt = availableFormats[i];
+		image_formats_data[i] = i;
+		addConstant(fmt->getID(), &image_formats_data[i]);
+	}
 
 	addNumber("color_file_colormap", &colormap_output_data);
 	addConstant("Netscape", &colormap_output_netscape_data);
 	addConstant("Optimized", &colormap_output_optimized_data);
 	addConstant("TrueColor", &colormap_output_true_color_data);
 
-	addNumber("dither_file_format", &print_output_data);
-	addConstant("postscript", &print_output_ps_data);
-	addConstant("encapsulated", &print_output_eps_data);
-	addConstant("X11_bitmap",&print_output_bitmap_data);
-	addConstant("tiff", &print_output_tiff_data);
-	addConstant("pgm", &print_output_pgm_data);
-	addConstant("pbm", &print_output_pbm_data);
 
-	// ----------------------------------
-	//  Position variables and constants
-	// ----------------------------------
+	//  position variables and constants:
+	addNumber("origin_x", &position_numeric.orig_x);
+	addNumber("origin_y", &position_numeric.orig_y);
+	addNumber("origin_z", &position_numeric.orig_z);
 
-	addNumber ("origin_x", &position_numeric.orig_x);
-	addNumber ("origin_y", &position_numeric.orig_y);
-	addNumber ("origin_z", &position_numeric.orig_z);
-
-	addNumber ("spec_z", &position_numeric.spectator_z);
+	addNumber("spec_z", &position_numeric.spectator_z);
 	
-	addNumber ("rot_x", &position_numeric.rot_x);
-	addNumber ("rot_y", &position_numeric.rot_y); 
-	addNumber ("rot_z", &position_numeric.rot_z);
-	addNumber ("scale_x", &position_numeric.scale_x);
-	addNumber ("scale_y", &position_numeric.scale_y);
-	addNumber ("scale_z", &position_numeric.scale_z);
+	addNumber("rot_x", &position_numeric.rot_x);
+	addNumber("rot_y", &position_numeric.rot_y); 
+	addNumber("rot_z", &position_numeric.rot_z);
+
+	addNumber("scale_x", &position_numeric.scale_x);
+	addNumber("scale_y", &position_numeric.scale_y);
+	addNumber("scale_z", &position_numeric.scale_z);
 
 
 	addNumber("perspective", &position_perspective_data);
 	addConstant("parallel", &position_perspective_parallel_data);
 	addConstant("central", &position_perspective_central_data);
 
-	for( i = 0; i < POSITION_SEQUENCE_NUM; i++ ) {
-		addNumber(POSITION_SEQUENCE_PIC_STRING[i],&(position_sequence_data[i]));
-	}
+	addNumber("first",  &(position_sequence_data[0]));
+	addNumber("second", &(position_sequence_data[1]));
+	addNumber("third",  &(position_sequence_data[2]));
 
 	addConstant("translate", &position_sequence_translate_data);
 	addConstant("rotate", &position_sequence_rotate_data);
@@ -602,27 +396,35 @@ void    init_surface_main_variables( void )
 	addNumber ("point_3_z", &cut_numeric.point_3_z);
 	
 
-	// -------------------------------
-	//  Curve variables and constants
-	// -------------------------------
-	
+	// curve variables and constants:
 	addNumber("curve_width", &curve_width_data);
 	addNumber("curve_gamma", &curve_gamma_data);
 
-	for( i = 0; i < CURVE_COLOR_SLIDER_NUM; i++ ) {
-		addNumber(CURVE_COLOR_SLIDER_PIC_STRING[i],&curve_color_slider_data[i]);
-	}
+	addNumber("curve_red",   &curve_color_slider_data[0]);
+	addNumber("curve_green", &curve_color_slider_data[1]);
+	addNumber("curve_blue",  &curve_color_slider_data[2]);
 
-	addNumber ("surface_n", &curve_surface_nr_data);
-	addNumber ("surf_nr",   &curve_surface_nr_data);
-
-
+	addNumber("surface_n", &curve_surface_nr_data);
+	addNumber("surf_nr",   &curve_surface_nr_data);
 
 	memset (sym_cutsurfaces, 0, sizeof(sym_cutsurfaces));
 	
-	for (i=0; i<sizeof(sym_cutsurfaces)/sizeof(sym_cutsurfaces[0]); i++) {
+	for(size_t i = 0; i < sizeof(sym_cutsurfaces)/sizeof(sym_cutsurfaces[0]); i++) {
 		char str[64];
 		sprintf (str, "cutsurface%d", i+1);
-		symtab_add_surface_name (str, SYM_POLYXYZ, FALSE, &sym_cutsurfaces[i]);
+		symtab_add_surface_name (str, SYM_POLYXYZ, false, &sym_cutsurfaces[i]);
 	}
+
+	// -----------------------------
+	// GUI->kernel variables
+	// -----------------------------
+	
+	addNumber("surface_run_commands", &surface_run_commands);
+
+
+	// -----------------------------
+	// image format options
+	// -----------------------------
+
+	addNumber("jpeg_quality", &jpeg_quality);
 }

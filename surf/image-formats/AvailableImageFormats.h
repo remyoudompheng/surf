@@ -26,29 +26,31 @@
 #ifndef AVAILABLEIMAGEFMTS_H
 #define AVAILABLEIMAGEFMTS_H
 
-#include "ByExtension.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <ByExtension.h>
 #ifdef HAVE_LIBJPEG
-#  include "JPEG.h"
+#  include <JPEG.h>
 #endif
 #ifdef HAVE_LIBTIFF
-#  include "TIFF.h"
+#  include <TIFF.h>
 #endif
-#include "Postscript.h"
-#include "Sun.h"
-#include "EPS.h"
-#include "XWD.h"
-#include "XBitmap.h"
-#include "PPM.h"
-#include "PBM.h"
-#include "XPM.h"
-
-#ifndef NO_GUI
-#include "Pipe.h"
-#endif
+#include <Postscript.h>
+#include <Sun.h>
+#include <EPS.h>
+#include <XWD.h>
+#include <XBitmap.h>
+#include <PPM.h>
+#include <PBM.h>
+#include <XPM.h>
 
 namespace ImageFormats {
 	extern Format* availableFormats[];
-	extern int numAvailableFormats;
+	extern size_t numAvailableFormats;
+	
+	extern int image_formats_data[];
 }
 
 #endif //AVAILABLEIMAGEFMTS_H

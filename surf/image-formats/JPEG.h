@@ -23,66 +23,37 @@
  */
 
 
-
-
 #ifndef IMAGEFORMAT_JPEG_H
 #define IMAGEFORMAT_JPEG_H
 
 #include "ImageFormats.h"
 
-#ifndef NO_GUI
-#include <gtk/gtk.h>
-#include "mygtk.h"
-#endif
-
-#include <cstring>
-#include <cstdlib>
+#include<cstring>
+#include<cstdlib>
 
 namespace ImageFormats {
 
 	class JPEG : public Format {
 	public:
-		JPEG() : shown(false) { }
-		
-		const char* getName() {
+		std::string getName() const {
 			return "JPEG";
 		}
-		
-		ColorType getColorType() {
+		std::string getID() const {
+			return "jpeg";
+		}
+		ColorType getColorType() const {
 			return color;
 		}
-
-		bool isExtension(const char* ext) {
-			if (std::strcasecmp(ext, "jpg") == 0 ||
-			    std::strcasecmp(ext, "jpeg") == 0) {
-				return true;
-			}
-			return false;
-		}
-
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
 		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) {
-			return false;
+		bool isExtension(const std::string& ext) const {
+			return ext == "jpg" || ext == "jpeg";
 		}
 
-	private:
-		bool shown;
-		bool save;
-
-		int quality;
-
-#ifndef NO_GUI		
-		GtkWidget* dialog;
-		GtkObject* qualityAdj;
-		GMainLoop* gmainloop;
-
-		VOIDCALL(handle_ok, JPEG);
-		VOIDCALL(handle_cancel, JPEG);
-		EVENTCALL(handle_delete_event, JPEG);
-#endif
-
-		void reallySave(const char* filename, RgbBuffer& buffer);
+		bool saveColorImage(const char* filename, RgbBuffer& data);
+		
+		bool saveDitheredImage(const char* filename, bit_buffer& data) {
+			return false;
+		}
 	};
 
 	extern JPEG imgFmt_JPEG;

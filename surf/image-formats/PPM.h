@@ -28,32 +28,28 @@
 #ifndef IMAGEFORMAT_PPM_H
 #define IMAGEFORMAT_PPM_H
 
-#include "ImageFormats.h"
-
-#include <cstring>
+#include <ImageFormats.h>
 
 namespace ImageFormats {
 
 	class PPM : public Format {
 	public:
-		const char* getName() {
-			return "Portable Pixmap (PPM)";
+		std::string getName() const {
+			return "Portable Pixmap";
 		}
-		
-		ColorType getColorType() {
+		std::string getID() const {
+			return "ppm";
+		}
+		ColorType getColorType() const {
 			return color;
 		}
-
-		bool isExtension(const char* ext) {
-			if (std::strcasecmp(ext, "ppm") == 0) {
-				return true;
-			}
-			return false;
+		bool isExtension(const std::string& ext) const {
+			return ext == "ppm";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
+		bool saveColorImage(const char* filename, RgbBuffer& data);
 		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) {
+		bool saveDitheredImage(const char* filename, bit_buffer& data) {
 			return false;
 		}
 	};

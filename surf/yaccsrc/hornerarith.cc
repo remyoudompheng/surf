@@ -33,18 +33,22 @@
 /* Date:     14.8.94                                                         */
 /* ------------------------------------------------------------------------- */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
 #include <math.h>
 #include <assert.h>
 
-#include "simple.h"
-#include "monomarith.h"
-#include "polyarith.h"
-#include "hornerarith.h"
+#include <simple.h>
+#include <monomarith.h>
+#include <polyarith.h>
+#include <hornerarith.h>
 
-static void polyxyz_to_horner( hornerpolyxyz *hp, const polyxyz *p );
+//static void polyxyz_to_horner( hornerpolyxyz *hp, const polyxyz *p );
 
 void hornerpolyxyz::free()
 {

@@ -24,11 +24,11 @@
 
 
 
-#include "stdio.h"
-#include "NewClipAlgebraic.h"
-#include "NewClipAlgebraicUser.h"
+#include <stdio.h>
 
-#include "gui_config.h"
+#include <NewClipAlgebraic.h>
+#include <NewClipAlgebraicUser.h>
+#include <ScriptVar.h>
 
 
 void NewClipAlgebraicUser::init( void )

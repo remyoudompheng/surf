@@ -98,8 +98,10 @@ int Sturmchain::DivideIntervalMulti( double x1, double fx1, int sx1,
                          // is the number of zeroes between a and b
   if( Total > 1 )
     {
-      if( --Iterations == 0 ) 
-	return FALSE;
+	    if( --Iterations == 0 ) {
+		    return false;
+	    }
+	    
       double m = ( x1 + x2 ) / 2.0;
       double fm = Chain[0].Horner( m );
       int    sm = SignChange( m, fm );
@@ -114,7 +116,7 @@ int Sturmchain::DivideIntervalMulti( double x1, double fx1, int sx1,
   if( Total == 1 )
     return Chain[0].RootFunction( x2, x1, fx2, fx1, Root, NumberOfRoots );
   // root function calls the selected algorithm via function pointer
-  return FALSE;
+  return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -130,8 +132,10 @@ int Sturmchain::DivideIntervalSingle( double x1, double fx1, int sx1,
   int Total = sx1 - sx2;
   if( Total > 1 )
     {
-      if( --Iterations == 0 ) 
-	return FALSE;
+	    if( --Iterations == 0 ) {
+		    return false;
+	    }
+	    
       double m = ( x1 + x2 ) / 2.0;
       double fm = Chain[0].Horner( m );
       int    sm = SignChange( m, fm );
@@ -144,9 +148,11 @@ int Sturmchain::DivideIntervalSingle( double x1, double fx1, int sx1,
 				     NumberOfRoots, Iterations );
       return Flag;
     }
-  if( Total == 1 )
-    return Chain[0].RootFunction( x2, x1, fx2, fx1, Root, NumberOfRoots );
-  return FALSE;
+  if( Total == 1 ) {
+	  return Chain[0].RootFunction( x2, x1, fx2, fx1, Root, NumberOfRoots );
+  }
+  
+  return false;
 }
 
 

@@ -23,20 +23,21 @@
  */
 
 
-
-
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 
-#include "def.h"
-#include "degree.h"
-#include "simple.h"
-#include "MultiVariatePolynom.h"
-#include "MultiIndex.h"     // for power function
-#include "DrawFunc.h"       // for errnums in check
-#include "Monomial.h"
+#include <def.h>
+#include <degree.h>
+#include <simple.h>
+#include <MultiVariatePolynom.h>
+#include <MultiIndex.h>     // for power function
+#include <DrawFunc.h>       // for errnums in check
+#include <Monomial.h>
 
 // ----------------------------------------------------------------------------
 // ---------------- construktors of base - template ---------------------------
@@ -244,19 +245,21 @@ MultiPoly<Mon> MultiPoly<Mon>::operator*(const MultiPoly& Pol2) const
 // ----------------------------------------------------------------------------
 
 template<class Mon>
-int MultiPoly<Mon>::operator==( const MultiPoly& Pol ) const
+bool MultiPoly<Mon>::operator==( const MultiPoly& Pol ) const
 {
-	if( Number != Pol.Number  || deg != Pol.deg ) 
-		return FALSE;
+	if( Number != Pol.Number  || deg != Pol.deg ) {
+		return false;
+	}
 
-	int diff = 0;
-	for( int i = 0; i < Number && !diff; i++ )
+	bool diff = false;
+	for( int i = 0; i < Number && !diff; i++ ) {
 		diff = !( Monomial[i] == Pol.Monomial[i] );
+	}
 	return diff;
 }
 
 template<class Mon>
-int MultiPoly<Mon>::operator!=( const MultiPoly& Pol ) const
+bool MultiPoly<Mon>::operator!=( const MultiPoly& Pol ) const
 {
 	return !( *this == Pol );
 }
@@ -267,18 +270,21 @@ int MultiPoly<Mon>::operator!=( const MultiPoly& Pol ) const
 
 
 template<class Mon>
-int MultiPoly<Mon>::Check(void) const
+int MultiPoly<Mon>::Check() const
 {
-	if( Number == 0 )
+	if(Number == 0) {
 		return CURVE_ZERO;
+	}
 
-	if( deg < 1 )
+	if(deg < 1) {
 		return CURVE_CONST;
+	}
 
-	if( deg >= MAX_DEGREE )
+	if(deg >= MAX_DEGREE) {
 		return CURVE_DEG_HIGH;
+	}
 
-	return FALSE;
+	return false;
 }
 
 // ----------------------------------------------------------------------------

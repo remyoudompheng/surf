@@ -29,8 +29,6 @@
 #include "float_buffer.h"
 #include "bit_buffer.h"
 
-#include "stop.h"
-
 // ----------------------------------------------------------------------------
 //  Perform brute force dithering, just for curves ...
 // ----------------------------------------------------------------------------
@@ -44,7 +42,7 @@ void dither_brute (const float_buffer &intensity, bit_buffer &pixel)
 	int     px;
 	int     py;
 
-	for( py = 0; py < height && !stop; py++ ) {
+	for( py = 0; py < height; py++ ) {
 		for( px = 0; px < width; px++ ) {
 			pixel.setPixel (px,py,
 					intensity.Get( px,py ) > 0.5 ? PIXEL_WHITE : PIXEL_BLACK  );

@@ -23,13 +23,18 @@
  */
 
 
-
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <sys/param.h>
 #include <pwd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+
+#ifdef HAVE_UNISTD_H
+#  include <unistd.h>
+#endif
 
 #include <netdb.h>
 #include <time.h>
@@ -37,11 +42,13 @@
 #include <errno.h>
 #include <string.h>
 
-#include "bit_buffer.h"
-#include "Misc.h"
-#include "FileWriter.h"
+#include <bit_buffer.h>
+#include <FileWriter.h>
+#include <ScriptVar.h>
 
-#include "EPS.h"
+#include <EPS.h>
+
+#include<iostream>
 
 #ifdef NO_GETHOSTNAME_PROTO
 extern "C" int gethostname (char *, int);
@@ -54,112 +61,73 @@ namespace ImageFormats {
 	EPS imgFmt_EPS;
 	
 	
-	bool EPS::saveDitheredImage(const char* filename,
-				    bit_buffer& pixel,
-				    int paper_width, int paper_height, int resolution,
-				    bool fromDlg)
+	bool EPS::saveDitheredImage(const char* filename, bit_buffer& pixel)
 	{
 		FileWriter fw(filename);
 		FILE* file;
 		
 		if ((file = fw.openFile()) == 0) {
-			Misc::alert("Couldn't open file for writing.");
+			std::cerr << "Couldn't open file for writing.\n";
 			return false;
 		}
 		
+		int res = ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data];
+		int width = (ScriptVar::main_width_data*72)/res + 1;
+		int height = (ScriptVar::main_height_data*72)/res + 1;
 		
-		// --------------
-		//  Bounding box
-		// --------------
+		passwd* passwd_user = getpwuid(getuid());
 		
-		int     x1 = 0;
-		int     x2 = ( paper_width*72 )/resolution;
-		int     y1 = 0;
-		int     y2 = ( paper_height*72 )/resolution;
+		char* name_user = passwd_user->pw_name;
+		char* info_user = passwd_user->pw_gecos;
 		
-		// --------------------
-		//  User name and info
-		// --------------------
-		struct  passwd  *passwd_user;
+		char hostname[MAXHOSTNAMELEN];
+		gethostname(hostname, MAXHOSTNAMELEN);
 		
-		passwd_user = getpwuid( getuid( ) );
+		time_t time_local = time(0);
+		char* the_time = ctime(&time_local);
 		
-		char    *name_user = passwd_user->pw_name;
-		char    *info_user = passwd_user->pw_gecos;
+		fprintf(file, "%%!PS-Adobe-3.0 EPSF-2.0\n");
+		fprintf(file, "%%%%Title: Image created with surf.\n");
+		fprintf(file, "%%%%Creator: %s:%s (%s)\n", hostname, name_user, info_user);
+		fprintf(file, "%%%%CreationDate: %s",the_time );
+		fprintf(file, "%%%%BoundingBox: 0 0 %d %d\n", width, height);
+		fprintf(file, "%%%%Pages: 1\n");
+		fprintf(file, "%%%%EndComments\n");
+		fprintf(file, "%%%%EndProlog\n");
+		fprintf(file, "%%%%Page: 1 1\n");
+		fprintf(file, "\n" );
+		fprintf(file, "/bitdump %% stk: width, height, iscale\n");
+		fprintf(file, "%% dump a bit image with lower left corner at current origin,\n");
+		fprintf(file, "%% scaling by iscale (iscale=1 means 1/300 inch per pixel)\n");
+		fprintf(file, "{\n");
+		fprintf(file, "        %% read arguments\n");
+		fprintf(file, "        /iscale exch def\n");
+		fprintf(file, "        /height exch def\n");
+		fprintf(file, "        /width exch def\n");
+		fprintf(file, "\n");
+		fprintf(file, "        %% scale appropriately\n");
+		fprintf(file, "        width iscale mul height iscale mul scale\n");
+		fprintf(file, "\n");
+		fprintf(file, "        %% allocate space for one scanlne of input\n");
+		fprintf(file, "        /picstr %% picstr holds one scan line\n");
+		fprintf(file, "                width 7 add 8 idiv %% width of image in bytes = ceiling( width/8)\n");
+		fprintf(file, "                string\n");
+		fprintf(file, "                def\n");
+		fprintf(file, "\n");
+		fprintf(file, "        %% read and dump the image\n");
+		fprintf(file, "        width height 1 [width 0 0 height neg 0 height]\n");
+		fprintf(file, "        { currentfile picstr readhexstring pop }\n");
+		fprintf(file, "        image\n");
+		fprintf(file, "} def\n");
+		fprintf(file, "72 %d div dup scale\n", res);
+		fprintf(file, "0 0 translate\n");
+		fprintf(file, "%d %d 1 bitdump\n", ScriptVar::main_width_data, ScriptVar::main_height_data);
 		
-		// ----------
-		//  Hostname
-		// ----------
-		
-		char    hostname[MAXHOSTNAMELEN];
-		
-		gethostname (hostname, MAXHOSTNAMELEN);
-		
-		// ---------------
-		//  Time and date
-		// ---------------
-		
-		time_t  time_local;
-		char    *the_time;
-		
-		time_local = time (NULL);
-		the_time   = ctime (&time_local);
-		
-		// ---------------
-		//  Picture title
-		// ---------------
-		
-		const char    *title = "algebraic surface (dithered image)";
-		
-		
-		// -----------------
-		//  Number of pages
-		// -----------------
-		
-		int     pages = 1;
-		
-		fprintf( file,"%%!PS-Adobe-3.0 EPSF-2.0\n" );
-		fprintf( file,"%%%%Title: %s\n",title );
-		fprintf( file,"%%%%Creator: %s:%s (%s)\n",hostname,name_user,info_user );
-		fprintf( file,"%%%%CreationDate: %s",the_time );
-		fprintf( file,"%%%%BoundingBox: %d %d %d %d\n",x1,y1,x2+1,y2+1 );
-		fprintf( file,"%%%%Pages: %d\n",pages );
-		fprintf( file,"%%%%EndComments\n" );
-		fprintf( file,"%%%%EndProlog\n" );
-		fprintf( file,"%%%%Page: 1 1\n" );
-		fprintf( file,"\n" );
-		fprintf( file,"/bitdump %% stk: width, height, iscale\n" );
-		fprintf( file,"%% dump a bit image with lower left corner at current origin,\n" );
-		fprintf( file,"%% scaling by iscale (iscale=1 means 1/300 inch per pixel)\n" );
-		fprintf( file,"{\n" );
-		fprintf( file,"        %% read arguments\n" );
-		fprintf( file,"        /iscale exch def\n" );
-		fprintf( file,"        /height exch def\n" );
-		fprintf( file,"        /width exch def\n" );
-		fprintf( file,"\n" );
-		fprintf( file,"        %% scale appropriately\n" );
-		fprintf( file,"        width iscale mul height iscale mul scale\n" );
-		fprintf( file,"\n" );
-		fprintf( file,"        %% allocate space for one scanlne of input\n" );
-		fprintf( file,"        /picstr %% picstr holds one scan line\n" );
-		fprintf( file,"                width 7 add 8 idiv %% width of image in bytes = ceiling( width/8)\n" );
-		fprintf( file,"                string\n" );
-		fprintf( file,"                def\n" );
-		fprintf( file,"\n" );
-		fprintf( file,"        %% read and dump the image\n" );
-		fprintf( file,"        width height 1 [width 0 0 height neg 0 height]\n" );
-		fprintf( file,"        { currentfile picstr readhexstring pop }\n" );
-		fprintf( file,"        image\n" );
-		fprintf( file,"} def\n" );
-		fprintf( file,"72 %d div dup scale\n",resolution );
-		fprintf( file,"%d %d translate\n",0,0 );
-		fprintf( file,"%d %d 1 bitdump\n",paper_width,paper_height );
-		
-		for (int py = 0; py < paper_height; py++) {
-			for(int px = 0; px < paper_width; px += 8) {
-				fprintf(file, "%.2x", 255 - pixel.getByte(px,py));
+		for(int py = 0; py < ScriptVar::main_height_data; py++) {
+			for(int px = 0; px < ScriptVar::main_width_data; px += 8) {
+				fprintf(file, "%.2x", 255 - pixel.getByte(px, py));
 			}
-			fprintf( file,"\n" );
+			fprintf(file, "\n");
 		}
 
 		return true;

@@ -27,37 +27,30 @@
 #ifndef SURFACECALC_H
 #define SURFACECALC_H
 
-#include "def.h"
-#include "Vector.h" 
-#include "color.h"
-#include "NewClip.h"
-#include "degree.h"
-#include "TSDrawingArea.h"
-#include "SurfaceDataStruct.h"
-#include "WindowGeometry.h"
-#include "Preview.h"
+#include <ScriptVar.h>
+#include <Vector.h>
+#include <color.h>
+#include <NewClip.h>
+#include <degree.h>
+#include <SurfaceDataStruct.h>
+#include <WindowGeometry.h>
+
+class RgbBuffer;
+class float_buffer;
 
 class SurfaceCalc
 {
 private:
-	SurfaceCalc (const SurfaceCalc &);
-	void operator=(const SurfaceCalc &);
+	SurfaceCalc(const SurfaceCalc&);
+	void operator=(const SurfaceCalc&);
 
 public:
 	SurfaceCalc();
-	~SurfaceCalc();
 
+	void surface_calculate(RgbBuffer& intensity);
 
-	void setDisplay (TSDrawingArea *display)	{vdisplay=display;};
-	void setPreview (const Preview &p)
-		{ main_mosaic_choice_data = p;};
-
-	void surface_calculate (int xmin,int ymin,int xmax,int ymax,
-				class RgbBuffer &intensity);
-
-	void CalculateCurveOnSurface( int xmin, int ymin, int xmax, int ymax,
-				      RgbBuffer &intensity,
-				      class float_buffer &z_buffer);
+	void CalculateCurveOnSurface(int xmin, int ymin, int xmax, int ymax,
+				     RgbBuffer &intensity, float_buffer &z_buffer);
 
 
 protected:
@@ -82,7 +75,6 @@ public:
 
 protected:
  	NewClip *clipper;
-	TSDrawingArea *vdisplay;
 
 	void countLights();
 	void setMainFactor();
@@ -91,23 +83,6 @@ protected:
 	inline int needsRefining (const colorrgb &i1, const colorrgb &i2, const colorrgb &i3,
 				  const colorrgb &i4, const colorrgb &i5, const colorrgb &i6,
 				  const colorrgb &i7, const colorrgb &i8, const colorrgb &i9);
-
-	void surface_set_pixel (int x, int y, const colorrgb &color)
-		{
-			if (vdisplay)
-				vdisplay->drawSquare (x-(jump-1)/2, y-(jump-1)/2, jump, color.red, color.green, color.blue);
-		};
-	void surface_set_r_pixel (int x, int y, const colorrgb &color)
-		{
-			if (vdisplay)
-				vdisplay->drawRSquare (x-(jump-1)/2, y-(jump-1)/2, jump, color.red, color.green, color.blue);
-		};
-	void surface_set_gb_pixel (int x, int y, const colorrgb &color)
-		{
-			if (vdisplay)
-				vdisplay->drawGBSquare (x-(jump-1)/2, y-(jump-1)/2, jump, color.red, color.green, color.blue);
-		};
-
 
 	double pixel_to_user_x (double x) {return wingeom.pixelToUserX(x);};
 	double pixel_to_user_y (double y) {return wingeom.pixelToUserY(y);};
@@ -123,8 +98,6 @@ protected:
 	float cb,cf;
 
         double   pixel_max_i; // = 0.0;
-	int      jump_memory;  			// sk :variables for ...
-	int      halfjump;			//     preview calculation run
 
 	Vector   POS;                           // Spectator position
 
@@ -153,8 +126,5 @@ protected:
    	float    part_A;
         float    part_D;
         colorrgb tmpcolor;               	// sk :Ausweichvariable for color
-
-	int jump;
-	Preview main_mosaic_choice_data;
 };
 #endif

@@ -26,8 +26,8 @@
 
 #include <math.h>
 
-#include "NewClipSphereCentral.h"
-#include "gui_config.h"
+#include <NewClipSphereCentral.h>
+#include <ScriptVar.h>
 
 void NewClipSphereCentral::init()
 {
@@ -62,7 +62,7 @@ void NewClipSphereCentral::init()
 	b5 = szsq*( rsq - cxsq - cysq );
 }
 
-int NewClipSphereCentral::clip_user_y (double uy)
+bool NewClipSphereCentral::clip_user_y(double uy)
 {
 	if ( DISCR<0 || (uy>=B0 && uy<=B1)) {
 
@@ -79,22 +79,22 @@ int NewClipSphereCentral::clip_user_y (double uy)
 			a9 = ( a7 + discr2 )/a6;
 		}
 	
-		return  TRUE;
+		return true;
 
 	}
 
 
-	return FALSE;
+	return false;
 }
 
-int NewClipSphereCentral::clip_user_xy (double ux, double uy, double &zmin, double &zmax)
+bool NewClipSphereCentral::clip_user_xy (double ux, double uy, double &zmin, double &zmax)
 {
 	if( discr1 >= 0.0 ) {
 		if( ux < a8 || ux > a9 ) {
-			return  FALSE;
+			return  false;
 		}
 	} else {
-		return FALSE;
+		return false;
 	}
 
 	double  uxsq = ux*ux;
@@ -109,10 +109,10 @@ int NewClipSphereCentral::clip_user_xy (double ux, double uy, double &zmin, doub
 	zmin = max( zmin,cb  );
 	zmax = min( zmax,cf );
 	
-	return  TRUE;
+	return true;
 }
 
-int NewClipSphereCentral::clip_user_xyz (double uz)
+bool NewClipSphereCentral::clip_user_xyz (double uz)
 {
-    return  TRUE;
+    return true;
 }

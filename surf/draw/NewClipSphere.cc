@@ -24,9 +24,8 @@
 
 
 
-#include "NewClipSphere.h"
-
-#include "gui_config.h"
+#include <NewClipSphere.h>
+#include <ScriptVar.h>
 
 void NewClipSphere::init()
 {

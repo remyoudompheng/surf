@@ -36,21 +36,21 @@ namespace ImageFormats {
 
 	class ByExtension : public Format {
 	public:
-		const char* getName() {
+		std::string getName() const {
 			return "By Extension";
 		}
-		
-		ColorType getColorType() {
+	        std::string getID() const {
+			return "auto";
+		}
+		ColorType getColorType() const {
 			return both;
 		}
-
-		bool isExtension(const char* ext) {
+		bool isExtension(const std::string& ext) const {
 			return false;
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
-		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+		bool saveColorImage(const char* filename, RgbBuffer& data);
+		bool saveDitheredImage(const char* filename, bit_buffer& data);
 
 	private:
 		Format* guessFormat(const char* filename, ColorType type, const char** newfilename);

@@ -29,9 +29,9 @@
 #ifndef POSITION_H
 #define POSITION_H
 
-#include "Vector.h"
-#include "MappingMatrix.h"
-#include "gui_config.h"
+#include <Vector.h>
+#include <MappingMatrix.h>
+#include <ScriptVar.h>
 
 class MappingMatrix;
 class Polyxy;

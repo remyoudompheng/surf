@@ -22,8 +22,9 @@
  *
  */
 
-
-
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifdef HAVE_LIBTIFF
 
@@ -31,16 +32,19 @@
 #include <pwd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+
+#ifdef HAVE_UNISTD_H
+#  include <unistd.h>
+#endif
 
 #include <netdb.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "bit_buffer.h"
-#include "Misc.h"
-#include "FileWriter.h"
+#include <bit_buffer.h>
+#include <FileWriter.h>
+#include <ScriptVar.h>
 
 #ifdef NO_GETHOSTNAME_PROTO
 extern "C" int gethostname(char*, int);
@@ -57,59 +61,37 @@ extern "C" int gethostname(char*, int);
 #define TIFFDefaultStripSize(tiff, request) (8192/TIFFScanlineSize(tif))
 #endif
 
-#include "TIFF.h"
+#include <TIFF.h>
+
+#include<iostream>
 
 namespace ImageFormats {
 	
 	Tiff imgFmt_TIFF;
 	
-	bool Tiff::saveDitheredImage(const char* filename,
-				     bit_buffer& pixel,
-				     int paper_width, int paper_height, int resolution,
-				     bool fromDlg)
+	bool Tiff::saveDitheredImage(const char* filename, bit_buffer& pixel)
 	{
 		// check if it's a pipe:
 
 		{
 			FileWriter fw(filename);
 			if (fw.isWritingToPipe()) {
-				Misc::alert("TIFF images can't be written to pipes.");
+				std::cerr << "Sorry: TIFF images can't be written to pipes.\n";
 				return false;
 			}
 		}
 
-		// --------------------
-		//  User name and info
-		// --------------------
-		
-		passwd* passwd_user;
-		
-		passwd_user = getpwuid(getuid());
+		passwd* passwd_user = getpwuid(getuid());
 		
 		char* name_user = passwd_user->pw_name;
 		// char    *info_user = passwd_user->pw_gecos;
-		
-		// ----------
-		//  Hostname
-		// ----------
 		
 		char hostname[MAXHOSTNAMELEN];
 		
 		gethostname(hostname, MAXHOSTNAMELEN);
 		
-		// ---------------
-		//  Time and date
-		// ---------------
-		
-		time_t  time_local;
-		char* the_time;
-		
-		time_local = time(0);
-		the_time = ctime(&time_local);
-		
-		// ---------------
-		//  Picture title
-		// ---------------
+		time_t time_local = time(0);
+		char* the_time = ctime(&time_local);
 		
 		const char* title = "algebraic curve/surface (dithered image)";
 		
@@ -117,30 +99,29 @@ namespace ImageFormats {
 		
 		tif = TIFFOpen(filename, "w");
 		if (tif == 0) {
-			ostrstream ostr;
-			ostr << "Error saving file " << filename;
-			Misc::alert(ostr);
+			std::cerr << "Error saving file " << filename << '\n';
 			return false;
 		}
-		TIFFSetField( tif,TIFFTAG_FILLORDER,(guint16)FILLORDER_MSB2LSB );
+		TIFFSetField( tif,TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
 		
-		TIFFSetField( tif,TIFFTAG_IMAGEWIDTH ,(guint32)paper_width );
-		TIFFSetField( tif,TIFFTAG_IMAGELENGTH,(guint32)paper_height );
+		TIFFSetField( tif,TIFFTAG_IMAGEWIDTH, ScriptVar::main_width_data);
+		TIFFSetField( tif,TIFFTAG_IMAGELENGTH, ScriptVar::main_height_data);
 		
-		TIFFSetField( tif,TIFFTAG_BITSPERSAMPLE,(guint16)1 );
+		TIFFSetField( tif,TIFFTAG_BITSPERSAMPLE, 1);
 		
-		TIFFSetField( tif,TIFFTAG_COMPRESSION,(guint16)COMPRESSION_NONE );
-                //    TIFFSetField( tif,TIFFTAG_COMPRESSION,(guint16)COMPRESSION_PACKBITS );
-		TIFFSetField( tif,TIFFTAG_SAMPLESPERPIXEL,(guint16)1 );
+		TIFFSetField( tif,TIFFTAG_COMPRESSION, COMPRESSION_NONE );
+                //    TIFFSetField( tif,TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS );
+		TIFFSetField( tif,TIFFTAG_SAMPLESPERPIXEL, 1 );
 		
-		TIFFSetField( tif,TIFFTAG_PHOTOMETRIC,(guint16)PHOTOMETRIC_MINISBLACK );
-		TIFFSetField( tif,TIFFTAG_FILLORDER,(guint16)FILLORDER_MSB2LSB );
-		TIFFSetField( tif,TIFFTAG_ORIENTATION,(guint16)ORIENTATION_TOPLEFT );
-		TIFFSetField( tif,TIFFTAG_PLANARCONFIG,(guint16)PLANARCONFIG_CONTIG );
+		TIFFSetField( tif,TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK );
+		TIFFSetField( tif,TIFFTAG_FILLORDER, FILLORDER_MSB2LSB );
+		TIFFSetField( tif,TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT );
+		TIFFSetField( tif,TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG );
 		TIFFSetField( tif,TIFFTAG_ROWSPERSTRIP,
 			      TIFFDefaultStripSize( tif,(guint32)(-1) ) );
 		
 		TIFFSetField( tif,TIFFTAG_RESOLUTIONUNIT,(guint16)RESUNIT_INCH );
+		int resolution = ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data];
 		TIFFSetField( tif,TIFFTAG_XRESOLUTION,(float)(resolution) );
 		TIFFSetField( tif,TIFFTAG_YRESOLUTION,(float)(resolution) );
 		TIFFSetField( tif,TIFFTAG_XPOSITION,(float)0.0 );
@@ -163,8 +144,8 @@ namespace ImageFormats {
 		int px,py,count;
 		unsigned char byte;
 		
-		for (py = 0; py < paper_height; py++) {
-			for (px = 0, count = 0; px < paper_width; px += 8, count++) {
+		for (py = 0; py < ScriptVar::main_height_data; py++) {
+			for (px = 0, count = 0; px < ScriptVar::main_width_data; px += 8, count++) {
 				byte = 255 - pixel.getByte(px,py);
 				scanline[count] = byte;
 			}

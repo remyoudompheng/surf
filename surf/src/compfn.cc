@@ -334,7 +334,7 @@ static  void    dot_diffusion_init_struct( void )
             //  look for number  k  in matrix
             // -------------------------------
 
-            found = FALSE;
+		found = false;
             x = -1;
             while( x < 7 && !found )
             {
@@ -443,11 +443,8 @@ static  void    smooth_dot_diffusion_init_struct( void )
 
 void deinit_dot_diffusion()
 {
-	int     i,j,k,l;
-
-
-	for( i = 0; i < 2; i++ ) {
-		for( k = 0; k <= 63; k++ ) {
+	for(size_t i = 0; i < 2; i++ ) {
+		for(size_t k = 0; k <= 63; k++ ) {
 			(*s_d_d_s[i])[k].x = (*d_d_s[i])[k].x;
 			(*s_d_d_s[i])[k].y = (*d_d_s[i])[k].y;
 			(*s_d_d_s[i])[k].n = 63 - k;

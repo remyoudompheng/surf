@@ -24,11 +24,11 @@
 
 
 
-#include "Misc.h"
-#include "FileWriter.h"
-#include "bit_buffer.h"
+#include <FileWriter.h>
+#include <bit_buffer.h>
+#include <PBM.h>
 
-#include "PBM.h"
+#include<iostream>
 
 namespace ImageFormats {
 
@@ -36,15 +36,13 @@ namespace ImageFormats {
 	
 	
 	bool PBM::saveDitheredImage(const char* filename,
-				    bit_buffer& pixel,
-				    int paper_width, int paper_height, int resolution,
-				    bool fromDlg)
+				    bit_buffer& pixel)
 	{
 		FileWriter fw(filename);
 		FILE* file;
 		
 		if ((file = fw.openFile()) == 0) {
-			Misc::alert("Couldn't open file for writing.");
+			std::cerr << "Couldn't open file for writing.\n";
 			return false;
 		}
 		

@@ -30,7 +30,6 @@
 #include "float_buffer.h"
 #include "bit_buffer.h"
 #include "compfn.h"
-#include "stop.h"
 
 // ----------------------------------------------------------------------------
 //  Perform the smooth-dot-diffusion algorithm from intensity to pixel
@@ -51,11 +50,11 @@ void    dither_smooth_dot_diffusion( float_buffer &intensity, bit_buffer &pixel,
 	float   compare;
 	float   err;
 	
-	for( k = 0; k < 64 && !stop; k++ ) {
+	for( k = 0; k < 64; k++ ) {
 		compare = 0.5/( 64 - k );
 		
 		for( y = (*s_d_d_s[print_barons_data])[k].y;
-		     y < main_height_data && !stop;
+		     y < main_height_data;
 		     y += 8 ) {
 			for( x = (*s_d_d_s[print_barons_data])[k].x;
 			     x < main_width_data;

@@ -22,22 +22,10 @@
  *
  */
 
-
-
-
-
-/*****************************************************************************
- * File      def.h
- * Author:   Stephan Endrass
- * Address:  endrass@mi.uni-erlangen.de
- * Date:     3.2.95
- *****************************************************************************/
-
 #ifndef	DEF_H
 #define	DEF_H
 
-
-#include "mytypes.h"
+#include <mytypes.h>
 
 // ----------------------------------------------------------------------------
 //  sk : alle defines aus config.cc hierhergebracht
@@ -87,24 +75,10 @@ enum {red,green,blue}; 					/* sk */
 #define max(a,b)	( ((a)<(b))?(b):(a) )
 #endif
 
-
-#ifndef TRUE
-#define TRUE            (1)
-#endif  /* TRUE */
-
-#ifndef FALSE
-#define FALSE           (0)
-#endif  /* FALSE */
-
-
 //  Someday we'll possibly need them again 
 //  #define COLORMAP_8_BIT_STATIC          0
 //  #define COLORMAP_8_BIT_DYNAMIC         1
 //  #define COLORMAP_STD_TRUE_COLOR        2
 //  #define COLORMAP_STD_DIRECT_COLOR      3
 
-#endif  /* DEF_H */
-
-/*****************************************************************************
- * Ende of def.h
- *****************************************************************************/
+#endif  //!DEF_H 

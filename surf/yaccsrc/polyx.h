@@ -27,7 +27,7 @@
 #ifndef POLYX_H
 #define POLYX_H
 
-#include <iostream.h>
+#include<iostream>
 
 /*****************************************************************************/
 /*  POLYNIMIALS IN X                                                         */

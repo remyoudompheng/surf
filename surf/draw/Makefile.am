@@ -16,8 +16,7 @@ libdummy_a_SOURCES = SurfaceCalc.cc SurfaceCalc.h \
 	NewClipAlgebraicIco.cc   NewClipAlgebraicIco.h \
 	NewClipAlgebraicCyl.cc   NewClipAlgebraicCyl.h \
 	NewClipAlgebraicUser.cc  NewClipAlgebraicUser.h \
-	                         NewClipNone.h \
-	Preview.h
+	                         NewClipNone.h
 
 libdummy.a:: $(libdummy_a_OBJECTS) $(libdummy_a_DEPENDENCIES)
 

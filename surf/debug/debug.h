@@ -27,12 +27,12 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include <iostream.h>
+#include<iostream>
 
 class FunctionCall
 {
 public:
-	FunctionCall(const char *bla);
+	FunctionCall(const char* bla);
 	~FunctionCall();
     
 	FunctionCall();
@@ -46,7 +46,8 @@ protected:
 extern void spaces();
 extern class ostream &dos;
 extern int offlevel;
-#endif
+
+#endif // !DEBUG_H
 
 #undef BEGIN
 #undef DMESS
@@ -57,9 +58,9 @@ extern int offlevel;
 // #undef DEBUG
 #ifdef DEBUG
 #define BEGIN(x) FunctionCall dummyFunctionCall(x)
-#define DMESS(x) {if (offlevel == 0) {spaces(); dos << x << endl;}}
-#define TRACE(x) {if (offlevel == 0) {spaces(); dos << "TRACE:" << #x << ":=" << x << ";" <<endl;}}
-#define FAIL     {spaces(); dos << "Bye...\n" << endl; exit(10);};
+#define DMESS(x) {if (offlevel == 0) {spaces(); dos << x << '\n';}}
+#define TRACE(x) {if (offlevel == 0) {spaces(); dos << "TRACE: " << #x << " == " << x << '\n';}}
+#define FAIL     {spaces(); dos << "Bye...\n"; exit(10);};
 #define OFF       FunctionCall dummyFunctionCallOff 
 #else
 #define BEGIN(x) {}
@@ -68,6 +69,3 @@ extern int offlevel;
 #define FAIL
 #define OFF
 #endif
-
-
-

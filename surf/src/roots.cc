@@ -37,16 +37,12 @@
 #include <math.h>
 #include <memory.h>
 
-#include "degree.h"
-#include "def.h"
-#include "monomarith.h"
-#include "polyarith.h"
-#include "polyroot.h"
-#include "bezierarith.h"
-#include "hornerarith.h"
-#include "polylexyacc.h"
-#include "gui_config.h"
-#include "NewClip.h"
+#include <ScriptVar.h>
+#include <degree.h>
+#include <monomarith.h>
+#include <polyroot.h>
+#include <bezierarith.h>
+#include <NewClip.h>
 
 //  using namespace globals;
 int numeric_multi_root = 0;
@@ -59,8 +55,8 @@ int numeric_multi_root = 0;
 //      *root_old:   values near the roots
 //      old_n:       # of values in *root_old
 //  depends on:
-//      numeric_multi_root: TRUE  => compute all roots
-//                          FALSE => compute biggest root
+//      numeric_multi_root: true  => compute all roots
+//                          false => compute biggest root
 //      numeric_root_finder_data: chooses method
 // ----------------------------------------------------------------------------
 
@@ -89,7 +85,7 @@ int     zero_of_polyx( polyx *f,
 		// ---------------------------
         case -1 :
 		root[0] = zmax;
-		return  TRUE;
+		return true;
  
 		// ------------------------------
 		//  constant polynomial: no root

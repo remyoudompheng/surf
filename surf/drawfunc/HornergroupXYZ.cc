@@ -39,7 +39,7 @@ HornergroupXYZ::HornergroupXYZ( polyxyz* Pol, CanvasDataStruct *C_D_S, Position*
 	: Polynom( new Polyxyz )   // FIXME: when will this be deleted ???
 {
 	if( C_D_S->initialized ) {
-		state = FALSE;
+		state = false;
 		*Polynom = C_D_S->pDxyz;     // copy polyxyz to Polyxyz
 		Derivate[VARIABLE_X] = *Polynom;       // convert to horner
 		*Polynom = C_D_S->pxDyz;     // copy polyxyz to Polyxyz

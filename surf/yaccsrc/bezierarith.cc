@@ -1224,8 +1224,8 @@ int     zero_of_bezier_multi_root_no_help(
 static  int     root_of_bezier_positive( bezier *bez,double *root,
                 int *number_of_roots )
 {
-    int     i = bez->n,j = bez->n - 1,k;
-    int     not_found = TRUE;
+    int i = bez->n,j = bez->n - 1,k;
+    bool not_found = true;
 
     double  diff,alpha,delta,r,s,t,x;
 
@@ -1245,7 +1245,7 @@ static  int     root_of_bezier_positive( bezier *bez,double *root,
 
     if( not_found )
     {
-        return  FALSE;
+	    return false;
     }
 
     delta = 1.0/bez->n;
@@ -1266,7 +1266,7 @@ static  int     root_of_bezier_positive( bezier *bez,double *root,
     {
         root[(*number_of_roots)++] = x;
 
-        return  TRUE;
+        return true;
     }
     else
     {
@@ -1297,7 +1297,7 @@ static  int     root_of_bezier_positive( bezier *bez,double *root,
 
         if( root_of_bezier_positive( bez,root,number_of_roots ) )
         {
-            return  TRUE;
+		return true;
         }
         else
         {
@@ -1316,7 +1316,7 @@ static  int     root_of_bezier_positive_open( bezier *bez,double *root,
                 int *number_of_roots )
 {
     int     i = bez->n-1,j = bez->n - 2,k;
-    int     not_found = TRUE;
+    bool not_found = true;
 
     double  diff,alpha,delta,r,s,t,x;
 
@@ -1336,7 +1336,7 @@ static  int     root_of_bezier_positive_open( bezier *bez,double *root,
 
     if( not_found )
     {
-        return  FALSE;
+	    return false;
     }
 
     delta = 1.0/bez->n;
@@ -1357,7 +1357,7 @@ static  int     root_of_bezier_positive_open( bezier *bez,double *root,
     {
         root[(*number_of_roots)++] = x;
 
-        return  TRUE;
+        return true;
     }
     else
     {
@@ -1388,7 +1388,7 @@ static  int     root_of_bezier_positive_open( bezier *bez,double *root,
 
         if( root_of_bezier_positive_open( bez,root,number_of_roots ) )
         {
-            return  TRUE;
+		return true;
         }
         else
         {
@@ -1407,7 +1407,7 @@ static  int     root_of_bezier_positive_multi( bezier *bez,double *root,
                 int *number_of_roots )
 {
     int     i = bez->n, j = bez->n - 1, k;
-    int     not_found = TRUE;
+    bool not_found = true;
 
     double  diff,alpha,delta,r,s,t,x;
 
@@ -1427,7 +1427,7 @@ static  int     root_of_bezier_positive_multi( bezier *bez,double *root,
 
     if( not_found )
     {
-        return  FALSE;
+	    return false;
     }
 
     delta = 1.0/bez->n;
@@ -1450,7 +1450,7 @@ static  int     root_of_bezier_positive_multi( bezier *bez,double *root,
 
         root_of_bezier_positive_multi_open( bez,root,number_of_roots );
 
-        return  TRUE;
+        return true;
     }
     else if( x - epsilon < bez->a )
     {
@@ -1509,7 +1509,7 @@ static  int     root_of_bezier_positive_multi_open( bezier *bez,double *root,
                 int *number_of_roots )
 {
     int     i = bez->n - 1, j = bez->n - 2, k;
-    int     not_found = TRUE;
+    bool not_found = true;
 
     double  diff,alpha,delta,r,s,t,x;
 
@@ -1529,7 +1529,7 @@ static  int     root_of_bezier_positive_multi_open( bezier *bez,double *root,
 
     if( not_found )
     {
-        return  FALSE;
+	    return false;
     }
 
     delta = 1.0/bez->n;
@@ -1603,7 +1603,7 @@ static  int     root_of_bezier_negative( bezier *bez,double *root,
                 int *number_of_roots )
 {
     int     i = bez->n,j = bez->n - 1,k;
-    int     not_found = TRUE;
+    bool not_found = true;
 
     double  diff,alpha,delta,r,s,t,x;
 
@@ -1623,7 +1623,7 @@ static  int     root_of_bezier_negative( bezier *bez,double *root,
 
     if( not_found )
     {
-        return  FALSE;
+	    return false;
     }
 
     delta = 1.0/bez->n;
@@ -1644,7 +1644,7 @@ static  int     root_of_bezier_negative( bezier *bez,double *root,
     {
         root[(*number_of_roots)++] = x;
 
-        return  TRUE;
+        return true;
     }
     else
     {
@@ -1675,7 +1675,7 @@ static  int     root_of_bezier_negative( bezier *bez,double *root,
 
         if( root_of_bezier_negative( bez,root,number_of_roots ) )
         {
-            return  TRUE;
+		return true;
         }
         else
         {
@@ -1694,7 +1694,7 @@ static  int     root_of_bezier_negative_open( bezier *bez,double *root,
                 int *number_of_roots )
 {
     int     i = bez->n-1,j = bez->n - 2,k;
-    int     not_found = TRUE;
+    bool not_found = true;
 
     double  diff,alpha,delta,r,s,t,x;
 
@@ -1714,7 +1714,7 @@ static  int     root_of_bezier_negative_open( bezier *bez,double *root,
 
     if( not_found )
     {
-        return  FALSE;
+	    return false;
     }
 
     delta = 1.0/bez->n;
@@ -1735,7 +1735,7 @@ static  int     root_of_bezier_negative_open( bezier *bez,double *root,
     {
         root[(*number_of_roots)++] = x;
 
-        return  TRUE;
+        return true;
     }
     else
     {
@@ -1766,7 +1766,7 @@ static  int     root_of_bezier_negative_open( bezier *bez,double *root,
 
         if( root_of_bezier_negative_open( bez,root,number_of_roots ) )
         {
-            return  TRUE;
+		return true;
         }
         else
         {
@@ -1785,7 +1785,7 @@ static  int     root_of_bezier_negative_multi( bezier *bez,double *root,
                 int *number_of_roots )
 {
     int     i = bez->n, j = bez->n - 1,k;
-    int     not_found = TRUE;
+    bool not_found = true;
 
     double  diff,alpha,delta,r,s,t,x;
 
@@ -1805,7 +1805,7 @@ static  int     root_of_bezier_negative_multi( bezier *bez,double *root,
 
     if( not_found )
     {
-        return  FALSE;
+	    return false;
     }
 
     delta = 1.0/bez->n;
@@ -1828,7 +1828,7 @@ static  int     root_of_bezier_negative_multi( bezier *bez,double *root,
 
         root_of_bezier_negative_multi_open( bez,root,number_of_roots );
 
-        return  TRUE;
+        return true;
     }
     else if( x - epsilon < bez->a )
     {
@@ -1888,7 +1888,7 @@ static  int     root_of_bezier_negative_multi_open( bezier *bez,double *root,
                 int *number_of_roots )
 {
     int     i = bez->n - 1, j = bez->n - 2,k;
-    int     not_found = TRUE;
+    bool not_found = true;
 
     double  diff,alpha,delta,r,s,t,x;
 
@@ -1908,7 +1908,7 @@ static  int     root_of_bezier_negative_multi_open( bezier *bez,double *root,
 
     if( not_found )
     {
-        return  FALSE;
+	    return false;
     }
 
     delta = 1.0/bez->n;

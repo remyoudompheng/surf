@@ -30,7 +30,6 @@
 #include "RgbBuffer.h"
 #include "float_buffer.h"
 
-#include "stop.h"
 
 void copy_rgb_to_float_curve (RgbBuffer &intensity, float_buffer& gray)
 {
@@ -39,7 +38,7 @@ void copy_rgb_to_float_curve (RgbBuffer &intensity, float_buffer& gray)
 	
 	int i,j;
 
-	for( i = 0; i < intensity.getHeight() && !stop; i++ ) {
+	for( i = 0; i < intensity.getHeight(); i++ ) {
 		for(  j = 0; j < intensity.getWidth(); j++ ) {
 			gray.Set(j,i,( intensity.GetTag( j,i,DATABIT ) ? 0.0 : 1.0 ) );
 		}

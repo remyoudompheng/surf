@@ -28,34 +28,30 @@
 #ifndef IMAGEFORMAT_XBM_H
 #define IMAGEFORMAT_XBM_H
 
-#include "ImageFormats.h"
-
-#include <cstring>
+#include <ImageFormats.h>
 
 namespace ImageFormats {
 
 	class XBitmap : public Format {
 	public:
-		const char* getName() {
-			return "XBitmap";
+		std::string getName() const {
+			return "X Bitmap";
 		}
-		
-		ColorType getColorType() {
+		std::string getID() const {
+			return "xbm";
+		}
+		ColorType getColorType() const {
 			return dithered;
 		}
-
-		bool isExtension(const char* ext) {
-			if (std::strcasecmp(ext, "xbm") == 0) {
-				return true;
-			}
-			return false;
+		bool isExtension(const std::string& ext) const{
+			return ext == "xbm";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg) {
+		bool saveColorImage(const char* filename, RgbBuffer& data) {
 			return false;
 		}
 		
-		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
+		bool saveDitheredImage(const char* filename, bit_buffer& data);
 	};
 
 	extern XBitmap imgFmt_XBitmap;

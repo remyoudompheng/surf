@@ -29,7 +29,6 @@
 
 #include "RootFinder2d.h"
 #include "degree.h"
-#include "Thread.h"
 
 // #define DEBUG
 #include "debug.h"
@@ -52,22 +51,16 @@ void RootFinder2d::setPoly (const Polyxy &p)
 
 void RootFinder2d::findRootsInDirection (int direction, int min, int max, double minimal, double maximal, RootFoundAction *action)
 {
-	Thread::setDoing(direction == 0 ? "searching for roots in x direction" : 
-			 "searching for roots in y direction");
-
 	assert(direction==0 || direction == 1);
 
 	double Root	[MAX_DEGREE+1];			// array to store roots
 	double Estimate	[MAX_DEGREE+1];			// array to store estimates
 
 	int    NumberOfEstimates = 0;     // counter
-	int NumberOfRoots = 0;
 	double Coord[2];
 
 	// go through all lines resp. columns
 	for (int Pixel=min; Pixel<max; Pixel++) {
-		if (Thread::shouldStop())
-			return;
 
 		// transform pixel y to y coordinate
 		Coord[direction] = toUser (direction, Pixel);

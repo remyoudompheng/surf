@@ -27,10 +27,9 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "NewClipAlgebraic.h"
-#include "NewClipAlgebraicDode.h"
-
-#include "gui_config.h"
+#include <NewClipAlgebraic.h>
+#include <NewClipAlgebraicDode.h>
+#include <ScriptVar.h>
 
 
 void NewClipAlgebraicDode::init( void )

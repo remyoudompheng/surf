@@ -38,14 +38,6 @@
 
 #include "monomarith.h"
 
-#ifndef TRUE
-#define TRUE  (1)
-#endif /* TRUE */
-
-#ifndef FALSE
-#define FALSE (0)
-#endif  /* FALSE */
-
 #define DEG_UNSPEC    -2
 /* #define DEG_NULL      -1  */
 

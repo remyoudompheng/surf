@@ -24,8 +24,8 @@
 
 
 
-#include "CanvasDataStruct.h"
-#include "gui_config.h"
+#include <CanvasDataStruct.h>
+#include <ScriptVar.h>
 
 extern double Y_AXIS_LR_ROTATE;
 
@@ -36,7 +36,7 @@ CanvasDataStruct::CanvasDataStruct()
 	pxDyz = NULLPOLYXYZ;
 	
 	hpxyz = hpDxyz = hpxDyz = 0;
-	initialized = FALSE;
+	initialized = false;
 }
 
 CanvasDataStruct::~CanvasDataStruct()
