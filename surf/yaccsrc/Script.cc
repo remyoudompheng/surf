@@ -211,53 +211,42 @@ void Script::executeScriptFromStdin(bool quiet)
 {
 	beforeScriptExecution();
 	
-	std::string script = "";
-	std::string line;
-
 	bool is_a_tty = isatty(STDIN_FILENO);
-
 	if(is_a_tty && !quiet) {
 		std::cout << PACKAGE " " VERSION "\n";
 	}
 
-#ifdef HAVE_LIBREADLINE
 	if(is_a_tty) {
-		
+
+#ifdef HAVE_LIBREADLINE
 		rl_bind_key('\t', reinterpret_cast<Function*>(rl_insert));
 		rl_bind_key('^', reinterpret_cast<Function*>(rl_insert));
-		char* l;
-		while((l = readline(PROMPT)) != 0) {
-			add_history(l);
-			line.assign(l);
-			free(l);
-			if(line == "execute;") { // execute immediately
-				internalExecuteScript(script.c_str());
-				script.assign(""); // gcc 2.95 doesn't have std::string::clear()
-			} else {
-				script += line + '\n';
-			}
+		char* line;
+		while((line = readline(PROMPT)) != 0) {
+			add_history(line);
+			internalExecuteScript(line);
+			free(line);
 		}
-		
-	} else
-
-#endif
-	{
-		if(is_a_tty) {
-			std::cout << "Reading from stdin.\n"
-				  << PROMPT;
-		}
-		
+#else
+		std::cout << "Reading from stdin.\n"
+			  << PROMPT;
+		std::string line;
 		while(std::getline(std::cin, line)) {
-			
+			internalExecuteScript(line.c_str());
+			std::cout << PROMPT;
+		}
+#endif
+		std::cout << "\nExiting.\n";
+
+	} else {
+		std::string script = "";
+		std::string line;
+		while(std::getline(std::cin, line)) {
 			if(line == "execute;") { // execute immediately
 				internalExecuteScript(script.c_str());
 				script.assign(""); // gcc 2.95 doesn't have std::string::clear()
 			} else {
 				script += line + '\n';
-			}
-
-			if(is_a_tty) {
-				std::cout << PROMPT;
 			}
 		}
 		if(script.length() > 0) {
