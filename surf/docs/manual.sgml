@@ -99,11 +99,15 @@ To compile <em>surf</em>, the following software is needed:
 Optional arguments are <tt>--nogui</tt> (or <tt>-n</tt>) for starting
 <em>surf</em> without graphical user interface, <tt>--exec</tt> (or
 <tt>-x</tt>) to immediately execute the first passed script file and -
-when using surf <em>with</em> GUI - the usual GTK+
-options. <tt>--help</tt> prints out the usage information:
+when using surf <em>with</em> GUI - <tt>--progress-dialog</tt>
+which tells surf to use a progress dialog
+instead of a status bar, <tt>--auto-resize</tt> which forces the image
+windows to get automatically resized to the size of the image, and the
+usual GTK+ options. <tt>--help</tt> prints out the usage information:
 <verb>
-    surf -n|--nogui file ...
-    surf [Gtk options] [[-x|--exec] file ...]
+    surf -n | --no-gui FILE...
+    surf [GTK-OPTIONS] [-x | --exec] [--progress-dialog]
+         [--auto-resize] [FILE]...
     surf --help
 </verb>
 

@@ -68,6 +68,10 @@ public:
 
 	void setWindowToShow(ColorWindow *cw)
 		{windowToShow = cw;}
+
+	int getWidth() const { return width; }
+	int getHeight() const { return height; }
+
 protected:
 	int locks;
 	GtkWidget *gtkdrawingArea;

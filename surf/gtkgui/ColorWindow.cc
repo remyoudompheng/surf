@@ -27,6 +27,7 @@
 #include <iostream.h>
 #include "ColorWindow.h"
 #include "MainWindowController.h"
+#include "Options.h"
 
 // #define DEBUG
 #include "debug.h"
@@ -77,6 +78,10 @@ DrawingArea *ColorWindow::getSurfDrawingArea()
 
 void ColorWindow::show()
 {
+	if(options->get_auto_resize()) {
+		gtk_widget_set_usize(window, surfDrawingArea.getWidth() + 8,
+				     surfDrawingArea.getHeight() + 8);
+	}
 	gtk_widget_show_all(window); 
 	gdk_window_raise(window->window);
 

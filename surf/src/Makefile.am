@@ -28,7 +28,8 @@ libdummy_a_SOURCES = compfn.cc \
 	WindowGeometry.cc WindowGeometry.h		\
 	antialiasing_factor.cc antialiasing_factor.h	\
 	RGBToNetscape.cc RGBToNetscape.h		\
-	mytypes.h
+	mytypes.h \
+	Options.h Options.cc
 
 
 libdummy.a:: $(libdummy_a_OBJECTS) $(libdummy_a_DEPENDENCIES)

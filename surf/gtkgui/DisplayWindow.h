@@ -27,6 +27,7 @@
 #ifndef DISPLAYWINDOW_H
 #define DISPLAYWINDOW_H
 
+#include <stdlib.h>
 #include <gtk/gtk.h>
 #include "mygtk.h"
 

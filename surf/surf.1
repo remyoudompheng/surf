@@ -11,8 +11,10 @@ surf \- visualization of algebraic curves and surfaces
 .B surf
 .RI [\| Gtk
 .IR options \|]
-.RB [\|[\| \-x \||\| \-\-exec \|]
-.IR file \ .\|.\|.\|]
+.RB [\| \-x \||\| \-\-exec \|]
+.RB [\| \-\-progress-dialog \|]
+.RB [\| \-\-auto-resize \|]
+.IR file \ .\|.\|.
 .br
 .B surf
 .B \|\-\-help
@@ -77,6 +79,18 @@ scripts are always executed non-interactively.
 Execute scripts passed as
 .IR file s
 immediately. Otherwise the scripts are just loaded, not executed.
+
+.TP
+.B \-\-progress-dialog
+Pop up a progress dialog instead of the status bar display during
+calculations.
+
+.TP
+.B \-\-auto-reszie
+Automatically resize the image windows to the size of the image.
+Be aware that there's no check whether the image size is bigger than
+your actual screen size.
+
 .TP
 .B \-\-help
 Display usage information.

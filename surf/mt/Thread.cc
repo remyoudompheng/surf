@@ -87,12 +87,17 @@ int Thread::start (void * (*startFunc) (void *), void *argument)
 	if (!can_start)
 		return false;
 
+	pthread_attr_t attr;
+	pthread_attr_init (&attr);
+	pthread_attr_setstacksize (&attr, 0x1000000);
 	pthread_t pt;
 	MyArgument *arg = new MyArgument();
 	arg->arg = argument;
 	arg->startFunc = startFunc;
 	arg->thread = this;
-	return pthread_create (&pt, 0, myStartFunc, arg);
+	int err = pthread_create (&pt, &attr, myStartFunc, arg);
+	pthread_attr_destroy(&attr);
+	return err;
 }
 
 Thread::Thread()

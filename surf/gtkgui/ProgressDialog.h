@@ -35,9 +35,16 @@ class Thread;
 class ProgressDialog
 {
 public:
+	enum ProgressType {
+		Dialog,
+		StatusBar
+	};
+	
 	ProgressDialog();
  	~ProgressDialog();
 
+	GtkWidget* getProgressBox() const { return hbox; }
+	
 	void setDone(double _done) { done = _done; }
 	void setDoing(const char* _doing) { doing = _doing; }
 
@@ -45,15 +52,21 @@ public:
 	void updateDisplay();	
 
 private:
-	static void tryToStop(GtkWidget *, gpointer);
+	static void tryToStop (GtkWidget *, gpointer);
 	void show();
 	void hide();
 
+	ProgressType type;
+
 	GtkWidget* dialog;
+	GtkWidget* hbox;
 	GtkWidget* label;
+	GtkWidget* statusbar;
 	GtkWidget* progress;
-	Thread* thread;
-	const char* doing;
+	GtkWidget* button;
+
+	Thread *thread;
+	const char *doing;
 	double done;
 	gint timeouttag;
 	bool shown;

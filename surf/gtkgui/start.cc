@@ -31,16 +31,7 @@
 #include "mycolor.h"
 #include "MainWindowController.h"
 #include "Document.h"
-
-
-struct after_gui_creation_struct {
-	MainWindowController *mainWindowController;
-	int argc;
-	char** argv;
-	int fileopts;
-	bool execute;
-};
-
+#include "Options.h"
 
 void new_input(void *data, int source, GdkInputCondition cond)
 {
@@ -55,46 +46,40 @@ void new_input(void *data, int source, GdkInputCondition cond)
 
 gint after_gui_creation(gpointer data)
 {
-	after_gui_creation_struct *agcs = (after_gui_creation_struct *) data;
+	MainWindowController* mwc = (MainWindowController*)data;
 	bool doc_loaded = false;
-
-	for (int i = agcs->fileopts; i < agcs->argc; i++) {
-		Document *doc = Document::loadDocument (agcs->argv[i]);
-		if (doc) {
-			if (!doc_loaded) {
-				agcs->mainWindowController->editDocument(doc);	
+	int argc = options->get_argc();
+	char** argv = options->get_argv();
+	
+	for(int i = options->getFirstFileIdx(); i < argc; i++) {
+		Document* doc = Document::loadDocument(argv[i]);
+		if(doc) {
+			if(!doc_loaded) {
+				mwc->editDocument(doc);	
 				doc_loaded = true;
 			}
 		}
 	}
 	
-	if (doc_loaded && agcs->execute) {
-		agcs->mainWindowController->executeScript();
+	if (doc_loaded && options->get_exec()) {
+		mwc->executeScript();
 	} else {
-		agcs->mainWindowController->show();
+		mwc->show();
 	}
 
 	return false;
 }
 
-void start_gtk_main (int argc, char** argv, int fileopts, bool execute)
+void start_gtk_main()
 {
 	GuiThread::init();
-
-	gdk_input_add (GuiThread::getFileDescriptor(), GDK_INPUT_READ, new_input, 0);
-
+	gdk_input_add(GuiThread::getFileDescriptor(), GDK_INPUT_READ, new_input, 0);
 	initColors();
-	
 	MainWindowController *mainWindowController = new MainWindowController();
-	after_gui_creation_struct p;
-	p.mainWindowController = mainWindowController;
-	p.argc = argc;
-	p.argv = argv;
-	p.fileopts = fileopts;
-	p.execute = execute;
+	gtk_idle_add(after_gui_creation, mainWindowController);
 
-	gtk_idle_add (after_gui_creation, &p);
-	gtk_main ();
+	gtk_main();
+
 	delete mainWindowController;
 	Document::freeAllDocuments();
 	GuiThread::deinit();

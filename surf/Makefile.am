@@ -15,7 +15,7 @@ DRAWFUNC_OBJ =  drawfunc/Bezier.o drawfunc/Clip.o drawfunc/DrawfuncData.o drawfu
 
 IMAGE_OBJ =  image-formats/ImageFormats.o image-formats/AvailableImageFormats.o image-formats/ByExtension.o image-formats/JPEG.o image-formats/TIFF.o image-formats/Postscript.o image-formats/Sun.o image-formats/EPS.o image-formats/XWD.o image-formats/XBitmap.o image-formats/PPM.o image-formats/PBM.o image-formats/XPM.o image-formats/Pipe.o
 
-SRC_OBJ = src/RGBToNetscape.o src/compfn.o src/cube.o src/float_buffer.o src/gui_config.o src/init_parser.o src/main.o src/oct_quan.o src/RgbBuffer.o src/roots.o src/bit_buffer.o src/SurfaceDataStruct.o src/CanvasDataStruct.o src/symtab.o src/WindowGeometry.o src/antialiasing_factor.o src/stop.o
+SRC_OBJ = src/RGBToNetscape.o src/compfn.o src/cube.o src/float_buffer.o src/gui_config.o src/init_parser.o src/main.o src/oct_quan.o src/RgbBuffer.o src/roots.o src/bit_buffer.o src/SurfaceDataStruct.o src/CanvasDataStruct.o src/symtab.o src/WindowGeometry.o src/antialiasing_factor.o src/stop.o src/Options.o
 
 YACCSRC_OBJ = yaccsrc/bezierarith.o yaccsrc/hornerarith.o yaccsrc/monomarith.o yaccsrc/mymemory.o yaccsrc/polyarith.o yaccsrc/polylex.o yaccsrc/polyroot.o yaccsrc/polyyacc.o yaccsrc/simple.o yaccsrc/polyx.o yaccsrc/lexfunc.o yaccsrc/SymbolTable.o yaccsrc/addDefaultSymbols.o yaccsrc/Script.o yaccsrc/ExecuteScriptStruct.o
 

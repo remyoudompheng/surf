@@ -45,7 +45,7 @@
 #include "GuiThread.h"
 #include "Misc.h"
 #include "RadioButtonBuilder.h"
-
+#include "Options.h"
 
 
 static void scriptExecuted (ExecuteScriptStruct *ess)
@@ -647,10 +647,9 @@ MainWindowController::MainWindowController()
 	GtkWidget *previewContainer = gtk_hbox_new (FALSE, 10);
 	gtk_box_pack_start (GTK_BOX(previewContainer), gtk_label_new ("Preview:"), FALSE, FALSE ,0);
 	gtk_box_pack_start (GTK_BOX(previewContainer), preview, FALSE, FALSE ,0);
+	gtk_box_pack_start(GTK_BOX(previewContainer), sizeContainer, FALSE, FALSE, 0);
 	gtk_container_border_width(GTK_CONTAINER(previewContainer), 5);
 	mygtk_set_tip (previewContainer, "toller tip");
-
-	gtk_box_pack_start(GTK_BOX(previewContainer), sizeContainer, FALSE, FALSE, 0);
 
 
 	// pack stuff into window:
@@ -662,8 +661,10 @@ MainWindowController::MainWindowController()
 	gtk_box_pack_start(GTK_BOX(dummy), handlebox, false, false, 0);
 	gtk_box_pack_start(GTK_BOX(dummy), mainBox, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(dummy), previewContainer, FALSE, FALSE, 0);
+	if(!options->get_progress_dialog()) {
+		gtk_box_pack_start(GTK_BOX(dummy), progress.getProgressBox(), false, false, 0);
+	}
 	gtk_container_add (GTK_CONTAINER(window), dummy);
-
 
 
 	editDocument(Document::newUnnamed());
