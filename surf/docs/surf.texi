@@ -1134,7 +1134,7 @@ centered on the page (which is assumed to be A4).
 @c List Of All Reserved Words
 @c **************************
 
-@node List Of All Reserved Words, Main Commands, Image Formats, top
+@node List Of All Reserved Words, Main Variables, Image Formats, top
 @chapter List Of All Reserved Words
 
 A reserved word in surf's language is either a command or a global
@@ -1142,16 +1142,39 @@ variable. A command is invoked mostly without parameters. Global
 variables are either constant or may be altered.
 
 @menu
-* Main Commands::
 * Main Variables::
+* Drawing Commands::
 * Positioning::
+* Saving Images::
+* Image Variables::
+* Lighting Variables::
+* Clipping::
 @end menu
 
 
-@c Main Commands
-@c -------------
-@node Main Commands, Main Variables, List Of All Reserved Words, List Of All Reserved Words
-@section Main Commands
+@c Main Variables
+@c --------------
+
+@node Main Variables, Drawing Commands, List Of All Reserved Words, List Of All Reserved Words
+@section Main Variables
+
+@multitable {Reserved Word} {@code{string}} {@{64, @dots{}, 3000@}} {Default} {height of surface image}
+@item Reserved Word @tab Type @tab Range @tab Default @tab Description
+@item @code{curve}    @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of curve
+@item @code{surface}  @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface
+@item @code{surface2} @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface2
+@item @dots{}         @tab @dots{}  @tab @dots{} @tab @dots{} @tab @dots{}
+@item @code{surface9} @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface9
+@item @code{plane}    @tab @code{poly} @tab linear @tab @code{0} @tab equation of hyperplane
+@item @code{width}    @tab @code{int}  @tab @{@code{64}, ..., @code{3000}@} @tab @code{200} @tab width of image
+@item @code{height}   @tab @code{int}  @tab @{@code{64}, ..., @code{3000}@} @tab @code{200} @tab height of image
+@item @code{surf_nr}  @tab @code{int}  @tab @{@code{1},..., @code{9}@} @tab @code{1} @tab surface which is used for @code{cut_with_plane}
+@end multitable
+
+@c Drawing Commands
+@c ----------------
+@node Drawing Commands, Positioning, Main Variables, List Of All Reserved Words
+@section Drawing Commands
 
 @multitable @columnfractions 0.2 0.8
 @item Reserved Word: @tab Description:
@@ -1167,39 +1190,15 @@ variables are either constant or may be altered.
                                       black and white image
 @item @code{dither_curve}        @tab convert color image to a dithered
                                       black and white image (for curves only)
-@item @code{save_color_image}    @tab save color image in file defined by the
-                                      global string @code{filename}
-@item @code{save_dithered_image} @tab save dithered black and white image in
-                                      file defined by the global string @code{filename}
-@end multitable
-
-@c Main Variables
-@c --------------
-
-@node Main Variables, Positioning, Main Commands, List Of All Reserved Words
-@section Main Variables
-
-@multitable {Reserved Word} {@code{string}} {@{64, @dots{}, 3000@}} {Default} {height of surface image}
-@item Reserved Word @tab Type @tab Range @tab Default @tab Description
-@item @code{curve}    @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of curve
-@item @code{surface}  @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface
-@item @code{surface2} @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface2
-@item @dots{}         @tab @dots{}  @tab @dots{} @tab @dots{} @tab @dots{}
-@item @code{surface9} @tab @code{poly} @tab --- @tab @code{0} @tab polynomial of surface9
-@item @code{plane}    @tab @code{poly} @tab linear @tab @code{0} @tab equation of hyperplane
-@item @code{width}    @tab @code{int}  @tab @{@code{64}, ..., @code{3000}@} @tab @code{200} @tab width of image
-@item @code{height}   @tab @code{int}  @tab @{@code{64}, ..., @code{3000}@} @tab @code{200} @tab height of image
-@item @code{filename} @tab @code{string} @tab any @tab @code{""} @tab filename used in @code{save_color_image} and @code{save_dithered_image}
-@item @code{surf_nr}  @tab @code{int}  @tab @{@code{1},..., @code{9}@} @tab @code{1} @tab surface which is used for @code{cut_with_plane}
 @end multitable
 
 @c Positioning
 @c -----------
 
-@node Positioning, , Main Variables, List Of All Reserved Words
+@node Positioning, Saving Images, Drawing Commands, List Of All Reserved Words
 @section Positioning
 
-@multitable {Reserved Word} {@code{double}} {]@code{-9999}, @code{9999}[} {Default} {ratio surface is scaled in}
+@multitable {Reserved Word} {@code{double}} {]@code{-9999}, @code{9999}[} {@code{translate}} {spectator distance from origin}
 @item Reserved Word @tab Type @tab Range @tab Default @tab Description
 @item @code{origin_x}    @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{0} @tab x position of origin
 @item @code{origin_y}    @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{0} @tab y position of origin
@@ -1211,15 +1210,156 @@ variables are either constant or may be altered.
 @item @code{scale_x}     @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{1} @tab ratio surface is scaled in direction of the x-axis
 @item @code{scale_y}     @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{1} @tab ratio surface is scaled in direction of the y-axis
 @item @code{scale_z}     @tab @code{double} @tab ]@code{-9999}, @code{9999}[ @tab   @code{1} @tab ratio surface is scaled in direction of the z-axis
-@item @code{perspective} @tab @code{int}    @tab @{@code{0}, @code{1}@}      @tab   @code{0} @tab perspective to use
-@item @code{parallel}    @tab @code{int}    @tab @code{0}                    @tab   @code{0} @tab constant
-@item @code{central}     @tab @code{int}    @tab @code{1}                    @tab   @code{1} @tab constant
-@item @code{first}       @tab @code{int}    @tab @{@code{0}, @code{1}, @code{2}@} @tab @code{0} @tab first performed action
-@item @code{second}      @tab @code{int}    @tab @{@code{0}, @code{1}, @code{2}@} @tab @code{0} @tab second performed action
-@item @code{third}       @tab @code{int}    @tab @{@code{0}, @code{1}, @code{2}@} @tab @code{0} @tab third performed action
-@item @code{translate}   @tab @code{int}    @tab @code{0}                    @tab   @code{0} @tab constant
-@item @code{rotate}      @tab @code{int}    @tab @code{1}                    @tab   @code{1} @tab constant
-@item @code{scale}       @tab @code{int}    @tab @code{2}                    @tab   @code{2} @tab constant
+@item @code{perspective} @tab @code{int}    @tab @{@code{parallel}, @code{central}@} @tab @code{parallel} @tab perspective to use
+@item @code{first}       @tab @code{int}    @tab @{@code{translate}, @code{rotate}, @code{scale}@} @tab @code{translate} @tab first performed action
+@item @code{second}      @tab @code{int}    @tab @{@code{translate}, @code{rotate}, @code{scale}@} @tab @code{rotate}  @tab second performed action
+@item @code{third}       @tab @code{int}    @tab @{@code{translate}, @code{rotate}, @code{scale}@} @tab @code{scale} @tab third performed action
+@end multitable
+
+@c Saving Images
+@c -------------
+
+@node Saving Images, Image Variables, Positioning, List Of All Reserved Words
+@section Saving Images
+
+@multitable {@code{save_dithered_image}} {@code{string}} {@code{postscript,}} {@code{auto}} {save color image in file defined}
+@item Reserved Word              @tab Type          @tab Range @tab Def.     @tab Description
+@item @code{save_color_image}    @tab cmd.          @tab ---   @tab ---       @tab save color image in file defined by the global string @code{filename}
+@item @code{save_dithered_image} @tab cmd.          @tab ---   @tab ---       @tab save dithered black and white image in file defined by the global string @code{filename}
+@item @code{filename}            @tab @code{string} @tab any   @tab @code{""} @tab filename used in @code{save_color_image} and @code{save_dithered_image}
+@item @code{color_file_format}   @tab @code{int}    @tab @{@code{auto},@* @code{jpeg},@* @code{ppm},@* @code{sun},@* @code{xpm}@} @tab @code{auto} @tab file format used in @code{save_color_image}
+@item @code{dither_file_format}  @tab @code{int}    @tab @{@code{auto},@* @code{eps},@* @code{pbm},@* @code{postscript},@* @code{tiff},@* @code{xbm}@} @tab @code{auto} @tab file format used in @code{save_dithered_image}
+@end multitable
+
+@c Image Variables
+@c ---------------
+
+@node Image Variables, Lighting Variables, Saving Images, List Of All Reserved Words
+@section Image Variables
+
+@multitable {@code{antialiasing_threshold}} {@code{string}} {@code{postscript,}} {@code{auto}} {save color image in file defined}
+@item Reserved Word                 @tab Type          @tab Range @tab Def.     @tab Description
+@item @code{dither_colors}          @tab @code{int}    @tab @{@code{yes}, @code{no}@} @tab @code{yes} @tab color dithering
+@item @code{dither_steps}           @tab @code{double} @tab [@code{5}, @dots{}...,@code{255}] @tab @code{20.0} @tab steps of dithering
+@item @code{normalize}              @tab @code{int}    @tab @{@code{yes}, @code{no}@} @tab @code{no} @tab normalize image
+@item @code{normalize_factor}       @tab @code{double} @tab ]@code{0}, @dots{}, @code{5}] @tab @code{1.0} @tab multiply with
+@item @code{antialiasing}           @tab @code{int}    @tab @{@code{1}, @dots{}, @code{8}@} @tab @code{1} @tab level of antialiasing
+@item @code{antialiasing_threshold} @tab @code{double} @tab ]@code{0}, @code{1}[ @tab @code{0.1} @tab threshold
+@item @code{antialiasing_radius}    @tab @code{double} @tab [@code{0.5}, @code{2}] @tab @code{2.0} @tab radius 
+@item @code{depth_cueing}           @tab @code{int}    @tab @{@code{yes}, @code{no}@} @tab @code{no} @tab use depth cueing
+@item @code{depth_value}            @tab @code{double} @tab [@code{-1000}, @code{10}[ @tab @code{-14.0} @tab depth of mist
+@item @code{stereo_eye}             @tab @code{double} @tab [@code{-100}, @code{100}] @tab @code{0.0} @tab eye distance
+@item @code{stereo_z}               @tab @code{double} @tab [@code{-30}, @code{30}] @tab @code{5.0} @tab distance from screen
+@item @code{stereo_red}             @tab @code{double} @tab [@code{0}, @code{1}] @tab @code{1.0} @tab left eye red
+@item @code{stereo_green}           @tab @code{double} @tab [@code{0}, @code{1}] @tab @code{0.7} @tab right eye green
+@item @code{stereo_blue}            @tab @code{double} @tab [@code{0}, @code{1}] @tab @code{0.0} @tab right eye blue
+@end multitable
+
+@c Lighting Variables
+@c ------------------
+
+@node Lighting Variables, Clipping, Image Variables, List Of All Reserved Words
+@section Lighting Variables
+
+@multitable {@code{surface9_green}} {@code{double}} {@code{transmitted_light}} {@code{amb... +}} {volume of 9th light source}
+@item Reserved Word          @tab Type          @tab Range @tab Def.     @tab Description
+@item @code{illumination}    @tab @code{int}    @tab any sum of@* @code{ambient_light}, @code{diffuse_light}, @code{reflected_light} and@* @code{transmitted_light} @tab @code{amb.. + diff.. + refl..} @tab illumination model
+@item @code{surface_red}     @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{123} @tab color of @code{surface}
+@item @code{surface_green}   @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{104} @tab
+@item @code{surface_blue}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{238} @tab
+@item @code{inside_red}      @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{230} @tab inside color of @code{surface}
+@item @code{inside_green}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{180} @tab
+@item @code{inside_blue}     @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{30}  @tab
+@item @code{surface2_red}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{123} @tab color of @code{surface2}
+@item @code{surface2_green}  @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{104} @tab
+@item @code{surface2_blue}   @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{208} @tab
+@item @code{inside2_red}     @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{230} @tab inside color of @code{surface2}
+@item @code{inside2_green}   @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{180} @tab
+@item @code{inside2_blue}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{30}  @tab
+@item @dots{}                @tab @dots{}       @tab @dots{}                                           @tab @dots{}
+@item @code{surface9_red}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{123} @tab color of @code{surface9}
+@item @code{surface9_green}  @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{104} @tab
+@item @code{surface9_blue}   @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{238} @tab
+@item @code{inside9_red}     @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{230} @tab inside color of @code{surface9}
+@item @code{inside9_green}   @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{180} @tab
+@item @code{inside9_blue}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{30}  @tab
+@item @code{ambient}         @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{35}  @tab amount of ambient light
+@item @code{diffuse}         @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{60}  @tab diffuse reflected light
+@item @code{reflected}       @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{60}  @tab specular reflected light
+@item @code{transmitted}     @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{60}  @tab spec. transmitted light
+@item @code{smoothness}      @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{13}  @tab roughness
+@item @code{transparency}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{80}  @tab transparency
+@item @dots{}                @tab @dots{}       @tab @dots{}                                           @tab @dots{}
+@item @code{ambient9}        @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{35}  @tab amount of ambient light
+@item @code{diffuse9}        @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{60}  @tab diffuse reflected light
+@item @code{reflected9}      @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{60}  @tab specular reflected light
+@item @code{transmitted9}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{60}  @tab spec. transmitted light
+@item @code{smoothness9}     @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{13}  @tab roughness
+@item @code{transparency9}   @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{80}  @tab transparency
+@item @code{light1_x}        @tab @code{double} @tab [@code{-9999}, @code{9999}]      @tab @code{-100} @tab position of 1st light source
+@item @code{light1_y}        @tab @code{double} @tab [@code{-9999}, @code{9999}]       @tab @code{100} @tab
+@item @code{light1_z}        @tab @code{double} @tab [@code{-9999}, @code{9999}]       @tab @code{100} @tab
+@item @code{light1_vol}      @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{50}  @tab volume of 1st light source
+@item @code{light1_red}      @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab color of 1st light source
+@item @code{light1_green}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab
+@item @code{light1_blue}     @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab
+@item @dots{}                @tab @dots{}       @tab @dots{}                                           @tab @dots{}
+@item @code{light9_x}        @tab @code{double} @tab [@code{-9999}, @code{9999}]       @tab @code{100} @tab position of 9th light source
+@item @code{light9_y}        @tab @code{double} @tab [@code{-9999}, @code{9999}]       @tab @code{-100} @tab
+@item @code{light9_z}        @tab @code{double} @tab [@code{-9999}, @code{9999}]       @tab @code{100} @tab
+@item @code{light9_vol}      @tab @code{int}    @tab @{@code{0}, @dots{}, @code{100}@} @tab @code{0}   @tab volume of 9th light source
+@item @code{light9_red}      @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab color of 9th light source
+@item @code{light9_green}    @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab
+@item @code{light9_blue}     @tab @code{int}    @tab @{@code{0}, @dots{}, @code{255}@} @tab @code{255} @tab
+@end multitable
+
+
+@c Clipping
+@c --------
+
+@node Clipping, , Lighting Variables, List Of All Reserved Words
+@section Clipping
+
+@multitable {@code{cylinder_xaxis}} {@code{double}} {@code{cylinder_xaxis, }} {@code{none}} {additional clip region}
+@item Reserved Word     @tab Type          @tab Range @tab Def.     @tab Description
+@item @code{clip}       @tab @code{int}    @tab @{@code{none},@*
+                                                  @code{sphere},@*
+                                                  @code{cylinder_xaxis},@*
+                                                  @code{cylinder_yaxis},@*
+                                                  @code{cylinder_zaxis},@*
+                                                  @code{cube}@}            @tab @code{none} @tab clipping area shape
+@item @code{clip_front} @tab @code{double} @tab [@code{-9999}, @code{9999}] @tab @code{10}  @tab additional clip region
+@item @code{clip_back}  @tab @code{double} @tab [@code{-9999}, @code{9999}] @tab @code{-10} @tab additional clip region
+@item @code{radius}     @tab @code{double} @tab ]@code{0}, @code{9999}]     @tab @code{10}  @tab radius of clip region
+@item @code{center_x}   @tab @code{double} @tab [@code{-9999}, @code{9999}] @tab @code{0}   @tab center of clip region
+@item @code{center_y}   @tab @code{double} @tab [@code{-9999}, @code{9999}] @tab @code{0}   @tab center of clip region
+@item @code{center_z}   @tab @code{double} @tab [@code{-9999}, @code{9999}] @tab @code{0}   @tab center of clip region
+@end multitable
+
+@c Constants
+@c ---------
+
+@c @node, Constants, , , List Of All Reserved Words
+@c @section Constants
+
+These constants all appreared before as values for some variables
+(like @code{first}, @code{second}, @code{third} or @code{color_image_format}),
+but since they're actually just "ordinary" constants and thus reserved words
+they are listed here for the sake of completeness:
+
+@multitable {@code{d_chain_regula_falsi}} {@code{string}} {Value} {@code{first}, @code{second}, @code{third}}
+@item Constant           @tab Type        @tab Value    @tab Useful together with
+@item @code{yes}         @tab @code{int}  @tab @code{1} @tab for any boolean variable
+@item @code{no}          @tab @code{int}  @tab @code{0} @tab for any boolean variable
+@item @code{translate}   @tab @code{int}  @tab @code{0} @tab @code{first}, @code{second}, @code{third}
+@item @code{rotate}      @tab @code{int}  @tab @code{1} @tab @code{first}, @code{second}, @code{third}
+@item @code{scale}       @tab @code{int}  @tab @code{2} @tab @code{first}, @code{second}, @code{third}
+@item @code{parallel}    @tab @code{int}  @tab @code{0} @tab @code{perspective}
+@item @code{central}     @tab @code{int}  @tab @code{1} @tab @code{perspective}
+@item @code{ambient_light} @tab @code{int} @tab @code{1} @tab @code{illumination}
+@item @code{diffuse_light} @tab @code{int} @tab @code{2} @tab @code{illumination}
+@item @code{reflected_light} @tab @code{int} @tab @code{4} @tab @code{illumination}
+@item @code{transmitted_light} @tab @code{int} @tab @code{8} @tab @code{illumination}
 @end multitable
 
 @bye
