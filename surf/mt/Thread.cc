@@ -29,7 +29,7 @@
 
 #include "Thread.h"
 
-#define DEBUG
+// #define DEBUG
 #include "debug.h"
 
 static bool is_multithreaded=false;

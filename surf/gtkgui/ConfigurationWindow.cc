@@ -73,11 +73,11 @@ ConfigurationWindow::ConfigurationWindow()
 	GtkWidget *vbox = gtk_vbox_new (FALSE, 5);
 	
 	gtk_container_add (GTK_CONTAINER(window), vbox);
-	GtkWidget *button = gtk_button_new_with_label ("print script");
+// 	GtkWidget *button = gtk_button_new_with_label ("print script");
 
-	VOIDCONNECT (button, "clicked", printScript);
+// 	VOIDCONNECT (button, "clicked", printScript);
 
-	gtk_box_pack_start (GTK_BOX(vbox), button, FALSE, FALSE, 0);
+// 	gtk_box_pack_start (GTK_BOX(vbox), button, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
 	gtk_container_border_width(GTK_CONTAINER(window), 5);

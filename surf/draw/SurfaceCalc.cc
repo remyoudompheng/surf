@@ -1254,8 +1254,8 @@ void SurfaceCalc::CalculateCurveOnSurface( int xmin, int ymin, int xmax, int yma
 
 	if (vdisplay)
 		vdisplay->displayRectangle (xmin, ymin, xmax-xmin, ymax-ymin);
-	else
-		cout << "no vdisplay..." << endl;
+// 	else
+// 		cout << "no vdisplay..." << endl;
 #if 0
 	XCopyArea( sci->display,pixmap,win,sci->gc,
 		   xmin,ymin,           

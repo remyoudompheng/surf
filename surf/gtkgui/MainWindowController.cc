@@ -114,6 +114,10 @@ void MainWindowController::allowScriptExecution(bool val)
 
 bool MainWindowController::mayClose()
 {
+	if (Script::isScriptRunning()) {
+		Misc::alert ("A script is being executed. You'll have to stop it first.");
+		return false;
+	}
 	if (actualDocument)
 		actualDocument->setContents(tw.getContents ());
 
@@ -309,7 +313,7 @@ void MainWindowController::ditherSurface()
 
 void MainWindowController::drawCurve()
 {
-	internalExecuteScript (0, tw.getContents(), "draw_curve;", false);	
+	internalExecuteScript (0, tw.getContents(), "clear_screen; draw_curve;", false);	
 }
 
 void MainWindowController::ditherCurve()
@@ -487,7 +491,6 @@ MainWindowController::MainWindowController()
 	assert(drawCurve_MenuItem);
 	ditherCurve_MenuItem = gtk_item_factory_get_widget(fac, "/Command/Dither Curve");
 	assert(ditherCurve_MenuItem);
-	
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event", GTK_SIGNAL_FUNC(handle_delete_event), this);

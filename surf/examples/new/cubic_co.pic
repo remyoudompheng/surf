@@ -1,0 +1,215 @@
+// This is another example showing intersections of surfaces.
+
+double w2=sqrt(2);
+
+// tetrahedral coordinates
+
+polyxyz p=1-z-w2*x;
+polyxyz q=1-z+w2*x;
+polyxyz r=1+z+w2*y;
+polyxyz s=1+z-w2*y;
+
+// penthahedral coordinates
+
+poly y1=p;
+poly y2=q;
+poly y3=r;
+poly y4=s;
+poly y5=-y1-y2-y3-y4;
+
+// constants
+
+double a1=1.0;
+double a2=1.0;
+double a3=1.0;
+double a4=1.0;
+double a5=1.0;
+
+double t=a1*a2*a3*a4*a5;
+
+// the cubic
+
+poly u=a1*y1^3+a2*y2^3+a3*y3^3+a4*y4^3+a5*y5^3;
+
+// the partial derivatives of the cubic
+
+poly u1=diff(u,x);
+poly u2=diff(u,y);
+poly u3=diff(u,z);
+poly u4=3*u-x*u1-y*u2-z*u3;
+
+poly u11=diff(u1,x);
+poly u12=diff(u1,y);
+poly u13=diff(u1,z);
+poly u14=2*u1-x*u11-y*u12-z*u13;
+
+poly u21=diff(u2,x);
+poly u22=diff(u2,y);
+poly u23=diff(u2,z);
+poly u24=2*u2-x*u21-y*u22-z*u23;
+
+poly u31=diff(u3,x);
+poly u32=diff(u3,y);
+poly u33=diff(u3,z);
+poly u34=2*u3-x*u31-y*u32-z*u33;
+
+poly u41=diff(u4,x);
+poly u42=diff(u4,y);
+poly u43=diff(u4,z);
+poly u44=2*u4-x*u41-y*u42-z*u43;
+
+// the hessian determinant
+
+poly D=u11*u22*u33*u44  -u11*u22*u34^2    -
+       u11*u23^2*u44    +2*u11*u23*u24*u34-
+       u11*u24^2*u33    -u12^2*u33*u44    +
+       u12^2*u34^2      +2*u12*u23*u13*u44-
+       2*u12*u23*u14*u34-2*u12*u24*u13*u34+
+       2*u12*u24*u14*u33-u22*u13^2*u44    +
+       2*u13*u22*u14*u34+u13^2*u24^2      -
+       2*u13*u24*u14*u23-u22*u14^2*u33    +
+       u14^2*u23^2;
+
+// the 16 subdeterminants
+
+poly U11=u22*u33*u44-u22*u34^2-u23^2*u44+
+         2*u23*u24*u34-u24^2*u33;
+poly U12=u12*u33*u44-u12*u34^2-u23*u13*u44+
+         u23*u14*u34+u24*u13*u34-u24*u14*u33;
+poly U13=u12*u23*u44-u12*u24*u34-u22*u13*u44+
+         u22*u14*u34+u13*u24^2-u24*u14*u23;
+poly U14=u12*u23*u34-u12*u24*u33-u22*u13*u34+
+         u22*u14*u33+u23*u13*u24-u14*u23^2;
+
+poly U21=u12*u33*u44-u12*u34^2-u23*u13*u44+
+         u23*u14*u34+u24*u13*u34-u24*u14*u33;
+poly U22=u11*u33*u44-u11*u34^2-u13^2*u44+
+         2*u13*u14*u34-u14^2*u33;
+poly U23=u11*u23*u44-u11*u24*u34-u13*u12*u44+
+         u13*u14*u24+u14*u12*u34-u14^2*u23;
+poly U24=u11*u23*u34-u11*u24*u33-u13*u12*u34+
+         u13^2*u24+u14*u12*u33-u14*u13*u23;
+
+poly U31=u12*u23*u44-u12*u24*u34-u22*u13*u44+
+         u22*u14*u34+u13*u24^2-u24*u14*u23;
+poly U32=u11*u23*u44-u11*u24*u34-u13*u12*u44+
+         u13*u14*u24+u14*u12*u34-u14^2*u23;
+poly U33=u11*u22*u44-u11*u24^2-u12^2*u44+
+         2*u12*u14*u24-u14^2*u22;
+poly U34=u11*u22*u34-u11*u24*u23-u12^2*u34+
+         u12*u13*u24+u14*u12*u23-u14*u13*u22;
+
+poly U41=u12*u23*u34-u12*u24*u33-u22*u13*u34+
+         u22*u14*u33+u23*u13*u24-u14*u23^2;
+poly U42=u11*u23*u34-u11*u24*u33-u13*u12*u34+
+         u13^2*u24+u14*u12*u33-u14*u13*u23;
+poly U43=u11*u22*u34-u11*u24*u23-u12^2*u34+
+         u12*u13*u24+u14*u12*u23-u14*u13*u22;
+poly U44=u11*u22*u33-u11*u23^2-u12^2*u33+
+         2*u12*u13*u23-u13^2*u22;
+ 
+// get the signs correct
+
+U12=-U12;
+U14=-U14;
+U21=-U21;
+U23=-U23;
+U32=-U32;
+U34=-U34;
+U41=-U41;
+U43=-U43;
+
+poly H= U11*u11+U21*u21+U31*u31+U41*u41+
+        U12*u12+U22*u22+U32*u32+U42*u42+
+        U13*u13+U23*u23+U33*u33+U43*u43+
+        U14*u14+U24*u24+U34*u34+U44*u44;
+
+// the partial derivatives of
+// the hessian determinant
+
+poly D1=diff(D,x);
+poly D2=diff(D,y);
+poly D3=diff(D,z);
+poly D4=4*D-x*D1-y*D2-z*D3;
+
+poly D11=diff(D1,x);
+poly D12=diff(D1,y);
+poly D13=diff(D1,z);
+poly D14=3*D1-x*D11-y*D12-z*D13;
+
+poly D21=diff(D2,x);
+poly D22=diff(D2,y);
+poly D23=diff(D2,z);
+poly D24=3*D2-x*D21-y*D22-z*D23;
+
+poly D31=diff(D3,x);
+poly D32=diff(D3,y);
+poly D33=diff(D3,z);
+poly D34=3*D3-x*D31-y*D32-z*D33;
+
+poly D41=diff(D4,x);
+poly D42=diff(D4,y);
+poly D43=diff(D4,z);
+poly D44=3*D4-x*D41-y*D42-z*D43;
+
+
+poly T= U11*D11+U21*D21+U31*D31+U41*D41+
+        U12*D12+U22*D22+U32*D32+U42*D42+
+        U13*D13+U23*D23+U33*D33+U43*D43+
+        U14*D14+U24*D24+U34*D34+U44*D44;
+ 
+poly theta=
+        U11*D1^2 +U21*D2*D1+U31*D3*D1+U41*D4*D1+
+        U12*D1*D2+U22*D2^2 +U32*D3*D2+U42*D4*D2+
+        U13*D1*D3+U23*D2*D3+U33*D3^2 +U43*D4*D3+
+        U14*D1*D4+U24*D2*D4+U34*D3*D4+U44*D4^2;
+ 
+
+poly F=theta-4.0*D*T;
+
+surface =u;
+surface2=F;
+//surface3=D;
+
+surface_red=30;
+surface_blue=255;
+surface_green=30;
+inside_red=30;
+inside_blue=255;
+inside_green=30;
+
+surface2_red=255;
+surface2_blue=30;
+surface2_green=30;
+inside2_red=255;
+inside2_blue=30;
+inside2_green=30;
+
+surface3_red=30;
+surface3_blue=30;
+surface3_green=255;
+inside3_red=30;
+inside3_blue=30;
+inside3_green=255;
+
+illumination=ambient_light+
+             diffuse_light+
+             reflected_light+
+             transmitted_light;
+
+transparence=9;
+transparence2=45;
+transparence3=50;
+
+thickness2=10;
+thickness3=8;
+
+double sf=0.6;
+
+scale_x=sf; scale_y=sf; scale_z=sf;
+draw_surface;
+
+
+// computing the intersection can be as simple as the next two commands...
+cutsurface1=surface2;
+cut_with_surface;

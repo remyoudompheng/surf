@@ -86,6 +86,7 @@ protected:
 	MENUCALLBACK(saveColorImage, MainWindowController);
 	MENUCALLBACK(newDitherWindow, MainWindowController);
 	MENUCALLBACK(saveDitheredImage, MainWindowController);
+
 	VOIDCALL(saveScript, MainWindowController);
 
 	MENUCALLBACK(saveScriptAs, MainWindowController);

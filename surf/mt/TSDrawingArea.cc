@@ -180,7 +180,7 @@ void TSDrawingArea::drawSquare (int x, int y, int size, float r, float g, float 
 {
 	mutex.lock();
 	if (numSquares == MAXSQUARES-1) {
-		cout << "squares full..." << endl;
+// 		cout << "squares full..." << endl;
 		// here we have to unlock, because the gui thread will 
 		// try to lock this mutex when it calls "draw(this)"
 		mutex.unlock();
@@ -209,7 +209,7 @@ void TSDrawingArea::drawRSquare (int x, int y, int size, float r, float g, float
 {
 	mutex.lock();
 	if (numSquares == MAXSQUARES-1) {
-		cout << "squares full..." << endl;
+// 		cout << "squares full..." << endl;
 		// here we have to unlock, because the gui thread will 
 		// try to lock this mutex when it calls "draw(this)"
 		mutex.unlock();
@@ -236,7 +236,7 @@ void TSDrawingArea::drawGBSquare (int x, int y, int size, float r, float g, floa
 {
 	mutex.lock();
 	if (numSquares == MAXSQUARES-1) {
-		cout << "squares full..." << endl;
+// 		cout << "squares full..." << endl;
 		// here we have to unlock, because the gui thread will 
 		// try to lock this mutex when it calls "draw(this)"
 		mutex.unlock();

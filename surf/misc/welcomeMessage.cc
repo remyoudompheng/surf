@@ -44,4 +44,6 @@ char welcomeMessage []=
 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
 "GNU General Public License for more details.\n"
 "\n"
+"For reporting bugs or getting news about latest developments,\n"
+"please visit our homepage at http://surf.sourceforge.net/\n"
 "\n";

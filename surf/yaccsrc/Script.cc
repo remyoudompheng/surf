@@ -146,6 +146,19 @@ void *Script::startThread (void *data)
 	return 0;
 }
 
+bool Script::isScriptRunning ()
+{
+	if (!scriptRunning.tryLock()) {
+		return true;
+	} else if (scriptRunning.value != 0) {
+		scriptRunning.unlock();
+		return true;
+	} else {
+		scriptRunning.unlock();
+		return false;
+	}
+}
+
 bool Script::startScriptExecution(ExecuteScriptStruct *ess)
 {
 	if (!scriptRunning.tryLock()) {

@@ -202,7 +202,8 @@ IlluminationWindow::IlluminationWindow()
 
         gtk_scale_set_digits   ( GTK_SCALE( ambient_value ),0 );
         gtk_scale_set_value_pos( GTK_SCALE( ambient_value ),GTK_POS_RIGHT );
-	
+	controlWidget(ambient_value, "ambient");
+
 	gtk_box_pack_start (GTK_BOX(ambient_box),ambient_label,FALSE,FALSE,0 );
 	gtk_box_pack_start (GTK_BOX(ambient_box),ambient_value,TRUE,TRUE,0 );
 	gtk_box_pack_start (GTK_BOX(ambient_box),gtk_label_new( "     " ),TRUE,TRUE,0 );
@@ -254,7 +255,9 @@ IlluminationWindow::IlluminationWindow()
 	gtk_box_pack_start (GTK_BOX(container), surfaces_scroll, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX(container), light_scroll,    FALSE, FALSE, 0);
 
-	int i;
+
+	int i; // This isn't very nice, but it doesn't hurt either, and it's
+	       // appearently needed due to some compiler bug on IRIX !?
 
         for( i=0; i<MAIN_SURFACE_AMOUNT_NUM; i++ ) {
 	        char surfaces_string[15];

@@ -31,8 +31,9 @@ endif
 
 bin_PROGRAMS = surf
 surf_SOURCES = 
-EXTRA_DIST = background.pic Makefile.global aclocal.m4 surf.1
+EXTRA_DIST = background.pic Makefile.global aclocal.m4 surf.1 surf.xpm
 man_MANS = surf.1
+pkgdata_DATA = surf.xpm
 
 if GUI
 surf: $(LOCAL_OBJECTS) $(GTKGUI_OBJ)
@@ -49,9 +50,9 @@ dist-hook::
 	absdistdir=`cd $(distdir) && pwd` && \
 	(cd $(top_srcdir) && find examples docs | grep -v CVS | cpio -pad $$absdistdir)
 
-install-data-local:: surf.xpm
-	$(mkinstalldirs) $(pkgdatadir)
-	@(test -s surf.xpm && $(INSTALL) -m 644 surf.xpm $(pkgdatadir)) || echo "WARNING: background picture not installed"
-
-surf.xpm: surf $(srcdir)/background.pic
-	./surf --no-gui $(srcdir)/background.pic
+#install-data-local:: surf.xpm
+#	$(mkinstalldirs) $(pkgdatadir)
+#	@(test -s surf.xpm && $(INSTALL) -m 644 surf.xpm $(pkgdatadir)) || echo "WARNING: background picture not installed"
+#
+#surf.xpm: surf $(srcdir)/background.pic
+#	./surf --no-gui $(srcdir)/background.pic

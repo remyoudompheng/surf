@@ -28,7 +28,7 @@
 #include "ColorWindow.h"
 #include "MainWindowController.h"
 
-#define DEBUG
+// #define DEBUG
 #include "debug.h"
 
 gboolean ColorWindow::color_window_key_pressed (GtkWidget *w, GdkEventKey *event, gpointer data)

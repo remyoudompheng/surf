@@ -31,7 +31,7 @@
 #include "degree.h"
 #include "Thread.h"
 
-#define DEBUG
+// #define DEBUG
 #include "debug.h"
 
 

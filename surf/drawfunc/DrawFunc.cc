@@ -45,7 +45,7 @@
 #include "SurfaceCalc.h"
 #include "resultant.h"
 
-#define DEBUG
+// #define DEBUG
 #include "debug.h"
 
 static Position* GetPosition ();

@@ -34,7 +34,7 @@
 #include "RGBToStandard.h"
 #include "RgbBuffer.h"
 
-#define DEBUG
+// #define DEBUG
 #include "debug.h"
 #include "defs.h"
 #include "bit_buffer.h"
@@ -229,6 +229,10 @@ void DrawingArea::handle_realize (GtkWidget *widget, gpointer data)
 	This->gdkpixmap = gdk_pixmap_new(widget->window, This->width, This->height, This->isColored ? -1 : 1);
 	This->gdkgc = gdk_gc_new (widget->window);
 	gdk_gc_copy (This->gdkgc, widget->style->white_gc);
+	
+	// we need the next two lines to make the dither window work on 8 bit displays
+  	gdk_gc_set_foreground(This->gdkgc, &widget->style->white);
+  	gdk_gc_set_background(This->gdkgc, &widget->style->black);
 	
 
 	This->xdisplay = GDK_GC_XDISPLAY(This->gdkgc);

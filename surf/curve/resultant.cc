@@ -30,7 +30,7 @@
 #include "BigInteger.h"
 #include "Timer.h"
 
-#define DEBUG
+// #define DEBUG
 #include "debug.h"
 
 static Bezout<BigInteger>::Coeff3Poly convertToBigIntPoly ( const Polyxyz &p)
@@ -68,12 +68,8 @@ Polyxy resultant (const Polyxyz &p1, const Polyxyz &p2)
 	Bezout<BigInteger>::Coeff3Poly ip2 = convertToBigIntPoly (p2) ;
 
 
-	Timer *timer;
-	timer = new Timer ("BigInt");
-
 	Bezout<BigInteger>::Coeff2Poly ires = Bezout<BigInteger>::resultant (ip1, ip2);
 
-	delete timer;
 	Polyxy retval2;
 	ires.withMonomsPerform (addMonomFromBigInt, &retval2);
 	retval2.Norm();

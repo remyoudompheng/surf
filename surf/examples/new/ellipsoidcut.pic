@@ -1,0 +1,29 @@
+// This is a simple script which demonstrates surf's ability to draw
+// intersections of surfaces
+
+rot_x=0.5;
+rot_z=0.75;
+rot_y=0.5;
+
+transparence=10;
+illumination=15;
+
+// this is the first ellipsoid, on which we draw the intersection curve...
+surface=1.3*x^2+2*y^2+2*z^2-120;
+
+draw_surface;  // first draw the surface
+
+
+// okay...then this seems to be the second ellipsoid.
+cutsurface1=rotate(rotate(x^2+4*y^2+5*z^2-190, 1.3, yAxis),1.3,yAxis);
+
+cut_with_surface;
+
+
+// and save the picture...
+color_file_format = ppm;  // use ppm color file format...
+
+// the first "|" means that we write to a pipe instead of saving in a file, 
+// i.e. we call image magick's convert with the image data as standard input. 
+filename = "| convert -density 300x300 ppm:- eps:ellipsoidcut.eps";
+save_color_image;
