@@ -1,8 +1,4 @@
-Here are some minor problems I can think of:
+- readline-input: tab-completion would be cool
 
-* OctNode::TestBit:
-  What does it do and is it correct in what it does ???
-  I don't believe so.
-
-* Matrix::threadedDeterminant
-  Make the threaded version work.
+- slightly rotate around y-axis to prevent vanishing of surface/plane
+  cuts when plane has the direction of user's view
