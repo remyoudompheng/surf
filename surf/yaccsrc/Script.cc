@@ -350,6 +350,8 @@ void Script::addNewCommands()
 	replaceCommand("print_color_image_formats", printColorImageFormats);
 	replaceCommand("print_dither_image_formats", printDitherImageFormats);
 //	replaceCommand("print_three_d_image_formats", print3DImageFormats);
+	replaceCommand("print_background", printBackground);
+	replaceCommand("print_curve_color", printCurveColor);
 	replaceCommand("print_origin", printOrigin);
 	replaceCommand("print_rotation", printRotation);
 	replaceCommand("print_scale", printScale);
@@ -804,6 +806,26 @@ void Script::print3DImageFormats()
 	std::cout.flush();
 }
 #endif
+
+void Script::printBackground()
+{
+	using namespace ScriptVar;
+	std::cout << "background:\t"
+		  << color_background_data[0] << ' '
+		  << color_background_data[1] << ' '
+		  << color_background_data[2] << '\n';
+	std::cout.flush();
+}
+
+void Script::printCurveColor()
+{
+	using namespace ScriptVar;
+	std::cout << "curve_color:\t"
+		  << curve_color_slider_data[0] << ' '
+		  << curve_color_slider_data[1] << ' '
+		  << curve_color_slider_data[2] << '\n';
+	std::cout.flush();
+}
 
 void Script::printOrigin()
 {
