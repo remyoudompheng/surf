@@ -53,11 +53,11 @@ public:
 	}
 
 	void send(const char* txt) {
-		*kernel_input << txt << "execute;\n";
+		*kernel_input << txt << "\nexecute;\n";
 		kernel_input->flush();
 	}
 	void send(const std::string& txt) {
-		*kernel_input << txt << "execute;\n";
+		*kernel_input << txt << "\nexecute;\n";
 		kernel_input->flush();
 	}
 	std::string receive_line() {
