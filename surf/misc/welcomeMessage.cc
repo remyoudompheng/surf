@@ -30,7 +30,7 @@ char welcomeMessage []=
 "\n"
 "surf version " VERSION " - visualizing algebraic curves and algebraic surfaces\n"
 "Copyright (C) 1996-1997  Friedrich-Alexander-Universitaet Erlangen-Nuernberg,\n"
-"1998 Johannes Gutenberg-Universitaet Mainz.\n"
+"1997-2000 Johannes Gutenberg-Universitaet Mainz.\n"
 "Authors: Stephan Endrass, Hans Huelf, Ruediger Oertel, Ralf Schmitt,\n"
 "Kai Schneider and Johannes Beigel.\n"
 "\n"
