@@ -55,10 +55,10 @@ gboolean ColorWindow::color_window_clicked (GtkWidget *w, GdkEventButton *event,
 	return TRUE;
 }
 
-ColorWindow::ColorWindow(MainWindowController *mwc, bool colored) : surfDrawingArea(colored)
+ColorWindow::ColorWindow(MainWindowController *mwc, bool colored)
+	: isColored(colored), mainWindowController(mwc), surfDrawingArea(colored)
 {
 	surfDrawingArea.setWindowToShow(this);
-	mainWindowController = mwc;
 	scrolledWindow = gtk_scrolled_window_new(0,0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(scrolledWindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_usize(scrolledWindow, 200,200);
@@ -83,6 +83,7 @@ void ColorWindow::show()
 {
 	gtk_widget_show_all(window); 
 	gdk_window_raise(window->window);
+	mainWindowController->enableSaveButton(isColored);
 }
 
 void ColorWindow::lock()

@@ -59,6 +59,7 @@ public:
 	void show();
 	void quit();	
 	void toggleDisplayedState();
+	void enableSaveButton(bool which);
 	
 
 protected:
@@ -149,6 +150,8 @@ protected:
 	GtkWidget *ditherSurfaceButton;
 	GtkWidget *drawCurveButton;
 	GtkWidget *ditherCurveButton;
+	GtkWidget* colorSaveButton;
+	GtkWidget* ditheredSaveButton;
 	
 	ColorWindow *colorWindow;
 	ColorWindow *bitmapWindow;

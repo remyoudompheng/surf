@@ -525,10 +525,14 @@ MainWindowController::MainWindowController()
 	tmpbutton = addCommandButton ("save color image",
 				      "saves the image in the current color window");
   	VOIDCONNECT(tmpbutton, "clicked", saveColorImage);
+	gtk_widget_set_sensitive(tmpbutton, false);
+	colorSaveButton = tmpbutton;
 
 	tmpbutton = addCommandButton ("save dithered image",
 				      "saves the image in the current dither window");
   	VOIDCONNECT(tmpbutton, "clicked", saveDitheredImage);
+	gtk_widget_set_sensitive(tmpbutton, false);
+	ditheredSaveButton = tmpbutton;
 
 	addCommandSeparator();
 
@@ -659,4 +663,13 @@ void MainWindowController::previewToggled(GtkWidget *widget, gpointer data)
 		}
 	}
 	
+}
+
+void MainWindowController::enableSaveButton(bool which)
+{
+	if (which) {
+		gtk_widget_set_sensitive(colorSaveButton, true);
+	} else {
+		gtk_widget_set_sensitive(ditheredSaveButton, true);
+	}
 }

@@ -55,6 +55,7 @@ public:
 protected:
 	GtkWidget *window;
 	GtkWidget *scrolledWindow;
+	bool isColored;
 	class MainWindowController *mainWindowController;
 	DrawingArea surfDrawingArea;
 protected:
