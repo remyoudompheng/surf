@@ -156,7 +156,8 @@ void Triangulator::clip()
 
 	GtsSurfaceInter* inter = gts_surface_inter_new(gts_surface_inter_class(),
 						       surface, clipsurf,
-						       tree1, tree2);
+						       tree1, tree2,
+						       true, true); // TODO!
 
 	GtsSurface* result = gts_surface_new(gts_surface_class(),
 					     gts_face_class(),

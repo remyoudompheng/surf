@@ -31,6 +31,8 @@
 #  include <unistd.h>
 #endif
 
+#include<iostream>
+
 #ifdef HAVE_LIBREADLINE
 #  if defined(HAVE_READLINE_READLINE_H)
 #    include <readline/readline.h>
@@ -51,8 +53,6 @@
      extern int read_history();
 #  endif
 #endif
-
-#include<iostream>
 
 namespace {
 
