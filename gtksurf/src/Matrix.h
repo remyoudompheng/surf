@@ -185,7 +185,7 @@ typedef Matrix<GLfloat> GLmatrix;
 // implementation begins here:
 // ------------------------------------------------------------------------------
 
-#ifndef HAVE_LIBSTL
+#ifndef HAVE_LIBSTLPORT
 #  include<algo.h>
 #endif
 

@@ -69,7 +69,7 @@ public:
 		return res;
 	}
 
-	bool ask_user(const std::string& txt) const;
+	bool ask_user(const char* txt) const;
         void show_message(const std::string& txt) const;
 
 	bool fileselect(const std::string& title, GtkWidget* menu = 0);

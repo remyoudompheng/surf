@@ -63,9 +63,9 @@ Glade::~Glade()
 	gtk_object_unref(GTK_OBJECT(gladexml));
 }
 
-bool Glade::ask_user(const std::string& txt) const
+bool Glade::ask_user(const char* txt) const
 {
-	gtk_label_set_text(GTK_LABEL(get_widget("label_yesno")), txt.c_str());
+	gtk_label_set_text(GTK_LABEL(get_widget("label_yesno")), txt);
 	gtk_widget_grab_focus(get_widget("button_yes"));
 	gtk_widget_show(yesnodlg);
 	gtk_grab_add(yesnodlg);

@@ -89,7 +89,7 @@ void PrefsWindow::read_prefs()
 
 void PrefsWindow::save_prefs()
 {
-	std::ofstream f(filename.c_str(), ios::out | ios::trunc);
+	std::ofstream f(filename.c_str(), std::ios_base::out|std::ios_base::trunc);
 	if(!f) {
 		std::string s = "Couldn't open/create preferences file \'";
 		s += filename + "\'.\n";
