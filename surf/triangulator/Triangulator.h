@@ -30,6 +30,8 @@
 #  include <config.h>
 #endif
 
+#include <hornerarith.h>
+
 #ifdef HAVE_LIBGTS
 
 #include <gts.h>
@@ -67,6 +69,11 @@ private:
 		reinterpret_cast<Triangulator*>(This)->iso_func(f, g, k);
 	}
 	void calc_normal(const GtsPoint& p, float& x, float& y, float& z);
+
+	hornerpolyxyz* hf;
+	hornerpolyxyz* hdx;
+	hornerpolyxyz* hdy;
+	hornerpolyxyz* hdz;
 		
 	GtsSurface* surface;
 };

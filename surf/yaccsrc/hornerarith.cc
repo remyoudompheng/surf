@@ -106,12 +106,10 @@ void hornerpolyxyz::setRow (double y)
 
 void hornerpolyxyz::setColumn (double x)
 {
-	int     i;
+	memset(pZ.a, 0, (pZ.n + 1)*sizeof(double));
 
-	memset( (void*)pZ.a,0,( pZ.n + 1 )*sizeof(double) );
-
-	for( i = 0; i < pXn; i++ ) {
-		pZ.a[pXkz[i]] = pX[i].horner (x);
+	for(int i = 0; i < pXn; i++) {
+		pZ.a[pXkz[i]] = pX[i].horner(x);
 	}
 
 }

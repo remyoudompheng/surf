@@ -23,25 +23,13 @@
  */
 
 
-
-
-
-/* ------------------------------------------------------------------------- */
-/* hornerarith.h: include fast multivariate polynomial evaluation            */
-/* Author:   Stephan Endrass                                                 */
-/* Address:  endrass@mi.uni-erlangen.de                                      */
-/* Date:     14.8.94                                                         */
-/* ------------------------------------------------------------------------- */
-
 #ifndef HORNERARITH_H
 #define HORNERARITH_H
 
-#include "polyx.h"
-#include "polyarith.h"
+#include <polyx.h>
+#include <polyarith.h>
 
-/* ------------------------------------------------------------------------- */
-/*  structure for fast trivariate polynomial evaluation                      */
-/* ------------------------------------------------------------------------- */
+//  class for fast trivariate polynomial evaluation
 
 class hornerpolyxyz
 {
@@ -82,10 +70,4 @@ private:
 	static void polyxyz_to_horner( hornerpolyxyz *hp, const polyxyz *p );
 };
 
-
-#endif  /* HORNERARITH_H */
-
-
-/* ------------------------------------------------------------------------- */
-/* end of file: hornerarith.h                                                */
-/* ------------------------------------------------------------------------- */
+#endif  //!HORNERARITH_H

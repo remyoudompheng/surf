@@ -33,6 +33,7 @@
 #include <ScriptVar.h>
 #include <Misc.h>
 #include <FileWriter.h>
+#include <polyarith.h>
 
 #include <gts.h>
 
@@ -53,12 +54,14 @@ Triangulator::~Triangulator()
 
 void Triangulator::triangulate()
 {
-	// FIXME :o)
-
+	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
+	polyxyz_sort(&f);
+	hf = new hornerpolyxyz(f);
+	
 	GtsCartesianGrid g;
-	g.nx = 100;
-	g.ny = 100;
-	g.nz = 100;
+	g.nx = 64;
+	g.ny = 64;
+	g.nz = 64;
 
 	g.x = -10.0; g.dx = 20.0/gdouble(g.nx - 1);
 	g.y = -10.0; g.dy = 20.0/gdouble(g.ny - 1);
@@ -68,7 +71,14 @@ void Triangulator::triangulate()
 				  gts_face_class(),
 				  gts_edge_class(),
 				  gts_vertex_class());
-	gts_isosurface_cartesian(surface, g, _iso_func, 0, 0.0);
+	gts_isosurface_cartesian(surface, g, _iso_func, this, 0.0);
+	gdouble maxcost = 0.1;
+	gts_surface_coarsen(surface,
+			    0, 0,
+			    0, 0,
+			    gts_coarsen_stop_cost, &maxcost, 0);
+
+	delete hf;
 }
 
 void Triangulator::write_gts_file()
@@ -95,6 +105,18 @@ void Triangulator::write_gts_file()
 
 void Triangulator::write_data()
 {
+	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
+	polyxyz_sort(&f);
+	polyxyz dx = polyxyz_dx(&f);
+	polyxyz_sort(&dx);
+	hdx = new hornerpolyxyz(dx);
+	polyxyz dy = polyxyz_dy(&f);
+	polyxyz_sort(&dy);
+	hdy = new hornerpolyxyz(dy);
+	polyxyz dz = polyxyz_dz(&f);
+	polyxyz_sort(&dz);
+	hdz = new hornerpolyxyz(dz);
+
 	vertex_count = 0;
 
 	std::cout << gts_surface_vertex_number(surface) << ' '
@@ -103,6 +125,10 @@ void Triangulator::write_data()
 	gts_surface_foreach_face(surface, _face_func, this);
 
 	vertex_map.erase(vertex_map.begin(), vertex_map.end());
+
+	delete hdx;
+	delete hdy;
+	delete hdz;
 }
 
 void Triangulator::vertex_func(GtsVertex* v)
@@ -141,21 +167,38 @@ void Triangulator::face_func(GtsFace* f)
 
 void Triangulator::iso_func(gdouble** f, GtsCartesianGrid g, guint k)
 {
-	gdouble x, y, z = g.z;
-	guint i, j;
+	gdouble z = g.z;
 
-	for(i = 0, x = g.x; i < g.nx; i++, x += g.dx) {
-		for(j = 0, y = g.y; j < g.ny; j++, y += g.dy) {
-			f[i][j] = x*x + y*y + z*z - 4.0;
+	gdouble y = g.y;
+	for(guint i = 0; i < g.ny; i++) {
+		hf->setRow(y);
+
+		gdouble x = g.x;
+		for(guint j = 0; j < g.nx; j++) {
+			hf->setColumn(x);
+
+			f[j][i] = hf->pZ.horner(z);
+
+			x += g.dx;
 		}
+		
+		y += g.dy;
 	}
 }
 
 void Triangulator::calc_normal(const GtsPoint& p, float& x, float& y, float& z)
 {
-	x = p.x;
-	y = p.y;
-	z = p.z;
+	hdx->setRow(p.y);
+	hdx->setColumn(p.x);
+	x = hdx->pZ.horner(p.z);
+	hdy->setRow(p.y);
+	hdy->setColumn(p.x);
+	y = hdy->pZ.horner(p.z);
+	hdz->setRow(p.y);
+	hdz->setColumn(p.x);
+	z = hdz->pZ.horner(p.z);
+
+	// normalize:
 	float len = x*x + y*y + z*z;
 	if(len > 0) {
 		float sq = std::sqrt(len);

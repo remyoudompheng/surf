@@ -23,12 +23,11 @@
  */
 
 
-
 #ifndef CANVASDATASTRUCT_H
 #define CANVASDATASTRUCT_H
 
-#include "polyarith.h"
-#include "hornerarith.h"
+#include <polyarith.h>
+#include <hornerarith.h>
 
 class CanvasDataStruct
 {

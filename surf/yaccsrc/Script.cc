@@ -271,7 +271,9 @@ void Script::ppm_to_stdout(bool isSurface)
 			std::cout.put(color.getGreenByte());
 			std::cout.put(color.getBlueByte());
 		}
+		std::cout.flush();
 	}
+	std::cout << "end\n";
 	std::cout.flush();
 }
 
@@ -294,6 +296,8 @@ void pbm_to_stdout(bool isSurface)
 		  << width << ' ' << height << '\n';
 	std::cout.write(reinterpret_cast<char*>(buffer->getBuffer()),
 			buffer->getSize());
+	std::cout.flush();
+	std::cout << "end\n";
 	std::cout.flush();
 }
 }

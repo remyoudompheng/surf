@@ -23,37 +23,30 @@
  */
 
 
-
 #ifndef SURFACEDATASTRUCT_H
 #define SURFACEDATASTRUCT_H
 
-#include "CanvasDataStruct.h"
-#include "def.h"
+#include <CanvasDataStruct.h>
+#include <def.h>
 
-// ----------------------------------------------------------------------------
-// sk :Neuer struct indem die Eigenschaften aller Flächen, ...
-//     die Formeln aller Flächen und Curve-Eigenschaften festhält
-// ----------------------------------------------------------------------------
-
-
-typedef struct					/* sk neuer surface_propery-Struct */
+struct surf_property_struct
 {
-	double red;				/* surface red,green,blue */ 
+	double red;
 	double green;
 	double blue;
-	double ins_red; 			/* inside red,green,blue */
+	double ins_red;
 	double ins_green;
 	double ins_blue;
 
-	double transmit;			/* transmitted  */
-	double diffuse; 			/* diffuse      */
-	double reflect; 			/* reflected    */
-	double transp;				/* transparence */
-	int    smooth;  			/* smoothness   */
+	double transmit;
+	double diffuse;
+	double reflect;
+	double transp;
+	int smooth;
 	
-	int    root_n;				/* Anzahl der NUS */
+	int root_n;
     
-} surf_property_struct;	
+};
 
 class SurfaceDataStruct
 {
@@ -67,10 +60,9 @@ public:
 	int init ();
 	void initCurveProperty();
 
-	CanvasDataStruct *getFormula (int nr) 
-		{
-			return &formulas[new_index[nr-1]];
-		}
+	CanvasDataStruct *getFormula (int nr) {
+		return &formulas[new_index[nr-1]];
+	}
 
 public:
 	CanvasDataStruct     formulas[MAIN_SURFACE_AMOUNT_NUM];	
@@ -84,8 +76,6 @@ public:
 	int    surf_n;      /* sk Anzahl der zu berechnenden Flächen      */
 	int    root_n_all;  /* sk Anzahl aller vorhandenen NUS aller Flächen*/        
 	bool   init_all;    /* sk wurde überhaupt eine Fläche initialisiert*/
-
-
 };
 
-#endif
+#endif //!SURFACE_DATA_STRUCT_H
