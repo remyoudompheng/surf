@@ -70,7 +70,7 @@ public:
 		return stop_flag;
 	}
 
-	static void ppm_to_stdout();
+	static void ppm_to_stdout(bool isSurface);
 
 private:
 	static bool stop_flag;

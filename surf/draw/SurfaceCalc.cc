@@ -280,7 +280,7 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 	
 	bool kernelmode = Script::isKernelMode();
 	if(kernelmode) {
-		std::cout << "color_image\n";
+		std::cout << "draw_surface\n";
 		// write as PPM file (see PPM.{h|cc}):
 		std::cout << "P6\n"
 			  << width << ' ' << height << '\n'
@@ -981,7 +981,7 @@ void SurfaceCalc::CalculateCurveOnSurface(int xmin, int ymin, int xmax, int ymax
 	}// end of 'Foreach line' 
 
 	if(Script::isKernelMode()) {
-		Script::ppm_to_stdout();
+		Script::ppm_to_stdout(true);
 	}
 }
 

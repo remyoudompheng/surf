@@ -90,7 +90,7 @@ void draw_func_draw()
 
 		// output as PPM to stdout if we're in kernel mode
 		if(Script::isKernelMode()) {
-			Script::ppm_to_stdout();
+			Script::ppm_to_stdout(false);
 		}
 	}
 	

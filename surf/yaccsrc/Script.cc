@@ -247,13 +247,17 @@ void Script::deinit()
 
 // Output color image to stdout in PPM format
 // (This is used, if we're in kernel mode):
-void Script::ppm_to_stdout()
+void Script::ppm_to_stdout(bool isSurface)
 {
 	RgbBuffer* buffer = getBuffer();
 	const int width = ScriptVar::main_width_data;
 	const int height = ScriptVar::main_height_data;
 	
-	std::cout << "color_image\n";
+	if(isSurface) {
+		std::cout << "draw_surface\n";
+	} else {
+		std::cout << "draw_curve\n";
+	}
 	std::cout << "P6\n"
 		  << width << ' ' << height << '\n'
 		  << "255\n";
@@ -268,6 +272,28 @@ void Script::ppm_to_stdout()
 		}
 	}
 	std::cout.flush();
+}
+
+namespace {
+// Output dither image to stdout in PBM format
+// (This is used, if we're in kernel mode):
+void pbm_to_stdout(bool isSurface)
+{
+	bit_buffer* buffer = Script::getBitBuffer();
+	const int width = ScriptVar::main_width_data;
+	const int height = ScriptVar::main_height_data;
+	
+	if(isSurface) {
+		std::cout << "dither_surface\n";
+	} else {
+		std::cout << "dither_curve\n";
+	}
+	
+	std::cout << "P4\n"
+		  << width << ' ' << height << '\n';
+	std::cout.write(buffer->getBuffer(), buffer->getSize());
+	std::cout.flush();
+}
 }
 
 void Script::addNewCommands()
@@ -312,11 +338,6 @@ void Script::drawCurve()
 void Script::drawSurface()
 {
 	setSize();
-
-	BEGIN("Script::drawSurface");
-
-	TRACE(main_width_data);
-	TRACE(main_height_data);
 
 	Y_AXIS_LR_ROTATE = 0.0;
 	SurfaceCalc sc;
@@ -390,8 +411,6 @@ void Script::saveDitheredImage()
 {
 	checkVariables();
 
-	BEGIN("Script::saveDitheredImage");
-
 	bit_buffer* pixel = getBitBuffer();
 
 	if(surface_filename_data == 0) {
@@ -406,8 +425,6 @@ void Script::ditherSurface()
 {
 	checkVariables();
 
-	BEGIN("ditherSurface");
-	
 	float_buffer fbuffer(main_width_data, main_height_data);    
 	
 	bit_buffer* pixel = getBitBuffer();
@@ -447,6 +464,10 @@ void Script::ditherSurface()
 	} else {
   		std::cerr << "dithering_method out of range. No dithering done.\n";
 	}
+
+	if(kernelMode) {
+		pbm_to_stdout(true);
+	}
 }
 
 
@@ -461,6 +482,10 @@ void Script::ditherCurve()
 	copy_rgb_to_float_curve(*getBuffer(), buffer);
     
 	dither_brute(buffer, *getBitBuffer());
+	
+	if(kernelMode) {
+		pbm_to_stdout(false);
+	}
 }
 
 void Script::checkVariables()
