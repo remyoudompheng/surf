@@ -327,7 +327,33 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
 
 static  int     polyx_anderson_bjoerck( polyx *f,double a,double b,
             double fa,double fb,double *root )
-{
+{      
+	double s = 0.0, ab = 0.0, fab = 0.0;
+	int i = 0;
+	int maxiter = ScriptVar::numeric_iterations_data;
+	double eps = ScriptVar::numeric_epsilon_data;
+
+	// see above
+	while( fabs( fab = f->horner( ab = a - fa / ( s = ( fa - fb ) / ( a - b ) ) ) ) > eps
+	       && i++ < maxiter ) {
+		if( fa * fab < 0.0 ) {
+			b = a;
+			fb = fa;
+		} else {
+			double g = ( fab - fa ) / ( ab - a ) / s;
+			fb *= ( g > 0.0 ? g : 0.5 );
+		}
+		a = ab;
+		fa = fab;
+	}
+
+	if( i < maxiter ) {
+		*root = ( fabs( fa ) < fabs( fb ) ? a : b  );
+		return true;
+	}
+	return false;
+
+/*
     double  h1,h2,h3;
     double  alpha;
     double  beta;
@@ -380,6 +406,7 @@ static  int     polyx_anderson_bjoerck( polyx *f,double a,double b,
     *root = t;
 
     return  ( i < ScriptVar::numeric_iterations_data );
+*/
 }
 
 /* ------------------------------------------------------------------------- */
