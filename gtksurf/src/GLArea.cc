@@ -78,64 +78,28 @@ GLArea::~GLArea()
 	}
 }
 
-namespace {
-inline bool vertex_compare(const GLvertex& a, const GLvertex& b)
-{
-	return a.x == b.x && a.y == b.y && a.z == b.z;
-}
-
-inline GLvertex calc_normal(const GLvertex& p1, const GLvertex& p2, const GLvertex& p3)
-{
-	GLvertex v = { p3.x - p1.x, p3.y - p1.y, p3.z - p1.z };
-	GLvertex w = { p3.x - p2.x, p3.y - p2.y, p3.z - p2.z };
-	GLvertex norm = {
-		v.y*w.z - w.y*v.z,
-		w.x*v.z - v.x*w.z,
-		v.x*w.y - w.x*v.y
-	};
-	double length = norm.x*norm.x + norm.y*norm.y + norm.z*norm.z;
-	if(length > 0.0001) {
-		length = std::sqrt(length);
-		norm.x /= length;
-		norm.y /= length;
-		norm.z /= length;
-	} else {
-		norm.x = norm.y = norm.z = 0;
-	}
-	return norm;
-}
-}
-
 void GLArea::read_triangulated_data(std::ifstream& ifs)
 {
 	std::string line;
 	std::getline(ifs, line);
 	std::istrstream iss(line.c_str());
 
-	size_t nv, ne, nf;
-	iss >> nv >> ne >> nf;
+	size_t nv, nf;
+	iss >> nv >> nf;
 
-	std::cerr << "nv: " << nv << ", ne: " << ne << ", nf: " << nf << "\n";
+	std::cerr << "nv: " << nv << ", nf: " << nf << "\n";
 
 	// read vertices:
 	GLvertex* vertices = new GLvertex[nv];
 	for(size_t i = 0; i != nv; i++) {
-		ifs >> vertices[i].x >> vertices[i].y >> vertices[i].z;
-		std::getline(ifs, line); // eat up rest of line
-	}
-
-	// read edges:
-	GLedge* edges = new GLedge[ne];
-	for(size_t i = 0; i != ne; i++) {
-		ifs >> edges[i].from >> edges[i].to;
-		std::getline(ifs, line);
+		ifs >> vertices[i].x >> vertices[i].y >> vertices[i].z
+		    >> vertices[i].nx >> vertices[i].ny >> vertices[i].nz;
 	}
 
 	// read faces:
 	GLface* faces = new GLface[nf];
 	for(size_t i = 0; i != nf; i++) {
-		ifs >> faces[i].a >> faces[i].b >> faces[i].c;
-		std::getline(ifs, line);
+		ifs >> faces[i].p1 >> faces[i].p2 >> faces[i].p3;
 	}
 
 	// build OpenGL display list:
@@ -150,27 +114,22 @@ void GLArea::read_triangulated_data(std::ifstream& ifs)
 	glColor3f(0.2, 0.2, 0.8);
 
 	for(size_t i = 0; i != nf; i++) {
-		GLedge& a = edges[faces[i - 1].a - 1];
-		GLedge& b = edges[faces[i - 1].b - 1];
-		GLvertex& p1 = vertices[a.from - 1];
-		GLvertex& p2 = vertices[a.to - 1];
-		GLvertex& p3a = vertices[b.from - 1];
-		GLvertex& p3b = vertices[b.to - 1];
-		GLvertex p3;
-		if(vertex_compare(p3a, p1) || vertex_compare(p3a, p2)) {
-			p3 = p3b;
-		} else {
-			p3 = p3a;
-		}
-
-		GLvertex norm = calc_normal(p1, p2, p3);
-		glNormal3f(norm.x, norm.y, norm.z);
+		GLface& f = faces[i];
+		GLvertex& p1 = vertices[f.p1 - 1];
+		GLvertex& p2 = vertices[f.p2 - 1];
+		GLvertex& p3 = vertices[f.p3 - 1];
+		glNormal3f(p1.nx, p1.ny, p1.nz);
 		glVertex3f(p1.x, p1.y, p1.z);
+		glNormal3f(p2.nx, p2.ny, p2.nz);
 		glVertex3f(p2.x, p2.y, p2.z);
+		glNormal3f(p3.nx, p3.ny, p3.nz);
 		glVertex3f(p3.x, p3.y, p3.z);
 	}
 	glEnd();
 	glEndList();
+
+	delete [] vertices;
+	delete [] faces;
 
 	display();
 }
@@ -210,6 +169,8 @@ void GLArea::init(GLsizei width, GLsizei height)
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_NORMALIZE);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);

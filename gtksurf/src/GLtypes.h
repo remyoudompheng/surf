@@ -20,17 +20,15 @@ struct GLvertex {
 	GLfloat x;
 	GLfloat y;
 	GLfloat z;
-};
-
-struct GLedge {
-	size_t from;
-	size_t to;
+	GLfloat nx;
+	GLfloat ny;
+	GLfloat nz;
 };
 
 struct GLface {
-	size_t a;
-	size_t b;
-	size_t c;
+	unsigned int p1;
+	unsigned int p2;
+	unsigned int p3;
 };
 
 #endif //!GLTYPES_H
