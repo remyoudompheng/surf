@@ -106,6 +106,7 @@ private:
 
 	bool showCross;
 	bool wireframe;
+	bool centralPerspective;
 
 	GLfloat origx, origy, origz;
 	GLfloat scalex, scaley, scalez;
@@ -152,6 +153,7 @@ private:
 
 	MENUCB(togglecross);
 	MENUCB(togglewireframe);
+	MENUCB(perspective);
 };
 
 #endif //!GLAREA_H

@@ -21,7 +21,7 @@ GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin)
 	  pi(std::acos(-1.0)),
 	  dragging(false),
 	  rotMat(4), deltaRotMat(4), rotating(false),
-	  showCross(true), wireframe(false),
+	  showCross(true), wireframe(false), centralPerspective(true),
 	  origx(0.0), origy(0.0), origz(0.0),
 	  scalex(1.0), scaley(1.0), scalez(1.0),
 	  shown(false),
@@ -62,6 +62,8 @@ GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin)
 
 	glade.sig_connect("togglecross", "activate", _on_togglecross_activate, this);
 	glade.sig_connect("togglewireframe", "activate", _on_togglewireframe_activate, this);
+	glade.sig_connect("central_perspective", "activate", _on_perspective_activate, this);
+	glade.sig_connect("parallel_perspective", "activate", _on_perspective_activate, this);
 	
 	popupmenu = glade.get_widget("menu_glarea");
 	
@@ -215,14 +217,21 @@ void GLArea::init(GLsizei width, GLsizei height)
 	reshape(width, height);
 }
 
-void GLArea::reshape(GLsizei _width, GLsizei _height)
+void GLArea::reshape(GLsizei _width = 0, GLsizei _height = 0)
 {
-	width = _width;
-	height = _height;
+	if(_width > 0 && _height > 0) {
+		width = _width;
+		height = _height;
+	}
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0, GLfloat(width)/GLfloat(height), 1.0, 100.0);
+	if(centralPerspective) {
+//		gluPerspective(45.0, GLfloat(width)/GLfloat(height), 1.0, 100.0);
+		glFrustum(-10.0, 10.0, -10.0, 10.0, 10.0, 30.0);
+	} else {
+		glOrtho(-10.0, 10.0, -10.0, 10.0, 10.0, 30.0);
+	}
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -237,8 +246,7 @@ void GLArea::display()
 	// position camera:
 	
 	glLoadIdentity();
-	gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	
+	glTranslatef(0.0, 0.0, -20.0);
 
 	glEnable(GL_LIGHTING);
 
@@ -266,7 +274,7 @@ void GLArea::display()
 	if(showCross) {
 		glDisable(GL_LIGHTING);
 		glColor3f(1.0, 1.0, 0.5);
-		glScalef(2.0, 2.0, 2.0);
+		glScalef(5.0, 5.0, 5.0);
 		plotCross();
 	}
 
@@ -369,16 +377,6 @@ inline GLvector GLArea::mouseOnSphere(gint x, gint y)
 	}
 	
 	return ballMouse;
-}
-
-void GLArea::on_togglecross_activate()
-{
-	showCross = !showCross;
-}
-
-void GLArea::on_togglewireframe_activate()
-{
-	wireframe = !wireframe;
 }
 
 // Called from NavigationWindow:
@@ -491,3 +489,21 @@ gint GLArea::motion_notify_event(GdkEventMotion* event)
 	drag_move(x, y);
 	return true;
 }
+
+void GLArea::on_togglecross_activate()
+{
+	showCross = !showCross;
+}
+
+void GLArea::on_togglewireframe_activate()
+{
+	wireframe = !wireframe;
+}
+
+void GLArea::on_perspective_activate()
+{
+	GtkCheckMenuItem* item = GTK_CHECK_MENU_ITEM(glade.get_widget("central_perspective"));
+	centralPerspective = item->active;
+	reshape();
+}
+

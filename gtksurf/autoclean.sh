@@ -9,4 +9,7 @@ rm -f configure
 rm -f Makefile.in */Makefile.in
 rm -f aclocal.m4
 rm -f config.log config.cache
+rm -f stamp-h.in
+rm -f config.h.in
 find . -name \*~ -exec rm \{\} \;
+(cd docs && rm -f mdate-sh stamp-vti texinfo.tex version.texi gtksurf.info gtksurf.1)

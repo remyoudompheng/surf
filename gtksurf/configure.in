@@ -186,6 +186,9 @@ AC_CHECK_HEADERS(gtkgl/gtkglarea.h,,
 	         AC_MSG_ERROR([You need the GtkGLArea header file (gtkgl/gtkglarea.h)!]))
 
 
+AM_MISSING_PROG(HELP2MAN, help2man, $missing_dir)
+AM_MISSING_PROG(SED, sed, $missing_dir)
+
 AC_SUBST(CPPFLAGS)
 
 AC_OUTPUT(Makefile

@@ -37,32 +37,36 @@
 
 namespace {
 char usage_text[] =
-#ifdef HAVE_GETOPT_LONG
+"\n"
+"gtksurf is a graphical frontend to surf, the script driven visualization\n"
+"tool for real algebraic geometry.\n"
+"\n"
 "Usage: gtksurf [OPTION]... [FILE]\n"
 "\n"
+#ifdef HAVE_GETOPT_LONG
 "  -k, --kernel=PATHTOKERNEL   load PATHTOKERNEL as surf kernel instead of\n"
 "                               the default " KERNEL_BINARY "\n"
 "  -g, --glade-file=GLADEFILE  use GLADEFILE as Glade GUI description file\n"
 "                               instead of " GLADEFILE "\n"
 "  -h, --help                  display this help and exit\n"
 "  -V, --version               output version information and exit\n"
-"\n";
 #else
-"Usage: gtksurf [OPTION]... [FILE]\n"
-"\n"
-"  -k   load PATHTOKERNEL as surf kernel instead of the\n"
-"         default " KERNEL_BINARY "\n"
-"  -g   use PATHTOGLADEFILE as GUI description file\n"
-"         instead of " GLADEFILE "\n"
-"  -h   display this help and exit\n"
-"  -V   output version information and exit\n"
-"\n";
+"  -k PATHTOKERNEL     load PATHTOKERNEL as surf kernel instead of the\n"
+"                       default " KERNEL_BINARY "\n"
+"  -g PATHTOGLADEFILE  use PATHTOGLADEFILE as GUI description file\n"
+"                       instead of " GLADEFILE "\n"
+"  -h                  display this help and exit\n"
+"  -V                  output version information and exit\n"
 #endif // HAVE_GETOPT_LONG
+"\n"
+"Report bugs to the SourceForge bug tracking system at\n"
+"http://sourceforge.net/tracker/?group_id=3275\n";
 }
 
 int main(int argc, char* argv[])
 {
 	// parse options:
+#ifdef HAVE_GETOPT_LONG
 	option longopts[] = {
 		{ "kernel", required_argument, 0, 'k' },
 		{ "glade-file", required_argument, 0, 'g' },
@@ -70,6 +74,7 @@ int main(int argc, char* argv[])
 		{ "version", no_argument, 0, 'V' },
                 { 0, 0, 0, 0 }
 	};
+#endif
 
 	// default values:
 	std::string kernel_path = KERNEL_BINARY;
@@ -94,25 +99,15 @@ int main(int argc, char* argv[])
 			break;
 		case 'V':
 			std::cout <<
+PACKAGE " " VERSION "\n"
 "\n"
-PACKAGE " version " VERSION "\n"
+"Copyright (C) 2001 Johannes Beigel\n"
 "\n"
-"Visualizing algebraic curves and algebraic surfaces\n"
+"This is free software; you can redistribute it and/or modify it under the\n"
+"terms of the GNU General Public License; either version 2 of the License,\n"
+"or any later version.\n"
 "\n"
-"Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet Erlangen-Nuernberg,\n"
-"              1997-2001 Johannes Gutenberg-Universitaet Mainz.\n"
-"\n"
-"Authors: Stephan Endrass, Hans Huelf, Ruediger Oertel, Ralf Schmitt,\n"
-"Kai Schneider and Johannes Beigel.\n"
-"\n"
-"This program is free software; you can redistribute it and/or modify\n"
-"it under the terms of the GNU General Public License as published by\n"
-"the Free Software Foundation; either version 2 of the License, or\n"
-"(at your option) any later version.\n"
-"\n"
-"For reporting bugs or getting news about latest developments,\n"
-"please visit our homepage at http://surf.sourceforge.net/\n"
-"\n";
+"Written by Johannes Beigel.\n";
 
 			exit(0);
 			break;
