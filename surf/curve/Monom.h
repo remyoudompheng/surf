@@ -24,130 +24,118 @@
 
 
 
-#ifndef CMonom_H
-#define CMonom_H
+#ifndef CMONOM_H
+#define CMONOM_H
 
-#include <stdlib.h>
-#include <string.h>
-#include <iostream.h>
-
-#include "doubleMath.h"
-
+#include<cstring>
+#include<iostream>
 
 template<class Coeff, int num> 
 class CMonom
 {
 public:
-	CMonom() {memset(exponent, 0, sizeof(int[num]));};
-	CMonom(const CMonom &m) : coeff(m.coeff) {memcpy(exponent, m.exponent, sizeof(int[num])); coeff=m.coeff;};
-	~CMonom(){};
+	CMonom() {
+		std::memset(exponent, 0, sizeof(int[num]));
+	}
+	CMonom(const CMonom& m) : coeff(m.coeff) {
+		std::memcpy(exponent, m.exponent, sizeof(int[num]));
+	}
+	~CMonom() {}
 	
-	CMonom &operator= (const CMonom &m) 
-		{
-			memcpy(exponent, m.exponent, sizeof(int[num]));
-			coeff=m.coeff; 
-			return *this;
-		};
+	CMonom& operator=(const CMonom& m) {
+		std::memcpy(exponent, m.exponent, sizeof(int[num]));
+		coeff = m.coeff; 
+		return *this;
+	}
 	
-	CMonom &operator+=(const CMonom &m) {coeff+=m.coeff; return *this;};
-	CMonom &operator-=(const CMonom &m) {coeff-=m.coeff; return *this;};
-	CMonom &operator*=(const CMonom &m) {int i;for(i=0; i<num; i++) exponent[i]+=m.exponent[i];coeff*=m.coeff; return *this;};
-//	CMonom &operator/=(const CMonom &m) {int i;for(i=0; i<num; i++) exponent[i]-=m.exponent[i];coeff/=m.coeff; return *this;};
-	
-	int lexcmp (const CMonom &m) const 
-		{
-			int i; 
-			for(i=0; i<num && exponent[i]==m.exponent[i]; i++)
-				;
-			return i==num ? 0 : exponent[i]-m.exponent[i];
-		};
-
-	void print(class std::ostream &os) const 
-		{
-			static const char vars[]="xyzabcdefg";
-			os << "(" << coeff << ")";
-			int i;
-			for (i=0; i<num; i++) {
-				os << "*" << vars[i] << "^" << exponent[i];
-			}
+	CMonom& operator+=(const CMonom& m) {
+		coeff += m.coeff;
+		return *this;
+	}
+	CMonom& operator-=(const CMonom& m) {
+		coeff -= m.coeff;
+		return *this;
+	}
+	CMonom& operator*=(const CMonom& m) {
+		for(int i = 0; i < num; i++) {
+			exponent[i] += m.exponent[i];
 		}
+		coeff *= m.coeff;
+		return *this;
+	}
 	
-	Coeff &getCoeff() {return coeff;};
-	const Coeff&getCoeff() const {return coeff;};
+	int lexcmp(const CMonom& m) const {
+		int i;
+		for(i = 0; i < num && exponent[i] == m.exponent[i]; i++) {
+			// empty
+		}
+		return i == num ? 0 : exponent[i] - m.exponent[i];
+	}
+
+	void print(class std::ostream& os) const {
+		static const char vars[] = "xyzabcdefg";
+		os << "(" << coeff << ")";
+		for(int i = 0; i < num; i++) {
+			os << "*" << vars[i] << "^" << exponent[i];
+		}
+	}
 	
-	int &getExponent(int var) {assert(var>=0 && var<num); return exponent[var];};
+	Coeff& getCoeff() {
+		return coeff;
+	}
+	const Coeff& getCoeff() const {
+		return coeff;
+	}
+	
+	int& getExponent(int var) {
+		assert(var >= 0 && var < num);
+		return exponent[var];
+	}
 
-	static int size() {return num;};
+	static int size() {
+		return num;
+	}
 
-// 	friend ostream & operator << (Monom &m, ostream &os)
-// 		{
-// 			m.print(os);
-// 			return os;
-// 		}
+	bool isNull() const {
+		return coeff.isNull();
+	}
+	CMonom& negate() {
+		coeff.negate();
+		return *this;
+	}
 
-// 	friend bool isNull (Monom &m)
-// 		{
-// 			return isNull (m.getCoeff());
-// 		}
 protected:
 	int exponent[num];
 	Coeff coeff;
 };
 
-template<class Coeff,  int num> 
-ostream & operator<<(ostream &os, const CMonom<Coeff,num> &m)
+template<class Coeff, int num> 
+ostream& operator<<(ostream& os, const CMonom<Coeff, num>& m)
 {
 	m.print(os);
  	return os;
 }
 
-// template<class Type>
-// ostream & operator<<(ostream &os, const Type & m)
-// {
-// 	m.print(os);
-// 	return os;
-// }
-
-template<class Coeff,  int num> 
-inline int isNull(const CMonom<Coeff,num> &m)
-{
-	return isNull(m.getCoeff());
-}
-
-// template<class Type>
-// inline void negate (Type &m)
-// {
-// 	negate(m.getCoeff());
-// }
-
-template<class Coeff,  int num> 
-inline void negate(CMonom<Coeff,num> &m)
-{
-	negate(m.getCoeff());
-}
-
-
 template<class Coeff> 
-CMonom<Coeff, 2> monom(const Coeff &coeff, int e0, int e1)
+CMonom<Coeff, 2> monom(const Coeff& coeff, int e0, int e1)
 {
 	CMonom<Coeff, 2> mon;
-	mon.getCoeff()=coeff;
-	mon.getExponent(0)=e0;
-	mon.getExponent(1)=e1;
+	mon.getCoeff() = coeff;
+	mon.getExponent(0) = e0;
+	mon.getExponent(1) = e1;
 	return mon;
 }
 
 template<class Coeff> 
-CMonom<Coeff, 3> monom(const Coeff &coeff, int e0, int e1, int e2)
+CMonom<Coeff, 3> monom(const Coeff& coeff, int e0, int e1, int e2)
 {
 	CMonom<Coeff, 3> mon;
-	mon.getCoeff()=coeff;
+	mon.getCoeff() = coeff;
 
-	mon.getExponent(0)=e0;
-	mon.getExponent(1)=e1;
-	mon.getExponent(2)=e2;
-	// mon.getExponent(3)=0;
+	mon.getExponent(0) = e0;
+	mon.getExponent(1) = e1;
+	mon.getExponent(2) = e2;
 	return mon;
 }
 
-#endif
+#endif // !CMONOM_H

@@ -43,7 +43,7 @@ static Bezout<BigInteger>::Coeff3Poly convertToBigIntPoly ( const Polyxyz &p)
 		mon = p.Monom(i);
 		BigInteger rat;
 		rat = mon.Coeff()*1e15;
-		if (!isNull(rat))
+		if (!rat.isNull())
 		    result.addMonom (monom(rat, mon.Exponent(0), mon.Exponent(1), mon.Exponent(2)));
 	}
 	return result;

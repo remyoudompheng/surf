@@ -59,6 +59,9 @@
 /* Define if you have the gmp library (-lgmp).  */
 #undef HAVE_LIBGMP
 
+/* Define if you have the gnugetopt library (-lgnugetopt).  */
+#undef HAVE_LIBGNUGETOPT
+
 /* Define if you have the jpeg library (-ljpeg).  */
 #undef HAVE_LIBJPEG
 

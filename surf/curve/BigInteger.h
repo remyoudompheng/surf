@@ -27,55 +27,49 @@
 #ifndef BIGINTEGER_H
 #define BIGINTEGER_H
 
-#include <iostream.h>
+#include <mygmp.h>
 
-#include "mygmp.h"
+#include<iostream>
 
 class BigInteger
 {
 public:
 	BigInteger();
-	BigInteger(const BigInteger &b);
+	BigInteger(const BigInteger& b);
 	~BigInteger();
 	
-	void operator = (double d)
-		{
-			mpz_set_d (mpz, d);
-		}
-	void operator = (const BigInteger &b);
-	void operator *= (const BigInteger &b);
-	void operator += (const BigInteger &b);
-	void operator -= (const BigInteger &b);
+	void operator= (double d) {
+		mpz_set_d (mpz, d);
+	}
+	void operator= (const BigInteger& b);
+	void operator*= (const BigInteger& b);
+	void operator+= (const BigInteger& b);
+	void operator-= (const BigInteger& b);
 
-	void print (ostream &os) const;
-	void setLong (long int val)
-		{
-			mpz_set_si (mpz, val);
-		}
-	double asDouble()
-		{
-			return mpz_get_d (mpz);
-		}
-	friend inline bool isNull (const BigInteger &b);
-	friend inline void negate (BigInteger &b);
+	void print(std::ostream &os) const;
+	void setLong (long int val) {
+		mpz_set_si (mpz, val);
+	}
+	double asDouble() {
+		return mpz_get_d (mpz);
+	}
+
+	bool isNull() const {
+		return mpz_sgn(mpz) == 0;
+	}
+	BigInteger& negate() {
+		mpz_neg(mpz, mpz);
+		return *this;
+	}
 
 private:
 	mpz_t mpz;
 };
 
-inline ostream & operator << (ostream &os, const BigInteger &b)
+inline ostream& operator<< (ostream& os, const BigInteger& b)
 {
 	b.print(os);
 	return os;
 }
 
-inline bool isNull (const BigInteger &b)
-{
-	return mpz_sgn(b.mpz)==0;
-}
-
-inline void negate (BigInteger &b)
-{
-	mpz_neg(b.mpz, b.mpz);
-}
-#endif
+#endif // !BIGINTEGER_H

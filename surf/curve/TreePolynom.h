@@ -27,12 +27,11 @@
 #ifndef TREEPOLYNOM_H
 #define TREEPOLYNOM_H
 
-#include <iostream.h>
+#include <debug.h>
+#include <RBTree.h>
+#include <RefCounter.h>
 
-#include "defs.h"
-#include "debug.h"
-#include "RBTree.h"
-#include "RefCounter.h"
+#include<iostream>
 
 template<class Monom> 
 class TreePolynomNode : public RBNode
@@ -146,7 +145,7 @@ void TreePolynom<Monom>::addMonom (const Monom &mon)
 		cmp = mon.lexcmp(current->monom);
 		if (cmp == 0) {
 			current->monom += mon;
-			if (isNull(current->monom)) {
+			if (current->monom.isNull()) {
 				deleteNode(current, root, TreePolynomNode<Monom>::copy, TreePolynomNode<Monom>::free); 
 			}
 			return;
@@ -189,7 +188,7 @@ void TreePolynom<Monom>::subMonom (const Monom &mon)
 		cmp = mon.lexcmp(current->monom);
 		if (cmp == 0) {
 			current->monom -= mon;
-			if (isNull(current->monom)) {
+			if (current->monom.isNull()) {
 				deleteNode(current, root, TreePolynomNode<Monom>::copy, TreePolynomNode<Monom>::free); 
 			}
 			return;
@@ -201,7 +200,7 @@ void TreePolynom<Monom>::subMonom (const Monom &mon)
 	
 	TreePolynomNode<Monom> *x = new TreePolynomNode<Monom>();
 	x->monom = mon;
-	negate(x->monom);
+	x->monom.negate();
 	if (parent) {
 		// cmp might not be used uninitialized, because if parent != 0 we made a
 		// call to cmp = lexorder(mon, current->monom) (see above)
