@@ -82,6 +82,10 @@ namespace {
 
 void Triangulator::triangulate()
 {
+	if(ScriptVar::main_formula_pxyz_data[0].m == 0) {
+		return;
+	}
+	
 	Misc::progress("Triangulating surface");
 	Misc::progress(0);
 
