@@ -159,8 +159,9 @@ if test "$have_termlib" = "yes"; then
   LIBS="$LIBS $TERMLIB"
   AC_CHECK_LIB(readline, readline,
     LIBS="-lreadline $LIBS"
-      AC_CHECK_HEADERS(readline/readline.h readline/history.h,
-        AC_DEFINE(HAVE_READLINE)))
+      AC_CHECK_HEADER(readline/readline.h,
+        AC_CHECK_HEADER(readline/history.h,
+          AC_DEFINE(HAVE_READLINE))))
 fi
 
 dnl check for GTS:
