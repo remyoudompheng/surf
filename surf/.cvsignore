@@ -2,3 +2,5 @@ Makefile.in Makefile .deps
 aclocal.m4 configure config.cache config.status config.log
 config.h stamp-h
 surf
+ID
+
