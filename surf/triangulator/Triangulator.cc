@@ -172,13 +172,15 @@ void Triangulator::write_data()
 	std::cout << "triangulate_surface\n";
 	std::cout.flush();
 
-	// surface & inside color:
-	std::cout << ScriptVar::color_slider[0].red/255.0 << ' '
+	// transparence and surface & inside colors:
+	std::cout << 1.0 - ScriptVar::light_settings[0].transparence/100.0 << '\n'
+		  << ScriptVar::color_slider[0].red/255.0 << ' '
 		  << ScriptVar::color_slider[0].green/255.0 << ' '
 		  << ScriptVar::color_slider[0].blue/255.0 << '\n'
 		  << ScriptVar::color_slider[0].inside_red/255.0 << ' '
 		  << ScriptVar::color_slider[0].inside_green/255.0 << ' '
 		  << ScriptVar::color_slider[0].inside_blue/255.0 << '\n';
+		  
 
 	// light sources:
 	size_t num = 0;
