@@ -102,6 +102,8 @@ void replaceCommand(const char* name, void (*func)())
 	symtab_add_surface_name(name, SYM_COMMAND, 1, (void*)func);
 }
 
+const double epsilon = 1e-10;
+
 }
 
 
@@ -575,16 +577,41 @@ void Script::computeResultant()
 
 void Script::cutWithPlane()
 {
+     /* The following lines perform a (very) slight rotation in every
+     |  direction to prevent the vanishing of cuts parallel to the
+     |  view direction. If this has some bad side-effects we have to
+     |  remove this hack and think about a better solution...
+     |  (We save the values instead of just doing an "-= epsilon" to
+     |  prevent rounding errors. The user should "see" exactly the same
+     |  rotation value before & after "cut_with_plane".)
+    */
+	double save_x = position_numeric.rot_x;
+	double save_y = position_numeric.rot_y;
+	double save_z = position_numeric.rot_z;
+	position_numeric.rot_x += epsilon;
+	position_numeric.rot_y += epsilon;
+	position_numeric.rot_z += epsilon;
+				
 	draw_func_cut();
 
 	if(Script::isKernelMode()) {
 		ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
 	}
 	
+	position_numeric.rot_x -= save_x; // undo the rotation made above
+	position_numeric.rot_y -= save_y;
+	position_numeric.rot_z -= save_z;
 }
 
 void Script::cutWithSurface()
 {
+	double save_x = position_numeric.rot_x;
+	double save_y = position_numeric.rot_y;
+	double save_z = position_numeric.rot_z;
+	position_numeric.rot_x += epsilon; // see comment in cutWithPlane()
+	position_numeric.rot_y += epsilon;
+	position_numeric.rot_z += epsilon;
+				
 	WindowGeometry wingeo = WindowGeometry(main_width_data, main_height_data);
 
         Y_AXIS_LR_ROTATE = 0.0;
@@ -677,6 +704,10 @@ void Script::cutWithSurface()
 			ImageFormats::imgFmt_PPM.saveColorImage("-", *buffer);
 		}
 	}
+
+	position_numeric.rot_x -= save_x; // undo the rotation made above
+	position_numeric.rot_y -= save_y;
+	position_numeric.rot_z -= save_z;
 }
 
 void Script::reset()
