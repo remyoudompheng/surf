@@ -95,7 +95,5 @@ draw_surface;
 curve_width=6;
 cut_with_surface;
 
-filename="| rasttopnm | ppmtoxpm >surf.xpm";
-color_file_format=sun;
-color_file_colormap=Optimized;
+filename="ras| rasttopnm | ppmquant 256 | ppmtoxpm >surf.xpm";
 save_color_image;
