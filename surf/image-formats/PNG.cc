@@ -27,7 +27,7 @@
 #  include <config.h>
 #endif
 
-#ifdef HAVE_LIBPNG
+#ifdef HAVE_PNG
 
 #include <FileWriter.h>
 #include <RgbBuffer.h>
@@ -122,4 +122,4 @@ namespace ImageFormats {
 
 } // namespace ImageFormats
 
-#endif // HAVE_LIBPNG
+#endif // HAVE_PNG

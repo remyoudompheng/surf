@@ -26,7 +26,7 @@
 #  include <config.h>
 #endif
 
-#ifdef HAVE_LIBTIFF
+#ifdef HAVE_TIFF
 
 #include <bit_buffer.h>
 #include <RgbBuffer.h>
@@ -165,4 +165,4 @@ namespace ImageFormats {
 
 } // namespace ImageFormats
 
-#endif // HAVE_LIBTIFF
+#endif // HAVE_TIFF

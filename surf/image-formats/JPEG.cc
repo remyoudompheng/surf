@@ -27,7 +27,7 @@
 #  include <config.h>
 #endif
 
-#ifdef HAVE_LIBJPEG
+#ifdef HAVE_JPEG
 
 #include <FileWriter.h>
 #include <RgbBuffer.h>
@@ -108,4 +108,4 @@ namespace ImageFormats {
 
 } // namespace ImageFormats
 
-#endif // HAVE_LIBJPEG
+#endif // HAVE_JPEG

@@ -33,15 +33,15 @@ namespace ImageFormats {
 		&imgFmt_Postscript,
 		&imgFmt_EPS,
 
-#ifdef HAVE_LIBJPEG
+#ifdef HAVE_JPEG
 		&imgFmt_JPEG,
 #endif
 
-#ifdef HAVE_LIBPNG
+#ifdef HAVE_PNG
 		&imgFmt_PNG,
 #endif
 
-#ifdef HAVE_LIBTIFF
+#ifdef HAVE_TIFF
 		&imgFmt_TIFF,
 #endif
 		

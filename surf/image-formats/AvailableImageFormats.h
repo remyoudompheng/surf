@@ -31,13 +31,13 @@
 #endif
 
 #include <ByExtension.h>
-#ifdef HAVE_LIBJPEG
+#ifdef HAVE_JPEG
 #  include <JPEG.h>
 #endif
-#ifdef HAVE_LIBPNG
+#ifdef HAVE_PNG
 #  include <PNG.h>
 #endif
-#ifdef HAVE_LIBTIFF
+#ifdef HAVE_TIFF
 #  include <TIFF.h>
 #endif
 #include <Postscript.h>
