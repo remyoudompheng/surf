@@ -57,29 +57,25 @@ namespace ImageFormats {
 			return false;
 		}
 
-		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg);
+		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
 		
 		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) {
 			return false;
 		}
 
-#ifndef NO_GUI
-		void qualityDialog();
 		void destroyDialog() {
 			gtk_widget_destroy(dialog);
 		}
-#endif
-
+		
 	private:
 		char* filename;
-		guint8* red;
-		guint8* green;
-		guint8* blue;
-		int width, height;
+		RgbBuffer* buffer;
 		
 		int quality;
 
 #ifndef NO_GUI		
+		void qualityDialog();
+
 		GtkWidget* dialog;
 		GtkObject* qualityAdj;
 

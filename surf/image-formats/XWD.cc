@@ -38,6 +38,7 @@ int fclose ( FILE* );
 
 #include "Misc.h"
 #include "FileWriter.h"
+#include "RgbBuffer.h"
 
 #include "XWD.h"
 
@@ -46,18 +47,134 @@ namespace ImageFormats {
 	XWD imgFmt_XWD;
 
 
-	bool XWD::saveColorImage(const char* filename,
-				 guint8* rdata, guint8* gdata, guint8* bdata,
-				 int width, int height, bool fromDlg)
+	bool XWD::saveColorImage(const char* fname, RgbBuffer& data, bool fromDlg)
+	{
+		filename = std::strdup(fname);
+		buffer = &data;
+		
+#ifndef NO_GUI
+		if (fromDlg) {
+			showDialog();
+		} else
+#endif
+		       {
+			bool indexed = false;
+			reallySave();
+		}
+		return true;
+	}
+
+#ifndef NO_GUI
+	void XWD::showDialog()
+	{
+		dialog = gtk_dialog_new();
+		gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
+				   GTK_SIGNAL_FUNC(&XWD_handle_delete), this);
+		gtk_window_set_title(GTK_WINDOW(dialog), "Save XWD image");
+
+		// vbox:
+
+		gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 4);
+		GtkWidget* frame;
+		frame = gtk_frame_new("Color Mode:");
+		gtk_container_set_border_width(GTK_CONTAINER(frame), 8);
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
+				   frame, true, true, 0);
+		GtkWidget* vbox = gtk_vbox_new(true, 0);
+		gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
+		gtk_container_add(GTK_CONTAINER(frame), vbox);
+		GtkWidget* rbt;
+		rbt = gtk_radio_button_new_with_label(0, "True Color (24bpp)");
+		gtk_box_pack_start(GTK_BOX(vbox), rbt, false, false, 0);
+		GSList* grp = gtk_radio_button_group(GTK_RADIO_BUTTON(rbt));
+		rbt = gtk_radio_button_new_with_label(grp, "Indexed (8bpp)");
+		indexedRB = rbt;
+		gtk_box_pack_start(GTK_BOX(vbox), rbt, false, false, 0);
+		
+		indexedFrame = gtk_frame_new("Indexed Options:");
+		gtk_container_set_border_width(GTK_CONTAINER(indexedFrame), 8);
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
+				   indexedFrame, true, true, 0);
+		vbox = gtk_vbox_new(true, 0);
+		gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
+		gtk_container_add(GTK_CONTAINER(indexedFrame), vbox);
+		rbt = gtk_radio_button_new_with_label(0, "Netscape Pallette");
+		gtk_box_pack_start(GTK_BOX(vbox), rbt, false, false, 0);
+		grp = gtk_radio_button_group(GTK_RADIO_BUTTON(rbt));
+		rbt = gtk_radio_button_new_with_label(grp, "Optimized Pallette");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(rbt), true);
+		optimizedRB = rbt;
+		gtk_box_pack_start(GTK_BOX(vbox), rbt, false, false, 0);
+		ditherHBox = gtk_hbox_new(false, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), ditherHBox, false, false, 0);
+		ditherCB = gtk_check_button_new_with_label("Dither Image:");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ditherCB), true);
+		gtk_box_pack_start(GTK_BOX(ditherHBox), ditherCB, false, false, true);
+		ditherAdj = gtk_adjustment_new(20, 0, 100, 1, 10, 0);
+		ditherSpin = gtk_spin_button_new(GTK_ADJUSTMENT(ditherAdj), 0, 2);
+		gtk_box_pack_start(GTK_BOX(ditherHBox), ditherSpin, true, true, 0);
+		gtk_widget_set_sensitive(indexedFrame, false);
+
+		VOIDCONNECT(indexedRB, "toggled", handle_indexed);
+		VOIDCONNECT(optimizedRB, "toggled", handle_optimized);
+		VOIDCONNECT(ditherCB, "toggled", handle_dither);
+
+		// action area:
+
+		GtkWidget* bt;
+		bt = gtk_button_new_with_label("Okay");
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+				   bt, true, true, 0);
+		VOIDCONNECT(bt, "clicked", handle_ok);
+		bt = gtk_button_new_with_label("Abort");
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+				   bt, true, true, 0);
+		VOIDCONNECT(bt, "clicked", handle_cancel);
+
+		gtk_widget_show_all(dialog);
+	}
+
+	void XWD::handle_ok()
+	{
+		indexed = GTK_TOGGLE_BUTTON(indexedRB)->active;
+		optimized = GTK_TOGGLE_BUTTON(optimizedRB)->active;
+		dither = GTK_TOGGLE_BUTTON(ditherCB)->active;
+		ditherval = GTK_ADJUSTMENT(ditherAdj)->value;
+		
+		destroyDialog();
+		reallySave();
+	}
+	
+	gint XWD_handle_delete(GtkWidget*, GdkEvent*, gpointer data)
+	{
+		XWD* This = (XWD*)data;
+		This->destroyDialog();
+		return true;
+	}
+#endif
+
+	void XWD::reallySave()
 	{
 		FileWriter fw(filename);
 		FILE *file;
 		
 		if((file = fw.openFile()) == 0) {
 			Misc::alert ("Could not open file for writing...");
-			return false;
+			return;
 		}
-		
+
+		if (indexed) {
+			saveAsIndexed(file);
+		} else {
+			saveAsTrueColor(file);
+		}
+	}
+
+	void XWD::saveAsTrueColor(FILE* file)
+	{
+		int width = buffer->getWidth();
+		int height = buffer->getHeight();
+
 		char win_name[] = "surf_xwd";
 		int win_name_size = strlen(win_name) + 1;
 		
@@ -98,7 +215,7 @@ namespace ImageFormats {
 		
 		if (scanline_pad > 3) {
 			std::cout << "scanline_pad too big..\n";
-			return false;
+			return;
 		}
 		
 		/* swap if necessary */
@@ -116,6 +233,10 @@ namespace ImageFormats {
 		
 		/* Write the image data */
 		
+		const guint8* rdata = buffer->getRData();
+		const guint8* gdata = buffer->getGData();
+		const guint8* bdata = buffer->getBData();
+
 		int k = 0;
 		for(int i = 0; i < height; i++) {
 			for(int j = 0; j < width; j++) {
@@ -128,8 +249,96 @@ namespace ImageFormats {
 				fputc(0, file);
 			}
 		}
+	}
+
+	void XWD::saveAsIndexed(FILE* file)
+	{
+		if (optimized) {
+			buffer->OptimizedColor(dither, ditherval);
+		} else {
+			buffer->NetscapeColor();
+		}
 		
-		return true;
+		int width = buffer->getWidth();
+		int height = buffer->getHeight();
+		int nmap = buffer->getNumCols();
+
+		XColor colors[256];
+		char win_name[] = "surf_xwd";
+		int win_name_size = strlen(win_name) + sizeof(char);
+		
+		/* Initialize xwd header */
+		
+		XWDFileHeader header;
+		int header_size = sizeof(header) + win_name_size;
+		
+		header.header_size      = (CARD32)header_size;
+		header.file_version     = (CARD32)XWD_FILE_VERSION;
+		header.pixmap_format    = (CARD32)ZPixmap;
+		header.pixmap_depth     = (CARD32)8;
+		header.pixmap_width     = (CARD32)width;
+		header.pixmap_height    = (CARD32)height;
+		header.xoffset          = (CARD32)0;
+		header.byte_order       = (CARD32)MSBFirst;
+		header.bitmap_unit      = (CARD32)8;
+		header.bitmap_bit_order = (CARD32)MSBFirst;
+		header.bitmap_pad       = (CARD32)8;
+		header.bits_per_pixel   = (CARD32)8;
+		header.bytes_per_line   = (CARD32)width;
+		header.visual_class     = (CARD32)PseudoColor;
+		header.red_mask         = (CARD32)0;
+		header.green_mask       = (CARD32)0;
+		header.blue_mask        = (CARD32)0;
+		header.bits_per_rgb     = (CARD32)8;
+		header.colormap_entries = (CARD32)nmap;
+		header.ncolors          = (CARD32)nmap;
+		header.window_width     = (CARD32)width;
+		header.window_height    = (CARD32)height;
+		header.window_x         = 0;
+		header.window_y         = 0;
+		header.window_bdrwidth  = (CARD32)0;
+		
+		/* Get colors */
+		
+		const guint8* rmap = buffer->getRMap();
+		const guint8* gmap = buffer->getGMap();
+		const guint8* bmap = buffer->getBMap();
+
+		for(int i = 0; i < nmap; i++) {
+			colors[i].pixel = i;
+			colors[i].red   = rmap[i] << 8;
+			colors[i].green = gmap[i] << 8;
+			colors[i].blue  = bmap[i] << 8;
+			colors[i].flags = DoRed | DoGreen | DoBlue;
+			colors[i].pad  =0;
+		}
+		
+		/* swap if necessary */
+		
+		unsigned long swaptest = 1;
+		
+		if (*(char*)&swaptest) {
+			swaplong((char*)&header, sizeof(header));
+			
+			for (int i = 0; i < nmap; i++) {
+				swaplong((char*)&colors[i].pixel, sizeof(long));
+				swapshort((char*)&colors[i].red, 3*sizeof(short));
+			}
+		}
+		
+		
+		/* Write xwd header */
+		
+		fwrite(&header, sizeof(header), 1, file);
+		fwrite(win_name, win_name_size, 1, file);
+		
+		/* Write colormap */
+		
+		fwrite((char*)colors, sizeof(XColor), nmap, file);
+		
+		/* Write image data */
+		
+		fwrite(buffer->getMap(), width*height, 1, file);
 	}
 
 } // namespace ImageFormats

@@ -37,6 +37,7 @@
 #include "XBitmap.h"
 #include "PPM.h"
 #include "PBM.h"
+#include "XWD_8bpp.h"
 
 #ifndef NO_GUI
 #include "Pipe.h"
@@ -53,6 +54,7 @@ namespace ImageFormats {
 	extern XBitmap imgFmt_XBitmap;
 	extern PPM imgFmt_PPM;
 	extern PBM imgFmt_PBM;
+	extern XWD8bpp imgFmt_XWD8bpp;
 
 #ifndef NO_GUI
 	extern Pipe imgFmt_Pipe;
@@ -79,6 +81,7 @@ namespace ImageFormats {
 #ifndef NO_GUI
 		&imgFmt_Pipe,
 #endif
+		&imgFmt_XWD8bpp,
 		0 // last element is 0
 	};
 

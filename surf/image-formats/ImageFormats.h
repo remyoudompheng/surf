@@ -41,6 +41,7 @@ typedef unsigned long guint32;  // and this one, too.
 #include <stdio.h>
 
 class bit_buffer;
+class RgbBuffer;
 
 namespace ImageFormats {
 	enum ColorType {
@@ -53,7 +54,7 @@ namespace ImageFormats {
 		virtual bool isExtension(const char* ext) = 0;
 		virtual ColorType getColorType() = 0;
 		
-		virtual bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg) = 0;
+		virtual bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg) = 0;
 		virtual bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) = 0;
 	};
 

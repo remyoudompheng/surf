@@ -33,6 +33,7 @@
 
 #include "Misc.h"
 #include "FileWriter.h"
+#include "RgbBuffer.h"
 
 #include "Sun.h"
 
@@ -73,9 +74,7 @@ namespace ImageFormats {
 	Sun imgFmt_Sun;
 
 
-	bool Sun::saveColorImage(const char* filename,
-				 guint8* rdata, guint8* gdata, guint8* bdata,
-				 int width, int height, bool fromDlg)
+	bool Sun::saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg)
 	{
 		FileWriter fw(filename);
 		FILE *file;
@@ -87,6 +86,8 @@ namespace ImageFormats {
 	
 		
 		RASHDR rhdr;
+		int width = data.getWidth();
+		int height = data.getHeight();
 		int length = width*height;
 		
 		/* Initialize Sun raster header */
@@ -110,6 +111,10 @@ namespace ImageFormats {
 		put_long(rhdr.ras_type, file, BIG_ENDIAN);
 		put_long(rhdr.ras_maptype, file, BIG_ENDIAN);
 		put_long(rhdr.ras_maplength, file, BIG_ENDIAN);
+		
+		const guint8* rdata = data.getRData();
+		const guint8* gdata = data.getGData();
+		const guint8* bdata = data.getBData();
 		
 		for(int i = 0; i < length; i++) {
 			fputc(bdata[i], file);

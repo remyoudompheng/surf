@@ -32,9 +32,7 @@ namespace ImageFormats {
 
 	ByExtension imgFmt_ByExtension;
 
-	bool ByExtension::saveColorImage(const char* filename,
-					 guint8* rdata, guint8* gdata, guint8* bdata,
-					 int width, int height, bool fromDlg)
+	bool ByExtension::saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg)
 	{
 		Format* fmt = guessFormat(filename, color);
 
@@ -46,7 +44,7 @@ namespace ImageFormats {
 			Misc::alert("You must choose a color image file format.");
 			return false;
 		}
-		return fmt->saveColorImage(filename, rdata, gdata, bdata, width, height,fromDlg);
+		return fmt->saveColorImage(filename, data, fromDlg);
 	}
 
 	bool ByExtension::saveDitheredImage(const char* filename,

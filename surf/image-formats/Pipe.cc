@@ -35,17 +35,11 @@ namespace ImageFormats {
 
 	Pipe imgFmt_Pipe;
 
-	bool Pipe::saveColorImage(const char* fname,
-				  guint8* rdata, guint8* gdata, guint8* bdata,
-				  int w, int h, bool fromDlg)
+	bool Pipe::saveColorImage(const char* fname, RgbBuffer& data, bool fromDlg)
 	{
 		type = color;
 		filename = std::strdup(fname); // preserve data
-		red = rdata;
-		green = gdata;
-		blue = bdata;
-		width = w;
-		height = h;
+		buffer = &data;
 		fromDialog = fromDlg;
 
 		showDialog();
@@ -135,7 +129,7 @@ namespace ImageFormats {
 
 		switch (type) {
 		case color:
-			format->saveColorImage(new_filename, red, green, blue, width, height, fromDialog);
+			format->saveColorImage(new_filename, *buffer, fromDialog);
 			break;
 		case dithered:
 			format->saveDitheredImage(new_filename, *pixel, paper_width, paper_height, resolution, fromDialog);

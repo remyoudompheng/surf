@@ -50,7 +50,7 @@ namespace ImageFormats {
 			return false;
 		}
 
-		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg) {
+		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg) {
 			return false;
 		}
 		

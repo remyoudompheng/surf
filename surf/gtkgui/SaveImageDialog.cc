@@ -94,18 +94,17 @@ void SaveImageDialog::handle_okay()
 
 	switch (type) {
 	case ImageFormats::color: {
-		RgbBuffer* buffer = Script::getBuffer();
-		buffer->write_image(filename, fmt, true);
+		fmt->saveColorImage(filename, *Script::getBuffer(), true);
 		break;
 	}
 	case ImageFormats::dithered: {
-		bit_buffer* buffer = Script::getBitBuffer();
-		buffer->write_image(filename, fmt,
-				    main_width_data, main_height_data,
-				    print_resolution_array_data[print_resolution_data], true);
+		fmt->saveDitheredImage(filename, *Script::getBitBuffer(),
+				       main_width_data, main_height_data,
+				       print_resolution_array_data[print_resolution_data],
+				       true);
 		break;
 	}
 	default:
-		; // without the "default:", we get a warning..
+		; // without the "default:" we'd get a warning..
 	}
 }

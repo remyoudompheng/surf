@@ -52,7 +52,7 @@ namespace ImageFormats {
 			return false;
 		}
 
-		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg);
+		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
 		
 		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg);
 
@@ -64,10 +64,7 @@ namespace ImageFormats {
 	private:
 		ColorType type;
 		char* filename;
-		guint8* red;
-		guint8* green;
-		guint8* blue;
-		int width, height;
+		RgbBuffer* buffer;
 		bit_buffer* pixel;
 		int paper_height, paper_width;
 		int resolution;

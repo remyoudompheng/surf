@@ -26,6 +26,7 @@
 
 #include "Misc.h"
 #include "FileWriter.h"
+#include "RgbBuffer.h"
 
 #include "PPM.h"
 
@@ -34,9 +35,7 @@ namespace ImageFormats {
 	PPM imgFmt_PPM;
 
 
-	bool PPM::saveColorImage(const char* filename,
-				 guint8* rdata, guint8* gdata, guint8* bdata,
-				 int width, int height, bool fromDlg)
+	bool PPM::saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg)
 	{
 		FileWriter fw(filename);
 		FILE *file;
@@ -46,8 +45,17 @@ namespace ImageFormats {
 			return false;
 		}
 	
+		int width = data.getWidth();
+		int height = data.getHeight();
+		
 		fprintf (file, "P6\n%d %d\n255\n", width, height);
+		
+		const guint8* rdata = data.getRData();
+		const guint8* gdata = data.getGData();
+		const guint8* bdata = data.getBData();
+		
 		int n = width*height;
+
 		for (int i = 0; i < n; i++) {
 			fprintf (file, "%c%c%c", rdata[i], gdata[i], bdata[i]);
 		}

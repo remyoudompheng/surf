@@ -29,6 +29,11 @@
 
 #include "ImageFormats.h"
 
+#ifndef NO_GUI
+#include <gtk/gtk.h>
+#include "mygtk.h"
+#endif
+
 #include <cstring>
 
 namespace ImageFormats {
@@ -50,13 +55,65 @@ namespace ImageFormats {
 			return false;
 		}
 
-		bool saveColorImage(const char* filename, guint8* rdata, guint8* gdata, guint8* bdata, int width, int height, bool fromDlg);
+		bool saveColorImage(const char* filename, RgbBuffer& data, bool fromDlg);
 		
 		bool saveDitheredImage(const char* filename, bit_buffer& data, int paper_width, int paper_height, int resolution, bool fromDlg) {
 			return false;
 		}
+
+		void destroyDialog() {
+			gtk_widget_hide(dialog);
+			gtk_widget_destroy(dialog);
+		}
+
+	private:
+		char* filename;
+		RgbBuffer* buffer;
+
+		bool indexed;
+		bool optimized;
+		bool dither;
+		double ditherval;
+
+#ifndef NO_GUI		
+		void showDialog();
+		GtkWidget* dialog;
+
+		GtkWidget* indexedRB;
+		GtkWidget* indexedFrame;
+		GtkWidget* optimizedRB;
+		GtkWidget* ditherHBox;
+		GtkWidget* ditherCB;
+		GtkObject* ditherAdj;
+		GtkWidget* ditherSpin;
+		
+		VOIDCALL(handle_ok, XWD);
+		VOIDCALL(handle_cancel, XWD) {
+			destroyDialog();
+			std::free(filename);
+		}
+		VOIDCALL(handle_indexed, XWD) {
+			gtk_widget_set_sensitive(indexedFrame,
+						 GTK_TOGGLE_BUTTON(indexedRB)->active);
+		}
+		VOIDCALL(handle_optimized, XWD) {
+			gtk_widget_set_sensitive(ditherHBox,
+						 GTK_TOGGLE_BUTTON(optimizedRB)->active);
+		}
+		VOIDCALL(handle_dither, XWD) {
+			gtk_widget_set_sensitive(ditherSpin,
+						 GTK_TOGGLE_BUTTON(ditherCB)->active);
+		}
+#endif
+
+		void reallySave();
+		void saveAsTrueColor(FILE*);
+		void saveAsIndexed(FILE*);
 	};
 
+#ifndef NO_GUI
+	gint XWD_handle_delete(GtkWidget*, GdkEvent*, gpointer data);
+#endif
 }
 
 

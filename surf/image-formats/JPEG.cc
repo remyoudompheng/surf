@@ -28,6 +28,7 @@
 
 #include "Misc.h"
 #include "FileWriter.h"
+#include "RgbBuffer.h"
 
 // these two includes and the 'extern "C" { }' are needed for jpeglib.h
 // otherwise I get errors here :-/  (stdio.h is neede anyway..)
@@ -43,17 +44,11 @@ namespace ImageFormats {
 
 	JPEG imgFmt_JPEG;
 
-	bool JPEG::saveColorImage(const char* fname,
-				  guint8* rdata, guint8* gdata, guint8* bdata,
-				  int w, int h, bool fromDlg)
+	bool JPEG::saveColorImage(const char* fname, RgbBuffer& data, bool fromDlg)
 	{
 		filename = std::strdup(fname); // preserve data
-		red = rdata;
-		green = gdata;
-		blue = bdata;
-		width = w;
-		height = h;
-
+		buffer = &data;
+		
 #ifndef NO_GUI
 		if (fromDlg) {
 			qualityDialog();
@@ -129,6 +124,9 @@ namespace ImageFormats {
 			return;
 		}
 
+		int width = buffer->getWidth();
+		int height = buffer->getHeight();
+
 		// init cinfo struct:
 
 		jpeg_compress_struct cinfo;
@@ -151,9 +149,9 @@ namespace ImageFormats {
 		int row_stride = width * 3;
 		JSAMPLE* row = new JSAMPLE[row_stride];
 		JSAMPROW rowpointer[1] = { row };
-		JSAMPLE* rptr = red;
-		JSAMPLE* gptr = green;
-		JSAMPLE* bptr = blue;
+		JSAMPLE* rptr = buffer->getRData();
+		JSAMPLE* gptr = buffer->getGData();
+		JSAMPLE* bptr = buffer->getBData();
 		
 		while (cinfo.next_scanline < (unsigned int)(height)) {
 			JSAMPLE* ptr = row;
