@@ -61,7 +61,6 @@ void NavigationWindow::show()
 	gtk_widget_show(window);
 	gdk_window_raise(window->window);
 	glarea.show();
-//	kernel.send("triangulate_surface;\n");
 }
 
 void NavigationWindow::hide()

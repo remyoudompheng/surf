@@ -300,6 +300,13 @@ void ScriptWindow::on_clear_activate()
 
 void ScriptWindow::on_navigation_activate()
 {
+	kernel.reset();
+	std::string script = "surface_run_commands = 0;\n";
+	prelude_length = script.length();
+	script += glade.get_chars(text_script);
+	script += "surface_run_commands = 1;\n"
+		  "triangulate_surface;\n";
+	kernel.send(script);
 	navigationwin.show();
 }
 
