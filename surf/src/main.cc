@@ -69,9 +69,11 @@ char usage_text[] =
 }
 
 
-void sighup_handler(int sig)
+void sig_handler(int sig)
 {
-	Script::stop();
+	if(sig == SIGHUP || sig == SIGINT) {
+		Script::stop();
+	}
 }
 
 int main(int argc, char* argv[])
@@ -86,7 +88,8 @@ int main(int argc, char* argv[])
 // ok, what's wrong w/these two lines!??
 //	sa.sa_handler = sighup_handler;
 //	sigaction(SIGTERM, &sa, 0);
-	signal(SIGHUP, sighup_handler);
+	signal(SIGHUP, sig_handler);
+	signal(SIGINT, sig_handler);
 
 
 #ifdef DEBUG
