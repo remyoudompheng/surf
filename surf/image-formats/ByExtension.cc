@@ -54,7 +54,7 @@ namespace ImageFormats {
 		return fmt->saveDitheredImage(newfilename, pixel);
 	}
 
-	bool ByExtension::save3DImage(const char* filename, Triangulator& data)
+/*	bool ByExtension::save3DImage(const char* filename, Triangulator& data)
 	{
 		const char* newfilename;
 		Format* fmt = guessFormat(filename, three_d, &newfilename);
@@ -64,6 +64,7 @@ namespace ImageFormats {
 		}
 		return fmt->save3DImage(newfilename, data);
 	}
+*/
 
 	Format* ByExtension::guessFormat(const char* filename, Type type,
 					 const char** newfilename)
@@ -77,10 +78,10 @@ namespace ImageFormats {
 				return &imgFmt_PPM;
 			case dithered:
 				return &imgFmt_PBM;
-#ifdef HAVE_LIBGTS
-			case three_d:
-				return &imgFmt_GTS;
-#endif
+//#ifdef HAVE_LIBGTS
+//			case three_d:
+//				return &imgFmt_GTS;
+//#endif
 			default:
 				return 0;
 			}
@@ -98,9 +99,9 @@ namespace ImageFormats {
 		for (size_t i = 0; i != numAvailableFormats; ++i) {
 			Format* fmt = availableFormats[i];
 			if(fmt->isExtension(ext)) {
-				if((type == color && fmt->isColorFormat()) ||
-				   (type == dithered && fmt->isDitherFormat()) ||
-				   (type == three_d && fmt->is3DFormat())) {
+				if((type == color && fmt->isColorFormat())
+				   || (type == dithered && fmt->isDitherFormat())) {
+//				   || (type == three_d && fmt->is3DFormat())) {
 					return fmt;
 				}
 				std::cerr << "Unrecognized file extension!\n";

@@ -49,11 +49,11 @@ namespace ImageFormats {
 		&imgFmt_XBitmap,
 		&imgFmt_Sun,
 
-#ifdef HAVE_LIBGTS
-		&imgFmt_GTS,
-		&imgFmt_OOGL,
-                &imgFmt_Inventor,
-#endif
+//#ifdef HAVE_LIBGTS
+//		&imgFmt_GTS,
+//		&imgFmt_OOGL,
+//              &imgFmt_Inventor,
+//#endif
 
 		0 // last element is 0
 	};

@@ -44,7 +44,7 @@
 #include <MultiVariatePolynom.h>
 #include <RootFinder3d.h>
 #include <SymbolTable.h>
-#include <Triangulator.h>
+//#include <Triangulator.h>
 #include <debug.h>
 
 #ifdef HAVE_READLINE
@@ -83,9 +83,9 @@ RgbBuffer* Script::buffer = 0;
 bit_buffer* Script::bitbuffer = 0;
 float_buffer* Script::zbuffer = 0;
 float_buffer* Script::zbuffer3d = 0;
-#ifdef HAVE_LIBGTS
-Triangulator* Script::tritor = 0;
-#endif
+//#ifdef HAVE_LIBGTS
+//Triangulator* Script::tritor = 0;
+//#endif
 SymbolTable* Script::defaultValues = 0;
 
 extern void symtab_delete_element(symtab*); // from lexfunc.cc
@@ -311,9 +311,9 @@ void Script::init(bool _quiet)
 	bitbuffer->setSize(main_width_data, main_height_data);
 	zbuffer = new float_buffer(main_width_data, main_height_data);
 	*zbuffer = -10.0; // FIXME
-#ifdef HAVE_LIBGTS
-	tritor = new Triangulator;
-#endif
+//#ifdef HAVE_LIBGTS
+//	tritor = new Triangulator;
+//#endif
 	stop_flag = false;
 }
 
@@ -338,16 +338,16 @@ void Script::addNewCommands()
 	replaceCommand("dither_surface", ditherSurface);
 	replaceCommand("save_color_image", saveColorImage);
 	replaceCommand("save_dithered_image", saveDitheredImage);
-	replaceCommand("save_three_d_image", save3DImage);
+//	replaceCommand("save_three_d_image", save3DImage);
 	replaceCommand("clear_screen", clearScreen);
 	replaceCommand("clear_pixmap", clearScreen);
 	replaceCommand("resultant", computeResultant);
 	replaceCommand("reset", reset);
-        replaceCommand("triangulate_surface", triangulateSurface);
+//        replaceCommand("triangulate_surface", triangulateSurface);
 	replaceCommand("print_defaults", printDefaults);
 	replaceCommand("print_color_image_formats", printColorImageFormats);
 	replaceCommand("print_dither_image_formats", printDitherImageFormats);
-	replaceCommand("print_three_d_image_formats", print3DImageFormats);
+//	replaceCommand("print_three_d_image_formats", print3DImageFormats);
 	replaceCommand("print_position", printPosition);
 }
 
@@ -468,6 +468,7 @@ void Script::saveDitheredImage()
 	ImageFormats::saveDitheredImage(surface_filename_data, *bitbuffer);
 }
 
+#if 0
 void Script::save3DImage()
 {
 #ifdef HAVE_LIBGTS
@@ -481,6 +482,7 @@ void Script::save3DImage()
 	ImageFormats::save3DImage(surface_filename_data, *tritor);
 #endif
 }
+#endif
 
 void Script::ditherSurface()
 {
@@ -726,6 +728,7 @@ void Script::reset()
 	*zbuffer = -10.0;
 }
 
+#if 0
 void Script::triangulateSurface()
 {
 #ifdef HAVE_LIBGTS
@@ -738,6 +741,7 @@ void Script::triangulateSurface()
 	std::cout.flush();
 #endif // HAVE_LIBGTS
 }
+#endif
 
 void Script::printDefaults()
 {
@@ -776,6 +780,7 @@ void Script::printDitherImageFormats()
 	std::cout.flush();
 }
 
+#if 0
 void Script::print3DImageFormats()
 {
 	using namespace ImageFormats;
@@ -790,6 +795,7 @@ void Script::print3DImageFormats()
 	std::cout << "\n";
 	std::cout.flush();
 }
+#endif
 
 void Script::printPosition()
 {

@@ -56,9 +56,9 @@ public:
 
 	static bit_buffer* getBitBuffer() { return bitbuffer; }
 
-#ifdef HAVE_LIBGTS
-	static Triangulator* getTriangulator() { return tritor; }
-#endif
+//#ifdef HAVE_LIBGTS
+//	static Triangulator* getTriangulator() { return tritor; }
+//#endif
 
 	static float_buffer* getZBuffer() { return zbuffer; }
 	static float_buffer* getZBuffer3d() {
@@ -95,9 +95,9 @@ private:
 	static bit_buffer* bitbuffer;
 	static float_buffer* zbuffer;
 	static float_buffer* zbuffer3d;
-#ifdef HAVE_LIBGTS
-	static Triangulator* tritor;
-#endif
+//#ifdef HAVE_LIBGTS
+//	static Triangulator* tritor;
+//#endif
 
 	static SymbolTable* defaultValues;
 
@@ -120,16 +120,16 @@ private:
 	
 	static void clearScreen();
 	static void saveDitheredImage();
-	static void save3DImage();
+//	static void save3DImage();
 	static void ditherSurface();
 	static void ditherCurve();
 	static void reset();
-	static void triangulateSurface();
+//	static void triangulateSurface();
 	static void kernelModeSet();
 	static void printDefaults();
 	static void printColorImageFormats();
 	static void printDitherImageFormats();
-	static void print3DImageFormats();
+//	static void print3DImageFormats();
 	static void printPosition();
 };
 

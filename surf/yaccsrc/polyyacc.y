@@ -183,6 +183,7 @@ include:            INCLUDE s_expression
                         {
                             printf( "%s\n",$2 );
 			} 
+                  ;
 
 statement:          NAME_COMMAND
                         {
