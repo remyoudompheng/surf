@@ -540,6 +540,11 @@ extern  const int     colormap_output_true_color_data;	// "TrueColor"
 //
 extern  int     dither_file_format_data;
 
+//
+//  --- "three_d_file_format"
+//
+extern  int     three_d_file_format_data;
+
 // --------------------
 // Image Format options
 // --------------------

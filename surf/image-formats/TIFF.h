@@ -44,11 +44,15 @@ namespace ImageFormats {
 		std::string getID() const {
 			return "tiff";
 		}
-		ColorType getColorType() const {
-			return both;
-		}
 		bool isExtension(const std::string& ext) const {
 			return ext == "tif" || ext == "tiff";
+		}
+
+		bool isColorFormat() const {
+			return true;
+		}
+		bool isDitherFormat() const {
+			return true;
 		}
 
 		bool saveColorImage(const char* filename, RgbBuffer& data);

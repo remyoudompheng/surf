@@ -8,7 +8,8 @@ libdummy_a_SOURCES = ImageFormats.h ImageFormats.cc \
         Sun.h Sun.cc     EPS.h EPS.cc       \
 	XBitmap.h XBitmap.cc PPM.h PPM.cc   PBM.h PBM.cc \
 	XPM.h XPM.cc \
-        PNG.h PNG.cc
+        PNG.h PNG.cc \
+        GTS.h GTS.cc
 
 libdummy.a:: $(libdummy_a_OBJECTS) $(libdummy_a_DEPENDENCIES)
 

@@ -37,7 +37,7 @@ namespace ImageFormats {
 		const char* newfilename;
 		Format* fmt = guessFormat(filename, color, &newfilename);
 
-		if (fmt == 0) {
+		if(fmt == 0) {
 			return false;
 		}
 		return fmt->saveColorImage(newfilename, data);
@@ -54,7 +54,18 @@ namespace ImageFormats {
 		return fmt->saveDitheredImage(newfilename, pixel);
 	}
 
-	Format* ByExtension::guessFormat(const char* filename, ColorType type,
+	bool ByExtension::save3DImage(const char* filename, Triangulator& data)
+	{
+		const char* newfilename;
+		Format* fmt = guessFormat(filename, three_d, &newfilename);
+
+		if (fmt == 0) {
+			return false;
+		}
+		return fmt->save3DImage(newfilename, data);
+	}
+
+	Format* ByExtension::guessFormat(const char* filename, Type type,
 					 const char** newfilename)
 	{
 		// check if it's saving to a pipe:
@@ -66,7 +77,9 @@ namespace ImageFormats {
 				return &imgFmt_PPM;
 			case dithered:
 				return &imgFmt_PBM;
-			default: // suppress warning
+			case three_d:
+				return &imgFmt_GTS;
+			default:
 				return 0;
 			}
 		}
@@ -98,6 +111,7 @@ namespace ImageFormats {
 			if (extPtr == 0) {
 				return 0;
 			}
+
 			strncpy(ext, extPtr + 1, maxExtLen);
 			*newfilename = filename;
 		}
@@ -105,17 +119,18 @@ namespace ImageFormats {
 		return findFormatByExt(ext, type);
 	}
 
-	Format* ByExtension::findFormatByExt(const char* ext, ColorType type)
+	Format* ByExtension::findFormatByExt(const char* ext, Type type)
 	{
 		for (size_t i = 0; i != numAvailableFormats; ++i) {
-			if (availableFormats[i]->isExtension(ext)) {
-				ColorType fmtType = availableFormats[i]->getColorType();
-				if (fmtType == both || fmtType == type) {
-					return availableFormats[i];
-				} else {
-					std::cerr << "Unrecognized file extension!\n";
-					return 0;
+			Format* fmt = availableFormats[i];
+			if(fmt->isExtension(ext)) {
+				if((type == color && fmt->isColorFormat()) ||
+				   (type == dithered && fmt->isDitherFormat()) ||
+				   (type == three_d && fmt->is3DFormat())) {
+					return fmt;
 				}
+				std::cerr << "Unrecognized file extension!\n";
+				return 0;
 			}
 		}
 		std::cerr << "Couldn't determine file type by extension.\n";

@@ -40,7 +40,7 @@ namespace ImageFormats {
 			return false;
 		}
 		Format* fmt = availableFormats[cff];
-		if(fmt->getColorType() == dithered) {
+		if(!fmt->isColorFormat()) {
 			std::cerr << "You didn't choose a valid color file format!\n";
 			return false;
 		}
@@ -55,68 +55,26 @@ namespace ImageFormats {
 			return false;
 		}
 		Format* fmt = availableFormats[dff];
-		if(fmt->getColorType() == color) {
+		if(!fmt->isDitherFormat()) {
 			std::cerr << "You didn't choose a valid dithered file format!\n";
 			return false;
 		}
 		return availableFormats[dff]->saveDitheredImage(filename, data);
 	}
 
-	
-/*	// some file format implementations could use this utility function:
-	// Write a long word to a file respecting endianess:
-	void put_long(long word, FILE* file, int order)
+	bool save3DImage(const char* filename, Triangulator& data)
 	{
-#if __BYTE_ORDER == LITTLE_ENDIAN
-		if (order == BIG_ENDIAN) {
-#else
-	        if (order == LITTLE_ENDIAN) {
-#endif
-			fputc((word >> 24) & 0x0ff, file);
-			fputc((word >> 16) & 0x0ff, file);
-			fputc((word >> 8) & 0x0ff, file);
-			fputc(word & 0x0ff, file);
-		} else {
-			fputc(word & 0x0ff, file);
-			fputc((word >> 8) & 0x0ff, file);
-			fputc((word >> 16) & 0x0ff, file);
-			fputc((word >> 24) & 0x0ff, file);
+		int tdff = ScriptVar::three_d_file_format_data;
+		if(tdff > int(numAvailableFormats) || tdff < 0) {
+			std::cerr << "three_d_file_format out of range!\n";
+			return false;
 		}
-	}
-	
-	
-	void swapshort(char* bp, unsigned int n)
-	{
-		char c;
-		char* ep = bp + n;
-		
-		while (bp < ep) {
-			c = *bp;
-			*bp = *(bp + 1);
-			bp++;
-			*bp++ = c;
+		Format* fmt = availableFormats[tdff];
+		if(!fmt->is3DFormat()) {
+			std::cerr << "You didn't choose a valid 3D file format!\n";
+			return false;
 		}
+		return availableFormats[tdff]->save3DImage(filename, data);
 	}
-
-	void swaplong(char* bp, unsigned int n)
-	{
-		char c;
-		char *ep = bp + n;
-		char *sp;
-		
-		while (bp < ep) {
-			sp = bp + 3;
-			c = *sp;
-			*sp = *bp;
-			*bp++ = c;
-			sp = bp + 1;
-			c = *sp;
-			*sp = *bp;
-			*bp++ = c;
-			bp += 2;
-		}
-	}
-
-*/
 
 } // namespace ImageFormats

@@ -23,35 +23,33 @@
  */
 
 
-
-
-#ifndef IMAGEFORMAT_SUN_H
-#define IMAGEFORMAT_SUN_H
+#ifndef IMAGEFORMAT_GTS_H
+#define IMAGEFORMAT_GTS_H
 
 #include <ImageFormats.h>
 
 namespace ImageFormats {
 
-	class Sun : public Format {
+	class GTS : public Format {
 	public:
 		std::string getName() const {
-			return "Sun Rasterfile";
+			return "GTS";
 		}
 		std::string getID() const {
-			return "sun";
+			return "gts";
 		}
 		bool isExtension(const std::string& ext) const {
-			return ext == "ras";
+			return ext == "gts";
 		}
 
-		bool isColorFormat() const {
+		bool is3DFormat() const {
 			return true;
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data);
+		bool save3DImage(const char* filename, Triangulator& data);
 	};
 
-	extern Sun imgFmt_Sun;
+	extern GTS imgFmt_GTS;
 }
 
-#endif //!IMAGEFORMAT_SUN_H
+#endif //!IMAGEFORMAT_GTS_H

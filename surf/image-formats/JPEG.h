@@ -26,10 +26,7 @@
 #ifndef IMAGEFORMAT_JPEG_H
 #define IMAGEFORMAT_JPEG_H
 
-#include "ImageFormats.h"
-
-#include<cstring>
-#include<cstdlib>
+#include <ImageFormats.h>
 
 namespace ImageFormats {
 
@@ -41,19 +38,15 @@ namespace ImageFormats {
 		std::string getID() const {
 			return "jpeg";
 		}
-		ColorType getColorType() const {
-			return color;
-		}
-		
 		bool isExtension(const std::string& ext) const {
 			return ext == "jpg" || ext == "jpeg";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data);
-		
-		bool saveDitheredImage(const char* filename, bit_buffer& data) {
-			return false;
+		bool isColorFormat() const {
+			return true;
 		}
+
+		bool saveColorImage(const char* filename, RgbBuffer& data);
 	};
 
 	extern JPEG imgFmt_JPEG;

@@ -48,10 +48,14 @@ public:
 	virtual ~Triangulator();
 
 	void triangulate();
-	void write_gts_file();
-	void write_data();
+
+	GtsSurface* getSurface() const {
+		return surface;
+	}
 
 private:
+	void write_data();
+	
 	void vertex_func(GtsVertex* v);
 	static gint _vertex_func(gpointer v, gpointer This) {
 		reinterpret_cast<Triangulator*>(This)->vertex_func(static_cast<GtsVertex*>(v));

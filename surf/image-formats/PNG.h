@@ -38,18 +38,15 @@ namespace ImageFormats {
 		std::string getID() const {
 			return "png";
 		}
-		ColorType getColorType() const {
-			return color;
-		}
 		bool isExtension(const std::string& ext) const {
 			return ext == "png";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data);
-		
-		bool saveDitheredImage(const char* filename, bit_buffer& data) {
-			return false;
+		bool isColorFormat() const {
+			return true;
 		}
+
+		bool saveColorImage(const char* filename, RgbBuffer& data);
 	};
 
 	extern PNG imgFmt_PNG;

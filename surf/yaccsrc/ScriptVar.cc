@@ -504,6 +504,12 @@ const int     colormap_output_true_color_data	= 2;
 
 int dither_file_format_data;
 
+//
+//  --- "three_d_file_format"
+//
+
+int three_d_file_format_data;
+
 // --------------------
 // image format options
 // --------------------

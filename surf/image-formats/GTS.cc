@@ -23,35 +23,44 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
+#ifdef HAVE_LIBGTS
 
-#ifndef IMAGEFORMAT_SUN_H
-#define IMAGEFORMAT_SUN_H
+#include <GTS.h>
+#include <FileWriter.h>
+#include <Triangulator.h>
+#include <ScriptVar.h>
+#include <Misc.h>
 
-#include <ImageFormats.h>
+#include<iostream>
 
 namespace ImageFormats {
 
-	class Sun : public Format {
-	public:
-		std::string getName() const {
-			return "Sun Rasterfile";
-		}
-		std::string getID() const {
-			return "sun";
-		}
-		bool isExtension(const std::string& ext) const {
-			return ext == "ras";
-		}
+	GTS imgFmt_GTS;
 
-		bool isColorFormat() const {
-			return true;
+	bool GTS::save3DImage(const char* filename, Triangulator& data)
+	{
+		FileWriter fw(filename);
+		FILE* file;
+		
+		if((file = fw.openFile()) == 0) {
+		        Misc::print_warning("Could not open file for writing.\n");
+			return false;
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data);
-	};
+		GtsSurface* surface = data.getSurface();
+		if(surface == 0) {
+			Misc::print_warning("There was no triangulated data to save.\n");
+			return false;
+		}
 
-	extern Sun imgFmt_Sun;
-}
+		gts_surface_write(surface, file);
+		return true;
+	}
 
-#endif //!IMAGEFORMAT_SUN_H
+} // namespace ImageFormats
+
+#endif // HAVE_LIBGTS

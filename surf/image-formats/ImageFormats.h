@@ -25,29 +25,44 @@
 #ifndef IMAGEFORMATS_H
 #define IMAGEFORMATS_H
 
-#include <string>
+#include<string>
+#include<iostream>
 
 class bit_buffer;
 class RgbBuffer;
+class Triangulator;
 
 namespace ImageFormats {
-	enum ColorType {
-		color, dithered, both
-	};
-	
 	class Format {
 	public:
 		virtual std::string getName() const = 0;
 		virtual std::string getID() const = 0;
 		virtual bool isExtension(const std::string& ext) const = 0;
-		virtual ColorType getColorType() const = 0;
+
+		virtual bool isColorFormat() const {
+			return false;
+		}
+		virtual bool isDitherFormat() const {
+			return false;
+		}
+		virtual bool is3DFormat() const {
+			return false;
+		}
 		
-		virtual bool saveColorImage(const char* filename, RgbBuffer& data) = 0;
-		virtual bool saveDitheredImage(const char* filename, bit_buffer& data) = 0;
+		virtual bool saveColorImage(const char* filename, RgbBuffer& data) {
+			return false;
+		}
+		virtual bool saveDitheredImage(const char* filename, bit_buffer& data) {
+			return false;
+		}
+		virtual bool save3DImage(const char* filename, Triangulator& data) {
+			return false;
+		}
 	};
 
 	bool saveColorImage(const char* filename, RgbBuffer& data);
 	bool saveDitheredImage(const char* filename, bit_buffer& data);
+	bool save3DImage(const char* filename, Triangulator& data);
 }
 
 #endif //!IMAGEFORMATS_H

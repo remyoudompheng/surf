@@ -40,18 +40,15 @@ namespace ImageFormats {
 		std::string getID() const {
 			return "ppm";
 		}
-		ColorType getColorType() const {
-			return color;
-		}
 		bool isExtension(const std::string& ext) const {
 			return ext == "ppm";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data);
-		
-		bool saveDitheredImage(const char* filename, bit_buffer& data) {
-			return false;
+		bool isColorFormat() const {
+			return true;
 		}
+
+		bool saveColorImage(const char* filename, RgbBuffer& data);
 	};
 
 	extern PPM imgFmt_PPM;

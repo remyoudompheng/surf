@@ -70,6 +70,9 @@ RgbBuffer* Script::buffer = 0;
 bit_buffer* Script::bitbuffer = 0;
 float_buffer* Script::zbuffer = 0;
 float_buffer* Script::zbuffer3d = 0;
+#ifdef HAVE_LIBGTS
+Triangulator* Script::tritor = 0;
+#endif
 SymbolTable* Script::defaultValues = 0;
 
 extern void symtab_delete_element(symtab*); // from lexfunc.cc
@@ -233,6 +236,7 @@ void Script::init()
 	bitbuffer->setSize(main_width_data, main_height_data);
 	zbuffer = new float_buffer(main_width_data, main_height_data);
 	*zbuffer = -10.0; // FIXME
+	tritor = new Triangulator;
 	kernelMode = false;
 	stop_flag = false;
 }
@@ -313,6 +317,7 @@ void Script::addNewCommands()
 	replaceCommand("dither_surface", ditherSurface);
 	replaceCommand("save_color_image", saveColorImage);
 	replaceCommand("save_dithered_image", saveDitheredImage);
+	replaceCommand("save_three_d_image", save3DImage);
 	replaceCommand("clear_screen", clearScreen);
 	replaceCommand("clear_pixmap", clearScreen);
 	replaceCommand("resultant", computeResultant);
@@ -322,6 +327,7 @@ void Script::addNewCommands()
 	replaceCommand("print_defaults", printDefaults);
 	replaceCommand("print_color_image_formats", printColorImageFormats);
 	replaceCommand("print_dither_image_formats", printDitherImageFormats);
+	replaceCommand("print_three_d_image_formats", print3DImageFormats);
 	replaceCommand("print_position", printPosition);
 }
 
@@ -426,6 +432,18 @@ void Script::saveDitheredImage()
 	}
 
 	ImageFormats::saveDitheredImage(surface_filename_data, *pixel);
+}
+
+void Script::save3DImage()
+{
+	Triangulator* tritor = getTriangulator();
+	
+	if(surface_filename_data == 0) {
+		std::cerr << "No filename given.\n";
+		return;
+	}
+
+	ImageFormats::save3DImage(surface_filename_data, *tritor);
 }
 
 void Script::ditherSurface()
@@ -630,15 +648,7 @@ void Script::reset()
 void Script::triangulateSurface()
 {
 #ifdef HAVE_LIBGTS
-
-	std::cout << "triangulate_surface\n";
-	std::cout.flush();
-	
-	Triangulator tritor;
-	tritor.triangulate();
-	tritor.write_data();
-	std::cout.flush();
-
+	tritor->triangulate();
 #else
 	std::cout << "not_implemented\n";
 	std::cout.flush();
@@ -666,7 +676,7 @@ void Script::printColorImageFormats()
 	
 	for(size_t i = 0; i != numAvailableFormats; i++) {
 		Format* fmt = availableFormats[i];
-		if(fmt->getColorType() != dithered) {
+		if(fmt->isColorFormat()) {
 			std::cout << fmt->getName() << '\n'
 				  << fmt->getID() << '\n';
 		}
@@ -681,7 +691,22 @@ void Script::printDitherImageFormats()
 	
 	for(size_t i = 0; i != numAvailableFormats; i++) {
 		Format* fmt = availableFormats[i];
-		if(fmt->getColorType() != color) {
+		if(fmt->isDitherFormat()) {
+			std::cout << fmt->getName() << '\n'
+				  << fmt->getID() << '\n';
+		}
+	}
+	std::cout << "\n";
+	std::cout.flush();
+}
+
+void Script::print3DImageFormats()
+{
+	using namespace ImageFormats;
+	
+	for(size_t i = 0; i != numAvailableFormats; i++) {
+		Format* fmt = availableFormats[i];
+		if(fmt->is3DFormat()) {
 			std::cout << fmt->getName() << '\n'
 				  << fmt->getID() << '\n';
 		}

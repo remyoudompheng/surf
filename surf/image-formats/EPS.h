@@ -44,17 +44,14 @@ namespace ImageFormats {
 		std::string getID() const {
 			return "eps";
 		}
-		ColorType getColorType() const {
-			return dithered;
-		}
 		bool isExtension(const std::string& ext) const {
 			return ext == "eps";
 		}
-
-		bool saveColorImage(const char* filename, RgbBuffer& data) {
-			return false;
-		}
 		
+		bool isDitherType() const {
+			return true;
+		}
+
 		bool saveDitheredImage(const char* filename, bit_buffer& data);
 	};
 

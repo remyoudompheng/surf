@@ -46,15 +46,12 @@ namespace ImageFormats {
 		std::string getID() const {
 			return "postscript";
 		}
-		ColorType getColorType() const {
-			return dithered;
-		}
 		bool isExtension(const std::string& ext) const {
 			return ext == "ps";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data) {
-			return false;
+		bool isDitherFormat() const {
+			return true;
 		}
 		
 		bool saveDitheredImage(const char* filename, bit_buffer& data);

@@ -31,6 +31,7 @@
 
 #include <Triangulator.h>
 #include <ScriptVar.h>
+#include <Script.h>
 #include <Misc.h>
 #include <FileWriter.h>
 #include <polyarith.h>
@@ -79,32 +80,17 @@ void Triangulator::triangulate()
 			    gts_coarsen_stop_cost, &maxcost, 0);
 
 	delete hf;
-}
 
-void Triangulator::write_gts_file()
-{
-	if(ScriptVar::surface_filename_data == 0) {
-		Misc::print_warning("No filename given!\n");
-		return;
-	}
-	
-	FileWriter fw(ScriptVar::surface_filename_data);
-	FILE* file;
-		
-	if((file = fw.openFile()) == 0) {
-		Misc::print_warning("Could not open file for writing.\n");
-		return;
-	}
-	
-	if(surface == 0) {
-		Misc::print_warning("There was no triangulated data to save.\n");
-	} else {
-		gts_surface_write(surface, file);
+	if(Script::isKernelMode()) {
+		write_data();
 	}
 }
 
 void Triangulator::write_data()
 {
+	std::cout << "triangulate_surface\n";
+	std::cout.flush();
+	
 	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
 	polyxyz_sort(&f);
 	polyxyz dx = polyxyz_dx(&f);
@@ -125,6 +111,9 @@ void Triangulator::write_data()
 	gts_surface_foreach_face(surface, _face_func, this);
 
 	vertex_map.erase(vertex_map.begin(), vertex_map.end());
+
+	std::cout << "end\n";
+	std::cout.flush();
 
 	delete hdx;
 	delete hdy;

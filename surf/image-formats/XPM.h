@@ -40,18 +40,15 @@ namespace ImageFormats {
 		std::string getID() const {
 			return "xpm";
 		}
-		ColorType getColorType() const {
-			return color;
-		}
 		bool isExtension(const std::string& ext) const {
 			return ext == "xpm";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data);
-		
-		bool saveDitheredImage(const char* filename, bit_buffer& data) {
-			return false;
+		bool isColorFormat() const {
+			return true;
 		}
+
+		bool saveColorImage(const char* filename, RgbBuffer& data);
 	};
 
 	extern XPM imgFmt_XPM;

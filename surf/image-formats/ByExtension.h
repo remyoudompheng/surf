@@ -28,9 +28,9 @@
 #ifndef IMAGEFORMAT_BYEXTENSION_H
 #define IMAGEFORMAT_BYEXTENSION_H
 
-#include "ImageFormats.h"
+#include <ImageFormats.h>
 
-#include <cstring>
+#include<iostream>
 
 namespace ImageFormats {
 
@@ -42,23 +42,33 @@ namespace ImageFormats {
 	        std::string getID() const {
 			return "auto";
 		}
-		ColorType getColorType() const {
-			return both;
-		}
 		bool isExtension(const std::string& ext) const {
 			return false;
 		}
 
+		bool isColorFormat() const {
+			return true;
+		}
+		bool isDitherFormat() const {
+			return true;
+		}
+		bool is3DFormat() const {
+			return true;
+		}
+
 		bool saveColorImage(const char* filename, RgbBuffer& data);
 		bool saveDitheredImage(const char* filename, bit_buffer& data);
+		bool save3DImage(const char* filename, Triangulator& data);
 
 	private:
-		Format* guessFormat(const char* filename, ColorType type, const char** newfilename);
-		Format* findFormatByExt(const char* ext, ColorType type);
+		enum Type {
+			color, dithered, three_d
+		};
+		Format* guessFormat(const char* filename, Type type, const char** newfilename);
+		Format* findFormatByExt(const char* ext, Type type);
 	};
 
 	extern ByExtension imgFmt_ByExtension;
-
 }
 
 #endif //!IMAGEFORMAT_BYEXTENSION_H

@@ -47,6 +47,9 @@
 #include <PPM.h>
 #include <PBM.h>
 #include <XPM.h>
+#ifdef HAVE_LIBGTS
+#  include <GTS.h>
+#endif
 
 namespace ImageFormats {
 	extern Format* availableFormats[];

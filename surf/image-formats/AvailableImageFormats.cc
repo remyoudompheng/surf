@@ -49,6 +49,10 @@ namespace ImageFormats {
 		&imgFmt_XBitmap,
 		&imgFmt_Sun,
 
+#ifdef HAVE_LIBGTS
+		&imgFmt_GTS,
+#endif
+
 		0 // last element is 0
 	};
 

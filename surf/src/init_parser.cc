@@ -27,17 +27,13 @@
 #  include <config.h>
 #endif
 
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
-
 #include <init_parser.h>
 #include <ScriptVar.h>
 #include <monomarith.h>
 #include <AvailableImageFormats.h>
 
+#include<cstdio>
 #include<string>
-
 
 using namespace ScriptVar;
 
@@ -144,7 +140,7 @@ void init_main_variables()
 		addPoly(clip_surface + suff, &main_clip_pxyz_data[1]);
 	}
 
-	// surface colors:
+	// surface color:
 	std::string inside = "inside";
 	for(size_t i = 0; i < MAIN_SURFACE_AMOUNT_NUM; i++) {
 		std::string suff;
@@ -256,10 +252,9 @@ void init_main_variables()
 
 	addNumber("pixel_size", &print_p_radius_data);
 
-	using namespace ImageFormats;
-	
 	addNumber("color_file_format", &color_file_format_data);
 	addNumber("dither_file_format", &dither_file_format_data);
+	addNumber("three_d_file_format", &three_d_file_format_data);
 	size_t num = ImageFormats::numAvailableFormats;
 	for(size_t i = 0; i != num; i++) {
 		using namespace ImageFormats;
