@@ -70,6 +70,11 @@ public:
 		*kernel_output >> i;
 		return i;
 	}
+	float receive_float() {
+		float f;
+		*kernel_output >> f;
+		return f;
+	}
 	void receive_bytes(char* buf, size_t len) {
 		kernel_output->read(buf, len);
 	}
@@ -134,25 +139,6 @@ private:
 	double scale_y;
 	double scale_z;
 	
-	enum {
-		NEUTRAL,
-		COLOR_IMAGE_HEADER,
-		COLOR_IMAGE_DATA,
-		DITHER_IMAGE,
-		TRIANGULATE_SURFACE,
-		STOPPED
-	} state;
-
-	struct {
-		int width;
-		int height;
-		size_t length;
-		size_t rowstride;
-		char* pixdata;
-		int mod;
-		int y;
-	} image;
-
 	guint handler_id;
 	void process_output();
 	static void _process_output(gpointer This, gint, GdkInputCondition) {

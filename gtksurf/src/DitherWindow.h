@@ -28,9 +28,11 @@
                 static_cast<DitherWindow*>(This)->on_##name##_activate(w);\
         }
 
+class ScriptWindow;
+
 class DitherWindow : public GladeWindow {
 public:
-	DitherWindow(Glade& glade, Kernel& kernel);
+	DitherWindow(Glade& glade, Kernel& kernel, ScriptWindow* sw);
 	virtual ~DitherWindow() {}
 
 	void show() {
@@ -41,11 +43,12 @@ public:
 		gtk_widget_hide(window);
 	}
 		
-	void set_image(guint8* pixdata, int width, int height);
+	void read_data();
 
 private:
 	Glade& glade;
 	Kernel& kernel;
+	ScriptWindow* scriptwin;
 
 	GdkGCValues gcval;
 	GdkBitmap* bitmap;

@@ -59,7 +59,7 @@ public:
 		shown = false;
 	}
 	
-	void read_triangulated_data(std::ifstream& ifs);
+	void read_data();
 
 private:
 	void init(GLsizei width, GLsizei height);

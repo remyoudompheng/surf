@@ -10,6 +10,7 @@
 
 #include <GLArea.h>
 #include <NavigationWindow.h>
+#include <Misc.h>
 
 #include<iostream>
 #include<cstdlib>
@@ -78,10 +79,11 @@ GLArea::~GLArea()
 	}
 }
 
-void GLArea::read_triangulated_data(std::ifstream& ifs)
+void GLArea::read_data()
 {
-	std::string line;
-	std::getline(ifs, line);
+	kernel.disconnect_handler();
+	
+	std::string line = kernel.receive_line();
 	std::istrstream iss(line.c_str());
 
 	size_t nv, nf;
@@ -89,19 +91,32 @@ void GLArea::read_triangulated_data(std::ifstream& ifs)
 
 	std::cerr << "nv: " << nv << ", nf: " << nf << "\n";
 
+	if(nv == 0 || nf == 0) {
+		Misc::print_warning("There were no vertices/no faces at all!\n");
+		return;
+	}
+
 	// read vertices:
 	GLvertex* vertices = new GLvertex[nv];
 	for(size_t i = 0; i != nv; i++) {
-		ifs >> vertices[i].x >> vertices[i].y >> vertices[i].z
-		    >> vertices[i].nx >> vertices[i].ny >> vertices[i].nz;
+		vertices[i].x = kernel.receive_float();
+		vertices[i].y = kernel.receive_float();
+		vertices[i].z = kernel.receive_float();
+		vertices[i].nx = kernel.receive_float();
+		vertices[i].ny = kernel.receive_float();
+		vertices[i].nz = kernel.receive_float();
 	}
 
 	// read faces:
 	GLface* faces = new GLface[nf];
 	for(size_t i = 0; i != nf; i++) {
-		ifs >> faces[i].p1 >> faces[i].p2 >> faces[i].p3;
+		faces[i].p1 = kernel.receive_int();
+		faces[i].p2 = kernel.receive_int();
+		faces[i].p3 = kernel.receive_int();
 	}
 
+	kernel.connect_handler();
+	
 	// build OpenGL display list:
 	if(display_list != 0) {
 		glDeleteLists(display_list, 1);

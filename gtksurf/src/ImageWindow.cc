@@ -14,6 +14,8 @@
 #endif
 
 #include <ImageWindow.h>
+#include <ScriptWindow.h>
+#include <Misc.h>
 
 #include <gdk/gdkkeysyms.h>
 
@@ -21,9 +23,9 @@
 #include<fstream>
 #include<strstream>
 
-ImageWindow::ImageWindow(Glade& _glade, Kernel& _kernel)
-	: glade(_glade), kernel(_kernel),
-	  ditherwin(glade, kernel),
+ImageWindow::ImageWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* _sw)
+	: glade(_glade), kernel(_kernel), scriptwin(_sw),
+	  ditherwin(glade, kernel, _sw),
 	  pixbuf(0)
 {
 	kernel.set_imagewin(this);
@@ -83,17 +85,57 @@ void ImageWindow::clear()
 	show();
 }
 
-void ImageWindow::set_image(guint8* pixdata, int width, int height, size_t rowstride)
+void ImageWindow::read_data()
 {
 	if(pixbuf != 0) {
 		gdk_pixbuf_unref(pixbuf);
 	}
 
-	pixbuf = gdk_pixbuf_new_from_data(pixdata, GDK_COLORSPACE_RGB, false, 8,
+	kernel.disconnect_handler();
+	
+	scriptwin->progress_mode(false);
+	scriptwin->set_progress(0);
+	
+	if(kernel.receive_line() != "P6") {
+		scriptwin->set_status("Wrong image format!\n");
+		return;
+	}
+	std::string whstring = kernel.receive_line();
+	std::istrstream is(whstring.c_str());
+	int width;
+	int height;
+	is >> width >> height;
+
+	kernel.receive_line(); // eat up "255\n" line
+
+	int length = 3*width*height;
+	int rowstride = 3*width;
+	int mod = height/100;
+	if(mod == 0) {
+		mod = 1;
+	}
+	char* pixdata = new char[length];
+	for(int y = 0; y != height; y++) {
+		kernel.receive_bytes(pixdata + y*rowstride, rowstride);
+		if(y % mod) {
+			scriptwin->set_progress(float(y)/float(height));
+		}
+		gtk_main_iteration_do(false);
+	}
+	
+	if(kernel.receive_line() != "end") {
+		Misc::print_warning("Transmission from kernel didn't end properly\n");
+	}
+		
+	kernel.connect_handler();
+	
+	scriptwin->set_status("");
+	scriptwin->progress_mode(false);
+
+	pixbuf = gdk_pixbuf_new_from_data(reinterpret_cast<guint8*>(pixdata),
+					  GDK_COLORSPACE_RGB, false, 8,
 					  width, height, rowstride, delete_array_fn, 0);
 
-	//width = gdk_pixbuf_get_width(pixbuf);
-	//height = gdk_pixbuf_get_height(pixbuf);
 	gtk_widget_set_usize(drawingarea, width, height);
 	gtk_widget_set_usize(window, width, height);
 

@@ -14,6 +14,8 @@
 #endif
 
 #include <DitherWindow.h>
+#include <ScriptWindow.h>
+#include <Misc.h>
 #include <gdk_draw_bitmap.h>
 
 #include <gdk/gdkkeysyms.h>
@@ -22,8 +24,22 @@
 #include<fstream>
 #include<strstream>
 
-DitherWindow::DitherWindow(Glade& _glade, Kernel& _kernel)
-	: glade(_glade), kernel(_kernel),
+namespace {
+	guint8 change_bits(guint8 b)
+	{
+		return    (b >> 7) & 0x01
+			| (b >> 5) & 0x02
+			| (b >> 3) & 0x04
+			| (b >> 1) & 0x08
+			| (b << 1) & 0x10
+			| (b << 3) & 0x20
+			| (b << 5) & 0x40
+			| (b << 7) & 0x80;
+	}
+}
+
+DitherWindow::DitherWindow(Glade& _glade, Kernel& _kernel, ScriptWindow* sw)
+	: glade(_glade), kernel(_kernel), scriptwin(sw),
 	  bitmap(0)
 {
 	kernel.set_ditherwin(this);
@@ -62,13 +78,39 @@ void DitherWindow::set_title()
 	gtk_window_set_title(GTK_WINDOW(window), title.c_str());
 }
 
-void DitherWindow::set_image(guint8* pixdata, int width, int height)
+void DitherWindow::read_data()
 {
 	if(bitmap != 0) {
 		gdk_bitmap_unref(bitmap);
 	}
-	bitmap = gdk_bitmap_create_from_data(drawingarea->window, reinterpret_cast<gchar*>(pixdata), width, height);
-	delete [] pixdata;
+
+	kernel.disconnect_handler();
+	
+	if(kernel.receive_line() != "P4") {
+		scriptwin->set_status("Wrong image format!\n");
+		return;
+	}
+	std::string whstring = kernel.receive_line();
+	std::istrstream is(whstring.c_str());
+	int width;
+	int height;
+	is >> width >> height;
+	size_t bytesPerRow = width/8 + (width%8 ? 1 : 0);
+	size_t length = height*bytesPerRow;
+	guint8* data = new guint8[length];
+	for(size_t i = 0; i != length; i++) {
+		data[i] = change_bits(kernel.receive_byte());
+	}
+	if(kernel.receive_line() != "end") {
+		Misc::print_warning("Transmission from kernel didn't end properly\n");
+	}
+
+	kernel.connect_handler();
+	
+	bitmap = gdk_bitmap_create_from_data(drawingarea->window,
+					     reinterpret_cast<gchar*>(data),
+					     width, height);
+	delete [] data;
 
 	gtk_widget_set_usize(drawingarea, width, height);
 	gtk_widget_set_usize(window, width, height);

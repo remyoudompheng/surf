@@ -30,7 +30,7 @@ namespace {
 ScriptWindow::ScriptWindow(Glade& _glade, Kernel& _kernel)
 	: glade(_glade),
 	  prefswin(glade, this),
-	  imagewin(glade, _kernel),
+	  imagewin(glade, _kernel, this),
 	  navigationwin(glade, _kernel, this),
 	  kernel(_kernel),
 	  dirty(false)
@@ -135,6 +135,7 @@ void ScriptWindow::set_status(const std::string& txt)
 {
 	gtk_statusbar_pop(sbar, sbar_context);
 	gtk_statusbar_push(sbar, sbar_context, txt.c_str());
+	gtk_widget_draw(GTK_WIDGET(sbar), 0);
 }
 
 void ScriptWindow::set_progress(gfloat percentage)

@@ -23,6 +23,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include<string>
+#include<fstream>
 
 #undef MENUCB
 #define MENUCB(name) \
@@ -31,9 +32,11 @@
                 static_cast<ImageWindow*>(This)->on_##name##_activate(w);\
         }
 
+class ScriptWindow;
+
 class ImageWindow : public GladeWindow {
 public:
-	ImageWindow(Glade& glade, Kernel& kernel);
+	ImageWindow(Glade& glade, Kernel& kernel, ScriptWindow* sw);
 	virtual ~ImageWindow() {}
 
 	void show() {
@@ -55,11 +58,12 @@ public:
 	
 	void clear();
 
-	void set_image(guint8* pixdata, int width, int height, size_t rowstride);
-
+	void read_data();
+	
 private:
 	Glade& glade;
 	Kernel& kernel;
+	ScriptWindow* scriptwin;
 	DitherWindow ditherwin;
 
 	GdkPixbuf* pixbuf;

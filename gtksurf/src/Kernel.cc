@@ -29,22 +29,7 @@
 
 #include<strstream>
 
-namespace {
-	guint8 change_bits(guint8 b)
-	{
-		return    (b >> 7) & 0x01
-			| (b >> 5) & 0x02
-			| (b >> 3) & 0x04
-			| (b >> 1) & 0x08
-			| (b << 1) & 0x10
-			| (b << 3) & 0x20
-			| (b << 5) & 0x40
-			| (b << 7) & 0x80;
-	}
-}
-
 Kernel::Kernel(const std::string& kernel_path)
-	: state(NEUTRAL)
 {
 	int to_kernel[2];
 	int from_kernel[2];
@@ -162,138 +147,50 @@ void Kernel::update_position()
 void Kernel::stop()
 {
 	kill(kernel_pid, SIGHUP);
-	if(state == COLOR_IMAGE_DATA) {
-		state = STOPPED;
-	}
 }
 
 void Kernel::process_output()
 {
-	switch(state) {
-	case NEUTRAL: {
-		std::string s = receive_line();
-		if(s == "draw_surface") {
-			state = COLOR_IMAGE_HEADER;
-			imagewin->set_mode(ImageWindow::SURFACE);
-			scriptwin->set_status("Rendering surface...");
-		} else if(s == "draw_curve") {
-			state = COLOR_IMAGE_HEADER;
-			imagewin->set_mode(ImageWindow::CURVE);
-			scriptwin->set_status("Rendering curve...");
-		} else if(s == "antialiased_image") {
-			state = COLOR_IMAGE_HEADER;
-			scriptwin->set_status("Antialiasing image...");
-		} else if(s == "dither_surface") {
-			state = DITHER_IMAGE;
-			imagewin->set_mode(ImageWindow::SURFACE);
-		} else if(s == "dither_curve") {
-			state = DITHER_IMAGE;
-			imagewin->set_mode(ImageWindow::CURVE);
-		} else if(s == "clear_screen") {
-			imagewin->clear();
-                } else if(s == "triangulate_surface") {
-			state = TRIANGULATE_SURFACE;
-			process_output();
-		} else if(s == "not_implemented") {
-			scriptwin->set_status("Feature not implemented in kernel!");
-		} else if(s == "error") {
-			std::string reason = receive_line();
-			std::string txt = "ERROR in script: " + reason;
-			scriptwin->set_status(txt);
-			
-			std::string errorregion = receive_line();
-			std::istrstream is(errorregion.c_str());
-			int from, to;
-			is >> from >> to;
-			scriptwin->select_region(from, to);
-			
-			gdk_beep();
-		} else {
-			std::string w = "Unrecognized line from kernel: ";
-			Misc::print_warning(w + s);
-		}
-		break;
-	}
-	case COLOR_IMAGE_HEADER: {
-		scriptwin->progress_mode(true);
-		scriptwin->set_progress(0.0);
-		
-		if(receive_line() != "P6") {
-			scriptwin->set_status("Wrong image format!\n");
-			scriptwin->progress_mode(false);
-			state = NEUTRAL;
-			break;
-		}
-		image.width = receive_int();
-		image.height = receive_int();
-		receive_line(); // eat up '\n' between dims and "255"
-		receive_line(); // eat up "255\n" line
-		image.length = 3*image.width*image.height;
-		image.rowstride = 3*image.width;
-		image.mod = image.height/100;
-		if(image.mod == 0) {
-			image.mod = 1;
-		}
-		image.pixdata = new char[image.length];
-		image.y = 0;
-		state = COLOR_IMAGE_DATA;
-		break;
-	case COLOR_IMAGE_DATA:
-		receive_bytes(image.pixdata + image.y*image.rowstride, image.rowstride);
-		if(image.y % image.mod) {
-			scriptwin->set_progress(float(image.y)/float(image.height));
-		}
-		
-		image.y++;
-
-		if(image.y == image.height) {
-			state = NEUTRAL;
-			scriptwin->set_status("");
-			scriptwin->progress_mode(false);
-
-			imagewin->set_image(reinterpret_cast<guint8*>(image.pixdata),
-					    image.width, image.height, image.rowstride);
-		} else {
-			// I don't really know why should we need this,
-                        // but sometimes I do here!
-                        // (otherwise I don't get everything out from the pipe.. :-/)
-			
-			process_output();
-		}
-
-		break;
-	}
-	case DITHER_IMAGE: {
-		state = NEUTRAL;
-		if(receive_line() != "P4") {
-			break;
-		}
-		std::string whstring = receive_line();
-		std::istrstream is(whstring.c_str());
-		is >> image.width >> image.height;
-		size_t bytesPerRow = image.width/8 + (image.width%8 ? 1 : 0);
-		image.length = image.height*bytesPerRow;
-		guint8* data = new guint8[image.length];
-		for(size_t i = 0; i != image.length; i++) {
-			data[i] = change_bits(receive_byte());
-		}
-		ditherwin->set_image(data, image.width, image.height);
-		break;
-	}
-	case TRIANGULATE_SURFACE: {
+	std::string s = receive_line();
+	if(s == "draw_surface") {
+		imagewin->set_mode(ImageWindow::SURFACE);
+		scriptwin->set_status("Rendering surface...");
+		imagewin->read_data();
+	} else if(s == "draw_curve") {
+		imagewin->set_mode(ImageWindow::CURVE);
+		scriptwin->set_status("Rendering curve...");
+		imagewin->read_data();
+	} else if(s == "antialiased_image") {
+		scriptwin->set_status("Antialiasing image...");
+		imagewin->read_data();
+	} else if(s == "dither_surface") {
+		imagewin->set_mode(ImageWindow::SURFACE);
+		ditherwin->read_data();
+	} else if(s == "dither_curve") {
+		imagewin->set_mode(ImageWindow::CURVE);
+		ditherwin->read_data();
+	} else if(s == "clear_screen") {
+		imagewin->clear();
+	} else if(s == "triangulate_surface") {
 		scriptwin->set_status("Triangulating surface...");
-		glarea->read_triangulated_data(*kernel_output);
+		glarea->read_data();
 		scriptwin->set_status("");
-		state = NEUTRAL;
-		break;
-	}
-	case STOPPED:
-		while(receive_line() != "Stopped.") ;
-		scriptwin->set_status("Stopped.");
-		scriptwin->progress_mode(false);
-		state = NEUTRAL;
-		break;
-	default:
-		Misc::print_warning("Unknown kernel state.");
+	} else if(s == "not_implemented") {
+		scriptwin->set_status("Feature not implemented in kernel!");
+	} else if(s == "error") {
+		std::string reason = receive_line();
+		std::string txt = "ERROR in script: " + reason;
+		scriptwin->set_status(txt);
+		
+		std::string errorregion = receive_line();
+		std::istrstream is(errorregion.c_str());
+		int from, to;
+		is >> from >> to;
+		scriptwin->select_region(from, to);
+		
+		gdk_beep();
+	} else {
+		std::string w = "Unrecognized line from kernel: ";
+		Misc::print_warning(w + s);
 	}
 }
