@@ -161,6 +161,7 @@ namespace ImageFormats {
 	{
 		XWD* This = (XWD*)data;
 		This->destroyDialog();
+		std::free(This->filename);
 		return true;
 	}
 #endif
@@ -180,6 +181,8 @@ namespace ImageFormats {
 		} else {
 			saveAsTrueColor(file);
 		}
+
+		std::free(filename);
 	}
 
 	void XWD::saveAsTrueColor(FILE* file)

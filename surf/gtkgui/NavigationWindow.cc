@@ -30,7 +30,7 @@
 #define GTK_NONE ((GtkAttachOptions)0)
 
 NavigationWindow::NavigationWindow(MainWindowController* winctrl)
-	: mwc (winctrl), shown(false),
+	: mwc(winctrl), shown(false),
 	  rotationUpdating(false), scaleUpdating(false), originUpdating(false)
 {
 	GtkWidget* notebook;
@@ -224,9 +224,21 @@ NavigationWindow::NavigationWindow(MainWindowController* winctrl)
 
 void NavigationWindow::show()
 {
+	rotX = ScriptVar::position_numeric.rot_x;
+	rotY = ScriptVar::position_numeric.rot_y;
+	rotZ = ScriptVar::position_numeric.rot_z;
 	updateAngles();
+
+	scaleX = ScriptVar::position_numeric.scale_x;
+	scaleY = ScriptVar::position_numeric.scale_y;
+	scaleY = ScriptVar::position_numeric.scale_z;
 	updateScales();
-	updateOrigins();
+
+	origX = ScriptVar::position_numeric.orig_x;
+	origY = ScriptVar::position_numeric.orig_y;
+	origY =	ScriptVar::position_numeric.orig_z;
+	updateOrigin();
+
 	gtk_widget_show_all(window);
 	gdk_window_raise(window->window);
 	shown = true;
@@ -274,7 +286,7 @@ void NavigationWindow::zInc()
 void NavigationWindow::xRotSpin()
 {
 	if(shown && !rotationUpdating) {
-		ScriptVar::position_numeric.rot_x = ((GtkAdjustment*)xRotSpinAdj)->value;
+		rotX = ((GtkAdjustment*)xRotSpinAdj)->value;
 		mwc->drawSurfaceWithParams();
 	}
 }
@@ -282,7 +294,7 @@ void NavigationWindow::xRotSpin()
 void NavigationWindow::yRotSpin()
 {
 	if(shown && !rotationUpdating) {
-		ScriptVar::position_numeric.rot_y = ((GtkAdjustment*)yRotSpinAdj)->value;
+		rotY = ((GtkAdjustment*)yRotSpinAdj)->value;
 		mwc->drawSurfaceWithParams();
 	}
 }
@@ -290,7 +302,7 @@ void NavigationWindow::yRotSpin()
 void NavigationWindow::zRotSpin()
 {
 	if(shown && !rotationUpdating) {
-		ScriptVar::position_numeric.rot_z = ((GtkAdjustment*)zRotSpinAdj)->value;
+		rotZ = ((GtkAdjustment*)zRotSpinAdj)->value;
 		mwc->drawSurfaceWithParams();
 	}
 }
@@ -328,20 +340,21 @@ void NavigationWindow::rotateZ(double rad)
 
 void NavigationWindow::rotationReset()
 {
-	ScriptVar::position_numeric.rot_x = ScriptVar::position_numeric.rot_y =
-		ScriptVar::position_numeric.rot_z = 0;
+	rotX = ScriptVar::position_numeric.rot_x;
+	rotY = ScriptVar::position_numeric.rot_y;
+	rotZ = ScriptVar::position_numeric.rot_z;
 	updateAngles();
 	mwc->drawSurfaceWithParams();
 }
 
 inline const Matrix33 NavigationWindow::getRotMat()
 {
-	double cosx = std::cos(ScriptVar::position_numeric.rot_x);
-	double sinx = std::sin(ScriptVar::position_numeric.rot_x);
-	double cosy = std::cos(ScriptVar::position_numeric.rot_y);
-	double siny = std::sin(ScriptVar::position_numeric.rot_y);
-	double cosz = std::cos(ScriptVar::position_numeric.rot_z);
-	double sinz = std::sin(ScriptVar::position_numeric.rot_z);
+	double cosx = std::cos(rotX);
+	double sinx = std::sin(rotX);
+	double cosy = std::cos(rotY);
+	double siny = std::sin(rotY);
+	double cosz = std::cos(rotZ);
+	double sinz = std::sin(rotZ);
 	double origRotArr[] = {
 		cosy*cosz + sinx*siny*sinz, cosx*sinz, -cosz*siny+cosy*sinx*sinz,
 		-cosy*sinz + cosz*sinx*siny, cosx*cosz, siny*sinz + cosy*cosz*sinx,
@@ -380,9 +393,9 @@ void NavigationWindow::rotate(Matrix33 add)
 	if(cos_z > 1) cos_z = 1;
 	else if(cos_z < -1) cos_z = -1;
 
-	ScriptVar::position_numeric.rot_x = std::atan2(sin_x, cos_x);
-	ScriptVar::position_numeric.rot_y = std::atan2(sin_y, cos_y);
-	ScriptVar::position_numeric.rot_z = std::atan2(sin_z, cos_z);
+	rotX = std::atan2(sin_x, cos_x);
+	rotY = std::atan2(sin_y, cos_y);
+	rotZ = std::atan2(sin_z, cos_z);
 
 	mwc->drawSurfaceWithParams();
 
@@ -392,9 +405,9 @@ void NavigationWindow::rotate(Matrix33 add)
 void NavigationWindow::updateAngles()
 {
 	rotationUpdating = true;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(xRotSpinAdj), ScriptVar::position_numeric.rot_x);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(yRotSpinAdj), ScriptVar::position_numeric.rot_y);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(zRotSpinAdj), ScriptVar::position_numeric.rot_z);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(xRotSpinAdj), rotX);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(yRotSpinAdj), rotY);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(zRotSpinAdj), rotZ);
 	rotationUpdating = false;
 }
 
@@ -467,8 +480,9 @@ void NavigationWindow::zScale()
 
 void NavigationWindow::scaleReset()
 {
-	ScriptVar::position_numeric.scale_x = ScriptVar::position_numeric.scale_y =
-		ScriptVar::position_numeric.scale_z = 1;
+	scaleX = ScriptVar::position_numeric.scale_x;
+	scaleY = ScriptVar::position_numeric.scale_y;
+	scaleY = ScriptVar::position_numeric.scale_z;
 	updateScales();
 	mwc->drawSurfaceWithParams();
 }
@@ -511,13 +525,14 @@ void NavigationWindow::zOrigin()
 
 void NavigationWindow::originReset()
 {
-	ScriptVar::position_numeric.orig_x = ScriptVar::position_numeric.orig_y =
-		ScriptVar::position_numeric.orig_z = 0;
-	updateOrigins();
+	origX = ScriptVar::position_numeric.orig_x;
+	origY = ScriptVar::position_numeric.orig_y;
+	origY =	ScriptVar::position_numeric.orig_z;
+	updateOrigin();
 	mwc->drawSurfaceWithParams();
 }
 
-void NavigationWindow::updateOrigins()
+void NavigationWindow::updateOrigin()
 {
 	originUpdating = true;
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(xOriginAdj), ScriptVar::position_numeric.orig_x);

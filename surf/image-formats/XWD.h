@@ -66,14 +66,14 @@ namespace ImageFormats {
 
 		void destroyDialog() {
 			gtk_widget_destroy(dialog);
-			std::free(filename);
 			shown = false;
 		}
+
+		char* filename;
 
 	private:
 		bool shown;
 		
-		char* filename;
 		RgbBuffer* buffer;
 
 		bool indexed;
@@ -96,6 +96,7 @@ namespace ImageFormats {
 		VOIDCALL(handle_ok, XWD);
 		VOIDCALL(handle_cancel, XWD) {
 			destroyDialog();
+			std::free(filename);
 		}
 		VOIDCALL(handle_indexed, XWD) {
 			gtk_widget_set_sensitive(indexedFrame,

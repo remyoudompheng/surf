@@ -68,14 +68,14 @@ namespace ImageFormats {
 
 		void destroyDialog() {
 			gtk_widget_destroy(dialog);
-			std::free(filename);
 			shown = false;
 		}
 		
+		char* filename;
+
 	private:
 		bool shown;
 
-		char* filename;
 		RgbBuffer* buffer;
 		
 		int quality;
@@ -89,6 +89,7 @@ namespace ImageFormats {
 		VOIDCALL(handle_ok, JPEG);
 		VOIDCALL(handle_cancel, JPEG) {
 			destroyDialog();
+			std::free(filename);
 		}
 #endif
 

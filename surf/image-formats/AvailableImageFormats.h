@@ -36,6 +36,7 @@
 #include "XBitmap.h"
 #include "PPM.h"
 #include "PBM.h"
+#include "XPM.h"
 
 #ifndef NO_GUI
 #include "Pipe.h"

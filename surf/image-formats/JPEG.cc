@@ -119,6 +119,7 @@ namespace ImageFormats {
 	{
 		JPEG* This = (JPEG*)data;
 		This->destroyDialog();
+		std::free(This->filename);
 		return true;
 	}
 #endif
@@ -176,6 +177,8 @@ namespace ImageFormats {
 		
 		jpeg_finish_compress (&cinfo);
 		jpeg_destroy_compress (&cinfo);
+
+		std::free(filename);
 	}
 
 

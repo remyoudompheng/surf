@@ -41,6 +41,7 @@ namespace ImageFormats {
 		&imgFmt_TIFF,
 #endif
 		
+                &imgFmt_XPM,
 		&imgFmt_XBitmap,
 		&imgFmt_XWD,
 		&imgFmt_Sun,

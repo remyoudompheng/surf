@@ -43,7 +43,7 @@ public:
 		wrw.writeSymbols(st);
 	}
 	
-	void readSymbols (SymbolTable& st) {
+	void readSymbols(SymbolTable& st) {
 		wrw.readSymbols(st);
 	}
 	
@@ -76,7 +76,7 @@ private:
 	void rotateZ(double rad);
 	void updateAngles();
 	void updateScales();
-	void updateOrigins();
+	void updateOrigin();
 
 	// Gtk callbacks:
 	static gint handle_delete(GtkWidget* w, GdkEvent* e, gpointer d);
@@ -98,6 +98,10 @@ private:
 	VOIDCALL(yOrigin, NavigationWindow);
 	VOIDCALL(zOrigin, NavigationWindow);
 	VOIDCALL(originReset, NavigationWindow);
+
+	double rotX, rotY, rotZ;
+	double scaleX, scaleY, scaleZ;
+	double origX, origY, origZ;
 };
 
 
