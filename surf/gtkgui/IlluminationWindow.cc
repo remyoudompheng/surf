@@ -254,7 +254,9 @@ IlluminationWindow::IlluminationWindow()
 	gtk_box_pack_start (GTK_BOX(container), surfaces_scroll, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX(container), light_scroll,    FALSE, FALSE, 0);
 
-        for( int i=0; i<MAIN_SURFACE_AMOUNT_NUM; i++ ) {
+	int i;
+
+        for( i=0; i<MAIN_SURFACE_AMOUNT_NUM; i++ ) {
 	        char surfaces_string[15];
                 char so_string[39],si_string[39];
 
@@ -331,7 +333,7 @@ IlluminationWindow::IlluminationWindow()
  	        gtk_box_pack_start( GTK_BOX( surfaces_box ),surfaces_frame,FALSE,FALSE,5 );
 	}
 
-        for( int i=0; i<LIGHT_SOURCE_MAX_VALUE; i++ ) {
+        for( i=0; i<LIGHT_SOURCE_MAX_VALUE; i++ ) {
 	        char light_string[15];
                 char color_string[39];
 
