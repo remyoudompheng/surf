@@ -33,13 +33,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <gtk/gtk.h>
-
 #include "Script.h"
 #include "welcomeMessage.h"
 #include "compfn.h"
 
 #ifndef NO_GUI
+
+#include <gtk/gtk.h>
+
 char usage_text[] = "Usage: surf -n | --nogui FILE...\n"
                     "       surf [GTK-OPTIONS] [-x | --exec] [FILE]...\n"
                     "       surf --help\n"
@@ -74,15 +75,15 @@ int main (int argc, char** argv)
 
 	bool execute = false;
 	int fileopts = 1;
-
-#ifndef NO_GUI
 	bool nogui = false;
 
 	if (argc > 1 &&
 	    (strcmp(argv[1], "-n") == 0 || strcmp(argv[1], "--no-gui") == 0)) {
 		nogui = true;
 		fileopts = 2;
-	} else {
+	}
+#ifndef NO_GUI
+          else {
 		nogui = false;
 		
 		gtk_init(&argc, &argv);
@@ -115,7 +116,7 @@ int main (int argc, char** argv)
 		fileopts = i;
 	}
 #else
-	bool nogui = true;
+        nogui = true;
 #endif
 
 	cout << welcomeMessage;
