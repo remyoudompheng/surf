@@ -106,7 +106,7 @@ namespace ImageFormats {
 
 		png_bytep ptr = const_cast<png_bytep>(buffer.getMap());
 		png_bytepp row_pointers = new png_bytep[height];
-		for(size_t i = 0; i != height; i++) {
+		for(int i = 0; i != height; i++) {
 			row_pointers[i] = ptr;
 			ptr += width;
 		}
