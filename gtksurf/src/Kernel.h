@@ -148,6 +148,8 @@ public:
 		scale
 	};
 	static void get_sequence(Sequence sequence[3]);
+	static void get_curve_width(double& w);
+	static void get_curve_gamma(double& g);
 
 private:
 	static int kernel_pid;
@@ -167,19 +169,6 @@ private:
 	static std::list<std::string> dither_image_formats;
 	static std::list<std::string> three_d_image_formats;
 
-	static double orig_x;
-	static double orig_y;
-	static double orig_z;
-	static double rot_x;
-	static double rot_y;
-	static double rot_z;
-	static double scale_x;
-	static double scale_y;
-	static double scale_z;
-	static int clip;
-	static double clip_radius;
-	static Sequence sequence[3];
-	
 	static void skip_space() {
 		int c;
 		while((c = getc(kernel_output)) != EOF) {

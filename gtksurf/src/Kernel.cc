@@ -44,19 +44,6 @@ std::list<std::string> Kernel::color_image_formats;
 std::list<std::string> Kernel::dither_image_formats;
 //std::list<std::string> Kernel::three_d_image_formats;
 
-double Kernel::orig_x;
-double Kernel::orig_y;
-double Kernel::orig_z;
-double Kernel::rot_x;
-double Kernel::rot_y;
-double Kernel::rot_z;
-double Kernel::scale_x;
-double Kernel::scale_y;
-double Kernel::scale_z;
-int Kernel::clip;
-double Kernel::clip_radius;
-Kernel::Sequence Kernel::sequence[3];
-	
 guint Kernel::handler_id;
 
 
@@ -294,6 +281,48 @@ void Kernel::get_sequence(Sequence sequence[3])
 				Misc::print_warning("Unkown sequence command!");
 			}
 		}
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
+	connect_handler();
+}
+
+void Kernel::get_curve_width(double& w)
+{
+	disconnect_handler();
+	send("print_curve_width;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "curve_width:") {
+		is >> w;
+	} else {
+		Misc::print_warning("Scrambled kernel output!?");
+	}
+	connect_handler();
+}
+
+void Kernel::get_curve_gamma(double& g)
+{
+	disconnect_handler();
+	send("print_curve_gamma;\n");
+	std::string line;
+	line = receive_line();
+#ifdef HAVE_STRINGSTREAM
+	std::istringstream is(line);
+#else
+	std::istrstream is(line.c_str());
+#endif
+	std::string head;
+	is >> head;
+	if(head == "curve_gamma:") {
+		is >> g;
 	} else {
 		Misc::print_warning("Scrambled kernel output!?");
 	}
