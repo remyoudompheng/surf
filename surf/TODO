@@ -14,7 +14,3 @@ Here are some minor problems I can think of:
 
 * Matrix::threadedDeterminant
   Make the threaded version work.
-
-* libtiff/libjpeg/zlib
-  Disable tiff/jpeg support if one of the above isn't there instead of
-  forcing the user to install 'em.
