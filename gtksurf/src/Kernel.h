@@ -116,6 +116,16 @@ public:
 		y = scale_y;
 		z = scale_z;
 	}
+	enum Sequence {
+		rotate,
+		translate,
+		scale
+	};
+	void get_sequence(Sequence& first, Sequence& second, Sequence& third) const {
+		first = sequence[0];
+		second = sequence[1];
+		third = sequence[2];
+	}
 
 private:
 	int kernel_pid;
@@ -143,6 +153,7 @@ private:
 	double scale_x;
 	double scale_y;
 	double scale_z;
+	Sequence sequence[3];
 	
 	guint handler_id;
 	void process_output();

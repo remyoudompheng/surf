@@ -149,6 +149,18 @@ void Kernel::update_position()
 			is >> rot_x >> rot_y >> rot_z;
 		} else if(head == "scale:") {
 			is >> scale_x >> scale_y >> scale_z;
+		} else if(head == "sequence:") {
+			for(int i = 0; i != 3; i++) {
+				std::string s;
+				is >> s;
+				if(s == "rotate") {
+					sequence[i] = rotate;
+				} else if(s == "scale") {
+					sequence[i] = scale;
+				} else if(s == "translate") {
+					sequence[i] = translate;
+				}
+			}
 		} else {
 			Misc::print_warning("Scrambled kernel output!?");
 		}

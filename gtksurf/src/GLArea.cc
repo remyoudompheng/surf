@@ -331,14 +331,24 @@ void GLArea::display()
 
 	glEnable(GL_LIGHTING);
 
-	glTranslatef(origx, origy, origz);
-
-	if(rotating) { // dragging in progress
-		glMultMatrixf(deltaRotMat.getArray());
+	Kernel::Sequence seq[3];
+	kernel.get_sequence(seq[0], seq[1], seq[2]);
+	for(int i = 2; i != -1; i--) {
+		switch(seq[i]) {
+		case Kernel::translate:
+			glTranslatef(origx, origy, origz);
+			break;
+		case Kernel::rotate:
+			if(rotating) { // dragging in progress
+				glMultMatrixf(deltaRotMat.getArray());
+			}
+			glMultMatrixf(rotMat.getArray());
+			break;
+		case Kernel::scale:
+			glScalef(1/scalex, 1/scaley, 1/scalez);
+			break;
+		}
 	}
-	glMultMatrixf(rotMat.getArray());
-
-	glScalef(1/scalex, 1/scaley, 1/scalez);
 
 	if(wireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -484,8 +494,8 @@ void GLArea::set_rot(gfloat x, gfloat y, gfloat z)
 	GLfloat deg = pi/180.0;
 
 	GLvector xaxis(1.0, 0.0, 0.0);
-	GLvector yaxis(0.0, 1.0, 0.0);
-	GLvector zaxis(0.0, 0.0, -1.0);
+	GLvector yaxis(0.0, -1.0, 0.0);
+	GLvector zaxis(0.0, 0.0, 1.0);
 	
 	GLmatrix yrot(4);
 	yrot.setToRotation(y*deg, yaxis);
@@ -494,7 +504,7 @@ void GLArea::set_rot(gfloat x, gfloat y, gfloat z)
 	GLmatrix zrot(4);
 	zrot.setToRotation(z*deg, zaxis);
 	
-	rotMat = zrot*xrot*yrot;
+	rotMat = yrot*xrot*zrot;
 
 	display();
 }
