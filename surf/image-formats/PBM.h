@@ -2,7 +2,7 @@
  *   surf - visualizing algebraic curves and algebraic surfaces
  *   Copyright (C) 1996-1997 Friedrich-Alexander-Universitaet
  *                           Erlangen-Nuernberg
- *                 1997-2000 Johannes Gutenberg-Universitaet Mainz
+ *                 1997-2001 Johannes Gutenberg-Universitaet Mainz
  *   Authors: Stephan Endrass, Hans Huelf, Ruediger Oertel,
  *            Kai Schneider, Ralf Schmitt, Johannes Beigel
  *
