@@ -2,4 +2,6 @@ Makefile.in Makefile
 gtksurf.info version.texi stamp-vti surf.html gtksurf.dvi
 gtksurf.log gtksurf.aux gtksurf.cp gtksurf.fn gtksurf.vr
 gtksurf.tp gtksurf.ky gtksurf.pg gtksurf.toc
+gtksurf.1
+
 
