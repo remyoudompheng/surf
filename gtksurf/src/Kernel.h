@@ -15,11 +15,11 @@
 #  include <config.h>
 #endif
 
-#include <gtk/gtk.h>
-
 #include<fstream>
 #include<string>
 #include<list>
+
+#include <gtk/gtk.h>
 
 class ScriptWindow;
 class ImageWindow;

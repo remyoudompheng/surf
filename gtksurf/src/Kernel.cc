@@ -13,6 +13,8 @@
 #  include <config.h>
 #endif
 
+#include<strstream>
+
 #include <Kernel.h>
 #include <Misc.h>
 #include <ScriptWindow.h>
@@ -26,8 +28,6 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <fcntl.h>
-
-#include<strstream>
 
 namespace {
 void sigchild_handler(int sig)
@@ -182,7 +182,7 @@ void Kernel::process_output()
 	disconnect_handler();
 	
 	std::string s = receive_line();
-	
+
 	if(s.length() == 0) {
 		connect_handler();
 		return;
@@ -205,11 +205,11 @@ void Kernel::process_output()
 			iss >> percent;
 			scriptwin->set_progress(percent/100.0);
 		}
-	} else if(s == "save_color_image") {
+	} else if(s == "P6") {
 		imagewin->read_data();
-	} else if(s == "save_dithered_image") {
+	} else if(s == "P4") {
 		ditherwin->read_data();
-	} else if(s == "save_three_d_image") {
+	} else if(s == "OFF") {
 		glarea->read_data();
 	} else if(s == "clear_screen") {
 		imagewin->clear();

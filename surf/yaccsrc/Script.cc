@@ -402,11 +402,6 @@ void Script::saveColorImage()
 		return;
 	}
 
-	if(!std::strcmp(surface_filename_data, "-") == 0) {
-		std::cout << "save_color_image\n";
-		std::cout.flush();
-	}
-	
 	ImageFormats::saveColorImage(surface_filename_data, *buffer);
 }
 
@@ -442,11 +437,6 @@ void Script::saveDitheredImage()
 		return;
 	}
 
-	if(!strcmp(surface_filename_data, "-")) {
-		std::cout << "save_dithered_image\n";
-		std::cout.flush();
-	}
-	
 	ImageFormats::saveDitheredImage(surface_filename_data, *pixel);
 }
 
@@ -460,11 +450,6 @@ void Script::save3DImage()
 		return;
 	}
 
-	if(!std::strcmp(surface_filename_data, "-")) {
-		std::cout << "save_three_d_image\n";
-		std::cout.flush();
-	}
-	
 	ImageFormats::save3DImage(surface_filename_data, *tritor);
 #endif
 }

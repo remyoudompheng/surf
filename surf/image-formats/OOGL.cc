@@ -64,7 +64,8 @@ namespace ImageFormats {
 			return false;
 		}
 
-		*ofs << "{\n";
+		*ofs << "OFF\n"
+                        "{\n";
 		
 		// write appearance:
 		float r = ScriptVar::color_slider[0].red/255.0;

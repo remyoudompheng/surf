@@ -84,10 +84,6 @@ void DitherWindow::read_data()
 		gdk_bitmap_unref(bitmap);
 	}
 
-	if(kernel.receive_line() != "P4") {
-		scriptwin->set_status("Wrong image format!\n");
-		return;
-	}
 	std::string whstring = kernel.receive_line();
 	std::istrstream is(whstring.c_str());
 	int width;

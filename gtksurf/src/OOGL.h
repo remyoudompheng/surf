@@ -12,7 +12,6 @@
 #define OOGL_H
 
 #include <Kernel.h>
-
 #include <GL/gl.h>
 
 namespace OOGL {

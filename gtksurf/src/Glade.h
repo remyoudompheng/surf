@@ -16,10 +16,10 @@
 #  include <config.h>
 #endif
 
+#include<string>
+
 #include <gtk/gtk.h>
 #include <glade/glade.h>
-
-#include<string>
 
 class GladeWindow {};
 
