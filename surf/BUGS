@@ -1,0 +1,8 @@
+Know Bugs:
+==========
+
+- surf is lacking an easy possibility to set bg color w/plane curves
+
+- still problems when saving multiple plane curves!? (testing)
+
+- (better) documentation for cut_distance etc.
