@@ -35,7 +35,7 @@ void mpz_pow (mpz_t result, mpz_t z, int n)
 	}
 }
 
-ostream & operator << (ostream &os, mpz_t z)
+std::ostream & operator << (std::ostream &os, mpz_t z)
 {
 	int size = mpz_sizeinbase (z, 10)+4;
 	char *str = new char[size];
@@ -48,7 +48,7 @@ ostream & operator << (ostream &os, mpz_t z)
 	return os;
 }
 
-ostream & operator << (ostream &os, mpq_t q)
+std::ostream & operator << (std::ostream &os, mpq_t q)
 {
 	os << mpq_numref (q) << "/" << mpq_denref(q);
 	return os;

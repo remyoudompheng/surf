@@ -25,8 +25,9 @@
 
 
 #include <assert.h>
-#include <iostream.h>
 #include <math.h>
+
+#include<iostream>
 
 #include "degree.h"
 #include "RootFinder3d.h"

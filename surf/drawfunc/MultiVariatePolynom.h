@@ -175,7 +175,7 @@ public:
 	      
 	void      Sort( const int );
 	void      Shift(double,double,double);
-	void      Print (ostream &os) const;
+	void      Print (std::ostream &os) const;
 
 	int       Check() const;
 	void      Collect();
@@ -193,7 +193,7 @@ public:
 };
 
 template<class Mon>
-inline ostream &operator<< (ostream &os, const MultiPoly<Mon> &m)
+inline std::ostream &operator<< (std::ostream &os, const MultiPoly<Mon> &m)
 {
 	m.Print(os);
 	return os;

@@ -292,7 +292,7 @@ int MultiPoly<Mon>::Check() const
 // ----------------------------------------------------------------------------
 
 template<class Mon>
-void MultiPoly<Mon>::Print (ostream &os) const
+void MultiPoly<Mon>::Print (std::ostream &os) const
 {
 	for( int i=0; i< Number; i++) { 
 		if( Monomial[i].Coeff() >= 0.0 )
@@ -301,7 +301,7 @@ void MultiPoly<Mon>::Print (ostream &os) const
 			os << " ";
 		//os << Monomial[i];
 		Monomial[i].Print(os);
-		os << endl;
+		os << std::endl;
 	}
 }
 

@@ -30,7 +30,8 @@
 #define CLMONOM_H
 
 #include <math.h>
-#include <iostream.h>
+
+#include<iostream>
 
 #include "simple.h"
 #include "monomarith.h"
@@ -145,7 +146,7 @@ public:
 		}
 
 
-	void Print(ostream &os) const
+	void Print(std::ostream &os) const
 		{
 			os << a;
 			for( int i = 0; i < dimen; i++ )
@@ -253,7 +254,7 @@ public:
 
 
 template<int dimen>
-inline ostream &operator << (ostream &os, const Monom<dimen> &m)
+inline std::ostream &operator << (std::ostream &os, const Monom<dimen> &m)
 {
 	m.Print(os);
 	return os;

@@ -27,7 +27,8 @@
 
 
 #include <limits.h>
-#include <iostream.h>
+
+#include<iostream>
 
 #include "bit_buffer.h"
 

@@ -713,7 +713,7 @@ Clip* Clip::create ( bool psp,            // perspective
 			return (::new ClipNone(cd,a,b,c,d));
 
 		default :
-			cerr << "trying to create unknown clipping mode. using none." << endl;
+			std::cerr << "trying to create unknown clipping mode. using none." << std::endl;
 			return (::new ClipNone(cd,a,b,c,d));
 		}
 	} else {                                         // perspective central
@@ -739,7 +739,7 @@ Clip* Clip::create ( bool psp,            // perspective
 			return (::new ClipCylZCentral(cd,a,b,c,d,sz));
 
 		default :
-			cerr << "trying to create unknown clipping mode. using none." << endl;
+			std::cerr << "trying to create unknown clipping mode. using none." << std::endl;
 			return (::new ClipNone(cd,a,b,c,d));
 		}
 	}

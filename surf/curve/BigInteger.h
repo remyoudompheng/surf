@@ -70,7 +70,7 @@ private:
 	mpz_t mpz;
 };
 
-inline ostream& operator<< (ostream& os, const BigInteger& b)
+inline std::ostream& operator<< (std::ostream& os, const BigInteger& b)
 {
 	b.print(os);
 	return os;

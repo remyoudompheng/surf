@@ -33,15 +33,16 @@
 /* Date:     14.8.94                                                         */
 /* ------------------------------------------------------------------------- */
 
-#include <iostream.h>
 #include <stdlib.h>
+
+#include<iostream>
 
 #include "mymemory.h"
 
 char    *new_char ( int n )
 {
 	if (n<=0) {
-		cerr << "Can't allocate 0 objects..." << endl;
+		std::cerr << "Can't allocate 0 objects..." << std::endl;
 		exit(10);
 	}
 	

@@ -24,7 +24,7 @@
 
 
 
-#include <iostream.h>
+#include<iostream>
 
 #include "NewClip.h"
 #include "NewClipSphereParallel.h"
@@ -89,6 +89,6 @@ NewClip* NewClip::createSimpleClip (int perspective, int clipmodus)
 		}
 		// central perspective
 	}
-	cerr << __FILE__ ": WARNING  clipmodus " << clipmodus << " not implemented..using default mode";
+	std::cerr << __FILE__ ": WARNING  clipmodus " << clipmodus << " not implemented..using default mode";
 	return createSimpleClip(perspective, 0);
 }

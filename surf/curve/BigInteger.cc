@@ -66,7 +66,7 @@ void BigInteger::operator -= (const BigInteger &b)
 	mpz_sub (mpz, mpz, b.mpz);
 }
 
-void BigInteger::print (ostream &os) const
+void BigInteger::print (std::ostream &os) const
 {
 	int size = mpz_sizeinbase (mpz, 10)+4;
 	char *str = new char[size];
