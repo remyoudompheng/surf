@@ -35,6 +35,7 @@
 #include <float_buffer.h>
 #include <antialiasing_factor.h>
 #include <debug.h>
+#include <Misc.h>
 
 extern double Y_AXIS_LR_ROTATE;
 
@@ -272,14 +273,7 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 	
 	double stepwidth = pixel_to_user_x(1) - pixel_to_user_x(2);
 	
-	bool kernelmode = Script::isKernelMode();
-	if(kernelmode) {
-		std::cout << "draw_surface\n";
-		// write as PPM file (see PPM.{h|cc}):
-		std::cout << "P6\n"
-			  << width << ' ' << height << '\n'
-			  << "255\n";
-	}
+	Misc::progress("Rendering surface");
 	int image_length = 3*width*height;
 	int bytes_written = 0;
 
@@ -290,15 +284,8 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 	for(int py = 0; py < height; py++) {
 		double uy = pixel_to_user_y( py );
 
-		if(kernelmode && Script::isStopped()) {
-			int rest = image_length - bytes_written;
-			std::cerr << "writing " << rest << " 0's\n";
-			for(int i = 0; i != rest; i++) {
-				std::cout.put(0);
-			}
-			std::cout.flush();
-			std::cout << "end\n";
-			std::cout.flush();
+		if(Script::isStopped()) {
+			Misc::progress(Misc::aborted);
 			return;
 		}
 				
@@ -390,13 +377,6 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 							      int(rint(pixel_color.blue*255.0)));
 					}
 				}
-
-				if(kernelmode) {
-					std::cout.put(pixel_color.getRedByte());
-					std::cout.put(pixel_color.getGreenByte());
-					std::cout.put(pixel_color.getBlueByte());
-					bytes_written += 3;
-				}
 			}
 		} else {
 			// -----------------------------------------
@@ -414,51 +394,28 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 				}
 			}
 
-			if(kernelmode) {
-				for(int i = 0; i != 3*width; i++) {
-					std::cout.put(0);
-					bytes_written++;
-				}
-			}
 		}
 
-		if(kernelmode) {
-			std::cout.flush();
-		}
+		bytes_written += 3*width;
+		Misc::progress(bytes_written*100/image_length);
 	}
 
-	if(kernelmode) {
-		std::cout << "end\n";
-		std::cout.flush();
-	}
+	Misc::progress(Misc::done);
 
 	// ----------------
 	//  refine picture
 	// ----------------
 	
 	if(ScriptVar::display_ref_level_data > 1) {
-
-		if(kernelmode) {
-			std::cout << "antialiased_image\n";
-			// write as PPM file (see PPM.{h|cc}):
-			std::cout << "P6\n"
-				  << width  << ' ' << height << '\n'
-				  << "255\n";
-			bytes_written = 0;
-		}
+		std::string action = "Antialiasing";
+		Misc::progress(action);
+		bytes_written = 0;
 
 		colorrgb i1, i2, i3, i4, i5, i6, i7, i8, i9;  		
 		for(int py = 0; py < height; py++) {
 
-			if(kernelmode && Script::isStopped()) {
-				int rest = image_length - bytes_written;
-				std::cerr << "writing " << rest << " 0's\n";
-				for(int i = 0; i != rest; i++) {
-					std::cout.put(0);
-				}
-				std::cout.flush();
-				std::cout << "end\n";
-				std::cout.flush();
+			if(Script::isStopped()) {
+				Misc::progress(Misc::aborted);
 				return;
 			}
 			
@@ -511,23 +468,11 @@ void SurfaceCalc::surface_calculate(RgbBuffer& intensity)
 				}
 			}
 
-			if(kernelmode) {
-				for(int px = 0; px < width; px++) {
-					colorrgb color;
-					intensity.GetPixelColor(px, py, color);
-					std::cout.put(color.getRedByte());
-					std::cout.put(color.getGreenByte());
-					std::cout.put(color.getBlueByte());
-					bytes_written += 3;
-				}
-				std::cout.flush();
-			}
+			bytes_written += 3*width;
+			Misc::progress(bytes_written*100/image_length);
 		}
 
-		if(kernelmode) {
-			std::cout << "end\n";
-			std::cout.flush();
-		}
+		Misc::progress(Misc::done);
 	}
 }
 
@@ -1001,10 +946,6 @@ void SurfaceCalc::CalculateCurveOnSurface(int xmin, int ymin, int xmax, int ymax
 
 
 	}// end of 'Foreach line' 
-
-	if(Script::isKernelMode()) {
-		Script::ppm_to_stdout(true);
-	}
 }
 
 void SurfaceCalc::initVars()

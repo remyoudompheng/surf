@@ -36,6 +36,15 @@ namespace Misc {
 	void syscall_failed(const std::string& txt, bool fatal = true);
 	void print_error(const std::string& txt, bool fatal = true);
 	void print_warning(const std::string& txt);
+
+	enum SpecialProgressType {
+		done,
+		aborted
+	};
+
+	void progress(const std::string& action);
+	void progress(int percent);
+	void progress(SpecialProgressType type);
 };
 
 #endif //!MISC_H

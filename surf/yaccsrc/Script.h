@@ -37,14 +37,15 @@ class SymbolTable;
 class Script
 {
 public:
-	static void init();
+	static void init(bool quiet);
 	static void deinit();
 
 	static char* readFile(const char* name);
-	static void executeScriptFromStdin(bool quiet);
+	static void executeScriptFromStdin();
 	static void executeScriptFromFile(const char* name);
 
-	static bool isKernelMode() { return kernelMode; }
+	static bool isQuiet() { return quiet; }
+	static bool stdout_is_tty() { return stdout_is_a_tty; }
 
 	static RgbBuffer* getBuffer() { return buffer; }
 	static void setBuffer(RgbBuffer* _buffer) { buffer = _buffer; }
@@ -75,13 +76,12 @@ public:
 		return stop_flag;
 	}
 
-	static void ppm_to_stdout(bool isSurface);
-
 private:
-	static bool is_a_tty;
+	static bool quiet;
+	static bool stdin_is_a_tty;
+	static bool stdout_is_a_tty;
 	
 	static bool stop_flag;
-	static bool kernelMode;
 
 	static RgbBuffer* buffer;
 	static bit_buffer* bitbuffer;

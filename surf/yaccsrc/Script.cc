@@ -70,9 +70,10 @@
 
 using namespace ScriptVar;
 
-bool Script::is_a_tty = false;
+bool Script::quiet = false;
+bool Script::stdin_is_a_tty = false;
+bool Script::stdout_is_a_tty = false;
 bool Script::stop_flag = false;
-bool Script::kernelMode = false;
 RgbBuffer* Script::buffer = 0;
 bit_buffer* Script::bitbuffer = 0;
 float_buffer* Script::zbuffer = 0;
@@ -159,17 +160,17 @@ void Script::internalExecuteScript(const char* str)
 	} while (goto_flag);
 	
 	if(parse_result != 0) { // an error occured
-		if(kernelMode) {
+		if(!stdout_is_a_tty) {
 			std::cout << "error\n"
-				  << yyerrorstring << '\n'
 				  << error_begin_char << ' '
 				  << char_number << '\n';
-		} else {
-			if(!is_a_tty) {
-				std::cerr << "ERROR in line " << line_number << ": ";
-			}
-			std::cerr << yyerrorstring << '\n';
 		}
+		std::cout << "ERROR";
+		if(!stdin_is_a_tty) {
+			std::cout << " in line " << line_number;
+		}
+		std::cout << ": " << yyerrorstring << '\n';
+		std::cout.flush();
 	}
 }
 
@@ -211,13 +212,16 @@ char* Script::readFile(const char* name)
 	return str;
 }
 
-void Script::executeScriptFromStdin(bool quiet)
+void Script::executeScriptFromStdin()
 {
 	beforeScriptExecution();
 	
-	is_a_tty = isatty(STDIN_FILENO);
-	if(is_a_tty && !quiet) {
-		std::cout <<
+	stdin_is_a_tty = isatty(STDIN_FILENO);
+	stdout_is_a_tty = isatty(STDOUT_FILENO);
+	
+	if(!quiet) {
+		if(stdin_is_a_tty && stdout_is_a_tty) {
+			std::cout <<
 "                      _____\n"
 "  ________ __________/ ____\\\n"
 " /  ___/  |  \\_  __ \\   __\\\n"
@@ -225,9 +229,13 @@ void Script::executeScriptFromStdin(bool quiet)
 "/____  >____/ |__|   |__| " VERSION "\n"
 "     \\/\n\n";
 
+		} else {
+			std::cout << PACKAGE " " VERSION "\n";
+		}
+		std::cout.flush();
 	}
 
-	if(is_a_tty) {
+	if(stdin_is_a_tty) {
 
 #ifdef HAVE_LIBREADLINE
 		rl_bind_key('\t', reinterpret_cast<Function*>(rl_insert));
@@ -271,15 +279,18 @@ void Script::executeScriptFromStdin(bool quiet)
 
 void Script::executeScriptFromFile(const char *name)
 {
-	is_a_tty = false;
+	stdin_is_a_tty = false;
+	stdout_is_a_tty = isatty(STDOUT_FILENO);
+
 	const char* str = readFile(name);
 	beforeScriptExecution();
 	internalExecuteScript(str);
 	delete [] str;
 }
 
-void Script::init()
+void Script::init(bool _quiet)
 {
+	quiet = _quiet;
 	init_main_variables();
 	addNewCommands();
 	buffer = new RgbBuffer(main_width_data, main_height_data);
@@ -290,7 +301,6 @@ void Script::init()
 #ifdef HAVE_LIBGTS
 	tritor = new Triangulator;
 #endif
-	kernelMode = false;
 	stop_flag = false;
 }
 
@@ -301,62 +311,6 @@ void Script::deinit()
 	delete zbuffer;
 	delete defaultValues;
 	symtab_delete_total();
-}
-
-// Output color image to stdout in PPM format
-// (This is used, if we're in kernel mode):
-void Script::ppm_to_stdout(bool isSurface)
-{
-	RgbBuffer* buffer = getBuffer();
-	const int width = ScriptVar::main_width_data;
-	const int height = ScriptVar::main_height_data;
-	
-	if(isSurface) {
-		std::cout << "draw_surface\n";
-	} else {
-		std::cout << "draw_curve\n";
-	}
-	std::cout << "P6\n"
-		  << width << ' ' << height << '\n'
-		  << "255\n";
-
-	for(int y = 0; y != height; y++) {
-		for(int x = 0; x != width; x++) {
-			colorrgb color;
-			buffer->GetPixelColor(x, y, color);
-			std::cout.put(color.getRedByte());
-			std::cout.put(color.getGreenByte());
-			std::cout.put(color.getBlueByte());
-		}
-		std::cout.flush();
-	}
-	std::cout << "end\n";
-	std::cout.flush();
-}
-
-namespace {
-// Output dither image to stdout in PBM format
-// (This is used, if we're in kernel mode):
-void pbm_to_stdout(bool isSurface)
-{
-	bit_buffer* buffer = Script::getBitBuffer();
-	const int width = ScriptVar::main_width_data;
-	const int height = ScriptVar::main_height_data;
-	
-	if(isSurface) {
-		std::cout << "dither_surface\n";
-	} else {
-		std::cout << "dither_curve\n";
-	}
-	
-	std::cout << "P4\n"
-		  << width << ' ' << height << '\n';
-	std::cout.write(reinterpret_cast<char*>(buffer->getBuffer()),
-			buffer->getSize());
-	std::cout.flush();
-	std::cout << "end\n";
-	std::cout.flush();
-}
 }
 
 void Script::addNewCommands()
@@ -376,7 +330,6 @@ void Script::addNewCommands()
 	replaceCommand("resultant", computeResultant);
 	replaceCommand("reset", reset);
         replaceCommand("triangulate_surface", triangulateSurface);
-	replaceCommand("kernel_mode_set", kernelModeSet);
 	replaceCommand("print_defaults", printDefaults);
 	replaceCommand("print_color_image_formats", printColorImageFormats);
 	replaceCommand("print_dither_image_formats", printDitherImageFormats);
@@ -448,6 +401,11 @@ void Script::saveColorImage()
 		std::cerr << "No filename given.\n";
 		return;
 	}
+
+	if(!stdout_is_a_tty) {
+		std::cout << "save_color_image\n";
+		std::cout.flush();
+	}
 	
 	ImageFormats::saveColorImage(surface_filename_data, *buffer);
 }
@@ -457,6 +415,11 @@ void Script::clearScreen()
 {
 	checkVariables();
 
+	if(!stdout_is_a_tty) {
+		std::cout << "clear_screen\n";
+		std::cout.flush();
+	}
+	
 	RgbBuffer* intensity = getBuffer();
 	float_buffer* zbuffer = getZBuffer();
 
@@ -466,11 +429,6 @@ void Script::clearScreen()
 	intensity->clearTags();
     
 	*zbuffer = float(clip_numeric.clip_back);
-
-	if(kernelMode) {
-		std::cout << "clear_screen\n";
-		std::cout.flush();
-	}
 }
 
 void Script::saveDitheredImage()
@@ -484,6 +442,11 @@ void Script::saveDitheredImage()
 		return;
 	}
 
+	if(!stdout_is_a_tty) {
+		std::cout << "save_dithered_image\n";
+		std::cout.flush();
+	}
+	
 	ImageFormats::saveDitheredImage(surface_filename_data, *pixel);
 }
 
@@ -497,6 +460,11 @@ void Script::save3DImage()
 		return;
 	}
 
+	if(!stdout_is_a_tty) {
+		std::cout << "save_three_d_image\n";
+		std::cout.flush();
+	}
+	
 	ImageFormats::save3DImage(surface_filename_data, *tritor);
 #endif
 }
@@ -544,10 +512,6 @@ void Script::ditherSurface()
 	} else {
   		std::cerr << "dithering_method out of range. No dithering done.\n";
 	}
-
-	if(kernelMode) {
-		pbm_to_stdout(true);
-	}
 }
 
 
@@ -562,10 +526,6 @@ void Script::ditherCurve()
 	copy_rgb_to_float_curve(*getBuffer(), buffer);
     
 	dither_brute(buffer, *getBitBuffer());
-	
-	if(kernelMode) {
-		pbm_to_stdout(false);
-	}
 }
 
 void Script::checkVariables()
@@ -708,14 +668,6 @@ void Script::triangulateSurface()
 	std::cout << "not_implemented\n";
 	std::cout.flush();
 #endif // HAVE_LIBGTS
-}
-
-void Script::kernelModeSet()
-{
-	kernelMode = true;
-	std::cout << PACKAGE << "\n"
-		  << VERSION << "\n";
-	std::cout.flush();
 }
 
 void Script::printDefaults()

@@ -140,10 +140,10 @@ PACKAGE " " VERSION "\n"
 		}
 	}
 
-	Script::init();
+	Script::init(quiet);
 
 	if(optind == argc) {
-		Script::executeScriptFromStdin(quiet);
+		Script::executeScriptFromStdin();
 	} else {
 		for(int i = optind; i < argc; ++i) {
 			std::cerr << "Processing file " << argv[i] << "\n";

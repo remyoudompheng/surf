@@ -87,11 +87,6 @@ void draw_func_draw()
 		buffer->AddCurve(ScriptVar::curve_color_slider_data[red],
 				 ScriptVar::curve_color_slider_data[green],
 				 ScriptVar::curve_color_slider_data[blue]);
-
-		// output as PPM to stdout if we're in kernel mode
-		if(Script::isKernelMode()) {
-			Script::ppm_to_stdout(false);
-		}
 	}
 	
 	delete position;

@@ -31,6 +31,7 @@
 #endif
 
 #include<cstdio>
+#include<cstring>
 
 class FileWriter
 {
@@ -44,10 +45,12 @@ public:
 		if(!f) {
 			return;
 		}
-		if(name[0]=='|') {
-		        pclose(f);
-		} else {
-			std::fclose(f);
+		if(std::strcmp(name, "-") != 0) {
+			if(name[0]=='|') {
+				pclose(f);
+			} else {
+				std::fclose(f);
+			}
 		}
 	}
 
@@ -58,7 +61,9 @@ public:
 		if(str) {
 			name = str;
 		}
-		if (name[0] == '|') {
+		if(std::strcmp(name, "-") == 0) {
+			f = stdout;
+		} else if (name[0] == '|') {
 			f = popen(name + 1, "w");
 		} else {
 			f = std::fopen(name, "w");

@@ -82,6 +82,9 @@ namespace {
 
 void Triangulator::triangulate()
 {
+	Misc::progress("Triangulating surface");
+	Misc::progress(0);
+
 	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
 	polyxyz_sort(&f);
 	hf = new hornerpolyxyz(f);
@@ -96,22 +99,27 @@ void Triangulator::triangulate()
 				  gts_face_class(),
 				  gts_edge_class(),
 				  gts_vertex_class());
+
 	gts_isosurface_cartesian(surface, g, _iso_func, this, 0.0);
 
+	Misc::progress(Misc::done);
+
 	if(ScriptVar::gts_coarsen_data == 0) {
+		Misc::progress("Coarsening surface");
+		Misc::progress(0);
 		gts_surface_coarsen(surface, 0, 0, 0, 0, gts_coarsen_stop_cost,
 				    &ScriptVar::gts_max_cost_data, 0);
+		Misc::progress(Misc::done);
 	}
 
 	if(ScriptVar::clip_data != ScriptVar::clip_none_data) {
+		Misc::progress("Clipping surface");
+		Misc::progress(0);
 		clip();
+		Misc::progress(Misc::done);
 	}
 
 	delete hf;
-
-	if(Script::isKernelMode()) {
-		write_data();
-	}
 }
 
 void Triangulator::clip()
@@ -285,6 +293,8 @@ void Triangulator::iso_func(gdouble** f, GtsCartesianGrid g, guint k)
 		
 		y += g.dy;
 	}
+	
+	Misc::progress(k*100/g.nz);
 }
 
 Triangulator::Point Triangulator::getNormal(const Point& p)
