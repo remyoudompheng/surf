@@ -28,37 +28,16 @@
 
 #ifdef HAVE_LIBTIFF
 
-#include <sys/param.h>
-#include <pwd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif
-
-#include <netdb.h>
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <bit_buffer.h>
+#include <RgbBuffer.h>
 #include <FileWriter.h>
 #include <ScriptVar.h>
-
-#ifdef NO_GETHOSTNAME_PROTO
-extern "C" int gethostname(char*, int);
-#endif
-
+#include <Misc.h>
 
 #ifdef TIFF_HEADER_34
 #include <tiff34/tiffio.h>
 #else
 #include <tiffio.h>
-#endif
-
-#ifndef TIFFDefaultStripSize
-#define TIFFDefaultStripSize(tiff, request) (8192/TIFFScanlineSize(tif))
 #endif
 
 #include <TIFF.h>
@@ -69,94 +48,117 @@ namespace ImageFormats {
 	
 	Tiff imgFmt_TIFF;
 	
+	bool Tiff::saveColorImage(const char* filename, RgbBuffer& buffer)
+	{
+		TIFF* tiff = static_cast<TIFF*>(do_preps(filename));
+		if(tiff == 0) {
+			return false;
+		}
+
+		TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 8);
+		TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, 3);
+
+		// write scanlines:
+		
+		byte* scanline = new byte[TIFFScanlineSize(tiff)];
+		if(scanline == 0) {
+			Misc::print_warning("Couldn't allocate scanline buffer. Saving aborted!\n");
+			return false;
+		}
+
+		byte* rdata = buffer.getRData();
+		byte* gdata = buffer.getGData();
+		byte* bdata = buffer.getBData();
+
+		for(int py = 0; py < ScriptVar::main_height_data; py++) {
+
+			byte* ptr = scanline;
+
+			for(int px = 0, count = 0; px < ScriptVar::main_width_data; px++) {
+				*ptr++ = *rdata++;
+				*ptr++ = *gdata++;
+				*ptr++ = *bdata++;
+			}
+			
+			TIFFWriteScanline(tiff, scanline, py, 0);
+		}
+		
+		delete [] scanline;
+
+		TIFFClose(tiff);
+		
+		return true;
+	}
+	
 	bool Tiff::saveDitheredImage(const char* filename, bit_buffer& pixel)
 	{
-		// check if it's a pipe:
+		TIFF* tiff = static_cast<TIFF*>(do_preps(filename));
+		if(tiff == 0) {
+			return false;
+		}
+		
+		TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 1);
+		TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, 1);
 
+		TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
+
+		TIFFSetField(tiff, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
+		float resolution = ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data];
+		TIFFSetField(tiff, TIFFTAG_XRESOLUTION, resolution);
+		TIFFSetField(tiff, TIFFTAG_YRESOLUTION, resolution);
+		
+		
+		// write scanlines:
+		
+		byte* scanline = new byte[TIFFScanlineSize(tiff)];
+		if(scanline == 0) {
+			Misc::print_warning("Couldn't allocate scanline buffer. Saving aborted!\n");
+			return false;
+		}
+		
+		for(int py = 0; py < ScriptVar::main_height_data; py++) {
+			for(int px = 0, count = 0; px < ScriptVar::main_width_data; px += 8, count++) {
+				scanline[count] = 255 - pixel.getByte(px, py);
+			}
+			TIFFWriteScanline(tiff, scanline, py, 0);
+		}
+		
+		delete [] scanline;
+
+		TIFFClose(tiff);
+		
+		return true;
+	}
+
+	void* Tiff::do_preps(const char* filename)
+	{
+		// check if it's a pipe:
 		{
 			FileWriter fw(filename);
 			if (fw.isWritingToPipe()) {
 				std::cerr << "Sorry: TIFF images can't be written to pipes.\n";
-				return false;
+				return 0;
 			}
 		}
 
-		passwd* passwd_user = getpwuid(getuid());
-		
-		char* name_user = passwd_user->pw_name;
-		// char    *info_user = passwd_user->pw_gecos;
-		
-		char hostname[MAXHOSTNAMELEN];
-		
-		gethostname(hostname, MAXHOSTNAMELEN);
-		
-		time_t time_local = time(0);
-		char* the_time = ctime(&time_local);
-		
-		const char* title = "algebraic curve/surface (dithered image)";
-		
-		TIFF* tif;
-		
-		tif = TIFFOpen(filename, "w");
-		if (tif == 0) {
+		TIFF* tiff = TIFFOpen(filename, "w");
+		if(tiff == 0) {
 			std::cerr << "Error saving file " << filename << '\n';
-			return false;
-		}
-		TIFFSetField( tif,TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
-		
-		TIFFSetField( tif,TIFFTAG_IMAGEWIDTH, ScriptVar::main_width_data);
-		TIFFSetField( tif,TIFFTAG_IMAGELENGTH, ScriptVar::main_height_data);
-		
-		TIFFSetField( tif,TIFFTAG_BITSPERSAMPLE, 1);
-		
-		TIFFSetField( tif,TIFFTAG_COMPRESSION, COMPRESSION_NONE );
-                //    TIFFSetField( tif,TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS );
-		TIFFSetField( tif,TIFFTAG_SAMPLESPERPIXEL, 1 );
-		
-		TIFFSetField( tif,TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK );
-		TIFFSetField( tif,TIFFTAG_FILLORDER, FILLORDER_MSB2LSB );
-		TIFFSetField( tif,TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT );
-		TIFFSetField( tif,TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG );
-		TIFFSetField( tif,TIFFTAG_ROWSPERSTRIP,
-			      TIFFDefaultStripSize( tif,(uint32_t)(-1) ) );
-		
-		TIFFSetField( tif,TIFFTAG_RESOLUTIONUNIT,(uint16_t)RESUNIT_INCH );
-		int resolution = ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data];
-		TIFFSetField( tif,TIFFTAG_XRESOLUTION,(float)(resolution) );
-		TIFFSetField( tif,TIFFTAG_YRESOLUTION,(float)(resolution) );
-		TIFFSetField( tif,TIFFTAG_XPOSITION,(float)0.0 );
-		TIFFSetField( tif,TIFFTAG_YPOSITION,(float)0.0 );
-		
-		TIFFSetField( tif,TIFFTAG_SOFTWARE, PACKAGE " " VERSION );
-		TIFFSetField( tif,TIFFTAG_ARTIST,name_user );
-		TIFFSetField( tif,TIFFTAG_HOSTCOMPUTER,hostname );
-		TIFFSetField( tif,TIFFTAG_DOCUMENTNAME, filename);
-		TIFFSetField( tif,TIFFTAG_DATETIME,the_time );
-		TIFFSetField( tif,TIFFTAG_IMAGEDESCRIPTION,title );
-		
-		byte* scanline = new byte[TIFFScanlineSize(tif)];
-		
-		if (scanline == 0) {
-			fprintf(stderr, "cant alloc ...\n");
-			return false;
+			return 0;
 		}
 		
-		int px,py,count;
-		unsigned char byte;
+		TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, ScriptVar::main_width_data);
+		TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, ScriptVar::main_height_data);
 		
-		for (py = 0; py < ScriptVar::main_height_data; py++) {
-			for (px = 0, count = 0; px < ScriptVar::main_width_data; px += 8, count++) {
-				byte = 255 - pixel.getByte(px,py);
-				scanline[count] = byte;
-			}
-			TIFFWriteScanline(tif, scanline, py, 0);
-		}
+                TIFFSetField(tiff, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS);
 		
-		delete [] scanline;
-		TIFFWriteDirectory(tif);
-		TIFFClose(tif);
+		TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
 		
-		return true;
+		TIFFSetField(tiff, TIFFTAG_SOFTWARE, PACKAGE " " VERSION);
+
+		TIFFSetField(tiff, TIFFTAG_IMAGEDESCRIPTION, "surf image");
+
+		return tiff;
 	}
 
 } // namespace ImageFormats

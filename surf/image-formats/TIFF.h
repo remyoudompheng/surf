@@ -45,20 +45,17 @@ namespace ImageFormats {
 			return "tiff";
 		}
 		ColorType getColorType() const {
-			return dithered;
-
-			// this could be "both", I have to implement saveColorImage()
+			return both;
 		}
 		bool isExtension(const std::string& ext) const {
 			return ext == "tif" || ext == "tiff";
 		}
 
-		bool saveColorImage(const char* filename, RgbBuffer& data) {
-			return false;
-		}
-		
+		bool saveColorImage(const char* filename, RgbBuffer& data);
 		bool saveDitheredImage(const char* filename, bit_buffer& data);
 
+	private:
+		void* do_preps(const char* filename);
 	};
 
 	extern Tiff imgFmt_TIFF;
