@@ -29,6 +29,7 @@ ScriptWindow::ScriptWindow()
 	: prefswin(this),
 	  imagewin(this),
 	  curvepropswin(this),
+	  surfpropswin(this),
 //	  navigationwin(this),
 	  dirty(false)
 {
@@ -62,8 +63,7 @@ ScriptWindow::ScriptWindow()
 	Glade::sig_connect("execute", "activate", _on_execute_activate, this);
 	Glade::sig_connect("button_execute", "clicked", _on_execute_activate, this);
 	Glade::sig_connect("curve_properties", "activate", _on_curve_properties_activate, this);
-//	Glade::sig_connect("surface_properties", "activate", _on_surface_properties_activate, this);
-//	Glade::sig_connect("lighting_properties", "activate", _on_lighting_properties_activate, this);
+	Glade::sig_connect("surface_properties", "activate", _on_surface_properties_activate, this);
 	Glade::sig_connect("about", "activate", _on_about_activate, this);
 	Glade::sig_connect("button_stop", "clicked", _on_stop_clicked, this);
 
@@ -361,6 +361,11 @@ void ScriptWindow::on_execute_activate()
 void ScriptWindow::on_curve_properties_activate()
 {
 	curvepropswin.show();
+}
+
+void ScriptWindow::on_surface_properties_activate()
+{
+	surfpropswin.show();
 }
 
 void ScriptWindow::on_about_activate()

@@ -88,56 +88,6 @@ void CurvePropsWindow::hide()
 	gtk_widget_hide(window);
 }
 
-void CurvePropsWindow::set_bgcol(int r, int g, int b)
-{
-	gdouble col[4];
-	col[0] = r/255.0;
-	col[1] = g/255.0;
-	col[2] = b/255.0;
-	col[3] = 1.0;
-	gtk_color_selection_set_color(cs_background, col);
-}
-void CurvePropsWindow::set_curvecol(int r, int g, int b)
-{
-	gdouble col[4];
-	col[0] = r/255.0;
-	col[1] = g/255.0;
-	col[2] = b/255.0;
-	col[3] = 1.0;
-	gtk_color_selection_set_color(cs_curve, col);
-}
-
-void CurvePropsWindow::set_orig(gfloat x, gfloat y, gfloat z)
-{
-	gtk_spin_button_set_value(sp_origx, x);
-	gtk_spin_button_set_value(sp_origy, y);
-	gtk_spin_button_set_value(sp_origz, z);
-}
-
-void CurvePropsWindow::set_scale(gfloat x, gfloat y, gfloat z)
-{
-	gtk_spin_button_set_value(sp_scalex, x);
-	gtk_spin_button_set_value(sp_scaley, y);
-	gtk_spin_button_set_value(sp_scalez, z);
-}
-
-void CurvePropsWindow::set_rot(gfloat z)
-{
-	gtk_spin_button_set_value(sp_rotz, z);
-}
-
-void CurvePropsWindow::set_clip(bool clip, gfloat radius)
-{
-	gtk_toggle_button_set_active(tb_clip, clip);
-	gtk_spin_button_set_value(sp_radius, radius);
-}
-
-void CurvePropsWindow::set_app(double w, double g)
-{
-	gtk_spin_button_set_value(sp_width, w);
-	gtk_spin_button_set_value(sp_gamma, g);
-}
-
 
 // Gtk callbacks:
 // ======================================================================
@@ -165,7 +115,13 @@ void CurvePropsWindow::on_reset_bgcol_clicked()
 	int r = Kernel::get_int("background_red");
 	int g = Kernel::get_int("background_green");
 	int b = Kernel::get_int("background_blue");
-	set_bgcol(r, g, b);
+
+	gdouble col[4];
+	col[0] = r/255.0;
+	col[1] = g/255.0;
+	col[2] = b/255.0;
+	col[3] = 1.0;
+	gtk_color_selection_set_color(cs_background, col);
 }
 
 void CurvePropsWindow::on_curvecolor_changed(gdouble col[4])
@@ -191,7 +147,13 @@ void CurvePropsWindow::on_reset_curvecol_clicked()
 	int r = Kernel::get_int("curve_red");
 	int g = Kernel::get_int("curve_green");
 	int b = Kernel::get_int("curve_blue");
-	set_curvecol(r, g, b);
+
+	gdouble col[4];
+	col[0] = r/255.0;
+	col[1] = g/255.0;
+	col[2] = b/255.0;
+	col[3] = 1.0;
+	gtk_color_selection_set_color(cs_curve, col);
 }
 
 
@@ -224,7 +186,10 @@ void CurvePropsWindow::on_reset_curveorig_clicked()
 	double x = Kernel::get_double("origin_x");
 	double y = Kernel::get_double("origin_y");
 	double z = Kernel::get_double("origin_z");
-	set_orig(x, y, z);
+
+	gtk_spin_button_set_value(sp_origx, x);
+	gtk_spin_button_set_value(sp_origy, y);
+	gtk_spin_button_set_value(sp_origz, z);
 }
 
 void CurvePropsWindow::on_scalex_changed(gfloat val)
@@ -256,7 +221,10 @@ void CurvePropsWindow::on_reset_curvescale_clicked()
 	double x = Kernel::get_double("scale_x");
 	double y = Kernel::get_double("scale_y");
 	double z = Kernel::get_double("scale_z");
-	set_scale(x, y, z);
+
+	gtk_spin_button_set_value(sp_scalex, x);
+	gtk_spin_button_set_value(sp_scaley, y);
+	gtk_spin_button_set_value(sp_scalez, z);
 }
 
 void CurvePropsWindow::on_rotz_changed(gfloat val)
@@ -277,7 +245,8 @@ void CurvePropsWindow::on_reset_curverot_clicked()
 {
 	double z = Kernel::get_double("rot_z");
 	z = rad_to_deg(z);
-	set_rot(z);
+
+	gtk_spin_button_set_value(sp_rotz, z);
 }
 
 void CurvePropsWindow::on_clip_toggled(bool value) {
@@ -302,7 +271,9 @@ void CurvePropsWindow::on_reset_clip_clicked()
 {
 	int c = Kernel::get_int("clip");
 	double r = Kernel::get_double("radius");
-	set_clip(c == 0, r);
+
+	gtk_toggle_button_set_active(tb_clip, c);
+	gtk_spin_button_set_value(sp_radius, r);
 }
 
 void CurvePropsWindow::on_width_changed(gfloat val)
@@ -328,7 +299,9 @@ void CurvePropsWindow::on_reset_app_clicked()
 {
 	double w = Kernel::get_double("curve_width");
 	double g = Kernel::get_double("curve_gamma");
-	set_app(w, g);
+
+	gtk_spin_button_set_value(sp_width, w);
+	gtk_spin_button_set_value(sp_gamma, g);
 }
 
 void CurvePropsWindow::on_update_curve_clicked()

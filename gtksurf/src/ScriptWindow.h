@@ -20,6 +20,7 @@
 #include <PrefsWindow.h>
 #include <ImageWindow.h>
 #include <CurvePropsWindow.h>
+#include <SurfPropsWindow.h>
 //#include <NavigationWindow.h>
 
 #include<string>
@@ -58,6 +59,7 @@ private:
 	PrefsWindow prefswin;
 	ImageWindow imagewin;
 	CurvePropsWindow curvepropswin;
+	SurfPropsWindow surfpropswin;
 //	NavigationWindow navigationwin;
 
 	bool dirty; // was script changed since last save?
@@ -94,8 +96,7 @@ private:
 	MENUCB(render_surface);
 	MENUCB(execute);
 	MENUCB(curve_properties);
-//      MENUCB(surface_properties);
-//      MENUCB(lighting_properties);
+        MENUCB(surface_properties);
 	MENUCB(about);
 
 	static int _on_delete_event(GtkWidget*, GdkEvent*, GladeWindow* This) {

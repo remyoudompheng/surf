@@ -43,19 +43,8 @@ public:
 	void show();
 	void hide();
 
-	void set_bgcol(int r, int g, int b);
-	void set_curvecol(int r, int g, int b);
-	void set_orig(gfloat x, gfloat y, gfloat z);
-	void set_scale(gfloat x, gfloat y, gfloat z);
-	void set_rot(gfloat z);
-	void set_clip(bool clip, gfloat radius);
-	void set_app(double w, double g);
-
 private:
 	ScriptWindow* scriptwin;
-
-	// Gtk stuff follows:
-	// ==================
 
 	GtkWidget* window;
 
