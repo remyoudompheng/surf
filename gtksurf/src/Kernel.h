@@ -65,6 +65,11 @@ public:
 		std::getline(*kernel_output, s);
 		return s;
 	}
+	std::string receive_string() {
+		std::string s;
+		*kernel_output >> s;
+		return s;
+	}
 	int receive_int() {
 		int i;
 		*kernel_output >> i;

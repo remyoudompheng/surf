@@ -67,6 +67,8 @@ private:
 	void reshape(GLsizei width, GLsizei height);
 	void display();
 
+	void read_noff();
+
 	void drag_begin(gint x, gint y);
 	void drag_move(gint x, gint y);
 	void drag_end(gint x, gint y);

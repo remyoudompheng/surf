@@ -74,7 +74,7 @@ Kernel::Kernel(const std::string& kernel_path)
 		   dup2(from_kernel[1], STDOUT_FILENO) == -1) {
 			Misc::syscall_failed("dup2()");
 		}
-		execl(kernel_path.c_str(), kernel_path.c_str(), "-q", 0);
+		execl(kernel_path.c_str(), kernel_path.c_str(), 0);
 		std::cerr << "\nERROR: Did you install the surf kernel properly?\n\n";
 		std::string s = "execl(\"";
 		s += kernel_path.c_str();
@@ -85,9 +85,7 @@ Kernel::Kernel(const std::string& kernel_path)
 	close(to_kernel[0]);
 	close(from_kernel[1]);
 
-	send("kernel_mode_set;\n");
-
-	if(receive_line() != "surf") {
+	if(receive_string() != "surf") {
 		Misc::print_error("This isn't a surf kernel on the other side of the pipe, is it?");
 	}
 	std::string version = receive_line();
@@ -169,42 +167,46 @@ void Kernel::process_output()
 	disconnect_handler();
 	
 	std::string s = receive_line();
+	
+	if(s.length() == 0) {
+		connect_handler();
+		return;
+	}
 
-	if(s == "draw_surface") {
-		imagewin->set_mode(ImageWindow::SURFACE);
-		scriptwin->set_status("Rendering surface...");
+	if(s.compare(0, 7, "status ") == 0) {
+		scriptwin->set_status(s.substr(7));
+		scriptwin->progress_mode(true);
+	} else if(s.compare(0, 9, "progress ") == 0) {
+		s = s.substr(9);
+		if(s == "done") {
+			scriptwin->progress_mode(false);
+			scriptwin->set_status("");
+		} else if(s == "aborted") {
+			scriptwin->progress_mode(false);
+			scriptwin->set_status("Aborted.");
+		} else {
+			std::istrstream iss(s.c_str());
+			int percent;
+			iss >> percent;
+			scriptwin->set_progress(percent/100.0);
+		}
+	} else if(s == "save_color_image") {
 		imagewin->read_data();
-	} else if(s == "draw_curve") {
-		imagewin->set_mode(ImageWindow::CURVE);
-		scriptwin->set_status("Rendering curve...");
-		imagewin->read_data();
-	} else if(s == "antialiased_image") {
-		scriptwin->set_status("Antialiasing image...");
-		imagewin->read_data();
-	} else if(s == "dither_surface") {
-		imagewin->set_mode(ImageWindow::SURFACE);
+	} else if(s == "save_dithered_image") {
 		ditherwin->read_data();
-	} else if(s == "dither_curve") {
-		imagewin->set_mode(ImageWindow::CURVE);
-		ditherwin->read_data();
+	} else if(s == "save_three_d_image") {
+		glarea->read_data();
 	} else if(s == "clear_screen") {
 		imagewin->clear();
-	} else if(s == "triangulate_surface") {
-		scriptwin->set_status("Triangulating surface...");
-		glarea->read_data();
 	} else if(s == "not_implemented") {
 		scriptwin->set_status("Feature not implemented in kernel!");
 	} else if(s == "error") {
-		std::string reason = receive_line();
-		std::string txt = "ERROR in script: " + reason;
-		scriptwin->set_status(txt);
-		
 		std::string errorregion = receive_line();
 		std::istrstream is(errorregion.c_str());
 		int from, to;
 		is >> from >> to;
 		scriptwin->select_region(from, to);
-		
+		scriptwin->set_status(receive_line());
 		gdk_beep();
 	} else if(s.length() > 0) {
 		std::string w = "Unrecognized line from kernel: ";

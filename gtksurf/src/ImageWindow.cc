@@ -91,9 +91,6 @@ void ImageWindow::read_data()
 		gdk_pixbuf_unref(pixbuf);
 	}
 
-	scriptwin->progress_mode(true);
-	scriptwin->set_progress(0);
-	
 	if(kernel.receive_line() != "P6") {
 		scriptwin->set_status("Wrong image format!\n");
 		return;
@@ -108,26 +105,12 @@ void ImageWindow::read_data()
 
 	int length = 3*width*height;
 	int rowstride = 3*width;
-	int mod = height/100;
-	if(mod == 0) {
-		mod = 1;
-	}
 	char* pixdata = new char[length];
 	for(int y = 0; y != height; y++) {
 		kernel.receive_bytes(pixdata + y*rowstride, rowstride);
-		if(y % mod) {
-			scriptwin->set_progress(float(y)/float(height));
-		}
 		gtk_main_iteration_do(false);
 	}
 	
-	if(kernel.receive_line() != "end") {
-		Misc::print_warning("Transmission from kernel didn't end properly\n");
-	}
-		
-	scriptwin->set_status("");
-	scriptwin->progress_mode(false);
-
 	pixbuf = gdk_pixbuf_new_from_data(reinterpret_cast<guint8*>(pixdata),
 					  GDK_COLORSPACE_RGB, false, 8,
 					  width, height, rowstride, delete_array_fn, 0);
@@ -234,6 +217,9 @@ void ImageWindow::on_dither_activate(GtkWidget*)
 	} else {
 		script += "dither_curve;\n";
 	}
+	script += "filename = \"-\";\n"
+                  "dithered_file_format = pbm;\n"
+		  "save_dithered_image;\n";
 	kernel.send(script);
 }
 

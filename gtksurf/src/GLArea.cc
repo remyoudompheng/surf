@@ -14,9 +14,6 @@
 #include <Misc.h>
 
 #include<iostream>
-#include<cstdlib>
-#include<cmath>
-#include<strstream>
 
 GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin,
 	       ScriptWindow* sw)
@@ -83,99 +80,176 @@ GLArea::~GLArea()
 
 void GLArea::read_data()
 {
-	scriptwin->progress_mode(true);
-	scriptwin->set_progress(0);
+	// read OOGL/OFF file from kernel:
 
-	// read transparence and surface & inside colors:
-	GLfloat color[4];
-	color[3] = kernel.receive_float();
-	kernel.receive_line();
-	color[0] = kernel.receive_float();
-	color[1] = kernel.receive_float();
-	color[2] = kernel.receive_float();
-	kernel.receive_line();
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-	color[0] = kernel.receive_float();
-	color[1] = kernel.receive_float();
-	color[2] = kernel.receive_float();
-	kernel.receive_line();
-	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
+	
+	GLfloat color[4] = { 0.8, 0.8, 0.8, 1.0 };
+	GLfloat insidecolor[4] = { 0.8, 0.8, 0.8, 1.0 };
 
-	if(color[3] != 1.0) {
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE); //GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_BLEND);
-//		glDepthMask(GL_FALSE);
-	} else {
-		glDisable(GL_BLEND);
-//		glDepthMask(GL_TRUE);
+	struct {
+		GLfloat pos[4];
+		GLfloat col[4];
+	} cur_light;
+	cur_light.col[3] = 1.0;
+	int num_lights = 0;
+
+	enum {
+		neutral,
+		appearance,
+		material,
+		lighting,
+		light
+	} state = neutral;
+	
+	bool end_of_file = false;
+	while(!end_of_file) {
+		std::string token = kernel.receive_string();
+		if(token == "{") {
+			continue;
+		}
+
+		switch(state) {
+		case neutral:
+			if(token == "appearance") {
+				state = appearance;
+			} else if(token == "NOFF") {
+				read_noff();
+				end_of_file = true;
+			}
+			break;
+		case appearance:
+			if(token == "material") {
+				state = material;
+			} else if(token == "lighting") {
+				state = lighting;
+			} else if(token == "}") {
+				state = neutral;
+			}
+			break;
+		case material:
+			if(token == "ka") {
+				// ambient reflection coefficient
+				kernel.receive_float();
+			} else if(token == "ambient") {
+				GLfloat ambient[4];
+				for(int i = 0; i != 3; i++) {
+					ambient[i] = kernel.receive_float();
+				}
+				ambient[3] = 1.0;
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+			} else if(token == "kd") {
+				// diffuse-reflection coefficient
+				kernel.receive_float();
+		        } else if(token == "diffuse") {
+				for(int i = 0; i != 3; i++) {
+					color[i] = kernel.receive_float();
+				}
+				color[3] = 1.0;
+			} else if(token == "backdiffuse") {
+				for(int i = 0; i != 3; i++) {
+					insidecolor[i] = kernel.receive_float();
+				}
+			} else if(token == "ks") {
+				// specular reflection coeff
+				kernel.receive_float();
+			} else if(token == "specular") {
+				GLfloat specular[4];
+				for(int i = 0; i != 3; i++) {
+					specular[i] = kernel.receive_float();
+				}
+				specular[3] = 1.0;
+				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+				glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50.0);
+			} else if(token == "alpha") {
+				GLfloat alpha = kernel.receive_float();
+				color[3] = insidecolor[3] = alpha;
+				if(alpha != 1.0) {
+					glEnable(GL_BLEND);
+					glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+					glDepthMask(GL_FALSE);
+				}
+			} else if(token == "}") {
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, color);
+				glMaterialfv(GL_BACK, GL_DIFFUSE, insidecolor);
+				state = appearance;
+			}
+			break;
+		case lighting:
+			if(token == "ambient") {
+				GLfloat ambient[4];
+				for(int i = 0; i != 3; i++) {
+					ambient[i] = kernel.receive_float();
+				}
+				ambient[3] = 1.0;
+				glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+			} else if(token == "light") {
+				state = light;
+			} else if(token == "}") {
+				state = appearance;
+			}
+			break;
+		case light:
+			if(token == "color") {
+				for(int i = 0; i != 3; i++) {
+					cur_light.col[i] = kernel.receive_float();
+				}
+			} else if(token == "position") {
+				for(int i = 0; i != 4; i++) {
+					cur_light.pos[i] = kernel.receive_float();
+				}
+			} else if(token == "location") {
+				// eat up location:
+				kernel.receive_string();
+			} else if(token == "}") {
+				GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
+				glLightfv(GL_LIGHT0 + num_lights, GL_DIFFUSE, cur_light.col);
+				glLightfv(GL_LIGHT0 + num_lights, GL_SPECULAR, white);
+				glLightfv(GL_LIGHT0 + num_lights, GL_POSITION, cur_light.pos);
+				glEnable(GL_LIGHT0 + num_lights);
+				num_lights++;
+				state = lighting;
+			}
+			break;
+		}
+			
 	}
 
-	// read light sources:
-	int num_lights = kernel.receive_int();
-	kernel.receive_line();
-	GLfloat pos[4];
-	pos[3] = 1.0;
-	GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-	for(int i = 0; i != num_lights; i++) {
-		color[0] = kernel.receive_float();
-		color[1] = kernel.receive_float();
-		color[2] = kernel.receive_float();
-		pos[0] = kernel.receive_float();
-		pos[1] = kernel.receive_float();
-		pos[2] = kernel.receive_float();
-		kernel.receive_line();
-		glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, color);
-		glLightfv(GL_LIGHT0 + i, GL_SPECULAR, white);
-		glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
-		glEnable(GL_LIGHT0 + i);
-	}
+	display();
+}
 
-	// read number of vertices/faces:
-	int nv = kernel.receive_int();
-	int nf = kernel.receive_int();
-	kernel.receive_line();
+void GLArea::read_noff()
+{
+	int num_vertices = kernel.receive_int();
+	int num_faces = kernel.receive_int();
+	kernel.receive_line(); // eat up edges count and '\n'
 
-	std::cerr << "nv: " << nv << ", nf: " << nf << "\n";
+	std::cerr << "nv: " << num_vertices << ", nf: " << num_faces << "\n";
 
-	size_t total = nv + nf;
-
-	if(nv == 0 || nf == 0) {
-		Misc::print_warning("There were no vertices/no faces at all!\n");
-		kernel.receive_line(); // eat up "end\n"
-		return;
-	}
-
-	// read vertices:
-	GLvertex* vertices = new GLvertex[nv];
-	for(int i = 0; i != nv; i++) {
+ 	// read vertices:
+	GLvertex* vertices = new GLvertex[num_vertices];
+	for(int i = 0; i != num_vertices; i++) {
 		vertices[i].x = kernel.receive_float();
 		vertices[i].y = kernel.receive_float();
 		vertices[i].z = kernel.receive_float();
 		vertices[i].nx = kernel.receive_float();
 		vertices[i].ny = kernel.receive_float();
 		vertices[i].nz = kernel.receive_float();
-		kernel.receive_line(); // eat up '\n'
-
-		scriptwin->set_progress(i/gfloat(total));
 	}
 
 	// read faces:
-	GLface* faces = new GLface[nf];
-	for(int i = 0; i != nf; i++) {
+	GLface* faces = new GLface[num_faces];
+	for(int i = 0; i != num_faces; i++) {
+		kernel.receive_int(); // should we check this?
 		faces[i].p1 = kernel.receive_int();
 		faces[i].p2 = kernel.receive_int();
 		faces[i].p3 = kernel.receive_int();
-		kernel.receive_line(); // eat up '\n'
-
-		scriptwin->set_progress((nv + i)/gfloat(total));
 	}
 
-	if(kernel.receive_line() != "end") {
-		Misc::print_warning("Transmission from kernel didn't end properly\n");
+	while(kernel.receive_line() != "}") {
+		// do nothing
 	}
-	
-	scriptwin->set_status("");
-	scriptwin->progress_mode(false);
 
 	// build OpenGL display list:
 	if(display_list != 0) {
@@ -186,11 +260,11 @@ void GLArea::read_data()
 	glNewList(display_list, GL_COMPILE);
 	glBegin(GL_TRIANGLES);
 
-	for(int i = 0; i != nf; i++) {
+	for(int i = 0; i != num_faces; i++) {
 		GLface& f = faces[i];
-		GLvertex& p1 = vertices[f.p1 - 1];
-		GLvertex& p2 = vertices[f.p2 - 1];
-		GLvertex& p3 = vertices[f.p3 - 1];
+		GLvertex& p1 = vertices[f.p1];
+		GLvertex& p2 = vertices[f.p2];
+		GLvertex& p3 = vertices[f.p3];
 		glNormal3f(p1.nx, p1.ny, p1.nz);
 		glVertex3f(p1.x, p1.y, p1.z);
 		glNormal3f(p2.nx, p2.ny, p2.nz);
@@ -203,8 +277,6 @@ void GLArea::read_data()
 
 	delete [] vertices;
 	delete [] faces;
-
-	display();
 }
 
 
@@ -213,14 +285,6 @@ void GLArea::read_data()
 
 void GLArea::init(GLsizei width, GLsizei height)
 {
-	// define material:
-	static GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-	static GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-	static GLfloat shininess = 50.0;
-	
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);

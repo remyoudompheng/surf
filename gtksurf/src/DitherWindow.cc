@@ -99,9 +99,6 @@ void DitherWindow::read_data()
 	for(size_t i = 0; i != length; i++) {
 		data[i] = change_bits(kernel.receive_byte());
 	}
-	if(kernel.receive_line() != "end") {
-		Misc::print_warning("Transmission from kernel didn't end properly\n");
-	}
 
 	bitmap = gdk_bitmap_create_from_data(drawingarea->window,
 					     reinterpret_cast<gchar*>(data),
