@@ -55,20 +55,28 @@ void NewClipAlgebraicOcta::init( void )
         h[i].m[1].kx = h[i].m[2].ky = h[i].m[3].kz = 1;
     }
 
-    h[0].m[0].a = clip_numeric.radius - clip_numeric.center_x - clip_numeric.center_y - clip_numeric.center_z;
-    h[1].m[0].a = clip_numeric.radius + clip_numeric.center_x - clip_numeric.center_y - clip_numeric.center_z;
-    h[2].m[0].a = clip_numeric.radius - clip_numeric.center_x + clip_numeric.center_y - clip_numeric.center_z;
-    h[3].m[0].a = clip_numeric.radius - clip_numeric.center_x - clip_numeric.center_y + clip_numeric.center_z;
+    h[0].m[0].a =  ScriptVar::clip_numeric.radius -  ScriptVar::clip_numeric.center_x 
+	    -  ScriptVar::clip_numeric.center_y -  ScriptVar::clip_numeric.center_z;
+    h[1].m[0].a =  ScriptVar::clip_numeric.radius +  ScriptVar::clip_numeric.center_x 
+	    -  ScriptVar::clip_numeric.center_y -  ScriptVar::clip_numeric.center_z;
+    h[2].m[0].a =  ScriptVar::clip_numeric.radius -  ScriptVar::clip_numeric.center_x
+	    +  ScriptVar::clip_numeric.center_y -  ScriptVar::clip_numeric.center_z;
+    h[3].m[0].a =  ScriptVar::clip_numeric.radius -  ScriptVar::clip_numeric.center_x 
+	    -  ScriptVar::clip_numeric.center_y +  ScriptVar::clip_numeric.center_z;
 
     h[0].m[1].a = 1.0; h[0].m[2].a = 1.0; h[0].m[3].a = 1.0;
     h[1].m[1].a =-1.0; h[1].m[2].a = 1.0; h[1].m[3].a = 1.0;
     h[2].m[1].a = 1.0; h[2].m[2].a =-1.0; h[2].m[3].a = 1.0;
     h[3].m[1].a = 1.0; h[3].m[2].a = 1.0; h[3].m[3].a =-1.0;
 
-    h[4].m[0].a = clip_numeric.radius + clip_numeric.center_x + clip_numeric.center_y + clip_numeric.center_z;
-    h[5].m[0].a = clip_numeric.radius - clip_numeric.center_x + clip_numeric.center_y + clip_numeric.center_z;
-    h[6].m[0].a = clip_numeric.radius + clip_numeric.center_x - clip_numeric.center_y + clip_numeric.center_z;
-    h[7].m[0].a = clip_numeric.radius + clip_numeric.center_x + clip_numeric.center_y - clip_numeric.center_z;
+    h[4].m[0].a =  ScriptVar::clip_numeric.radius +  ScriptVar::clip_numeric.center_x 
+	    +  ScriptVar::clip_numeric.center_y +  ScriptVar::clip_numeric.center_z;
+    h[5].m[0].a =  ScriptVar::clip_numeric.radius -  ScriptVar::clip_numeric.center_x
+	    +  ScriptVar::clip_numeric.center_y +  ScriptVar::clip_numeric.center_z;
+    h[6].m[0].a =  ScriptVar::clip_numeric.radius +  ScriptVar::clip_numeric.center_x
+	    -  ScriptVar::clip_numeric.center_y +  ScriptVar::clip_numeric.center_z;
+    h[7].m[0].a =  ScriptVar::clip_numeric.radius +  ScriptVar::clip_numeric.center_x
+	    +  ScriptVar::clip_numeric.center_y -  ScriptVar::clip_numeric.center_z;
 
     h[4].m[1].a =-1.0; h[4].m[2].a =-1.0; h[4].m[3].a =-1.0;
     h[5].m[1].a = 1.0; h[5].m[2].a =-1.0; h[5].m[3].a =-1.0;

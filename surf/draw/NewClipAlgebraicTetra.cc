@@ -54,10 +54,14 @@ void NewClipAlgebraicTetra::init( void )
         p[i].m[1].kx = p[i].m[2].ky = p[i].m[3].kz = 1;
     }
 
-    p[0].m[0].a = clip_numeric.radius - clip_numeric.center_x - clip_numeric.center_y - clip_numeric.center_z;
-    p[1].m[0].a = clip_numeric.radius - clip_numeric.center_x + clip_numeric.center_y + clip_numeric.center_z;
-    p[2].m[0].a = clip_numeric.radius + clip_numeric.center_x - clip_numeric.center_y + clip_numeric.center_z;
-    p[3].m[0].a = clip_numeric.radius + clip_numeric.center_x + clip_numeric.center_y - clip_numeric.center_z;
+    p[0].m[0].a = ScriptVar::clip_numeric.radius -  ScriptVar::clip_numeric.center_x 
+	    -  ScriptVar::clip_numeric.center_y -  ScriptVar::clip_numeric.center_z;
+    p[1].m[0].a =  ScriptVar::clip_numeric.radius -  ScriptVar::clip_numeric.center_x 
+	    +  ScriptVar::clip_numeric.center_y +  ScriptVar::clip_numeric.center_z;
+    p[2].m[0].a =  ScriptVar::clip_numeric.radius +  ScriptVar::clip_numeric.center_x 
+	    -  ScriptVar::clip_numeric.center_y +  ScriptVar::clip_numeric.center_z;
+    p[3].m[0].a =  ScriptVar::clip_numeric.radius +  ScriptVar::clip_numeric.center_x 
+	    +  ScriptVar::clip_numeric.center_y -  ScriptVar::clip_numeric.center_z;
 
     p[0].m[1].a = 1.0; p[0].m[2].a = 1.0; p[0].m[3].a = 1.0;
     p[1].m[1].a = 1.0; p[1].m[2].a =-1.0; p[1].m[3].a =-1.0;

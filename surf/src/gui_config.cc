@@ -31,13 +31,16 @@
 #include "def.h"
 #include "gui_config.h"
 
-
-
 // -------------------------------------------
 // Decides wether yacced commands are executed
 // -------------------------------------------
 
 int     surface_run_commands   = FALSE;
+
+namespace ScriptVar 
+{
+	
+
 char    *surface_filename_data = 0;
 
 
@@ -469,3 +472,5 @@ int     curve_color_slider_data[CURVE_COLOR_SLIDER_NUM];
 // ----------------
 
 int     curve_surface_nr_data;
+ 
+}

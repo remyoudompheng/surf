@@ -44,14 +44,16 @@
 #include "polyarith.h"
 #include "polyx.h"
 #include "polyroot.h"
+#include "gui_config.h"
 
 /* ------------------------------------------------------------------------- */
 /*  External C++ data                                                        */
 /* ------------------------------------------------------------------------- */
 
-extern  double numeric_epsilon_data;
-extern  int    numeric_iterations_data;
-extern  int    numeric_root_finder_data;
+//  extern  double numeric_epsilon_data;
+//  extern  int    numeric_iterations_data;
+//  extern  int    numeric_root_finder_data;
+
 
 /* ------------------------------------------------------------------------- */
 /*  The good old bisection method (rootfinder)                               */
@@ -69,8 +71,8 @@ static  int     polyx_bisection( polyx *f,double a,double b,
     /*      a) b-a < numeric_epsilon_data                               */
     /*      b) #iterations >= numeric_iterations_data                   */
     /* ---------------------------------------------------------------- */
-    while( b - a > numeric_epsilon_data &&
-               i < numeric_iterations_data )
+    while( b - a > ScriptVar::numeric_epsilon_data &&
+               i < ScriptVar::numeric_iterations_data )
     {
         ab  = ( a + b )/2.0;
         fab = f->horner(ab); 
@@ -111,7 +113,7 @@ static  int     polyx_bisection( polyx *f,double a,double b,
     }
     *root = ab;
  
-    return ( i < numeric_iterations_data );
+    return ( i < ScriptVar::numeric_iterations_data );
 }
 
 /* ------------------------------------------------------------------------- */
@@ -137,8 +139,8 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
     /*      b) #iterations >= numeric_iterations_data                   */
     /* ---------------------------------------------------------------- */
 
-    while( delta > numeric_epsilon_data &&
-               i < numeric_iterations_data )
+    while( delta > ScriptVar::numeric_epsilon_data &&
+               i < ScriptVar::numeric_iterations_data )
     {
         c   = fa/( fa - fb );
         ab  = ( c < 1.0 ? a + delta*c : ( a + b )/2.0 );
@@ -148,7 +150,7 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
         {
             if( fab > 0.0 )
             {
-                ab_eps  = ab - numeric_epsilon_data;
+		ab_eps  = ab - ScriptVar::numeric_epsilon_data;
                 fab_eps = f->horner(ab_eps);
 
                 if( fab_eps <= 0.0 )
@@ -162,7 +164,7 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
             }
             else /* fab <= 0.0 */
             {
-                ab_eps  = ab + numeric_epsilon_data;
+                ab_eps  = ab + ScriptVar::numeric_epsilon_data;
                 fab_eps = f->horner(ab_eps);
 
                 if( fab_eps >= 0.0 )
@@ -179,7 +181,7 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
         {   
             if( fab < 0.0 )
             {
-                ab_eps  = ab - numeric_epsilon_data;
+                ab_eps  = ab - ScriptVar::numeric_epsilon_data;
                 fab_eps = f->horner(ab_eps);
 
                 if( fab_eps >= 0.0 )
@@ -193,7 +195,7 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
             }
             else /* fab >= 0.0 */
             {   
-                ab_eps  = ab + numeric_epsilon_data;
+                ab_eps  = ab + ScriptVar::numeric_epsilon_data;
                 fab_eps = f->horner(ab_eps);
 
                 if( fab_eps <= 0.0 )
@@ -213,7 +215,7 @@ static  int     polyx_regula_falsi( polyx *f,double a,double b,
 
     *root = ab;
 
-    return  ( i < numeric_iterations_data );
+    return  ( i < ScriptVar::numeric_iterations_data );
 }
 
 /* ------------------------------------------------------------------------- */
@@ -237,8 +239,8 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
     /*      a) |b-a| < numeric_epsilon_data                             */
     /*      b) #iterations >= numeric_iterations_data                   */
     /* ---------------------------------------------------------------- */
-    while( delta > numeric_epsilon_data &&
-               i < numeric_iterations_data )
+    while( delta > ScriptVar::numeric_epsilon_data &&
+               i < ScriptVar::numeric_iterations_data )
     {
         c   = fa/( fa - fb );
         ab  = ( c < 1.0 ? a + delta*c : ( a + b )/2.0 );
@@ -248,7 +250,7 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
         {
             if( fab > 0.0 )
             {
-                ab_eps  = ab - numeric_epsilon_data;
+                ab_eps  = ab - ScriptVar::numeric_epsilon_data;
                 fab_eps = f->horner(ab_eps);
 
                 if( fab_eps <= 0.0 )
@@ -264,7 +266,7 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
             {   
                 fb *= ( fab < fa ? ( 1.0 - fab/fa ) : 0.5 );
 
-                ab_eps  = ab + numeric_epsilon_data;
+                ab_eps  = ab + ScriptVar::numeric_epsilon_data;
                 fab_eps = f->horner(ab_eps);
 
                 if( fab_eps >= 0.0 )
@@ -281,7 +283,7 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
         {
             if( fab < 0.0 )
             {
-                ab_eps  = ab - numeric_epsilon_data;
+                ab_eps  = ab - ScriptVar::numeric_epsilon_data;
                 fab_eps = f->horner(ab_eps);
 
                 if( fab_eps >= 0.0 )
@@ -297,7 +299,7 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
             {
                 fb *= ( fab < fa ? ( 1.0 - fab/fa ) : 0.5 );
 
-                ab_eps  = ab + numeric_epsilon_data;
+                ab_eps  = ab + ScriptVar::numeric_epsilon_data;
                 fab_eps = f->horner(ab_eps);
 
                 if( fab_eps <= 0.0 )
@@ -315,7 +317,7 @@ static  int     polyx_pegasus( polyx *f,double a,double b,
     }
     *root = ab;
 
-    return  ( i < numeric_iterations_data );
+    return  ( i < ScriptVar::numeric_iterations_data );
 }
 
 /* ------------------------------------------------------------------------- */
@@ -336,8 +338,8 @@ static  int     polyx_anderson_bjoerck( polyx *f,double a,double b,
     double  t = 0.0;
     int     i = 0;
 
-    while( b - a > numeric_epsilon_data &&
-               i < numeric_iterations_data )
+    while( b - a > ScriptVar::numeric_epsilon_data &&
+               i < ScriptVar::numeric_iterations_data )
     {
         h1 = fa*( b - ab );
         h2 = fab*( b - a );
@@ -377,7 +379,7 @@ static  int     polyx_anderson_bjoerck( polyx *f,double a,double b,
     }
     *root = t;
 
-    return  ( i < numeric_iterations_data );
+    return  ( i < ScriptVar::numeric_iterations_data );
 }
 
 /* ------------------------------------------------------------------------- */
@@ -393,7 +395,7 @@ static  int     polyx_newton_right( polyx *f,double b,
     int     i = 0;
 
     while( fb*fb_old > 0.0 &&
-                   i < numeric_iterations_data )
+                   i < ScriptVar::numeric_iterations_data )
     {
         if( dfb == 0.0 )
 	{
@@ -401,7 +403,7 @@ static  int     polyx_newton_right( polyx *f,double b,
             return  TRUE;
 	}
 
-        b     -= fb/dfb + numeric_epsilon_data;
+        b     -= fb/dfb + ScriptVar::numeric_epsilon_data;
         fb_old = fb;
         fb     = f->horner(b);
         dfb    = f->dx_horner(b);
@@ -409,7 +411,7 @@ static  int     polyx_newton_right( polyx *f,double b,
     }
     *root = b;
 
-    return  ( i < numeric_iterations_data );
+    return  ( i < ScriptVar::numeric_iterations_data );
 }
 
 static  int     polyx_newton_left( polyx *f,double a,
@@ -419,7 +421,7 @@ static  int     polyx_newton_left( polyx *f,double a,
     int     i = 0;
 
     while( fa*fa_old > 0.0 &&
-                   i < numeric_iterations_data )
+                   i < ScriptVar::numeric_iterations_data )
     {
         if( dfa == 0.0 )
 	{
@@ -427,7 +429,7 @@ static  int     polyx_newton_left( polyx *f,double a,
             return  TRUE;
 	}
 
-        a     -= fa/dfa - numeric_epsilon_data;
+        a     -= fa/dfa - ScriptVar::numeric_epsilon_data;
         fa_old = fa;
         fa     = f->horner(a);
         dfa    = f->dx_horner(a);
@@ -435,7 +437,7 @@ static  int     polyx_newton_left( polyx *f,double a,
     }
     *root = a;
 
-    return  ( i < numeric_iterations_data );
+    return  ( i < ScriptVar::numeric_iterations_data );
 }
 
 static  int     polyx_newton( polyx *f,double a,double b,
@@ -571,13 +573,13 @@ int     Polyx_all_roots( polyx *f,double a,double b,
                 /* ---------------------------------------- */
                 /*  either right interval border is a root  */
                 /* ---------------------------------------- */
-                if( fabs( fvalueb ) < numeric_epsilon_data )
+                if( fabs( fvalueb ) < ScriptVar::numeric_epsilon_data )
 	        {
                     roots[num] = droots[i];
                     mults[num] = dmults[i] + 1;
                     num++;
                 }
-                else if( fabs( fvaluea ) > numeric_epsilon_data )
+                else if( fabs( fvaluea ) > ScriptVar::numeric_epsilon_data )
                 {
 		    /* ------------------------------------- */
 		    /*  or the open interval conains a root  */
@@ -585,7 +587,7 @@ int     Polyx_all_roots( polyx *f,double a,double b,
                     if( fvaluea*fvalueb < 0.0 )
 	            {
                         if( polyx_inclusion_method
-                                [numeric_root_finder_data]
+                                [ScriptVar::numeric_root_finder_data]
                                 ( f,droots[j],droots[i],
                                 fvaluea,fvalueb,&(roots[num])))
 			{
@@ -721,7 +723,7 @@ int     polyx_all_extreme( polyx *f,double a,double b,
                 /* ---------------------------------------- */
                 /*  either right interval border is a root  */
                 /* ---------------------------------------- */
-                if( fabs( fvalueb ) < numeric_epsilon_data )
+                if( fabs( fvalueb ) < ScriptVar::numeric_epsilon_data )
 	        {
                     roots[num] = droots[i];
                     flags[num] = dflags[i] + 1;
@@ -736,7 +738,7 @@ int     polyx_all_extreme( polyx *f,double a,double b,
                         num++;
 		    }
 
-                    if( fabs( fvaluea ) > numeric_epsilon_data )
+                    if( fabs( fvaluea ) > ScriptVar::numeric_epsilon_data )
                     {
 	    	        /* ------------------------------------- */
 		        /*  or the open interval conains a root  */
@@ -744,7 +746,7 @@ int     polyx_all_extreme( polyx *f,double a,double b,
                         if( fvaluea*fvalueb < 0.0 )
 	                {
                             if( polyx_inclusion_method
-                                [numeric_root_finder_data]
+                                [ScriptVar::numeric_root_finder_data]
                                 ( f,droots[j],droots[i],
                                 fvaluea,fvalueb,&(roots[num])))
 			    {

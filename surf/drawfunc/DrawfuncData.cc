@@ -67,7 +67,7 @@ DrawfuncData::DrawfuncData( RgbBuffer *rgbbuff, float_buffer *zbuff,
 	   PointWidth(PW),                     // curve width
 	   PointDiv(4*PW),                      
 	   MaxDist(pow(PW+1,2.0)/(4.0*PW)),
-	   WinSizeFactor((double)min(main_width_data,main_height_data)/20.0),
+	   WinSizeFactor((double)min(ScriptVar::main_width_data,ScriptVar::main_height_data)/20.0),
 	   intensity(rgbbuff),
 	   zbuffer(zbuff)
 {
@@ -416,7 +416,7 @@ int DrawfuncData::DoPixel( int px,
 	//     oder wenn neuer z-wert gesetzt, weil er vor dem vorherigen liegt,
 	//     dann setze Pixel 
 	if( SetZbuffer (ax, ay, zEstimate) || !Surface ) {
-		SetCurvePixel( ax,ay,1.0 - pow( brightness,curve_gamma_data ) );   
+		SetCurvePixel( ax,ay,1.0 - pow( brightness, ScriptVar::curve_gamma_data ) );   
 	}
 
 	return TRUE;

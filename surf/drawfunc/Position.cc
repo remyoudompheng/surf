@@ -98,7 +98,7 @@ Position::Position( position_numeric_t Data, int *PRSD, int PRSP )
 		}
 	}
 	
-	if( display_numeric.stereo_eye) {
+	if( ScriptVar::display_numeric.stereo_eye) {
 		PosXYZ.Turn( Y_AXIS_LR_ROTATE,1 );
 	}
 }

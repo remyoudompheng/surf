@@ -30,15 +30,15 @@
 
 void NewSimpleClip::init()
 {
-	cb = clip_numeric.clip_back;
-	cf = clip_numeric.clip_front;
+	cb = ScriptVar::clip_numeric.clip_back;
+	cf = ScriptVar::clip_numeric.clip_front;
 
-	sz = position_numeric.spectator_z;
+	sz = ScriptVar::position_numeric.spectator_z;
 
-	cx = clip_numeric.center_x;
-	cy = clip_numeric.center_y;
-	cz = clip_numeric.center_z;
-	r  = clip_numeric.radius;
+	cx = ScriptVar::clip_numeric.center_x;
+	cy = ScriptVar::clip_numeric.center_y;
+	cz = ScriptVar::clip_numeric.center_z;
+	r  = ScriptVar::clip_numeric.radius;
 	d1 = sz - cz;
 
 	szsq = sz*sz;

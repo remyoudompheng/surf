@@ -68,6 +68,7 @@
 // #define DEBUG
 #include "debug.h"
 
+using namespace ScriptVar; // I just need it here...
 
 TSDrawingArea	*Script::display	= 0;
 RgbBuffer	*Script::buffer		= 0;

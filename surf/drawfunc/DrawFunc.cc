@@ -82,8 +82,8 @@ void draw_func_init_parser( void )
 
 void draw_func_draw( void )
 {
-	const int width = main_width_data;
-	const int height = main_height_data;
+	const int width = ScriptVar::main_width_data;
+	const int height = ScriptVar::main_height_data;
 	
 	if (stop)
 		return;
@@ -94,9 +94,9 @@ void draw_func_draw( void )
 	
 	Clip *clip = GetClip (position );
 	
-	Polyx::SetStatics( numeric_epsilon_data,
-			   numeric_iterations_data,
-			   numeric_root_finder_data,
+	Polyx::SetStatics( ScriptVar::numeric_epsilon_data,
+			   ScriptVar::numeric_iterations_data,
+			   ScriptVar::numeric_root_finder_data,
 			   true );
 	
 	HornergroupXY* Curve = new HornergroupXY( &draw_func_function_data, 
@@ -111,7 +111,7 @@ void draw_func_draw( void )
 					   Curve,
 					   clip,
 					   position,
-					   curve_width_data );
+					   ScriptVar::curve_width_data );
 
 		drawfuncdata.setGeometry (WindowGeometry(width, height));
 		drawfuncdata.SetBorders (0, width, 0, height);
@@ -125,13 +125,13 @@ void draw_func_draw( void )
 			Script::getDisplay()->setSize (width, height);
 
 			Script::getDisplay()->drawRgbBuffer (*Script::getBuffer(), true, 
-							     curve_color_slider_data[red],
-							     curve_color_slider_data[green],
-							     curve_color_slider_data[blue]);
+							     ScriptVar::curve_color_slider_data[red],
+							     ScriptVar::curve_color_slider_data[green],
+							     ScriptVar::curve_color_slider_data[blue]);
 		} else {
-			Script::getBuffer()->AddCurve (curve_color_slider_data[red],
-						       curve_color_slider_data[green],
-						       curve_color_slider_data[blue]);
+			Script::getBuffer()->AddCurve (ScriptVar::curve_color_slider_data[red],
+						       ScriptVar::curve_color_slider_data[green],
+						       ScriptVar::curve_color_slider_data[blue]);
 		}
 	}
 	
@@ -151,26 +151,26 @@ void draw_func_cut( void )
 		return;
 	SurfaceCalc sc;
 	sc.setDisplay(Script::getDisplay());
-	Script::getZBuffer()->Realloc(main_width_data, main_height_data);
+	Script::getZBuffer()->Realloc(ScriptVar::main_width_data, ScriptVar::main_height_data);
 
 
 	Position *position = GetPosition ();
 	Clip     *clip     = GetClip (position);
 	
- 	Polyx::SetStatics( numeric_epsilon_data, numeric_iterations_data,
- 			   numeric_root_finder_data, TRUE );
+ 	Polyx::SetStatics( ScriptVar::numeric_epsilon_data, ScriptVar::numeric_iterations_data,
+ 			   ScriptVar::numeric_root_finder_data, TRUE );
 	
 	RationalHornerXY* Plane = new RationalHornerXY( &draw_func_plane_data,
 							position );
 	
-	bool surfnr_ok = (curve_surface_nr_data >= 1 && curve_surface_nr_data <= MAIN_SURFACE_AMOUNT_NUM) ;
+	bool surfnr_ok = (ScriptVar::curve_surface_nr_data >= 1 && ScriptVar::curve_surface_nr_data <= MAIN_SURFACE_AMOUNT_NUM) ;
 	
 	
 	if( !Plane->getState() && surfnr_ok ) {
 		
 		HornergroupXYZ* Surface = new HornergroupXYZ(
-			&main_formula_pxyz_data[curve_surface_nr_data],
-			sc.sf_ds.getFormula(curve_surface_nr_data),position );
+			&ScriptVar::main_formula_pxyz_data[ScriptVar::curve_surface_nr_data],
+			sc.sf_ds.getFormula(ScriptVar::curve_surface_nr_data),position );
 		
 		
 		if( !Surface->getState() ) {      
@@ -181,14 +181,14 @@ void draw_func_cut( void )
 				DrawfuncData drawfuncdata( Script::getBuffer(), Script::getZBuffer(),
 							   Plane,Surface,Curve,
 							   clip,position,
-							   curve_width_data );
-				drawfuncdata.setGeometry(WindowGeometry(main_width_data, main_height_data));
-				drawfuncdata.SetBorders(0,main_width_data,0,main_height_data);
+							   ScriptVar::curve_width_data );
+				drawfuncdata.setGeometry(WindowGeometry(ScriptVar::main_width_data, ScriptVar::main_height_data));
+				drawfuncdata.SetBorders(0,ScriptVar::main_width_data,0,ScriptVar::main_height_data);
 
 				drawfuncdata.PrintCurve(1);
 				drawfuncdata.PrintCurve(0);
 				
-				sc.CalculateCurveOnSurface(0,0,main_width_data,main_height_data,*Script::getBuffer(), *Script::getZBuffer() );
+				sc.CalculateCurveOnSurface(0,0,ScriptVar::main_width_data,ScriptVar::main_height_data,*Script::getBuffer(), *Script::getZBuffer() );
 			}
 		}
 	}
@@ -199,22 +199,22 @@ void draw_func_cut( void )
 
 Position* GetPosition( void )
 {
-	int Perspec = ( position_perspective_data
-			== position_perspective_central_data );
+	int Perspec = ( ScriptVar::position_perspective_data
+			== ScriptVar::position_perspective_central_data );
       
-	return new Position( position_numeric,
-			     position_sequence_data,
+	return new Position( ScriptVar::position_numeric,
+			     ScriptVar::position_sequence_data,
 			     Perspec );
 }
 
 Clip* GetClip (Position* position )
 {
-	return Clip::create( position_perspective_data,
-			     clip_data,
-			     clip_numeric,
-			     WindowGeometry (main_width_data, main_height_data),
-			     position_numeric.spectator_z,
+	return Clip::create( ScriptVar::position_perspective_data,
+			     ScriptVar::clip_data,
+			     ScriptVar::clip_numeric,
+			     WindowGeometry (ScriptVar::main_width_data, ScriptVar::main_height_data),
+			     ScriptVar::position_numeric.spectator_z,
 			     position,
-			     0,main_width_data, 
-			     0,main_height_data);
+			     0,ScriptVar::main_width_data, 
+			     0,ScriptVar::main_height_data);
 }

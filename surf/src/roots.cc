@@ -110,7 +110,7 @@ int     zero_of_polyx( polyx *f,
         // -------------------------------------------------------
         default :
 
-		if( numeric_root_finder_data == NUMERIC_ROOT_BEZIER ) {
+		if( ScriptVar::numeric_root_finder_data == NUMERIC_ROOT_BEZIER ) {
 			// -------------------------------
 			//  Rockwoods all roots algorithm
 			// -------------------------------

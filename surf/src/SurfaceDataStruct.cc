@@ -48,20 +48,20 @@ int SurfaceDataStruct::init ()
 	for (k=i=0; i< MAIN_SURFACE_AMOUNT_NUM; i++) {
 		if (formulas[k].initWithSurface(i)) {
 
-			surfaces[k].red  = color_slider[i].red / 255.0;
-			surfaces[k].green= color_slider[i].green/255.0; 
-			surfaces[k].blue = color_slider[i].blue/255.0;
+			surfaces[k].red  = ScriptVar::color_slider[i].red / 255.0;
+			surfaces[k].green=  ScriptVar::color_slider[i].green/255.0; 
+			surfaces[k].blue =  ScriptVar::color_slider[i].blue/255.0;
 
-			surfaces[k].ins_red  =color_slider[i].inside_red  /255.0;
-			surfaces[k].ins_green=color_slider[i].inside_green/255.0;
-			surfaces[k].ins_blue =color_slider[i].inside_blue /255.0;
+			surfaces[k].ins_red  = ScriptVar::color_slider[i].inside_red  /255.0;
+			surfaces[k].ins_green= ScriptVar::color_slider[i].inside_green/255.0;
+			surfaces[k].ins_blue = ScriptVar::color_slider[i].inside_blue /255.0;
 			
-			surfaces[k].diffuse= light_settings[i].diffuse/100.0;
-			surfaces[k].reflect= light_settings[i].reflected/100.0; 
-			surfaces[k].transmit=light_settings[i].transmitted/100.0; 
+			surfaces[k].diffuse= ScriptVar::light_settings[i].diffuse/100.0;
+			surfaces[k].reflect= ScriptVar::light_settings[i].reflected/100.0; 
+			surfaces[k].transmit=ScriptVar::light_settings[i].transmitted/100.0; 
 			
-			surfaces[k].smooth =          light_settings[i].smoothness;
-			surfaces[k].transp = light_settings[i].transparence/100.0;
+			surfaces[k].smooth = ScriptVar::light_settings[i].smoothness;
+			surfaces[k].transp = ScriptVar::light_settings[i].transparence/100.0;
 
 			/*sk :merke Index der Fläche, mit dem sie im Skript definiert wurde */ 
 			new_index[i]=k;	     
@@ -89,9 +89,9 @@ void SurfaceDataStruct::initCurveProperty()
 	curve.root_n = 1;
 
 	// sk :Setze die Kurvenfarbe in den neuen Struct    	
-	curve.red  =curve_color_slider_data[RED]  /255.0;
-	curve.green=curve_color_slider_data[GREEN]/255.0;
-	curve.blue =curve_color_slider_data[BLUE] /255.0;
+	curve.red  =ScriptVar::curve_color_slider_data[RED]  /255.0;
+	curve.green=ScriptVar::curve_color_slider_data[GREEN]/255.0;
+	curve.blue =ScriptVar::curve_color_slider_data[BLUE] /255.0;
 
 	curve.transp =0/100.0;
 

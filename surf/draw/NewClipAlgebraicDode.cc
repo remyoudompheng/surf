@@ -69,10 +69,10 @@ void NewClipAlgebraicDode::init( void )
         h[i].m[1].kx = h[i].m[2].ky = h[i].m[3].kz = 1;
     }
 
-    h[0].m[0].a = 2*clip_numeric.radius + 0*clip_numeric.center_x - a*clip_numeric.center_y - b*clip_numeric.center_z;
-    h[1].m[0].a = 2*clip_numeric.radius + 0*clip_numeric.center_x - a*clip_numeric.center_y + b*clip_numeric.center_z;
-    h[6].m[0].a = 2*clip_numeric.radius + 0*clip_numeric.center_x + a*clip_numeric.center_y + b*clip_numeric.center_z;
-    h[7].m[0].a = 2*clip_numeric.radius + 0*clip_numeric.center_x + a*clip_numeric.center_y - b*clip_numeric.center_z;
+    h[0].m[0].a = 2*ScriptVar::clip_numeric.radius + 0*ScriptVar::clip_numeric.center_x - a*ScriptVar::clip_numeric.center_y - b*ScriptVar::clip_numeric.center_z;
+    h[1].m[0].a = 2*ScriptVar::clip_numeric.radius + 0*ScriptVar::clip_numeric.center_x - a*ScriptVar::clip_numeric.center_y + b*ScriptVar::clip_numeric.center_z;
+    h[6].m[0].a = 2*ScriptVar::clip_numeric.radius + 0*ScriptVar::clip_numeric.center_x + a*ScriptVar::clip_numeric.center_y + b*ScriptVar::clip_numeric.center_z;
+    h[7].m[0].a = 2*ScriptVar::clip_numeric.radius + 0*ScriptVar::clip_numeric.center_x + a*ScriptVar::clip_numeric.center_y - b*ScriptVar::clip_numeric.center_z;
 
     h[0].m[1].a =  0; h[0].m[2].a =  a; h[0].m[3].a =  b;
     h[1].m[1].a =  0; h[1].m[2].a =  a; h[1].m[3].a = -b;
@@ -80,10 +80,10 @@ void NewClipAlgebraicDode::init( void )
     h[7].m[1].a =  0; h[7].m[2].a = -a; h[7].m[3].a =  b;
 
 
-    h[2].m[0].a = 2*clip_numeric.radius - b*clip_numeric.center_x + 0*clip_numeric.center_y - a*clip_numeric.center_z;
-    h[3].m[0].a = 2*clip_numeric.radius + b*clip_numeric.center_x + 0*clip_numeric.center_y - a*clip_numeric.center_z;
-    h[8].m[0].a = 2*clip_numeric.radius + b*clip_numeric.center_x + 0*clip_numeric.center_y + a*clip_numeric.center_z;
-    h[9].m[0].a = 2*clip_numeric.radius - b*clip_numeric.center_x + 0*clip_numeric.center_y + a*clip_numeric.center_z;
+    h[2].m[0].a = 2*ScriptVar::clip_numeric.radius - b*ScriptVar::clip_numeric.center_x + 0*ScriptVar::clip_numeric.center_y - a*ScriptVar::clip_numeric.center_z;
+    h[3].m[0].a = 2*ScriptVar::clip_numeric.radius + b*ScriptVar::clip_numeric.center_x + 0*ScriptVar::clip_numeric.center_y - a*ScriptVar::clip_numeric.center_z;
+    h[8].m[0].a = 2*ScriptVar::clip_numeric.radius + b*ScriptVar::clip_numeric.center_x + 0*ScriptVar::clip_numeric.center_y + a*ScriptVar::clip_numeric.center_z;
+    h[9].m[0].a = 2*ScriptVar::clip_numeric.radius - b*ScriptVar::clip_numeric.center_x + 0*ScriptVar::clip_numeric.center_y + a*ScriptVar::clip_numeric.center_z;
 
     h[2].m[1].a =  b; h[2].m[2].a =  0; h[2].m[3].a =  a;
     h[3].m[1].a = -b; h[3].m[2].a =  0; h[3].m[3].a =  a;
@@ -91,10 +91,10 @@ void NewClipAlgebraicDode::init( void )
     h[9].m[1].a =  b; h[9].m[2].a =  0; h[9].m[3].a = -a;
 
 
-    h[4].m[0].a  = 2*clip_numeric.radius - a*clip_numeric.center_x - b*clip_numeric.center_y + 0*clip_numeric.center_z;
-    h[5].m[0].a  = 2*clip_numeric.radius - a*clip_numeric.center_x + b*clip_numeric.center_y + 0*clip_numeric.center_z;
-    h[10].m[0].a = 2*clip_numeric.radius + a*clip_numeric.center_x + b*clip_numeric.center_y + 0*clip_numeric.center_z;
-    h[11].m[0].a = 2*clip_numeric.radius + a*clip_numeric.center_x - b*clip_numeric.center_y + 0*clip_numeric.center_z;
+    h[4].m[0].a  = 2*ScriptVar::clip_numeric.radius - a*ScriptVar::clip_numeric.center_x - b*ScriptVar::clip_numeric.center_y + 0*ScriptVar::clip_numeric.center_z;
+    h[5].m[0].a  = 2*ScriptVar::clip_numeric.radius - a*ScriptVar::clip_numeric.center_x + b*ScriptVar::clip_numeric.center_y + 0*ScriptVar::clip_numeric.center_z;
+    h[10].m[0].a = 2*ScriptVar::clip_numeric.radius + a*ScriptVar::clip_numeric.center_x + b*ScriptVar::clip_numeric.center_y + 0*ScriptVar::clip_numeric.center_z;
+    h[11].m[0].a = 2*ScriptVar::clip_numeric.radius + a*ScriptVar::clip_numeric.center_x - b*ScriptVar::clip_numeric.center_y + 0*ScriptVar::clip_numeric.center_z;
 
     h[4].m[1].a  =  a; h[4].m[2].a  =  b; h[4].m[3].a  =  0;
     h[5].m[1].a  =  a; h[5].m[2].a  = -b; h[5].m[3].a  =  0;

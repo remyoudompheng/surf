@@ -40,8 +40,8 @@ class NewClipNone : public NewClip
 		}
 	int clip_user_xy (double ux, double uy, double &zmin, double &zmax)
 		{
-			zmin = clip_numeric.clip_back;
-			zmax = clip_numeric.clip_front;
+			zmin = ScriptVar::clip_numeric.clip_back;
+			zmax = ScriptVar::clip_numeric.clip_front;
 			return true;
 		}
 	int clip_user_xyz (double uz)

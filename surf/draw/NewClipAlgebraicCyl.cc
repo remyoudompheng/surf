@@ -49,19 +49,19 @@ void NewClipAlgebraicCyl::init( void )
     new_coeff_polyxyz( &p[0],7 );
     new_coeff_polyxyz( &p[1],4 );
 
-    p[0].m[0].a = p[1].m[0].a = clip_numeric.radius*clip_numeric.radius;
+    p[0].m[0].a = p[1].m[0].a = ScriptVar::clip_numeric.radius*ScriptVar::clip_numeric.radius;
     p[0].m[1].a = p[0].m[4].a = p[1].m[1].a = -1.0;
 
     p[0].m[1].kx = p[0].m[4].kz = p[1].m[1].ky = 2;
     p[0].m[2].kx = p[0].m[5].kz = p[1].m[2].ky = 1;
 
-    p[0].m[2].a = 2.0*clip_numeric.center_x;
-    p[0].m[5].a = 2.0*clip_numeric.center_z;
-    p[1].m[2].a = 2.0*clip_numeric.center_y;
+    p[0].m[2].a = 2.0*ScriptVar::clip_numeric.center_x;
+    p[0].m[5].a = 2.0*ScriptVar::clip_numeric.center_z;
+    p[1].m[2].a = 2.0*ScriptVar::clip_numeric.center_y;
 
-    p[0].m[3].a = -clip_numeric.center_x*clip_numeric.center_x;
-    p[0].m[6].a = -clip_numeric.center_z*clip_numeric.center_z;
-    p[1].m[3].a = -clip_numeric.center_y*clip_numeric.center_y;
+    p[0].m[3].a = -ScriptVar::clip_numeric.center_x*ScriptVar::clip_numeric.center_x;
+    p[0].m[6].a = -ScriptVar::clip_numeric.center_z*ScriptVar::clip_numeric.center_z;
+    p[1].m[3].a = -ScriptVar::clip_numeric.center_y*ScriptVar::clip_numeric.center_y;
 
     for( i=0; i<2; i++ )
     {

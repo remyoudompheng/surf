@@ -126,10 +126,10 @@ void    init_cube( cube *c )
 	//  init center and radius
 	// ------------------------
 	
-	c->center_x = clip_numeric.center_x;
-	c->center_y = clip_numeric.center_y;
-	c->center_z = clip_numeric.center_z;
-	c->radius   = clip_numeric.radius;
+	c->center_x = ScriptVar::clip_numeric.center_x;
+	c->center_y = ScriptVar::clip_numeric.center_y;
+	c->center_z = ScriptVar::clip_numeric.center_z;
+	c->radius   = ScriptVar::clip_numeric.radius;
 	
 	// ------------------------------------
 	//  init planes x = center_x +- radius
@@ -165,9 +165,9 @@ void    init_cube( cube *c )
 	c->equations[5][2] = 1.0;
 	c->equations[5][3] = -( c->center_z - c->radius );
 	
-	cube_rotate_y_axis( c,-position_numeric.rot_y );
-	cube_rotate_x_axis( c,-position_numeric.rot_x );
-	cube_rotate_z_axis( c,-position_numeric.rot_z );
+	cube_rotate_y_axis( c,-ScriptVar::position_numeric.rot_y );
+	cube_rotate_x_axis( c,-ScriptVar::position_numeric.rot_x );
+	cube_rotate_z_axis( c,-ScriptVar::position_numeric.rot_z );
 }
 
 // ============================================================================

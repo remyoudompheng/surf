@@ -54,12 +54,12 @@ bool CanvasDataStruct::initWithSurface (int nr)
 {
 	int i=nr;
 
-	if ( main_formula_pxyz_data[i].n<=0
-	     || main_formula_pxyz_data[i].deg < 1
-	     || main_formula_pxyz_data[i].deg >= MAX_DEGREE)
+	if ( ScriptVar::main_formula_pxyz_data[i].n<=0
+	     || ScriptVar::main_formula_pxyz_data[i].deg < 1
+	     || ScriptVar::main_formula_pxyz_data[i].deg >= MAX_DEGREE)
 		return false;
 	
-	return initWith_polyxyz (&main_formula_pxyz_data[i]);
+	return initWith_polyxyz (&ScriptVar::main_formula_pxyz_data[i]);
 }
 
 bool CanvasDataStruct::initWith_polyxyz (polyxyz *p)
@@ -68,26 +68,26 @@ bool CanvasDataStruct::initWith_polyxyz (polyxyz *p)
 		
 	for( int ind = 0; ind < POSITION_SEQUENCE_NUM; ind++ )
         {
-		switch( position_sequence_data[ind] ) {
+		switch( ScriptVar::position_sequence_data[ind] ) {
 		case 0:
 			polyxyz_shift_self (&pxyz,	
-					    position_numeric.orig_x,
-					    position_numeric.orig_y,
-					    position_numeric.orig_z);
+					    ScriptVar::position_numeric.orig_x,
+					    ScriptVar::position_numeric.orig_y,
+					    ScriptVar::position_numeric.orig_z);
 			break;
 			
 		case 1:
 			polyxyz_rotate_self (&pxyz,	   		
-					     position_numeric.rot_x,
-					     position_numeric.rot_y,
-					     position_numeric.rot_z);
+					     ScriptVar::position_numeric.rot_x,
+					     ScriptVar::position_numeric.rot_y,
+					     ScriptVar::position_numeric.rot_z);
 			break;
 			
 		case 2:
 			polyxyz_scale_self (&pxyz,
-					    position_numeric.scale_x,
-					    position_numeric.scale_y,
-					    position_numeric.scale_z);
+					    ScriptVar::position_numeric.scale_x,
+					    ScriptVar::position_numeric.scale_y,
+					    ScriptVar::position_numeric.scale_z);
 			break;
 			
 		default:
@@ -99,7 +99,7 @@ bool CanvasDataStruct::initWith_polyxyz (polyxyz *p)
 	//  rotate/shift surface for 3D - picture
 	// --------------------------------------- 
 	
-	if( display_numeric.stereo_eye ) {
+	if( ScriptVar::display_numeric.stereo_eye ) {
 		polyxyz_rotate_self( &pxyz,			
 				     0.0, Y_AXIS_LR_ROTATE, 0.0 );
 	}
@@ -108,9 +108,9 @@ bool CanvasDataStruct::initWith_polyxyz (polyxyz *p)
 	//  adjust surface to perspective
 	// -------------------------------
 	
-	if( position_perspective_data == position_perspective_central_data ) {
+	if( ScriptVar::position_perspective_data == ScriptVar::position_perspective_central_data ) {
 		polyxyz_perspective_self( &pxyz,		
-					  position_numeric.spectator_z);
+					  ScriptVar::position_numeric.spectator_z);
 	}
 	
 	polyxyz_norm_self( &pxyz );			

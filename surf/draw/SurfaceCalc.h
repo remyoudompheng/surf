@@ -113,7 +113,7 @@ protected:
 	double pixel_to_user_y (double y) {return wingeom.pixelToUserY(y);};
 	void packLights();
 	
-  	void main_factor_set() {wingeom.setSize(main_width_data, main_height_data);};
+  	void main_factor_set() {wingeom.setSize(ScriptVar::main_width_data, ScriptVar::main_height_data);};
 
 
 

@@ -43,8 +43,8 @@ int NewClipAlgebraic::clip_user_y( double uy )
 
 int NewClipAlgebraic::clip_user_xy( double ux,double uy,double &zmin,double &zmax )
 {
-    zmin = clip_numeric.clip_back;
-    zmax = clip_numeric.clip_front;
+    zmin = ScriptVar::clip_numeric.clip_back;
+    zmax = ScriptVar::clip_numeric.clip_front;
 
     for( int i=0; i<MAIN_CLIP_AMOUNT_NUM; i++ )
     {
@@ -77,26 +77,26 @@ void    NewClipAlgebraic::polyxyz_adjust( polyxyz *q )
 {
     for( int ind = 0; ind < POSITION_SEQUENCE_NUM; ind++ )
     {
-        switch( position_sequence_data[ind] ) {
+        switch( ScriptVar::position_sequence_data[ind] ) {
 	    case 0:
 	        polyxyz_shift_self ( q,	
-		        position_numeric.orig_x,
-		        position_numeric.orig_y,
-			position_numeric.orig_z);
+		        ScriptVar::position_numeric.orig_x,
+		        ScriptVar::position_numeric.orig_y,
+		        ScriptVar::position_numeric.orig_z);
 		break;
 			
 	    case 1:
 		polyxyz_rotate_self ( q,	   		
-			position_numeric.rot_x,
-			position_numeric.rot_y,
-			position_numeric.rot_z);
+			ScriptVar::position_numeric.rot_x,
+			ScriptVar::position_numeric.rot_y,
+			ScriptVar::position_numeric.rot_z);
 		break;
 			
 	    case 2:
 		polyxyz_scale_self ( q,
-			position_numeric.scale_x,
-			position_numeric.scale_y,
-			position_numeric.scale_z);
+			ScriptVar::position_numeric.scale_x,
+		        ScriptVar::position_numeric.scale_y,
+			ScriptVar::position_numeric.scale_z);
 		break;
 			
 	    default:
@@ -108,7 +108,7 @@ void    NewClipAlgebraic::polyxyz_adjust( polyxyz *q )
 	//  rotate/shift surface for 3D - picture
 	// --------------------------------------- 
 	
-	if( display_numeric.stereo_eye ) {
+	if( ScriptVar::display_numeric.stereo_eye ) {
 	    polyxyz_rotate_self( q,0.0, Y_AXIS_LR_ROTATE, 0.0 );
 	}
 	
@@ -116,8 +116,8 @@ void    NewClipAlgebraic::polyxyz_adjust( polyxyz *q )
 	//  adjust surface to perspective
 	// -------------------------------
 
-	if( position_perspective_data == position_perspective_central_data ) {
-	    polyxyz_perspective_self( q,position_numeric.spectator_z);
+	if( ScriptVar::position_perspective_data == ScriptVar::position_perspective_central_data ) {
+	    polyxyz_perspective_self( q,ScriptVar::position_numeric.spectator_z);
 	}
 	
 	polyxyz_norm_self( q );			

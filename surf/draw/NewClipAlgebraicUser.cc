@@ -35,9 +35,9 @@ void NewClipAlgebraicUser::init( void )
 {
     for( int i=0; i<MAIN_CLIP_AMOUNT_NUM; i++ )
     {
-        if( main_clip_pxyz_data[i].n > 0 )
+        if( ScriptVar::main_clip_pxyz_data[i].n > 0 )
 	{
-            p[i] = polyxyz_copy( &main_clip_pxyz_data[i] );
+	    p[i] = polyxyz_copy( &ScriptVar::main_clip_pxyz_data[i] );
 
             polyxyz_adjust( &p[i] );
 

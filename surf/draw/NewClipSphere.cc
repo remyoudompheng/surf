@@ -30,9 +30,9 @@
 
 void NewClipSphere::init()
 {
-	cx = clip_numeric.center_x;
-	cy = clip_numeric.center_y;
-	cz = clip_numeric.center_z;
-	r  = clip_numeric.radius;
+	cx = ScriptVar::clip_numeric.center_x;
+	cy = ScriptVar::clip_numeric.center_y;
+	cz = ScriptVar::clip_numeric.center_z;
+	r  = ScriptVar::clip_numeric.radius;
 	rsq = r*r;
 }

@@ -47,6 +47,9 @@
 #include "gui_config.h"
 #include "symtab.h"
 
+
+using namespace ScriptVar;
+
 double Y_AXIS_LR_ROTATE;
 double sym_cut_distance;
 

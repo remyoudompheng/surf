@@ -100,8 +100,8 @@ void SaveImageDialog::handle_okay()
 	}
 	case ImageFormats::dithered: {
 		fmt->saveDitheredImage(filename, *Script::getBitBuffer(),
-				       main_width_data, main_height_data,
-				       print_resolution_array_data[print_resolution_data],
+				       ScriptVar::main_width_data, ScriptVar::main_height_data,
+				       ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data],
 				       true);
 		break;
 	}

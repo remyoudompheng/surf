@@ -113,10 +113,10 @@ void  SurfaceCalc::surface_refine_pixel( int px_refine,int py_refine,
 	double  root_last_pixel[MAIN_SURFACE_AMOUNT_NUM][MAX_DEGREE];
 	int     root_last_pixel_n[MAIN_SURFACE_AMOUNT_NUM];	
 	
-	float refine_radius=display_ref_radius_data;     
+	float refine_radius=ScriptVar::display_ref_radius_data;     
 	
 	// sk3:get refine px_start & py_start & p_inc & stepwidth with jump, refine_radius
-	p_inc = ( refine_radius*jump )/display_ref_level_data;  
+	p_inc = ( refine_radius*jump )/ScriptVar::display_ref_level_data;  
 	px_start = px_refine - ((refine_radius/2.0)*jump) + 0.5*p_inc;  
 	py_start = py_refine - ((refine_radius/2.0)*jump) + 0.5*p_inc;  
 	stepwidth = fabs( pixel_to_user_x(px_start)-pixel_to_user_x (px_start + p_inc));
@@ -124,7 +124,7 @@ void  SurfaceCalc::surface_refine_pixel( int px_refine,int py_refine,
 	// --------------------------------------------------------------------
 	//  Cycle through all lines of the pixel 
 	// --------------------------------------------------------------------
-	for( py=py_start, py_count=0; py_count<display_ref_level_data && !Thread::shouldStop(); py_count++, py+=p_inc ) {
+	for( py=py_start, py_count=0; py_count<ScriptVar::display_ref_level_data && !Thread::shouldStop(); py_count++, py+=p_inc ) {
 
 		uy = pixel_to_user_y( py );
 		
@@ -146,7 +146,7 @@ void  SurfaceCalc::surface_refine_pixel( int px_refine,int py_refine,
 			//  Cycle through all points of a line 
 			// ----------------------------------------------------------------
 			for( px = px_start, px_count = 0;
-			     px_count < display_ref_level_data;
+			     px_count < ScriptVar::display_ref_level_data;
 			     px_count++, px += p_inc ) {
 				// -------------------------
 				//  Get screen x-coordinate
@@ -195,7 +195,7 @@ void  SurfaceCalc::surface_refine_pixel( int px_refine,int py_refine,
 									stepwidth,
 									pixel_tmp );
 
-						pixel_tmp *= antialiasing_factor(px_count, py_count, display_ref_level_data);	
+						pixel_tmp *= antialiasing_factor(px_count, py_count, ScriptVar::display_ref_level_data);	
 						
 						pixel_color_refine += pixel_tmp;
 						
@@ -205,9 +205,9 @@ void  SurfaceCalc::surface_refine_pixel( int px_refine,int py_refine,
 						// ---------------------------------
 						set_null_root_n(root_last_pixel_n);
 						
-						if( !color_do_background_data ) {
+						if( !ScriptVar::color_do_background_data ) {
 							pixel_tmp=backgr;
-							pixel_tmp *= antialiasing_factor(px_count, py_count, display_ref_level_data);
+							pixel_tmp *= antialiasing_factor(px_count, py_count, ScriptVar::display_ref_level_data);
 							pixel_color_refine += pixel_tmp;
 						}
 					}
@@ -217,9 +217,9 @@ void  SurfaceCalc::surface_refine_pixel( int px_refine,int py_refine,
 					// --------------------------
 					set_null_root_n(root_last_pixel_n);
 					
-					if ( !color_do_background_data ) {
+					if ( !ScriptVar::color_do_background_data ) {
 						pixel_tmp=backgr;
-						pixel_tmp *= antialiasing_factor(px_count, py_count, display_ref_level_data);
+						pixel_tmp *= antialiasing_factor(px_count, py_count, ScriptVar::display_ref_level_data);
 						pixel_color_refine+=pixel_tmp;
 					}
 					
@@ -231,12 +231,12 @@ void  SurfaceCalc::surface_refine_pixel( int px_refine,int py_refine,
 			// -------------------------------------
 			//  Invisible line is background, don't 
 			// -------------------------------------
-			if( !color_do_background_data ) {
+			if( !ScriptVar::color_do_background_data ) {
 				for( px=px_start, px_count=0;
-				     px_count<display_ref_level_data;
+				     px_count<ScriptVar::display_ref_level_data;
 				     px_count++, px += p_inc ) {
 					pixel_tmp=backgr;
-					pixel_tmp *= antialiasing_factor(px_count, py_count, display_ref_level_data);	  
+					pixel_tmp *= antialiasing_factor(px_count, py_count, ScriptVar::display_ref_level_data);	  
 					pixel_color_refine += pixel_tmp;
 				}
 			}
@@ -255,7 +255,7 @@ SurfaceCalc::SurfaceCalc()
  	cf = 10.0;
 	
 	// clipper = new Clipper();
-	clipper = NewClip::createSimpleClip (position_perspective_data, clip_data);
+	clipper = NewClip::createSimpleClip (ScriptVar::position_perspective_data, ScriptVar::clip_data);
 	clipper->init();
 
 	sf_ds.init();
@@ -270,30 +270,30 @@ inline int SurfaceCalc::needsRefining (const colorrgb &i1, const colorrgb &i2, c
 				       const colorrgb &i7, const colorrgb &i8, const colorrgb &i9)
 {
 	
-	return     fabs( i5.red  - i1.red  ) > display_ref_treshold_data 
-		|| fabs( i5.green- i1.green) > display_ref_treshold_data 
-		|| fabs( i5.blue - i1.blue ) > display_ref_treshold_data 
-		|| fabs( i5.red  - i2.red  ) > display_ref_treshold_data 
-		|| fabs( i5.green- i2.green) > display_ref_treshold_data 
-		|| fabs( i5.blue - i2.blue ) > display_ref_treshold_data 
-		|| fabs( i5.red  - i3.red  ) > display_ref_treshold_data 
-		|| fabs( i5.green- i3.green) > display_ref_treshold_data 
-		|| fabs( i5.blue - i3.blue ) > display_ref_treshold_data 
-		|| fabs( i5.red  - i4.red  ) > display_ref_treshold_data 
-		|| fabs( i5.green- i4.green) > display_ref_treshold_data 
-		|| fabs( i5.blue - i4.blue ) > display_ref_treshold_data 
-		|| fabs( i5.red  - i6.red  ) > display_ref_treshold_data 
-		|| fabs( i5.green- i6.green) > display_ref_treshold_data 
-		|| fabs( i5.blue - i6.blue ) > display_ref_treshold_data 
-		|| fabs( i5.red  - i7.red  ) > display_ref_treshold_data 
-		|| fabs( i5.green- i7.green) > display_ref_treshold_data 
-		|| fabs( i5.blue - i7.blue ) > display_ref_treshold_data 
-		|| fabs( i5.red  - i8.red  ) > display_ref_treshold_data 
-		|| fabs( i5.green- i8.green) > display_ref_treshold_data 
-		|| fabs( i5.blue - i8.blue ) > display_ref_treshold_data 
-		|| fabs( i5.red  - i9.red  ) > display_ref_treshold_data 
-		|| fabs( i5.green- i9.green) > display_ref_treshold_data 
-		|| fabs( i5.blue - i9.blue ) > display_ref_treshold_data;
+	return     fabs( i5.red  - i1.red  ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.green- i1.green) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.blue - i1.blue ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.red  - i2.red  ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.green- i2.green) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.blue - i2.blue ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.red  - i3.red  ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.green- i3.green) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.blue - i3.blue ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.red  - i4.red  ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.green- i4.green) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.blue - i4.blue ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.red  - i6.red  ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.green- i6.green) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.blue - i6.blue ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.red  - i7.red  ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.green- i7.green) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.blue - i7.blue ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.red  - i8.red  ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.green- i8.green) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.blue - i8.blue ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.red  - i9.red  ) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.green- i9.green) > ScriptVar::display_ref_treshold_data 
+		|| fabs( i5.blue - i9.blue ) > ScriptVar::display_ref_treshold_data;
 }
 
 
@@ -456,7 +456,7 @@ void    SurfaceCalc::surface_calculate( int xmin, int ymin, int xmax, int ymax,
 									// -----------------------------------------
 									set_null_root_n(root_last_pixel_n);
 									
-									if( !color_do_background_data ) {
+									if( !ScriptVar::color_do_background_data ) {
 										pixel_color=backgr;
 										
 										surface_set_pixel( px, py, pixel_color);
@@ -477,7 +477,7 @@ void    SurfaceCalc::surface_calculate( int xmin, int ymin, int xmax, int ymax,
 							// --------------------------
 							set_null_root_n(root_last_pixel_n);
 							
-							if( !color_do_background_data ) {
+							if( !ScriptVar::color_do_background_data ) {
 								pixel_color=backgr;
 								
 								surface_set_pixel( px, py, pixel_color );
@@ -494,7 +494,7 @@ void    SurfaceCalc::surface_calculate( int xmin, int ymin, int xmax, int ymax,
 					//  invisible line is background, 
 					// -----------------------------------------
 					
-					if ( !color_do_background_data )  {
+					if ( !ScriptVar::color_do_background_data )  {
 						for( px = xmin+halfjump; px<xmax; px=px+jump ) {
 							pixel_color = backgr;
 							
@@ -523,7 +523,7 @@ void    SurfaceCalc::surface_calculate( int xmin, int ymin, int xmax, int ymax,
 		}
 	}
 	
-	if( display_normalize_data == 1 ) {
+	if( ScriptVar::display_normalize_data == 1 ) {
 		// ---------------------------
 		//  suggest a normalize value 
 		// ---------------------------
@@ -539,7 +539,7 @@ void    SurfaceCalc::surface_calculate( int xmin, int ymin, int xmax, int ymax,
 	int   refine_count = 0;
 	
 
-	if( display_ref_level_data>1 ) {
+	if ( ScriptVar::display_ref_level_data>1 ) {
                 int parity;
 		colorrgb  i1,i2,i3,i4,i5,i6,i7,i8,i9;  		
 		Thread::setDoing ("antialiasing...");
@@ -597,8 +597,8 @@ void    SurfaceCalc::surface_calculate( int xmin, int ymin, int xmax, int ymax,
 			}
 
 			if (vdisplay)
-				vdisplay->displayRectangle(0, py-halfjump, main_width_data, jump);
-			Thread::setDone (((double)py)/((double)main_height_data));
+				vdisplay->displayRectangle(0, py-halfjump, ScriptVar::main_width_data, jump);
+			Thread::setDone (((double)py)/((double)ScriptVar::main_height_data));
 		}
 	}
 }
@@ -626,8 +626,8 @@ void  SurfaceCalc::color_of_single_point_old( Vector &P, Vector &N, colorrgb &I,
 	//  choose gradient outside, inside or both
 	// -----------------------------------------
 	
-	if( ( obj_color == color_gradient_data - 1 &&
-	      color_gradient_data ) || color_gradient_data==3 ) {
+	if( ( obj_color == ScriptVar::color_gradient_data - 1 &&
+	      ScriptVar::color_gradient_data ) || ScriptVar::color_gradient_data==3 ) {
 		fadecol = ( P.z - cm )/cd + 0.5;
 		fadecol = max( fadecol,0.0 );
 		fadecol = min( fadecol,1.0 );
@@ -698,8 +698,8 @@ void  SurfaceCalc::color_of_single_point_old( Vector &P, Vector &N, colorrgb &I,
 		//  depth cueing
 		// --------------
 
-		if( !display_depth_cue_data ) {
-			fade = 1.3*( P.z - display_depth_value_data )/cd;
+		if( !ScriptVar::display_depth_cue_data ) {
+			fade = 1.3*( P.z - ScriptVar::display_depth_value_data )/cd;
 			fade = max( fade,0.0 );
 			fade = min( fade,1.0 );
 			
@@ -730,8 +730,8 @@ void  SurfaceCalc::color_of_single_point( Vector &P, Vector &N, colorrgb &I, int
 	// --------------
         float  fade = 1.0;
 
-	if( !display_depth_cue_data ) {
-	        fade = 1.3*( P.z - display_depth_value_data )/( cf - cb );
+	if( !ScriptVar::display_depth_cue_data ) {
+	        fade = 1.3*( P.z - ScriptVar::display_depth_value_data )/( cf - cb );
 
                 if( fade <= 0.0 ) {
  			I.setBlack( );
@@ -831,7 +831,7 @@ void SurfaceCalc::illumination_of_surface( double wx,double wy,
 
 
     
-	register  float   norm_it = display_max_i_data;
+	register  float   norm_it = ScriptVar::display_max_i_data;
 	double    transfak,solidfak;
 
 	transmission = 1.0;
@@ -911,9 +911,9 @@ void SurfaceCalc::illumination_of_surface( double wx,double wy,
                 //  surface transparence
                 transparence = ( flag_transmitted ? sf_ds.surfaces[best_i].transp : 0.0 );
 
-		if( light_settings[best_i].thickness > 0 ) {
+		if( ScriptVar::light_settings[best_i].thickness > 0 ) {
 		        if( N.z > 0 ) {
-				double tmp = light_settings[best_i].thickness/(30.0*N.z);
+				double tmp = ScriptVar::light_settings[best_i].thickness/(30.0*N.z);
 			     	transfak = pow( transparence,min( tmp,4.0 ) );
 			} else {
 				transfak = pow( transparence,4.0 );
@@ -973,7 +973,7 @@ void SurfaceCalc::illumination_of_surface( double wx,double wy,
 
 	} while( root_count < sf_ds.root_n_all && flag_transmitted && transmission>0.0 );
 
-	if( flag_transmitted && !color_do_background_data && transmission>0.0 ) {
+	if( flag_transmitted && !ScriptVar::color_do_background_data && transmission>0.0 ) {
 		tmpcolor     =  backgr;
 		tmpcolor     *= transmission;
 		color_intens += tmpcolor;
@@ -982,7 +982,7 @@ void SurfaceCalc::illumination_of_surface( double wx,double wy,
 	// ---------------------
 	//  normalize intensity
 	// ---------------------
-	if( display_normalize_data == 0 ) { 
+	if( ScriptVar::display_normalize_data == 0 ) { 
 		color_intens *= norm_it;
 	}
 
@@ -1048,9 +1048,9 @@ void SurfaceCalc::CalculateCurveOnSurface( int xmin, int ymin, int xmax, int yma
 	int     root_last_pixel_n[MAIN_SURFACE_AMOUNT_NUM+1];
 
         double  tmp;
-        float   distf = display_numeric.stereo_z*display_numeric.stereo_eye/
-			position_numeric.spectator_z;
-	int     dist  = (int)(distf*((float)(min(main_width_data,main_height_data)))/20.0);
+        float   distf = ScriptVar::display_numeric.stereo_z*ScriptVar::display_numeric.stereo_eye/
+			ScriptVar::position_numeric.spectator_z;
+	int     dist  = (int)(distf*((float)(min(ScriptVar::main_width_data,ScriptVar::main_height_data)))/20.0);
         int     pxdist;
 
 	initVars();
@@ -1060,8 +1060,8 @@ void SurfaceCalc::CalculateCurveOnSurface( int xmin, int ymin, int xmax, int yma
 	i = MAIN_SURFACE_AMOUNT_NUM;
 	// Does this make sense ??? FIXME
 	// sk: get thickness of all surfaces
-	thickness    =          light_settings[i].thickness;  
-	thickness    = (thickness) ?  LIGHT_SETTINGS_SECOND_MAX_VALUE[LIGHT_THICKNESS]+1 - thickness  : 0; 
+	thickness    =  ScriptVar::light_settings[i].thickness;  
+	thickness    = (thickness) ?  ScriptVar::LIGHT_SETTINGS_SECOND_MAX_VALUE[LIGHT_THICKNESS]+1 - thickness  : 0; 
       
 	//intensity.DelTag(0,0,ALREADYDITHERED);
 
@@ -1160,7 +1160,7 @@ void SurfaceCalc::CalculateCurveOnSurface( int xmin, int ymin, int xmax, int yma
                         
                                                 double lambda = (double)intensity.GetLayerTwo(px,py)/255.0;
 
-                                                if( !display_numeric.stereo_eye )
+                                                if( !ScriptVar::display_numeric.stereo_eye )
 						{
                                                         pixel_color *= lambda;
                                                         intensity.GetPixelColor( px,py,pixel_old );
@@ -1189,9 +1189,9 @@ void SurfaceCalc::CalculateCurveOnSurface( int xmin, int ymin, int xmax, int yma
                                                                 tmp               = pixel_color.getBW( )*lambda;
                                                                 pixel_color.red   = intensity.GetPixelColorR( pxdist,py );
                                                                 pixel_color.green = pixel_old.green*( 1.0 -lambda ) +
-                                                                                    tmp*display_numeric.stereo_green;
+                                                                                    tmp*ScriptVar::display_numeric.stereo_green;
                                                                 pixel_color.blue  = pixel_old.blue*( 1.0 -lambda ) +
-                                                                                    tmp*display_numeric.stereo_blue;
+                                                                                    tmp*ScriptVar::display_numeric.stereo_blue;
 
                                                                 surface_set_pixel      (pxdist, py, pixel_color);
 							        intensity.SetPixelColor(pxdist, py, pixel_color);
@@ -1207,7 +1207,7 @@ void SurfaceCalc::CalculateCurveOnSurface( int xmin, int ymin, int xmax, int yma
                                                                 intensity.GetPixelColor( pxdist,py,pixel_old );
 
                                                                 pixel_color.red   = pixel_color.getBW( )*lambda
-                                                                                    *display_numeric.stereo_red +
+									            *ScriptVar::display_numeric.stereo_red +
                                                                                     pixel_old.red*(1.0 -lambda );
                                                                 pixel_color.green = intensity.GetPixelColorG( pxdist,py );
                                                                 pixel_color.blue  = intensity.GetPixelColorB( pxdist,py );
@@ -1283,7 +1283,7 @@ void SurfaceCalc::initVars( )
 	// --------------------
 	POS.x = 0.0;
 	POS.y = 0.0;
-	POS.z = position_numeric.spectator_z;
+	POS.z = ScriptVar::position_numeric.spectator_z;
 	
 	// ---------------
 	//  light sources
@@ -1292,21 +1292,21 @@ void SurfaceCalc::initVars( )
 
 	for( i=0; i<LIGHT_SOURCE_MAX_VALUE; i++ ) {
 		//  position
-		LPOS[i].x = light_data[i].position[LIGHT_POSITION_X];
-		LPOS[i].y = light_data[i].position[LIGHT_POSITION_Y];
-		LPOS[i].z = light_data[i].position[LIGHT_POSITION_Z];
+		LPOS[i].x = ScriptVar::light_data[i].position[LIGHT_POSITION_X];
+		LPOS[i].y = ScriptVar::light_data[i].position[LIGHT_POSITION_Y];
+		LPOS[i].z = ScriptVar::light_data[i].position[LIGHT_POSITION_Z];
 		
 		
-		if( display_numeric.stereo_eye ) {
+		if( ScriptVar::display_numeric.stereo_eye ) {
 			//  change position for 3D image
 			LPOS[i].x = cos(Y_AXIS_LR_ROTATE)*LPOS[i].x - sin(Y_AXIS_LR_ROTATE)*LPOS[i].z;
 			LPOS[i].z = sin(Y_AXIS_LR_ROTATE)*LPOS[i].x + cos(Y_AXIS_LR_ROTATE)*LPOS[i].z;
 		}
 
  		//  color
- 		licht[i].red   = light_data[i].getColorValue( 0 );
- 		licht[i].green = light_data[i].getColorValue( 1 );
- 		licht[i].blue  = light_data[i].getColorValue( 2 );
+ 		licht[i].red   = ScriptVar::light_data[i].getColorValue( 0 );
+ 		licht[i].green = ScriptVar::light_data[i].getColorValue( 1 );
+ 		licht[i].blue  = ScriptVar::light_data[i].getColorValue( 2 );
 	}
 	
 	packLights( ); 
@@ -1314,23 +1314,23 @@ void SurfaceCalc::initVars( )
 	// ------------------------
 	//  illumiation components
 	// ------------------------
-	flag_ambient      = light_illumination_data & light_illumination_ambient_data;
-	flag_diffuse      = light_illumination_data & light_illumination_diffuse_data;
-	flag_reflected    = light_illumination_data & light_illumination_reflected_data;
-	flag_transmitted  = light_illumination_data & light_illumination_transmitted_data;
+	flag_ambient      = ScriptVar::light_illumination_data & ScriptVar::light_illumination_ambient_data;
+	flag_diffuse      = ScriptVar::light_illumination_data & ScriptVar::light_illumination_diffuse_data;
+	flag_reflected    = ScriptVar::light_illumination_data & ScriptVar::light_illumination_reflected_data;
+	flag_transmitted  = ScriptVar::light_illumination_data & ScriptVar::light_illumination_transmitted_data;
 	
 	numeric_multi_root = flag_transmitted;
 	
-	part_A=((float)light_settings[0].ambient)/100.0;
+	part_A=((float)ScriptVar::light_settings[0].ambient)/100.0;
 		
 	// fade color
-	tocolor[RED]   =(((double)color_gradient_end_data[RED]  )/255.0)*part_A;
-	tocolor[GREEN] =(((double)color_gradient_end_data[GREEN])/255.0)*part_A;
-	tocolor[BLUE]  =(((double)color_gradient_end_data[BLUE] )/255.0)*part_A;
+	tocolor[RED]   =(((double)ScriptVar::color_gradient_end_data[RED]  )/255.0)*part_A;
+	tocolor[GREEN] =(((double)ScriptVar::color_gradient_end_data[GREEN])/255.0)*part_A;
+	tocolor[BLUE]  =(((double)ScriptVar::color_gradient_end_data[BLUE] )/255.0)*part_A;
 	
 	//  set background color     
-	backgr.set( color_background_data[RED]  /255.0,
-		    color_background_data[GREEN]/255.0,
-		    color_background_data[BLUE] /255.0 );
+	backgr.set( ScriptVar::color_background_data[RED]  /255.0,
+		    ScriptVar::color_background_data[GREEN]/255.0,
+		    ScriptVar::color_background_data[BLUE] /255.0 );
 }
 

@@ -274,7 +274,7 @@ void NavigationWindow::zInc()
 void NavigationWindow::xRotSpin()
 {
 	if(shown && !rotationUpdating) {
-		position_numeric.rot_x = ((GtkAdjustment*)xRotSpinAdj)->value;
+		ScriptVar::position_numeric.rot_x = ((GtkAdjustment*)xRotSpinAdj)->value;
 		mwc->drawSurfaceWithParams();
 	}
 }
@@ -282,7 +282,7 @@ void NavigationWindow::xRotSpin()
 void NavigationWindow::yRotSpin()
 {
 	if(shown && !rotationUpdating) {
-		position_numeric.rot_y = ((GtkAdjustment*)yRotSpinAdj)->value;
+		ScriptVar::position_numeric.rot_y = ((GtkAdjustment*)yRotSpinAdj)->value;
 		mwc->drawSurfaceWithParams();
 	}
 }
@@ -290,7 +290,7 @@ void NavigationWindow::yRotSpin()
 void NavigationWindow::zRotSpin()
 {
 	if(shown && !rotationUpdating) {
-		position_numeric.rot_z = ((GtkAdjustment*)zRotSpinAdj)->value;
+		ScriptVar::position_numeric.rot_z = ((GtkAdjustment*)zRotSpinAdj)->value;
 		mwc->drawSurfaceWithParams();
 	}
 }
@@ -328,20 +328,20 @@ void NavigationWindow::rotateZ(double rad)
 
 void NavigationWindow::rotationReset()
 {
-	position_numeric.rot_x = position_numeric.rot_y =
-		position_numeric.rot_z = 0;
+	ScriptVar::position_numeric.rot_x = ScriptVar::position_numeric.rot_y =
+		ScriptVar::position_numeric.rot_z = 0;
 	updateAngles();
 	mwc->drawSurfaceWithParams();
 }
 
 inline const Matrix33 NavigationWindow::getRotMat()
 {
-	double cosx = std::cos(position_numeric.rot_x);
-	double sinx = std::sin(position_numeric.rot_x);
-	double cosy = std::cos(position_numeric.rot_y);
-	double siny = std::sin(position_numeric.rot_y);
-	double cosz = std::cos(position_numeric.rot_z);
-	double sinz = std::sin(position_numeric.rot_z);
+	double cosx = std::cos(ScriptVar::position_numeric.rot_x);
+	double sinx = std::sin(ScriptVar::position_numeric.rot_x);
+	double cosy = std::cos(ScriptVar::position_numeric.rot_y);
+	double siny = std::sin(ScriptVar::position_numeric.rot_y);
+	double cosz = std::cos(ScriptVar::position_numeric.rot_z);
+	double sinz = std::sin(ScriptVar::position_numeric.rot_z);
 	double origRotArr[] = {
 		cosy*cosz + sinx*siny*sinz, cosx*sinz, -cosz*siny+cosy*sinx*sinz,
 		-cosy*sinz + cosz*sinx*siny, cosx*cosz, siny*sinz + cosy*cosz*sinx,
@@ -380,9 +380,9 @@ void NavigationWindow::rotate(Matrix33 add)
 	if(cos_z > 1) cos_z = 1;
 	else if(cos_z < -1) cos_z = -1;
 
-	position_numeric.rot_x = std::atan2(sin_x, cos_x);
-	position_numeric.rot_y = std::atan2(sin_y, cos_y);
-	position_numeric.rot_z = std::atan2(sin_z, cos_z);
+	ScriptVar::position_numeric.rot_x = std::atan2(sin_x, cos_x);
+	ScriptVar::position_numeric.rot_y = std::atan2(sin_y, cos_y);
+	ScriptVar::position_numeric.rot_z = std::atan2(sin_z, cos_z);
 
 	mwc->drawSurfaceWithParams();
 
@@ -392,9 +392,9 @@ void NavigationWindow::rotate(Matrix33 add)
 void NavigationWindow::updateAngles()
 {
 	rotationUpdating = true;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(xRotSpinAdj), position_numeric.rot_x);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(yRotSpinAdj), position_numeric.rot_y);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(zRotSpinAdj), position_numeric.rot_z);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(xRotSpinAdj), ScriptVar::position_numeric.rot_x);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(yRotSpinAdj), ScriptVar::position_numeric.rot_y);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(zRotSpinAdj), ScriptVar::position_numeric.rot_z);
 	rotationUpdating = false;
 }
 
@@ -408,15 +408,15 @@ void NavigationWindow::xScale()
 	double value = ((GtkAdjustment*)xScaleAdj)->value;
 	
 	if(GTK_TOGGLE_BUTTON(maintAspectRatio)->active) {
-		double ratioyx = position_numeric.scale_y / position_numeric.scale_x;
-		double ratiozx = position_numeric.scale_z / position_numeric.scale_x;
+		double ratioyx = ScriptVar::position_numeric.scale_y / ScriptVar::position_numeric.scale_x;
+		double ratiozx = ScriptVar::position_numeric.scale_z / ScriptVar::position_numeric.scale_x;
 		
-		position_numeric.scale_y = ratioyx * value;
-		position_numeric.scale_z = ratiozx * value;
-		position_numeric.scale_x = value;
+		ScriptVar::position_numeric.scale_y = ratioyx * value;
+		ScriptVar::position_numeric.scale_z = ratiozx * value;
+		ScriptVar::position_numeric.scale_x = value;
 		updateScales();
 	} else {
-		position_numeric.scale_x = value;
+		ScriptVar::position_numeric.scale_x = value;
 	}
 	mwc->drawSurfaceWithParams();
 }
@@ -430,15 +430,15 @@ void NavigationWindow::yScale()
 	double value = ((GtkAdjustment*)yScaleAdj)->value;
 	
 	if(GTK_TOGGLE_BUTTON(maintAspectRatio)->active) {
-		double ratioxy = position_numeric.scale_x / position_numeric.scale_y;
-		double ratiozy = position_numeric.scale_z / position_numeric.scale_y;
+		double ratioxy = ScriptVar::position_numeric.scale_x / ScriptVar::position_numeric.scale_y;
+		double ratiozy = ScriptVar::position_numeric.scale_z / ScriptVar::position_numeric.scale_y;
 		
-		position_numeric.scale_x = ratioxy * value;
-		position_numeric.scale_z = ratiozy * value;
-		position_numeric.scale_y = value;
+		ScriptVar::position_numeric.scale_x = ratioxy * value;
+		ScriptVar::position_numeric.scale_z = ratiozy * value;
+		ScriptVar::position_numeric.scale_y = value;
 		updateScales();
 	} else {
-		position_numeric.scale_y = value;
+		ScriptVar::position_numeric.scale_y = value;
 	}
 	mwc->drawSurfaceWithParams();
 }
@@ -452,23 +452,23 @@ void NavigationWindow::zScale()
 	double value = ((GtkAdjustment*)zScaleAdj)->value;
 	
 	if(GTK_TOGGLE_BUTTON(maintAspectRatio)->active) {
-		double ratioxz = position_numeric.scale_x / position_numeric.scale_z;
-		double ratioyz = position_numeric.scale_y / position_numeric.scale_z;
+		double ratioxz = ScriptVar::position_numeric.scale_x / ScriptVar::position_numeric.scale_z;
+		double ratioyz = ScriptVar::position_numeric.scale_y / ScriptVar::position_numeric.scale_z;
 		
-		position_numeric.scale_x = ratioxz * value;
-		position_numeric.scale_y = ratioyz * value;
-		position_numeric.scale_z = value;
+		ScriptVar::position_numeric.scale_x = ratioxz * value;
+		ScriptVar::position_numeric.scale_y = ratioyz * value;
+		ScriptVar::position_numeric.scale_z = value;
 		updateScales();
 	} else {
-		position_numeric.scale_z = value;
+		ScriptVar::position_numeric.scale_z = value;
 	}
 	mwc->drawSurfaceWithParams();
 }
 
 void NavigationWindow::scaleReset()
 {
-	position_numeric.scale_x = position_numeric.scale_y =
-		position_numeric.scale_z = 1;
+	ScriptVar::position_numeric.scale_x = ScriptVar::position_numeric.scale_y =
+		ScriptVar::position_numeric.scale_z = 1;
 	updateScales();
 	mwc->drawSurfaceWithParams();
 }
@@ -476,9 +476,9 @@ void NavigationWindow::scaleReset()
 void NavigationWindow::updateScales()
 {
 	scaleUpdating = true;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(xScaleAdj), position_numeric.scale_x);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(yScaleAdj), position_numeric.scale_y);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(zScaleAdj), position_numeric.scale_z);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(xScaleAdj), ScriptVar::position_numeric.scale_x);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(yScaleAdj), ScriptVar::position_numeric.scale_y);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(zScaleAdj), ScriptVar::position_numeric.scale_z);
 	scaleUpdating = false;
 }
 
@@ -487,7 +487,7 @@ void NavigationWindow::xOrigin()
 	if(!shown || originUpdating) {
 		return;
 	}
-	position_numeric.orig_x = ((GtkAdjustment*)xOriginAdj)->value;
+	ScriptVar::position_numeric.orig_x = ((GtkAdjustment*)xOriginAdj)->value;
 	mwc->drawSurfaceWithParams();
 }
 
@@ -496,7 +496,7 @@ void NavigationWindow::yOrigin()
 	if(!shown || originUpdating) {
 		return;
 	}
-	position_numeric.orig_y = ((GtkAdjustment*)yOriginAdj)->value;
+	ScriptVar::position_numeric.orig_y = ((GtkAdjustment*)yOriginAdj)->value;
 	mwc->drawSurfaceWithParams();
 }
 
@@ -505,14 +505,14 @@ void NavigationWindow::zOrigin()
 	if(!shown || originUpdating) {
 		return;
 	}
-	position_numeric.orig_z = ((GtkAdjustment*)zOriginAdj)->value;
+	ScriptVar::position_numeric.orig_z = ((GtkAdjustment*)zOriginAdj)->value;
 	mwc->drawSurfaceWithParams();
 }
 
 void NavigationWindow::originReset()
 {
-	position_numeric.orig_x = position_numeric.orig_y =
-		position_numeric.orig_z = 0;
+	ScriptVar::position_numeric.orig_x = ScriptVar::position_numeric.orig_y =
+		ScriptVar::position_numeric.orig_z = 0;
 	updateOrigins();
 	mwc->drawSurfaceWithParams();
 }
@@ -520,8 +520,8 @@ void NavigationWindow::originReset()
 void NavigationWindow::updateOrigins()
 {
 	originUpdating = true;
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(xOriginAdj), position_numeric.orig_x);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(yOriginAdj), position_numeric.orig_y);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(zOriginAdj), position_numeric.orig_z);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(xOriginAdj), ScriptVar::position_numeric.orig_x);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(yOriginAdj), ScriptVar::position_numeric.orig_y);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(zOriginAdj), ScriptVar::position_numeric.orig_z);
 	originUpdating = false;
 }

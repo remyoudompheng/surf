@@ -40,7 +40,88 @@
 #include "polyyacc.h"
 
 
+// Don' declare the structs in namespace ScriptVar...
+struct color_slider_t
+{
+	int red;
+	int green;
+	int blue;
+	int inside_red;
+	int inside_green;
+	int inside_blue;
+};
+
+
+struct light_settings_t
+{
+	int ambient;
+	int diffuse;
+	int reflected;
+	int transmitted;
+	
+	int smoothness;
+	int transparence;
+	int thickness;
+};
+
+struct light_data_t 
+{
+	int volume;
+	int color[3];
+	double position[3];
+	
+	double getColorValue (int c)
+		{ return volume*color[c] / 25500.0;}
+};
+
+struct position_numeric_t
+{
+	double spectator_z;
+	
+	double rot_x;
+	double rot_y;
+	double rot_z;
+	
+	double scale_x;
+	double scale_y;
+	double scale_z;
+	
+	double orig_x;
+	double orig_y;
+	double orig_z;
+};
+
+struct display_numeric_t 
+{
+	double stereo_eye;
+	double stereo_z;
+	double stereo_red;
+	double stereo_green;
+	double stereo_blue;
+};
+
+
+
+struct clip_numeric_t
+{
+	double clip_front;
+	double clip_back;
+	double radius;
+	double center_x;
+	double center_y;
+	double center_z;
+};
+	
+// used in polyyacc.y...can't move this to namespace ScriptVar
 extern  int     surface_run_commands;  //  Decides wether yacced commands are executed
+
+
+namespace ScriptVar 
+{
+	
+
+
+
 extern  char    *surface_filename_data;
 
 
@@ -59,15 +140,6 @@ extern  polyxyz main_clip_pxyz_data[MAIN_CLIP_AMOUNT_NUM];
 extern  int     main_width_data;
 extern  int     main_height_data;
 
-struct color_slider_t
-{
-	int red;
-	int green;
-	int blue;
-	int inside_red;
-	int inside_green;
-	int inside_blue;
-};
 
 extern color_slider_t color_slider[MAIN_SURFACE_AMOUNT_NUM];
 
@@ -106,28 +178,9 @@ extern  int     light_illumination_transmitted_data;
 
 extern  int     LIGHT_SETTINGS_SECOND_MAX_VALUE [LIGHT_SETTINGS_SECOND_NUM];
 
-struct light_settings_t
-{
-	int ambient;
-	int diffuse;
-	int reflected;
-	int transmitted;
-	
-	int smoothness;
-	int transparence;
-	int thickness;
-};
 
 extern light_settings_t light_settings[MAIN_SURFACE_AMOUNT_NUM];
 
-struct light_data_t {
-	int volume;
-	int color[3];
-	double position[3];
-	
-	double getColorValue (int c)
-		{ return volume*color[c] / 25500.0;}
-};
 
 extern light_data_t light_data [LIGHT_SOURCE_MAX_VALUE];
 
@@ -242,22 +295,6 @@ extern  int     print_p_radius_data;
 // Spectator and rotation and scaling
 // ----------------------------------
 
-struct position_numeric_t
-{
-	double spectator_z;
-	
-	double rot_x;
-	double rot_y;
-	double rot_z;
-	
-	double scale_x;
-	double scale_y;
-	double scale_z;
-	
-	double orig_x;
-	double orig_y;
-	double orig_z;
-};
 
 extern position_numeric_t position_numeric;
  
@@ -358,14 +395,6 @@ extern  double  display_depth_value_data;
 // 3D-Display
 // ----------
 
-struct display_numeric_t 
-{
-	double stereo_eye;
-	double stereo_z;
-	double stereo_red;
-	double stereo_green;
-	double stereo_blue;
-};
 
 extern display_numeric_t display_numeric;
 
@@ -402,16 +431,6 @@ extern  int     clip_icosahedron_data;
 extern  int     clip_cylinder_data;
 extern  int     clip_user_data;
 extern  int     clip_none_data;
-
-struct clip_numeric_t
-{
-	double clip_front;
-	double clip_back;
-	double radius;
-	double center_x;
-	double center_y;
-	double center_z;
-};
 
 extern clip_numeric_t clip_numeric;
 
@@ -457,6 +476,7 @@ extern  int     curve_color_slider_data[CURVE_COLOR_SLIDER_NUM];
 // -------------
 
 extern int     curve_surface_nr_data;
-
+ 
+}
 
 #endif 
