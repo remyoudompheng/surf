@@ -224,19 +224,10 @@ void Triangulator::vertex_func(GtsVertex* v)
 
 void Triangulator::face_func(GtsFace* f)
 {
-	GtsTriangle& t = f->triangle;
-	GtsSegment& s1 = t.e1->segment;
-	GtsSegment& s2 = t.e2->segment;
-
-	GtsVertex* v1 = s1.v1;
-	GtsVertex* v2 = s1.v2;
+	GtsVertex* v1;
+	GtsVertex* v2;
 	GtsVertex* v3;
-	if(s2.v1 != s1.v1 && s2.v1 != s1.v2) {
-		v3 = s2.v1;
-	} else {
-		v3 = s2.v2;
-	}
-
+	gts_triangle_vertices(&f->triangle, &v1, &v2, &v3);
 	std::cout << vertex_map[v1] << ' '
 		  << vertex_map[v2] << ' '
 		  << vertex_map[v3] << '\n';
