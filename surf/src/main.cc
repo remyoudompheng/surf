@@ -40,7 +40,10 @@
 #include "compfn.h"
 
 #ifndef NO_GUI
-char usage_text[] = "Usage: surf [GTK-OPTIONS]... [OPTIONS]... [FILE]...\n\n"
+char usage_text[] = "Usage: surf -n | --nogui FILE...\n"
+                    "       surf [GTK-OPTIONS] [-x | --exec] [FILE]...\n"
+                    "       surf --help\n"
+                    "\n"
 		    "-n, --no-gui  disable GUI, execute all scripts passed as FILEs\n"
 		    "-x, --exec    when running with GUI, execute first script immediately\n"
                     "    --help    display this help and exit\n\n";
@@ -73,33 +76,44 @@ int main (int argc, char** argv)
 	int fileopts = 1;
 
 #ifndef NO_GUI
-	gtk_init(&argc, &argv);
-
 	bool nogui = false;
-	int i;
-	for (i = 1; i < argc; ++i) {
-		if (argv[i][0] != '-') {
-			break;
-		}
+
+	if (argc > 1 &&
+	    (strcmp(argv[1], "-n") == 0 || strcmp(argv[1], "--no-gui") == 0)) {
+		nogui = true;
+		fileopts = 2;
+	} else {
+		nogui = false;
 		
-		++fileopts;
+		gtk_init(&argc, &argv);
 		
-		if (strcmp(argv[i], "-n") == 0 ||
-		    strcmp(argv[i], "--no-gui") == 0) {
-			nogui = true;
-		} else if (strcmp(argv[i], "-x") == 0 ||
-			   strcmp(argv[i], "--exec") == 0) {
-			execute = true;
-		} else if (strcmp(argv[i], "--help") == 0) {
-			std::cerr << usage_text;
-			exit(0);
-		} else {
-			std::cerr << "Error: unknown option \'" << argv[i] << "\'\n\n"
-				  << usage_text;
-			exit(1);
+		int i;
+		for (i = 1; i < argc; ++i) {
+			if (argv[i][0] != '-') {
+				break;
+			}
+			
+			++fileopts;
+			
+			if (strcmp(argv[i], "-x") == 0 ||
+			    strcmp(argv[i], "--exec") == 0) {
+				execute = true;
+			} else if (strcmp(argv[i], "--help") == 0) {
+				std::cerr << usage_text;
+				exit(0);
+			} else if (strcmp(argv[i], "-n") == 0 ||
+				   strcmp(argv[i], "--no-gui") == 0) {
+				std::cerr << "Error: \'" << argv[i] << "\' must be the only option\n\n"
+					  << usage_text;
+				exit(1);
+			} else {
+				std::cerr << "Error: unknown option \'" << argv[i] << "\'\n\n"
+					  << usage_text;
+				exit(1);
+			}
 		}
+		fileopts = i;
 	}
-	fileopts = i;
 #else
 	bool nogui = true;
 #endif
