@@ -166,7 +166,7 @@ bool tiffprint (bit_buffer &pixel, const char *tiffilename,
 		TIFFWriteScanline( tif,scanline,py,0 );
 	}
 
-	delete scanline;
+	delete [] scanline;
 	TIFFWriteDirectory( tif );
 	TIFFClose( tif );
 
