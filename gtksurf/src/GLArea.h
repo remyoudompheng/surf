@@ -30,13 +30,6 @@
 
 #include<fstream>
 
-#undef MENUCB
-#define MENUCB(name) \
-        void on_##name##_activate();\
-        static void _on_##name##_activate(GtkWidget*, GladeWindow* This) {\
-                static_cast<GLArea*>(This)->on_##name##_activate();\
-        }
-
 class NavigationWindow;
 class ScriptWindow;
 
@@ -67,6 +60,18 @@ public:
 	}
 	
 	void read_data();
+
+	void toggle_cross() {
+		showCross = !showCross;
+	}
+	void toggle_wireframe() {
+		wireframe = !wireframe;
+	}
+	void set_perspective(bool cp) {
+		centralPerspective = cp;
+		reshape(width, height);
+	}
+
 
 private:
 	void init(GLsizei width, GLsizei height);
@@ -105,7 +110,6 @@ private:
 	GLfloat pi;
 	
 	GtkWidget* glarea;
-	GtkWidget* popupmenu;
 
 	guint motion_conn_id;
 	bool dragging;
@@ -149,22 +153,21 @@ private:
 	static gint _configure_event(GtkWidget* widget, GdkEventConfigure* event, GLArea* _this) {
 		return _this->configure_event(event);
 	}
-	gint button_press_event(GdkEventButton* event);
+	void button_press_event(GdkEventButton* event);
 	static gint _button_press_event(GtkWidget* widget, GdkEventButton* event, GLArea* _this) {
-		return _this->button_press_event(event);
+		_this->button_press_event(event);
+		return true;
 	}
-	gint button_release_event(GdkEventButton* event);
+	void button_release_event(GdkEventButton* event);
 	static gint _button_release_event(GtkWidget* widget, GdkEventButton* event, GLArea* _this) {
-		return _this->button_release_event(event);
+		_this->button_release_event(event);
+		return true;
 	}
-	gint motion_notify_event(GdkEventMotion* event);
+	void motion_notify_event(GdkEventMotion* event);
 	static gint _motion_notify_event(GtkWidget* widget, GdkEventMotion* event, GLArea* _this) {
-		return _this->motion_notify_event(event);
+		_this->motion_notify_event(event);
+		return true;
 	}
-
-	MENUCB(togglecross);
-	MENUCB(togglewireframe);
-	MENUCB(perspective);
 };
 
 #endif //!GLAREA_H

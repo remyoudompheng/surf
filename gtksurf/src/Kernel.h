@@ -99,6 +99,9 @@ public:
 	std::list<std::string>& get_dither_image_formats() {
 		return dither_image_formats;
 	}
+	std::list<std::string>& get_three_d_image_formats() {
+		return three_d_image_formats;
+	}
 
 	void update_position();
 	void get_orig(double& x, double& y, double& z) const {
@@ -143,6 +146,7 @@ private:
 
 	std::list<std::string> color_image_formats;
 	std::list<std::string> dither_image_formats;
+	std::list<std::string> three_d_image_formats;
 
 	double orig_x;
 	double orig_y;

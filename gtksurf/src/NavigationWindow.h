@@ -29,6 +29,13 @@
 		static_cast<NavigationWindow*>(This)->on_##name##_changed(adj->value);\
 	}
 
+#undef MENUCB
+#define MENUCB(name) \
+        void on_##name##_activate();\
+        static void _on_##name##_activate(GtkWidget*, GladeWindow* This) {\
+                static_cast<NavigationWindow*>(This)->on_##name##_activate();\
+        }
+
 class ScriptWindow;
 
 class NavigationWindow : public GladeWindow {
@@ -43,6 +50,8 @@ public:
 	void set_scale(gfloat x, gfloat y, gfloat z);
 	void set_rot(gfloat x, gfloat y, gfloat z);
 
+	void on_button_press_event(GdkEventButton* event = 0);
+	
 private:
 	Glade& glade;
 	Kernel& kernel;
@@ -79,15 +88,11 @@ private:
 	GtkSpinButton* sp_rotx;
 	GtkSpinButton* sp_roty;
 	GtkSpinButton* sp_rotz;
+	GtkWidget* popupmenu;
 	
 	static int _on_delete_event(GtkWidget*, GdkEvent*, GladeWindow* This) {
 		static_cast<NavigationWindow*>(This)->hide();
 		return true;
-	}
-	void on_button_press_event(GdkEventButton* event);
-	static int _on_button_press_event(GtkWidget*, GdkEvent*e, GladeWindow* This) {
-		static_cast<NavigationWindow*>(This)->on_button_press_event((GdkEventButton*)e);
-		return false;
 	}
 
 	ADJCB(origx);
@@ -115,6 +120,18 @@ private:
 	static void _on_reset_clicked(GtkWidget*, GladeWindow* This) {
 		static_cast<NavigationWindow*>(This)->on_reset_clicked();
 	}
+
+	static gint _on_button_press_event(GtkWidget* widget, GdkEventButton* event, NavigationWindow* _this) {
+		_this->on_button_press_event(event);
+		return true;
+	}
+
+	MENUCB(togglecross);
+	MENUCB(togglewireframe);
+	MENUCB(perspective);
+	MENUCB(save_3d_image);
+	MENUCB(save_3d_image_as);
+	MENUCB(close);
 };
 
 #endif //!NAVIGATION_WINDOW_H

@@ -65,13 +65,6 @@ GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin,
 			   GTK_SIGNAL_FUNC(_button_release_event),
 			   (gpointer)this);
 
-	glade.sig_connect("togglecross", "activate", _on_togglecross_activate, this);
-	glade.sig_connect("togglewireframe", "activate", _on_togglewireframe_activate, this);
-	glade.sig_connect("central_perspective", "activate", _on_perspective_activate, this);
-	glade.sig_connect("parallel_perspective", "activate", _on_perspective_activate, this);
-	
-	popupmenu = glade.get_widget("menu_glarea");
-	
 	gtk_widget_set_usize(glarea, 256, 256);
 	gtk_widget_show(glarea);
 }
@@ -359,7 +352,7 @@ gint GLArea::configure_event(GdkEventConfigure* event)
 	return true;
 }
 
-gint GLArea::button_press_event(GdkEventButton* event)
+void GLArea::button_press_event(GdkEventButton* event)
 {
 	if(event->button == 1 && !dragging) {
 		dragging = true;
@@ -370,44 +363,22 @@ gint GLArea::button_press_event(GdkEventButton* event)
 					   (gpointer)this);
 		drag_begin((gint)event->x, (gint)event->y);
 	} else if(event->button == 3) {
-		gtk_menu_popup(GTK_MENU(popupmenu), 0, 0, 0, 0, 3, event->time);
+		navigationwin->on_button_press_event();
 	}
-
-	return true;
 }
 
-gint GLArea::button_release_event(GdkEventButton* event)
+void GLArea::button_release_event(GdkEventButton* event)
 {
 	if(dragging) {
 		dragging = false;
 		drag_end((gint)event->x, (gint)event->y);
 		gtk_signal_disconnect(GTK_OBJECT(glarea), motion_conn_id);
 	}
-	return true;
 }
 
-gint GLArea::motion_notify_event(GdkEventMotion* event)
+void GLArea::motion_notify_event(GdkEventMotion* event)
 {
 	gint x, y;
 	gdk_window_get_pointer(event->window, &x, &y, 0);
 	drag_move(x, y);
-	return true;
 }
-
-void GLArea::on_togglecross_activate()
-{
-	showCross = !showCross;
-}
-
-void GLArea::on_togglewireframe_activate()
-{
-	wireframe = !wireframe;
-}
-
-void GLArea::on_perspective_activate()
-{
-	GtkCheckMenuItem* item = GTK_CHECK_MENU_ITEM(glade.get_widget("central_perspective"));
-	centralPerspective = item->active;
-	reshape();
-}
-

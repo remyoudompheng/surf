@@ -140,6 +140,7 @@ void ScriptWindow::set_status(const std::string& txt)
 
 void ScriptWindow::set_progress(gfloat percentage)
 {
+	gtk_progress_set_show_text(GTK_PROGRESS(pbar), true);
 	gtk_progress_set_percentage(GTK_PROGRESS(pbar), percentage);
 	gtk_widget_draw(pbar, 0);
 }
@@ -169,16 +170,22 @@ void ScriptWindow::select_region(int from, int to)
 	from -= prelude_length;
 	to -= prelude_length;
 
-	// catch the error case
-        // (otherwise I get a segfault!? Hey Gtk, this shouldn't happen!)
-	if(from < 0 || to < 0 || from > to
-	   || to > int(glade.get_chars(text_script).length()) - 1) {
-		Misc::print_warning("Something funny happenend in ScriptWindow::select_region. Write a bug report!");
-		return;
+	// catch the error cases
+	if(to < 0) {
+		to = 0;
+		from = 0;
 	}
-
-	gtk_editable_set_position(GTK_EDITABLE(text_script), from);
-	gtk_editable_select_region(GTK_EDITABLE(text_script), from, to);
+	if(from < 0) {
+		from = 0;
+	}
+	int last_pos = int(glade.get_chars(text_script).length()) - 1;
+	if(to > last_pos) {
+		to = last_pos;
+	}
+	gtk_editable_set_position(GTK_EDITABLE(text_script), to);
+	if(from < to) {
+		gtk_editable_select_region(GTK_EDITABLE(text_script), from, to);
+	}
 }
 
 void ScriptWindow::insert(const std::string& str)

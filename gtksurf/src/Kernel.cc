@@ -90,7 +90,7 @@ Kernel::Kernel(const std::string& kernel_path)
 	}
 	std::string version = receive_line();
 
-	send("print_defaults;\n");
+	send("print_defaults;");
 	defaults.assign("");
 	std::string line;
 	line = receive_line();
@@ -100,7 +100,7 @@ Kernel::Kernel(const std::string& kernel_path)
 		line = receive_line();
 	}
 
-	send("print_color_image_formats;\n");
+	send("print_color_image_formats;");
 	line = receive_line();
 	while(line.length() > 0) {
 		color_image_formats.push_back(line); // push name
@@ -108,11 +108,19 @@ Kernel::Kernel(const std::string& kernel_path)
 		line = receive_line();
 	}
 
-	send("print_dither_image_formats;\n");
+	send("print_dither_image_formats;");
 	line = receive_line();
 	while(line.length() > 0) {
 		dither_image_formats.push_back(line); // name
 		dither_image_formats.push_back(receive_line()); // id
+		line = receive_line();
+	}
+
+	send("print_three_d_image_formats;");
+	line = receive_line();
+	while(line.length() > 0) {
+		three_d_image_formats.push_back(line); // name
+		three_d_image_formats.push_back(receive_line()); // id
 		line = receive_line();
 	}
 
@@ -189,8 +197,7 @@ void Kernel::process_output()
 	}
 
 	if(s.substr(0, 7) == "status ") {
-		scriptwin->set_status(s.substr(7));
-		scriptwin->progress_mode(true);
+		scriptwin->set_status(s.substr(7) + "...");
 	} else if(s.substr(0, 9) == "progress ") {
 		s = s.substr(9);
 		if(s == "done") {
@@ -205,16 +212,17 @@ void Kernel::process_output()
 			iss >> percent;
 			scriptwin->set_progress(percent/100.0);
 		}
-	} else if(s == "P6") {
+	} else if(s == "P6") { // PPM image
 		imagewin->read_data();
-	} else if(s == "P4") {
+	} else if(s == "P4") { // PBM image
 		ditherwin->read_data();
-	} else if(s == "OFF") {
+	} else if(s == "{") { // OOF data follows
 		glarea->read_data();
 	} else if(s == "clear_screen") {
 		imagewin->clear();
 	} else if(s == "not_implemented") {
 		scriptwin->set_status("Feature not implemented in kernel!");
+		gdk_beep();
 	} else if(s == "error") {
 		std::string errorregion = receive_line();
 		std::istrstream is(errorregion.c_str());

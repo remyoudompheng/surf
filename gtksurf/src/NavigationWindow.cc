@@ -38,6 +38,11 @@ NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel, ScriptWindow*
 				    glarea.getWidget());
 	glade.sig_connect(window, "delete_event", _on_delete_event, this);
 
+	gtk_widget_set_events(window, GDK_BUTTON_PRESS_MASK);
+	gtk_signal_connect(GTK_OBJECT(window), "button_press_event",
+			   GTK_SIGNAL_FUNC(_on_button_press_event), (gpointer)this);
+	
+	
 	sp_origx = glade.spin_connect("spinbutton_origx", _on_origx_changed, this);
 	sp_origy = glade.spin_connect("spinbutton_origy", _on_origy_changed, this);
 	sp_origz = glade.spin_connect("spinbutton_origz", _on_origz_changed, this);
@@ -54,6 +59,15 @@ NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel, ScriptWindow*
 
 	glade.sig_connect("button_updatescript", "clicked", _on_update_clicked, this);
 	glade.sig_connect("button_reset", "clicked", _on_reset_clicked, this);
+
+	glade.sig_connect("togglecross", "activate", _on_togglecross_activate, this);
+	glade.sig_connect("togglewireframe", "activate", _on_togglewireframe_activate, this);
+	glade.sig_connect("central_perspective", "activate", _on_perspective_activate, this);
+	glade.sig_connect("parallel_perspective", "activate", _on_perspective_activate, this);
+	glade.sig_connect("save_3d_file", "activate", _on_save_3d_image_activate, this);
+	glade.sig_connect("save_3d_file_as", "activate", _on_save_3d_image_as_activate, this);
+	glade.sig_connect("close_navigation", "activate", _on_close_activate, this);
+	popupmenu = glade.get_widget("menu_navigation");
 }
 
 void NavigationWindow::show()
@@ -95,13 +109,6 @@ void NavigationWindow::set_rot(gfloat x, gfloat y, gfloat z)
 
 // Gtk callbacks:
 // ======================================================================
-
-void NavigationWindow::on_button_press_event(GdkEventButton* event)
-{
-	if(event->button == 1) {
-		std::cerr << "button 1 pressed\n";
-	}
-}
 
 void NavigationWindow::on_origx_changed(gfloat val)
 {
@@ -229,4 +236,43 @@ void NavigationWindow::on_reset_clicked()
 	Kernel::Sequence a, b, c;
 	kernel.get_sequence(a, b, c);
 	glarea.set_sequence(a, b, c);
+}
+
+// popup-menu callbacks:
+
+void NavigationWindow::on_button_press_event(GdkEventButton* event = 0)
+{
+	if(event == 0) {
+		gtk_menu_popup(GTK_MENU(popupmenu), 0, 0, 0, 0, 3, 0);
+	} else if(event->button == 3) {
+		gtk_menu_popup(GTK_MENU(popupmenu), 0, 0, 0, 0, 3, event->time);
+	}
+}
+
+void NavigationWindow::on_togglecross_activate()
+{
+	glarea.toggle_cross();
+}
+
+void NavigationWindow::on_togglewireframe_activate()
+{
+	glarea.toggle_wireframe();
+}
+
+void NavigationWindow::on_perspective_activate()
+{
+	GtkCheckMenuItem* item = GTK_CHECK_MENU_ITEM(glade.get_widget("central_perspective"));
+	glarea.set_perspective(item->active);
+}
+
+void NavigationWindow::on_save_3d_image_activate()
+{
+}
+
+void NavigationWindow::on_save_3d_image_as_activate()
+{
+}
+
+void NavigationWindow::on_close_activate()
+{
 }

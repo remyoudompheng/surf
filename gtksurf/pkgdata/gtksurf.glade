@@ -1674,11 +1674,16 @@
 
 <widget>
   <class>GtkMenu</class>
-  <name>menu_glarea</name>
+  <name>menu_navigation</name>
 
   <widget>
     <class>GtkCheckMenuItem</class>
     <name>togglecross</name>
+    <accelerator>
+      <modifiers>0</modifiers>
+      <key>GDK_X</key>
+      <signal>activate</signal>
+    </accelerator>
     <signal>
       <name>activate</name>
       <handler>on_show_coordinate_cross_activate</handler>
@@ -1686,12 +1691,17 @@
     </signal>
     <label>Show Coordinate Cross</label>
     <active>False</active>
-    <always_show_toggle>False</always_show_toggle>
+    <always_show_toggle>True</always_show_toggle>
   </widget>
 
   <widget>
     <class>GtkCheckMenuItem</class>
     <name>togglewireframe</name>
+    <accelerator>
+      <modifiers>0</modifiers>
+      <key>GDK_W</key>
+      <signal>activate</signal>
+    </accelerator>
     <signal>
       <name>activate</name>
       <handler>on_wireframe_mode_activate</handler>
@@ -1699,7 +1709,7 @@
     </signal>
     <label>Wireframe Mode</label>
     <active>False</active>
-    <always_show_toggle>False</always_show_toggle>
+    <always_show_toggle>True</always_show_toggle>
   </widget>
 
   <widget>
@@ -1711,6 +1721,11 @@
   <widget>
     <class>GtkRadioMenuItem</class>
     <name>central_perspective</name>
+    <accelerator>
+      <modifiers>0</modifiers>
+      <key>GDK_C</key>
+      <signal>activate</signal>
+    </accelerator>
     <signal>
       <name>activate</name>
       <handler>on_central_perspective_activate</handler>
@@ -1718,13 +1733,18 @@
     </signal>
     <label>Central Perspective</label>
     <active>False</active>
-    <always_show_toggle>False</always_show_toggle>
+    <always_show_toggle>True</always_show_toggle>
     <group>perspective</group>
   </widget>
 
   <widget>
     <class>GtkRadioMenuItem</class>
     <name>parallel_perspective</name>
+    <accelerator>
+      <modifiers>0</modifiers>
+      <key>GDK_P</key>
+      <signal>activate</signal>
+    </accelerator>
     <signal>
       <name>activate</name>
       <handler>on_parallel_perspective_activate</handler>
@@ -1732,8 +1752,66 @@
     </signal>
     <label>Parallel Perspective</label>
     <active>True</active>
-    <always_show_toggle>False</always_show_toggle>
+    <always_show_toggle>True</always_show_toggle>
     <group>perspective</group>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>separator9</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>save_3d_file</name>
+    <accelerator>
+      <modifiers>GDK_CONTROL_MASK</modifiers>
+      <key>GDK_S</key>
+      <signal>activate</signal>
+    </accelerator>
+    <signal>
+      <name>activate</name>
+      <handler>on_save_3d_file_activate</handler>
+      <last_modification_time>Mon, 26 Mar 2001 20:24:04 GMT</last_modification_time>
+    </signal>
+    <label>Save 3D File</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>save_3d_file_as</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_save_3d_file_as1_activate</handler>
+      <last_modification_time>Mon, 26 Mar 2001 20:24:04 GMT</last_modification_time>
+    </signal>
+    <label>Save 3D File As...</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>separator10</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>close_navigation</name>
+    <accelerator>
+      <modifiers>GDK_CONTROL_MASK</modifiers>
+      <key>GDK_W</key>
+      <signal>activate</signal>
+    </accelerator>
+    <signal>
+      <name>activate</name>
+      <handler>on_close_navigation_activate</handler>
+      <last_modification_time>Mon, 26 Mar 2001 20:24:04 GMT</last_modification_time>
+    </signal>
+    <label>Close</label>
+    <right_justify>False</right_justify>
   </widget>
 </widget>
 
