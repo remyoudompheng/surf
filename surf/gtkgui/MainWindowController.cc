@@ -105,6 +105,8 @@ void MainWindowController::allowScriptExecution(bool val)
 	gtk_widget_set_sensitive (ditherCurveButton,   val);
 	gtk_widget_set_sensitive (colorSaveButton, val && colorSaveButtonState);
 	gtk_widget_set_sensitive (ditheredSaveButton, val && ditheredSaveButtonState);
+	gtk_widget_set_sensitive (saveColor_MenuItem, val && colorSaveButtonState);
+	gtk_widget_set_sensitive (saveDithered_MenuItem, val && ditheredSaveButtonState);
 }
 
 bool MainWindowController::mayClose()
@@ -422,24 +424,37 @@ MainWindowController::MainWindowController()
 	  colorSaveButtonState(false), ditheredSaveButtonState(false)
 {
 	static GtkItemFactoryEntry entries[] = {
-		{(gchar *)"/Program/Separator", 0, 0, 0,		(gchar *)"<Separator>"},
-
-		{(gchar *)"/Program/About",	0, MENUCALL(showAbout),		0, 0},
-		{(gchar *)"/Program/Separator2",0, 0, 0,		(gchar *)"<Separator>"},
-		{(gchar *)"/Program/Quit",	0, MENUCALL(quit),		0, 0},
-		
-		{(gchar *)"/Script", 0, 0, 0,				(gchar *)"<Branch>"},
-		{(gchar *)"/Script/Separator", 0,0,0,			(gchar *)"<Separator>"},
-
-		{(gchar *)"/Script/New",	0, MENUCALL(newDocument),	0,0},
-		{(gchar *)"/Script/Load...",	0, MENUCALL(loadScript),	0,0},
-
-		{(gchar *)"/Script/Loaded Scripts" ,0,0,0,		(gchar *)"<Branch>"},
-		{(gchar *)"/Script/Loaded Scripts/tearoff", 0, 0, 0,	(gchar *)"<Tearoff>"},
-		{(gchar *)"/Script/Separator2",0,0,0,			(gchar *)"<Separator>"},
-
-		{(gchar *)"/Script/Save",	0, MENUCALL(saveScript),	0,0},
-		{(gchar *)"/Script/Save as...",	0, MENUCALL(saveScriptAs),	0,0},
+		{(gchar*)"/_File", 0,                              0, 0, (gchar *)"<Branch>"},
+		{(gchar*)"/File/tearoff", 0,                       0, 0, (gchar*)"<Tearoff>"},
+		{(gchar*)"/File/_New", (gchar*)"<control>N",       MENUCALL(newDocument), 0,0},
+		{(gchar*)"/File/_Open...", (gchar*)"<control>O",   MENUCALL(loadScript), 0, 0},
+		{(gchar*)"/File/Loaded Scripts", 0,                0, 0, (gchar *)"<Branch>"},
+		{(gchar*)"/File/Loaded Scripts/tearoff", 0,        0, 0, (gchar *)"<Tearoff>"},
+		{(gchar*)"/File/Separator1", 0,                    0, 0, (gchar *)"<Separator>"},
+		{(gchar*)"/File/_Save", (gchar*)"<control>S",      MENUCALL(saveScript), 0, 0},
+		{(gchar*)"/File/Save _As...", (gchar*)"<control>A", MENUCALL(saveScriptAs), 0, 0},
+		{(gchar*)"/File/Separator2", 0,                    0, 0, (gchar *)"<Separator>"},
+		{(gchar*)"/File/_Quit", (gchar*)"<control>Q",      MENUCALL(quit), 0, 0},
+		{(gchar*)"/_Command", 0,                           0, 0, (gchar*)"<Branch>"},
+		{(gchar*)"/Command/tearoff", 0,                    0, 0, (gchar*)"<Tearoff>"},
+		{(gchar*)"/Command/_Execute Script", (gchar*)"<control>E", MENUCALL(executeScript), 0, 0},
+		{(gchar*)"/Command/Separator1", 0,                 0, 0, (gchar*)"<Separator>"},
+		{(gchar*)"/Command/Draw Surface", 0,              MENUCALL(drawSurface), 0, 0},
+		{(gchar*)"/Command/Dither Surface", 0,            MENUCALL(ditherSurface), 0, 0},
+		{(gchar*)"/Command/Separator2", 0,                 0, 0, (gchar*)"<Separator>"},
+		{(gchar*)"/Command/Draw Curve", 0,                MENUCALL(drawCurve), 0, 0},
+		{(gchar*)"/Command/Dither Curve", 0,              MENUCALL(ditherCurve), 0, 0},
+		{(gchar*)"/Command/Separator3", 0,                 0, 0, (gchar*)"<Separator>"},
+		{(gchar*)"/Command/Configuration...", 0,           MENUCALL(configuration), 0, 0},
+		{(gchar*)"/_Image", 0,                             0, 0, (gchar *)"<Branch>"},
+		{(gchar*)"/Image/taroff", 0,                       0, 0, (gchar *)"<Tearoff>"},
+		{(gchar*)"/Image/New Color Window", 0,             MENUCALL(newColorWindow), 0, 0},
+		{(gchar*)"/Image/Save Color Image...", 0,          MENUCALL(saveColorImage), 0, 0},
+		{(gchar*)"/Image/Separator1", 0,                   0, 0, (gchar*)"<Separator>"},
+		{(gchar*)"/Image/New Dither Window", 0,            MENUCALL(newDitherWindow), 0, 0},
+		{(gchar*)"/Image/Save Dithered Image...", 0,       MENUCALL(saveDitheredImage), 0, 0},
+		{(gchar*)"/_Help", 0,                              0, 0, (gchar*)"<LastBranch>"},
+		{(gchar*)"/Help/About...", 0,                      MENUCALL(showAbout), 0, 0},
 	};
 	
 	GtkAccelGroup *accel_group;
@@ -451,8 +466,14 @@ MainWindowController::MainWindowController()
 
 	GtkWidget *wid = gtk_item_factory_get_widget(fac,"<main>");
 
-	loadedScripts = gtk_item_factory_get_widget(fac,"/Script/Loaded Scripts");
+	loadedScripts = gtk_item_factory_get_widget(fac,"/File/Loaded Scripts");
 	assert(loadedScripts);
+	saveColor_MenuItem = gtk_item_factory_get_widget(fac, "/Image/Save Color Image...");
+	assert(saveColor_MenuItem);
+	gtk_widget_set_sensitive(saveColor_MenuItem, false);
+	saveDithered_MenuItem = gtk_item_factory_get_widget(fac, "/Image/Save Dithered Image...");
+	assert(saveDithered_MenuItem);
+	gtk_widget_set_sensitive(saveDithered_MenuItem, false);
 	
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	

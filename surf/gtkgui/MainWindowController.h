@@ -76,6 +76,16 @@ protected:
 
 	MENUCALLBACK(loadScript, MainWindowController);
 	MENUCALLBACK(saveScript, MainWindowController);
+	MENUCALLBACK(executeScript, MainWindowController);
+	MENUCALLBACK(drawSurface, MainWindowController);
+	MENUCALLBACK(ditherSurface, MainWindowController);
+	MENUCALLBACK(drawCurve, MainWindowController);
+	MENUCALLBACK(ditherCurve, MainWindowController);
+	MENUCALLBACK(configuration, MainWindowController);
+	MENUCALLBACK(newColorWindow, MainWindowController);
+	MENUCALLBACK(saveColorImage, MainWindowController);
+	MENUCALLBACK(newDitherWindow, MainWindowController);
+	MENUCALLBACK(saveDitheredImage, MainWindowController);
 	VOIDCALL(saveScript, MainWindowController);
 
 	MENUCALLBACK(saveScriptAs, MainWindowController);
@@ -154,6 +164,8 @@ protected:
 	ColorWindow *bitmapWindow;
 
 	GtkWidget *loadedScripts;
+	GtkWidget* saveColor_MenuItem;
+	GtkWidget* saveDithered_MenuItem;
 	ConfigurationWindow cw;
 
 	Document *actualDocument;
