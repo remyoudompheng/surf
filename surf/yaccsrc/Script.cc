@@ -239,9 +239,9 @@ void Script::executeScriptFromStdin(bool quiet)
 		}
 		
 	} else
-#else
-	{
 
+#endif
+	{
 		if(is_a_tty) {
 			std::cout << "Reading from stdin.\n"
 				  << PROMPT;
@@ -264,8 +264,6 @@ void Script::executeScriptFromStdin(bool quiet)
 			internalExecuteScript(script.c_str());
 		}
 	}
-
-#endif // HAVE_LIBREADLINE
 }
 
 void Script::executeScriptFromFile(const char *name)
