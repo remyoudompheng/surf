@@ -364,6 +364,14 @@ on @emph{surf}'s project page at SourceForge:
 @node Introduction to surfs Command Language, Features, Overview, top
 @chapter Introduction to @emph{surf}'s Command Language
 
+The language used in @emph{surf}'s scripts is quite simple.  It has got
+a (very restricted) C-like syntax. There is no comma separator like in
+C. Declaring a name twice results in an error. The scope of the name
+begins at the point of its declaration and lasts until the end of the
+file. There is no method of undeclaring a name. Only C++-style comments
+are allowed: Everything after an @code{//} up to the end of that line is
+ignored.
+
 @menu
 * Data Types::
 * Operators::
@@ -379,14 +387,6 @@ on @emph{surf}'s project page at SourceForge:
 
 @node Data Types, Operators, Introduction to surfs Command Language, Introduction to surfs Command Language
 @section Data Types
-
-The language used in @emph{surf}'s scripts is quite simple.  It has got
-a (very restricted) C-like syntax. There is no comma separator like in
-C. Declaring a name twice results in an error. The scope of the name
-begins at the point of its declaration and lasts until the end of the
-file. There is no method of undeclaring a name. Both C-style
-(@code{/*} @dots{} @code{*/}) and C++-style (@code{//} @dots{}) comments
-are allowed.
 
 The language provides the following four data types:
 @itemize
@@ -980,7 +980,8 @@ series of images to the movie format of your choice.
 Here some 100 Sun rasterfiles are created.  Afterwards you could use a
 tool to convert these single images to a movie. For example with the
 @command{convert} program from the ImageMagick suite you could type
-@kbd{convert -delay 5 cubic*.ras cubic.gif} to create a GIF animation.
+@kbd{convert -delay 5 cubic*.ras cubic.mng} to create a MNG animation
+file.
 
 
 @c Stereo Pictures
