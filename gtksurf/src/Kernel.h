@@ -24,6 +24,7 @@
 class ScriptWindow;
 class ImageWindow;
 class DitherWindow;
+class GLArea;
 
 class Kernel {
 public:
@@ -38,6 +39,9 @@ public:
 	}
 	void set_ditherwin(DitherWindow* dw) {
 		ditherwin = dw;
+	}
+	void set_glarea(GLArea* gl) {
+		glarea = gl;
 	}
 
 	void connect_handler() {
@@ -113,6 +117,7 @@ private:
 	ScriptWindow* scriptwin;
 	ImageWindow* imagewin;
 	DitherWindow* ditherwin;
+	GLArea* glarea;
 
 	std::string defaults;
 
@@ -134,6 +139,7 @@ private:
 		COLOR_IMAGE_HEADER,
 		COLOR_IMAGE_DATA,
 		DITHER_IMAGE,
+		TRIANGULATE_SURFACE,
 		STOPPED
 	} state;
 

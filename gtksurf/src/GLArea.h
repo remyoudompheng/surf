@@ -18,13 +18,17 @@
 #define GLAREA_H
 
 #include <Glade.h>
+#include <Kernel.h>
 #include <Vec3.h>
 #include <Matrix.h>
+#include <GLtypes.h>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <gtk/gtk.h>
 #include <gtkgl/gtkglarea.h>
+
+#include<fstream>
 
 #undef MENUCB
 #define MENUCB(name) \
@@ -37,8 +41,8 @@ class NavigationWindow;
 
 class GLArea : public GladeWindow {
 public:
-	GLArea(Glade& glade, NavigationWindow* navwin);
-	virtual ~GLArea() {}
+	GLArea(Glade& glade, Kernel& kern, NavigationWindow* navwin);
+	virtual ~GLArea();
 
 	GtkWidget* getWidget() {
 		return glarea;
@@ -55,6 +59,8 @@ public:
 		shown = false;
 	}
 	
+	void read_triangulated_data(std::ifstream& ifs);
+
 private:
 	void init(GLsizei width, GLsizei height);
 	void reshape(GLsizei width, GLsizei height);
@@ -83,6 +89,7 @@ private:
 	}
 
 	Glade& glade;
+	Kernel& kernel;
 	NavigationWindow* navigationwin;
 
 	GLfloat pi;
@@ -107,6 +114,8 @@ private:
 
 	GLsizei width;
 	GLsizei height;
+
+	GLuint display_list;
 
 	void plotCross();
 	

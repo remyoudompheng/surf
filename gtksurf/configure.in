@@ -9,6 +9,18 @@ AM_INIT_AUTOMAKE(gtksurf, 0.1)
 CF_VERBOSE
 
 
+dnl there are systems which don't automatically include these standard paths..
+
+if test -d "/usr/local/lib/"
+then
+	LDFLAGS="-L/usr/local/lib/ $LDFLAGS"
+fi
+if test -d "/usr/local/include/"
+then
+	CPPFLAGS="-I/usr/local/include/ $CPPFLAGS"
+fi
+
+
 dnl some standard checks:
 dnl ---------------------
 
@@ -25,13 +37,6 @@ dnl -----------------------------------
 
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
-
-AC_CXX_FUNCTION_NONTYPE_PARAMETERS
-if test "$ac_cv_cxx_function_nontype_parameters" = "no"; then
-	AC_MSG_ERROR(["Sorry, your compiler is not smart enough to build surf"])
-fi
-
-ICE_CXX_EXPLICIT_TEMPLATE_INSTANTIATION
 
 JOJO_CXX_WARNINGS
 JOJO_CXX_NAMESPACES
@@ -76,14 +81,32 @@ LIBS="$LIBS $GTK_LIBS"
 dnl check for libgdk-pixbuf
 dnl =======================
 
+AC_ARG_WITH(gdkpixbuf-prefix,[  --with-gdkpixbuf-prefix=PFX   Prefix where gdk-pixbuf is installed],
+            gdkpixbuf_prefix="$withval", gdkpixbuf_prefix="")
+
+if test x"$gdkpixbuf_prefix" != x ; then
+	LDFLAGS="-L$gdkpixbuf_prefix/lib $LDFLAGS"
+	CPPFLAGS="-I$gdkpixbuf_prefix/include $CPPFLAGS"
+fi
+
 RS_CHECK_HEADER(gdk-pixbuf/gdk-pixbuf.h)
 RS_CHECK_LIB(gdk_pixbuf, main)
 
 dnl check for libglade
 dnl ==================
 
+AC_ARG_WITH(glade-prefix,[  --with-glade-prefix=PFX Prefix where libglade is installed],
+            glade_prefix="$withval", glade_prefix="")
+
+
+if test x"$glade_prefix" != x ; then
+	LDFLAGS="-L$glade_prefix/lib $LDFLAGS"
+	CPPFLAGS="-I$glade_prefix/include $CPPFLAGS"
+fi
+
 RS_CHECK_HEADER(glade/glade.h)
 RS_CHECK_LIB(glade, main)
+
 
 dnl OpenGL/Mesa:
 dnl ============

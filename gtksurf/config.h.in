@@ -20,8 +20,6 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
-#undef HAVE_EXPLICIT_TEMPLATE_INSTANTIATION
-
 /* Define if you have the getopt_long function.  */
 #undef HAVE_GETOPT_LONG
 

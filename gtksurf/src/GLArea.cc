@@ -7,29 +7,27 @@
  *   License: GPL version >= 2
  *
  */
-/*
- * $Id$
- *
- * Copyright (C) 2001 Johannes Beigel <jojo@beigel.de>
- * License: GNU General Public License Version >= 2
- */
 
 #include <GLArea.h>
 #include <NavigationWindow.h>
 
 #include<iostream>
 #include<cstdlib>
+#include<strstream>
 
-GLArea::GLArea(Glade& _glade, NavigationWindow* navwin)
-	: glade(_glade), navigationwin(navwin),
+GLArea::GLArea(Glade& _glade, Kernel& _kernel, NavigationWindow* navwin)
+	: glade(_glade), kernel(_kernel), navigationwin(navwin),
 	  pi(std::acos(-1)),
 	  dragging(false),
 	  rotMat(4), deltaRotMat(4), rotating(false),
 	  showCross(true), wireframe(false),
 	  origx(0.0), origy(0.0), origz(0.0),
 	  scalex(1.0), scaley(1.0), scalez(1.0),
-	  shown(false)
+	  shown(false),
+	  display_list(0)
 {
+	kernel.set_glarea(this);
+	
 	if(!gdk_gl_query()) {
 		glade.show_message("ERROR: OpenGL not supported!\n");
 		abort();
@@ -69,6 +67,87 @@ GLArea::GLArea(Glade& _glade, NavigationWindow* navwin)
 	gtk_widget_set_usize(glarea, 256, 256);
 	gtk_widget_show(glarea);
 }
+
+GLArea::~GLArea()
+{
+	if(display_list) {
+		glDeleteLists(display_list, 1);
+	}
+}
+
+namespace {
+inline bool vertex_compare(const GLvertex& a, const GLvertex& b)
+{
+	return a.x == b.x && a.y == b.y && a.z == b.z;
+}
+}
+
+void GLArea::read_triangulated_data(std::ifstream& ifs)
+{
+	std::string line;
+	std::getline(ifs, line);
+	std::istrstream iss(line.c_str());
+
+	size_t nv, ne, nf;
+	iss >> nv >> ne >> nf;
+
+	// read vertices:
+	GLvertex* vertices = new GLvertex[nv];
+	for(size_t i = 0; i != nv; i++) {
+		ifs >> vertices[i].x >> vertices[i].y >> vertices[i].z;
+		std::getline(ifs, line); // eat up rest of line
+	}
+
+	// read edges:
+	GLedge* edges = new GLedge[ne];
+	for(size_t i = 0; i != ne; i++) {
+		ifs >> edges[i].from >> edges[i].to;
+		std::getline(ifs, line);
+	}
+
+	// read faces:
+	GLface* faces = new GLface[nf];
+	for(size_t i = 0; i != nf; i++) {
+		ifs >> faces[i].a >> faces[i].b >> faces[i].c;
+		std::getline(ifs, line);
+	}
+
+	// build OpenGL display list:
+	if(display_list != 0) {
+		glDeleteLists(display_list, 1);
+	}
+	display_list = glGenLists(1);
+
+	glNewList(display_list, GL_COMPILE);
+	glBegin(GL_TRIANGLES);
+
+	glColor3f(0.2, 0.2, 0.8);
+
+	for(size_t i = 0; i != nf; i++) {
+		GLedge& a = edges[faces[i].a];
+		GLedge& b = edges[faces[i].b];
+		GLvertex& p1 = vertices[a.from];
+		GLvertex& p2 = vertices[a.to];
+		GLvertex& p3a = vertices[b.from];
+		GLvertex& p3b = vertices[b.to];
+		GLvertex p3;
+		if(vertex_compare(p3a, p1) || vertex_compare(p3a, p2)) {
+			p3 = p3b;
+		} else {
+			p3 = p3a;
+		}
+
+		glNormal3f(1.0, 0.0, 0.0);
+		glVertex3f(p1.x, p1.y, p1.z);
+		glVertex3f(p2.x, p2.y, p2.z);
+		glVertex3f(p3.x, p3.y, p3.z);
+	}
+	glEnd();
+	glEndList();
+
+	display();
+}
+
 
 // OpenGL drawing routines:
 // ------------------------------------------------------------------------------
@@ -111,6 +190,7 @@ void GLArea::display()
 	
 
 	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 
 	glTranslatef(origx, origy, origz);
 
@@ -121,6 +201,9 @@ void GLArea::display()
 
 	glScalef(scalex, scaley, scalez);
 
+	if(display_list != 0) {
+		glCallList(display_list);
+	}
 
 	// draw coord system w/lightin turned off:
 

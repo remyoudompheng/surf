@@ -12,5 +12,5 @@ gtksurf_SOURCES = main.cc \
 		  NavigationWindow.h NavigationWindow.cc \
 		  GLArea.h GLArea.cc \
 		  About.h About.cc \
-                  Matrix.h Vec3.h \
+                  Matrix.h Vec3.h GLtypes.h\
                   Misc.h Misc.cc

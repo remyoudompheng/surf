@@ -18,6 +18,7 @@
 #include <ScriptWindow.h>
 #include <ImageWindow.h>
 #include <DitherWindow.h>
+#include <GLArea.h>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -191,6 +192,11 @@ void Kernel::process_output()
 			imagewin->set_mode(ImageWindow::CURVE);
 		} else if(s == "clear_screen") {
 			imagewin->clear();
+                } else if(s == "triangulate_surface") {
+			state = TRIANGULATE_SURFACE;
+			process_output();
+		} else if(s == "not_implemented") {
+			scriptwin->set_status("Feature not implemented in kernel!");
 		} else if(s == "error") {
 			std::string reason = receive_line();
 			std::string txt = "ERROR in script: " + reason;
@@ -272,6 +278,13 @@ void Kernel::process_output()
 			data[i] = change_bits(receive_byte());
 		}
 		ditherwin->set_image(data, image.width, image.height);
+		break;
+	}
+	case TRIANGULATE_SURFACE: {
+		scriptwin->set_status("Triangulating surface...");
+		glarea->read_triangulated_data(*kernel_output);
+		scriptwin->set_status("");
+		state = NEUTRAL;
 		break;
 	}
 	case STOPPED:

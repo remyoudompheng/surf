@@ -97,7 +97,7 @@ void DitherWindow::on_key_press_event(GdkEventKey* event)
 void DitherWindow::on_expose_event(GdkEventExpose* event)
 {
 	GdkGC* gc = gdk_gc_new_with_values(drawingarea->window, &gcval,
-					   GDK_GC_FOREGROUND | GDK_GC_BACKGROUND);
+					   GdkGCValuesMask(GDK_GC_FOREGROUND | GDK_GC_BACKGROUND));
 	gdk_draw_bitmap(drawingarea->window, gc,
 			bitmap, 
 			event->area.x, event->area.y,

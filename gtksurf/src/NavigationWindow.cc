@@ -14,14 +14,16 @@
 #endif
 
 #include <NavigationWindow.h>
+#include <Misc.h>
 
 #include <gtkgl/gtkglarea.h>
+#include <stdio.h>
 
 #include<iostream>
 #include<cmath>
 
 NavigationWindow::NavigationWindow(Glade& _glade, Kernel& _kernel)
-	: glade(_glade), kernel(_kernel), glarea(glade, this),
+	: glade(_glade), kernel(_kernel), glarea(glade, kernel, this),
 	  origx(0.0), origy(0.0), origz(0.0),
 	  scalex(1.0), scaley(1.0), scalez(1.0), keep_scaleratio(true),
 	  rotx(0.0), roty(0.0), rotz(0.0), updatingRot(false)
