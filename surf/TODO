@@ -18,13 +18,3 @@ Here are some minor problems I can think of:
 * libtiff/libjpeg/zlib
   Disable tiff/jpeg support if one of the above isn't there instead of
   forcing the user to install 'em.
-
-* command line option parsing:
-  getopt(_long) maybe overkill here ???
-  we need options for:
-    - no gui
-    - load files but do not execute (at the moment the first file loaded
-      will be executed)
-    - any others ???
-
-  

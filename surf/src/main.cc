@@ -33,13 +33,20 @@
 #include <string.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <gtk/gtk.h>
 
 #include "Script.h"
 #include "welcomeMessage.h"
 #include "compfn.h"
 
+#ifndef NO_GUI
+char usage_text[] = "Usage: surf [GTK-OPTIONS]... [OPTIONS]... [FILE]...\n\n"
+		    "-n, --no-gui  disable GUI, execute all scripts passed as FILEs\n"
+		    "-x, --exec    when running with GUI, execute first script immediately\n"
+                    "    --help    display this help and exit\n\n";
+#endif
 
-extern void start_gtk_main (int argc, char **argv);
+extern void start_gtk_main (int argc, char **argv, int fileopts, bool execute);
 
 static void init_all()
 {
@@ -55,30 +62,61 @@ static void deinit_all()
 	Script::deinit();
 }
 
-int     main (int argc, char **argv)
+int main (int argc, char** argv)
 {
 	signal (SIGPIPE, SIG_IGN);
 #ifdef DEBUG
 	yydebug = 1;
 #endif
 
-	cout << welcomeMessage;
+	bool execute = false;
+	int fileopts = 1;
+
+#ifndef NO_GUI
+	gtk_init(&argc, &argv);
+
+	bool nogui = false;
+	int i;
+	for (i = 1; i < argc; ++i) {
+		if (argv[i][0] != '-') {
+			break;
+		}
+		
+		++fileopts;
+		
+		if (strcmp(argv[i], "-n") == 0 ||
+		    strcmp(argv[i], "--no-gui") == 0) {
+			nogui = true;
+		} else if (strcmp(argv[i], "-x") == 0 ||
+			   strcmp(argv[i], "--exec") == 0) {
+			execute = true;
+		} else if (strcmp(argv[i], "--help") == 0) {
+			std::cerr << usage_text;
+			exit(0);
+		} else {
+			std::cerr << "Error: unknown option \'" << argv[i] << "\'\n\n"
+				  << usage_text;
+			exit(1);
+		}
+	}
+	fileopts = i;
+#else
+	bool nogui = true;
+#endif
+
+	std::cout << welcomeMessage;
 
 	init_all();
 
-	if ( argc>1 && strcmp(argv[1], "script")==0) {
-		int i;
-		for (i=2; i<argc; i++) {
-			cerr << "************** executing " << argv[i] << endl;
+	if (nogui) {
+		for (int i = fileopts; i < argc; ++i) {
+			std::cerr << "************** executing " << argv[i] << std::endl;
 			Script::executeScriptFromFile(argv[i]);
 		}
-	} 
-
-#ifndef NO_GUI
-	else 
-		start_gtk_main (argc, argv);
-#endif
-
+	} else {
+		start_gtk_main (argc, argv, fileopts, execute);
+	}
+	
 	deinit_all();
 	return 0;
 }

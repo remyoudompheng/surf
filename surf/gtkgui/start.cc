@@ -40,7 +40,9 @@
 struct after_gui_creation_struct {
 	MainWindowController *mainWindowController;
 	int argc;
-	char **argv;
+	char** argv;
+	int fileopts;
+	bool execute;
 };
 
 
@@ -58,10 +60,9 @@ void new_input(void *data, int source, GdkInputCondition cond)
 gint after_gui_creation(gpointer data)
 {
 	after_gui_creation_struct *agcs = (after_gui_creation_struct *) data;
-	bool doc_loaded=false;
+	bool doc_loaded = false;
 
-	int i;
-	for (i=1; i<agcs->argc; i++) {
+	for (int i = agcs->fileopts; i < agcs->argc; i++) {
 		Document *doc = Document::loadDocument (agcs->argv[i]);
 		if (doc) {
 			if (!doc_loaded) {
@@ -70,31 +71,31 @@ gint after_gui_creation(gpointer data)
 			}
 		}
 	}
-	if (doc_loaded)
+	
+	if (doc_loaded && agcs->execute) {
 		agcs->mainWindowController->executeScript();
-	else 
+	} else {
 		agcs->mainWindowController->show();
+	}
 
-	return FALSE;
+	return false;
 }
 
-void start_gtk_main (int argc, char **argv)
+void start_gtk_main (int argc, char** argv, int fileopts, bool execute)
 {
 	GuiThread::init();
 
-	gtk_init (&argc, &argv);
 	gdk_input_add (GuiThread::getFileDescriptor(), GDK_INPUT_READ, new_input, 0);
 
 	initColors();
-
-	
-
 	
 	MainWindowController *mainWindowController = new MainWindowController();
 	after_gui_creation_struct p;
 	p.mainWindowController = mainWindowController;
 	p.argc = argc;
 	p.argv = argv;
+	p.fileopts = fileopts;
+	p.execute = execute;
 
 	gtk_idle_add (after_gui_creation, &p);
 	gtk_main ();
