@@ -242,17 +242,13 @@ int     print_gamma_correction_data;
 
 int     print_resolution_data;
 
-int     print_resolution_array_data[6] =
-{
-	75, 100, 150, 300, 600, 1200
-};
-
-int     print_resolution_75dpi_data	= 0;
-int     print_resolution_100dpi_data	= 1;
-int     print_resolution_150dpi_data	= 2;
-int     print_resolution_300dpi_data	= 3;
-int     print_resolution_600dpi_data	= 4;
-int     print_resolution_1200dpi_data	= 5;
+// just to be compatible..:
+int     print_resolution_75dpi_data	= 75;
+int     print_resolution_100dpi_data	= 100;
+int     print_resolution_150dpi_data	= 150;
+int     print_resolution_300dpi_data	= 300;
+int     print_resolution_600dpi_data	= 600;
+int     print_resolution_1200dpi_data	= 1200;
 
 
 // ----------------------------------------------------------------------------

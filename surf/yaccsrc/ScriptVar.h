@@ -309,8 +309,6 @@ extern  int     print_gamma_correction_data;
 
 extern  int     print_resolution_data;
 
-extern  int     print_resolution_array_data[6];
-
 extern  int     print_resolution_75dpi_data;
 extern  int     print_resolution_100dpi_data;
 extern  int     print_resolution_150dpi_data;

@@ -58,6 +58,8 @@ namespace ImageFormats {
 		TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 8);
 		TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, 3);
 
+		TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
+
 		// write scanlines:
 		
 		byte* scanline = new byte[TIFFScanlineSize(tiff)];
@@ -103,7 +105,7 @@ namespace ImageFormats {
 		TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
 
 		TIFFSetField(tiff, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
-		float resolution = ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data];
+		float resolution = ScriptVar::print_resolution_data;
 		TIFFSetField(tiff, TIFFTAG_XRESOLUTION, resolution);
 		TIFFSetField(tiff, TIFFTAG_YRESOLUTION, resolution);
 		

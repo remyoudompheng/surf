@@ -72,7 +72,7 @@ namespace ImageFormats {
 		}
 
 		//  Bounding box: center by default, assume a4 paper
-		int resolution = ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data];
+		int resolution = ScriptVar::print_resolution_data;
 		int width  = (ScriptVar::main_width_data*72)/resolution;
 		int height = (ScriptVar::main_height_data*72)/resolution;
 		int x1 = (595 - width)/2;

@@ -71,7 +71,7 @@ namespace ImageFormats {
 			return false;
 		}
 		
-		int res = ScriptVar::print_resolution_array_data[ScriptVar::print_resolution_data];
+		int res = ScriptVar::print_resolution_data;
 		int width = (ScriptVar::main_width_data*72)/res + 1;
 		int height = (ScriptVar::main_height_data*72)/res + 1;
 		
