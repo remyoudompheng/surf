@@ -1,6 +1,0 @@
-?package(surf): \
-  needs="X11" \
-  section="Apps/Math" \
-  title="surf" \
-  command="/usr/bin/surf"
-

@@ -1,7 +1,5 @@
 Version 1.1.0 - ??? 2000
 
-* Navigation window added
+* separation of kernel and GUI
 
-* new indexed color image format: XPM
-
-* save image dialog and image-formats API have changed
+* many many changes :)

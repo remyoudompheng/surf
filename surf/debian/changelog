@@ -1,9 +1,0 @@
-surf (1.1.0-1) unstable; urgency=low
-
-  * Initial release.
-
- -- Johannes Beigel <jojo@beigel.de>  Sat, 16 Apr 2000 17:44:21 +0200
-
-Local variables:
-mode: debian-changelog
-End:
