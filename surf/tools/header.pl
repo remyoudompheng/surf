@@ -20,7 +20,7 @@ sub processFiles
     my $string =  "visualizing algebraic curves and algebraic surfaces";
     my $name;
     while ($name = shift) {
-	print <STDERR>, "Processing $name...";
+	print STDERR "Processing $name...";
 	open (FILE, "<$name") || die "Can't open file $name:$!";
 	my @lines = <FILE>;
 	close(FILE) || die "Can't close file";
