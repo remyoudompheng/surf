@@ -86,16 +86,41 @@ void GLArea::read_data()
 	scriptwin->progress_mode(true);
 	scriptwin->set_progress(0);
 
-	int red = kernel.receive_int();
-	int green = kernel.receive_int();
-	int blue = kernel.receive_int();
+	// read surface & inside colors:
+	GLfloat color[4];
+	color[0] = kernel.receive_float();
+	color[1] = kernel.receive_float();
+	color[2] = kernel.receive_float();
 	kernel.receive_line();
-
-	int inside_red = kernel.receive_int();
-	int inside_green = kernel.receive_int();
-	int inside_blue = kernel.receive_int();
+	color[3] = 1.0;
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+	color[0] = kernel.receive_float();
+	color[1] = kernel.receive_float();
+	color[2] = kernel.receive_float();
 	kernel.receive_line();
+	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, color);
 
+	// read light sources:
+	int num_lights = kernel.receive_int();
+	kernel.receive_line();
+	GLfloat pos[4];
+	pos[3] = 1.0;
+	GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
+	for(int i = 0; i != num_lights; i++) {
+		color[0] = kernel.receive_float();
+		color[1] = kernel.receive_float();
+		color[2] = kernel.receive_float();
+		pos[0] = kernel.receive_float();
+		pos[1] = kernel.receive_float();
+		pos[2] = kernel.receive_float();
+		kernel.receive_line();
+		glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, color);
+		glLightfv(GL_LIGHT0 + i, GL_SPECULAR, white);
+		glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
+		glEnable(GL_LIGHT0 + i);
+	}
+
+	// read number of vertices/faces:
 	int nv = kernel.receive_int();
 	int nf = kernel.receive_int();
 	kernel.receive_line();
@@ -150,11 +175,6 @@ void GLArea::read_data()
 	glNewList(display_list, GL_COMPILE);
 	glBegin(GL_TRIANGLES);
 
-	GLfloat surface_color[] = { red/255.0, green/255.0, blue/255.0, 1.0 };
-	GLfloat inside_color[] = { inside_red/255.0, inside_green/255.0, inside_blue/255.0, 1.0 };
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, surface_color);
-	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, inside_color);
-
 	for(int i = 0; i != nf; i++) {
 		GLface& f = faces[i];
 		GLvertex& p1 = vertices[f.p1 - 1];
@@ -190,22 +210,6 @@ void GLArea::init(GLsizei width, GLsizei height)
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 
-	// define 1st light source:
-	static GLfloat light0_pos[] = { -20.0, 10.0, 10.0, 1.0};
-	glLightfv(GL_LIGHT0, GL_POSITION, light0_pos);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-	glEnable(GL_LIGHT0);
-
-	// define 2nd light source:
-	static GLfloat light1_pos[] = { -10.0, -10.0, -15.0, 1.0};
-	glLightfv(GL_LIGHT1, GL_POSITION, light1_pos);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, white);
-	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
-	glEnable(GL_LIGHT1);
-	
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);

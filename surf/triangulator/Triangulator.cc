@@ -172,12 +172,36 @@ void Triangulator::write_data()
 	std::cout << "triangulate_surface\n";
 	std::cout.flush();
 
-	std::cout << ScriptVar::color_slider[0].red << ' '
-		  << ScriptVar::color_slider[0].green << ' '
-		  << ScriptVar::color_slider[0].blue << '\n'
-		  << ScriptVar::color_slider[0].inside_red << ' '
-		  << ScriptVar::color_slider[0].inside_green << ' '
-		  << ScriptVar::color_slider[0].inside_blue << '\n';
+	// surface & inside color:
+	std::cout << ScriptVar::color_slider[0].red/255.0 << ' '
+		  << ScriptVar::color_slider[0].green/255.0 << ' '
+		  << ScriptVar::color_slider[0].blue/255.0 << '\n'
+		  << ScriptVar::color_slider[0].inside_red/255.0 << ' '
+		  << ScriptVar::color_slider[0].inside_green/255.0 << ' '
+		  << ScriptVar::color_slider[0].inside_blue/255.0 << '\n';
+
+	// light sources:
+	size_t num = 0;
+	for(int i = 0; i != LIGHT_SOURCE_MAX_VALUE; i++) {
+		if(ScriptVar::light_data[i].volume == 0) {
+			continue;
+		}
+		num++;
+	}
+	std::cout << num << '\n';
+	for(int i = 0; i != LIGHT_SOURCE_MAX_VALUE; i++) {
+		light_data_t& l = ScriptVar::light_data[i];
+		int vol = l.volume;
+		if(vol == 0) {
+			continue;
+		}
+		std::cout << l.getColorValue(0) << ' '
+			  << l.getColorValue(1) << ' '
+			  << l.getColorValue(2) << ' '
+			  << l.position[0] << ' '
+			  << l.position[1] << ' '
+			  << l.position[2] << '\n';
+	}
 	
 	polyxyz f = polyxyz_copy(&ScriptVar::main_formula_pxyz_data[0]);
 	polyxyz_sort(&f);
