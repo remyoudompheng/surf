@@ -26,6 +26,7 @@
 #else
 #  include<strstream>
 #endif
+#include <iostream>
 
 #include<list>
 

@@ -204,7 +204,7 @@ void syntax_error(const std::string& txt, int line_number, int error_begin_char,
 	}
 }
 
-void IO::progress(const std::string& _action)
+void progress(const std::string& _action)
 {
 	action = _action;
 	if(kernel_mode) {
@@ -215,7 +215,7 @@ void IO::progress(const std::string& _action)
 	std::cout.flush();
 }
 
-void IO::progress(int percent)
+void progress(int percent)
 {
 	if(kernel_mode) {
 		std::cout << "progress " << percent << std::endl;
@@ -225,7 +225,7 @@ void IO::progress(int percent)
 	std::cout.flush();
 }
 
-void IO::progress(SpecialProgressType type)
+void progress(SpecialProgressType type)
 {
 	if(kernel_mode) {
 		std::cout << "progress ";
