@@ -92,12 +92,28 @@ dnl ==============================================
 
 AC_CHECK_FUNCS(gdk_draw_bitmap)
 
+dnl check for pkg-config:
+dnl =====================
+
+m4_ifndef([PKG_PROG_PKG_CONFIG],
+    [m4_fatal([Could not locate the pkg-config autoconf macros.
+  These are usually located in /usr/share/aclocal/pkg.m4. If your macros
+  are in a different location, try setting the environment variable
+  ACLOCAL="aclocal -I/other/macro/dir" before running autoreconf.])])
+PKG_PROG_PKG_CONFIG()
+
 dnl check for libglade:
 dnl ===================
 
-AM_PATH_LIBGLADE
-CPPFLAGS="$CPPFLAGS $LIBGLADE_CFLAGS"
-LIBS="$LIBS $LIBGLADE_LIBS"
+dnl AM_PATH_LIBGLADE
+dnl CPPFLAGS="$CPPFLAGS $LIBGLADE_CFLAGS"
+dnl LIBS="$LIBS $LIBGLADE_LIBS"
+
+if test -n "$PKG_CONFIG"; then
+  PKG_CHECK_MODULES([LIBGLADE], [libglade-2.0])
+  CPPFLAGS="$CPPFLAGS $LIBGLADE_CFLAGS"
+  LIBS="$LIBS $LIBGLADE_LIBS"
+fi
 
 dnl check for gtkgl
 dnl ===============

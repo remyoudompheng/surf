@@ -6,8 +6,6 @@ AC_PREREQ(2.13)
 AC_INIT(src/main.cc)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gtksurf, 0.1)
-CF_VERBOSE
-
 
 dnl some standard checks:
 dnl ---------------------
@@ -25,12 +23,6 @@ dnl -----------------------------------
 
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
-
-JOJO_CXX_WARNINGS
-JOJO_CXX_NAMESPACES
-JOJO_CXX_STDNAMESPACE
-JOJO_CXX_STRINGSTREAM
-
 AC_LANG_RESTORE
 
 if test "$GCC" = "no" ; then
@@ -40,8 +32,6 @@ if test "$GCC" = "no" ; then
 		;;
 	esac
 fi
-
-
 
 dnl include /usr/local/lib and /usr/local/include in search paths:
 dnl --------------------------------------------------------------
@@ -67,31 +57,6 @@ AC_CHECK_HEADER(getopt.h)
 AC_CHECK_LIB(gnugetopt, main)
 AC_CHECK_FUNCS(getopt_long)
 
-
-dnl check if we have GTK >= 1.2.0
-dnl =============================
-
-AM_PATH_GTK(1.2.0)
-
-CPPFLAGS="$CPPFLAGS $GTK_CFLAGS"
-LDFLAGS="$LDFLAGS $GTK_LDFLAGS"
-LIBS="$LIBS $GTK_LIBS"
-
-dnl checks for libgdk-pixbuf:
-dnl =========================
-
-AM_PATH_GDK_PIXBUF
-if test "x$no_gdk_pixbuf" != "xyes"; then
-  CPPFLAGS="$CPPFLAGS $GDK_PIXBUF_CFLAGS"
-  LIBS="$LIBS $GDK_PIXBUF_LIBS"
-  AC_DEFINE(HAVE_LIBGDK_PIXBUF)
-fi
-
-dnl check if we have a gdk_draw_bitmap() function:
-dnl ==============================================
-
-AC_CHECK_FUNCS(gdk_draw_bitmap)
-
 dnl check for pkg-config:
 dnl =====================
 
@@ -105,27 +70,11 @@ PKG_PROG_PKG_CONFIG()
 dnl check for libglade:
 dnl ===================
 
-dnl AM_PATH_LIBGLADE
-dnl CPPFLAGS="$CPPFLAGS $LIBGLADE_CFLAGS"
-dnl LIBS="$LIBS $LIBGLADE_LIBS"
-
 if test -n "$PKG_CONFIG"; then
-  PKG_CHECK_MODULES([LIBGLADE], [libglade-2.0])
+  PKG_CHECK_MODULES([LIBGLADE], [libglademm-2.4])
   CPPFLAGS="$CPPFLAGS $LIBGLADE_CFLAGS"
   LIBS="$LIBS $LIBGLADE_LIBS"
 fi
-
-dnl check for gtkgl
-dnl ===============
-
-dnl AM_PATH_GTKGL
-dnl if test "x$have_gtkgl" = "xyes"; then
-dnl   LIBS="$LIBS $GTKGL_LIBS"
-dnl   CPPFLAGS="$CPPFLAGS $GTKGL_CFLAGS"
-dnl else
-dnl   AC_MSG_ERROR([You don't have GtkGLArea!])
-dnl fi
-
 
 AM_MISSING_PROG(HELP2MAN, help2man, $missing_dir)
 AM_MISSING_PROG(SED, sed, $missing_dir)
@@ -133,6 +82,4 @@ AM_MISSING_PROG(SED, sed, $missing_dir)
 AC_SUBST(CPPFLAGS)
 
 AC_OUTPUT(Makefile
-          src/Makefile
-          pkgdata/Makefile
-          docs/Makefile)
+          src/Makefile)
