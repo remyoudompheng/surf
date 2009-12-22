@@ -12,10 +12,14 @@
 #include "ScriptWindow.h"
 #include "About.h"
 
+#include<fstream>
+
 ScriptWindow::ScriptWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)
   : Gtk::Window(cobject),
     myGlade(refGlade),
-    text_script(0)
+    text_script(0),
+    sbar(0),
+    pbar(0)
 {
   // File Menu item callbacks
   Gtk::MenuItem* mi_new = 0;
@@ -43,19 +47,33 @@ ScriptWindow::ScriptWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
   Gtk::MenuItem* mi_cut = 0;
   Gtk::MenuItem* mi_copy = 0;
   Gtk::MenuItem* mi_paste = 0;
+  Gtk::MenuItem* mi_clear = 0;
+  Gtk::MenuItem* mi_select_all = 0;
 
   myGlade->get_widget("cut", mi_cut);
   myGlade->get_widget("copy", mi_copy);
   myGlade->get_widget("paste", mi_paste);
+  myGlade->get_widget("clear", mi_clear);
+  myGlade->get_widget("select_all", mi_select_all);
   
   mi_cut->signal_activate().connect( sigc::mem_fun(*this, &ScriptWindow::_on_cut_activate) );
   mi_copy->signal_activate().connect( sigc::mem_fun(*this, &ScriptWindow::_on_copy_activate) );
   mi_paste->signal_activate().connect( sigc::mem_fun(*this, &ScriptWindow::_on_paste_activate) );
+  mi_clear->signal_activate().connect( sigc::mem_fun(*this, &ScriptWindow::_on_clear_activate) );
+  mi_select_all->signal_activate().connect( sigc::mem_fun(*this, &ScriptWindow::_on_select_all_activate) );
 
-  // 
-  myGlade->get_widget("text_script", text_script);
-  text_buffer = text_script->get_buffer();
-  refClipboard = Gtk::Clipboard::get();
+  // Command Menu callbacks
+  Gtk::MenuItem* mi_render_curve = 0;
+  Gtk::MenuItem* mi_render_surface = 0;
+  Gtk::MenuItem* mi_execute = 0;
+
+  myGlade->get_widget("render_curve", mi_render_curve);
+  myGlade->get_widget("render_surface", mi_render_surface);
+  myGlade->get_widget("execute", mi_execute);
+
+  mi_render_curve->signal_activate().connect( sigc::mem_fun(*this, &ScriptWindow::_on_render_curve_activate) );
+  mi_render_surface->signal_activate().connect( sigc::mem_fun(*this, &ScriptWindow::_on_render_surface_activate) );
+  mi_execute->signal_activate().connect( sigc::mem_fun(*this, &ScriptWindow::_on_execute_activate) );
 
   // Help Menu callbacks
   Gtk::MenuItem* mi_about = 0;
@@ -66,22 +84,119 @@ ScriptWindow::ScriptWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
   Gtk::ToolButton* but_new = 0;
   Gtk::ToolButton* but_open = 0;
   Gtk::ToolButton* but_save = 0;
-
   myGlade->get_widget("button_new", but_new);
   myGlade->get_widget("button_open", but_open);
   myGlade->get_widget("button_save", but_save);
-
   but_new->signal_clicked().connect( sigc::mem_fun(*this, &ScriptWindow::_on_new_activate) );
   but_open->signal_clicked().connect( sigc::mem_fun(*this, &ScriptWindow::_on_open_activate) );
   but_save->signal_clicked().connect( sigc::mem_fun(*this, &ScriptWindow::_on_save_activate) );
+
+  Gtk::ToolButton* but_render_curve = 0;
+  Gtk::ToolButton* but_render_surface = 0;
+  Gtk::ToolButton* but_execute = 0;
+  myGlade->get_widget("button_render_curve", but_render_curve);
+  myGlade->get_widget("button_render_surface", but_render_surface);
+  myGlade->get_widget("button_execute", but_execute);
+  but_render_curve->signal_clicked().connect( sigc::mem_fun(*this, &ScriptWindow::_on_render_curve_activate) );
+  but_render_surface->signal_clicked().connect( sigc::mem_fun(*this, &ScriptWindow::_on_render_surface_activate) );
+  but_execute->signal_clicked().connect( sigc::mem_fun(*this, &ScriptWindow::_on_execute_activate) );
+
+  // Other widgets
+  myGlade->get_widget("statusbar_script", sbar);
+  myGlade->get_widget("progressbar_script", pbar);
+  myGlade->get_widget("text_script", text_script);
+  text_buffer = text_script->get_buffer();
+  refClipboard = Gtk::Clipboard::get();
+
 }
 
 ScriptWindow::~ScriptWindow()
 {
 }
 
+void ScriptWindow::set_my_title()
+{
+  std::string title = PACKAGE;
+  title += " - ";
+  if(filename.length() == 0) {
+    title += "Untitled";
+  } else {
+    title += filename;
+  }
+  set_title(Glib::ustring(title));
+}
+
+void ScriptWindow::set_status(const std::string& txt)
+{
+  sbar->pop();
+  sbar->push(Glib::ustring(txt));
+  sbar->show();
+}
+
+void ScriptWindow::set_progress(double percentage)
+{
+  pbar->set_fraction(percentage);
+  pbar->show();
+}
+
+void ScriptWindow::load_file(const std::string& fname)
+{
+  std::ifstream file(fname.c_str());
+  if(!file) {
+    set_status("Open failed: Couldn't open file!");
+    Gdk::Display::get_default()->beep();
+    return;
+  }
+
+  text_script->set_editable(false);
+  text_buffer->erase(text_buffer->begin(), text_buffer->end());
+
+  char buf[256];
+  gint pos = 0;
+  while(file.getline(buf, sizeof(buf) - 1, '\n')) {
+    size_t len = strlen(buf);
+    buf[len] = '\n';
+    buf[len + 1] = 0;
+    text_buffer->insert_at_cursor(Glib::ustring(buf, len+1));
+  }
+
+  text_buffer->place_cursor(text_buffer->begin());
+  text_script->set_editable(true);
+
+  dirty = false;
+  filename.assign(fname);
+  set_my_title();
+  set_status("Script loaded.");
+}
+
+
+// GTK callbacks
+// =============
+
 void ScriptWindow::_on_new_activate() {}
-void ScriptWindow::_on_open_activate() {}
+
+void ScriptWindow::_on_open_activate()
+{
+  /*  if(dirty) {
+    if(Glade::ask_user(modified_txt)) {
+      on_save_activate();
+    }
+    } */
+
+  set_status("Open Script...");
+
+  Gtk::FileChooserDialog dialog("Please choose a file",
+				Gtk::FILE_CHOOSER_ACTION_OPEN);
+  dialog.set_transient_for(*this);
+
+  //Add response buttons the the dialog:
+  dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+  dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
+
+  int result = dialog.run();
+  if (result == Gtk::RESPONSE_OK) load_file(dialog.get_filename());
+}
+
 void ScriptWindow::_on_save_activate() {}
 void ScriptWindow::_on_save_as_activate() {}
 void ScriptWindow::_on_prefs_activate() {}
@@ -102,6 +217,18 @@ void ScriptWindow::_on_copy_activate() {
 void ScriptWindow::_on_paste_activate() {
   text_buffer->paste_clipboard(refClipboard);
 }
+
+void ScriptWindow::_on_clear_activate() {
+  text_buffer->erase_selection();
+}
+
+void ScriptWindow::_on_select_all_activate() {
+  text_buffer->select_range(text_buffer->begin(), text_buffer->end());
+}
+
+void ScriptWindow::_on_render_curve_activate() {}
+void ScriptWindow::_on_render_surface_activate() {}
+void ScriptWindow::_on_execute_activate() {}
 
 void ScriptWindow::_on_about_activate() {
   About* about_win = 0;

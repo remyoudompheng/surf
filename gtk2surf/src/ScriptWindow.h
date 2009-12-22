@@ -17,6 +17,7 @@
 #endif
 
 #include <gtkmm.h>
+#include <string>
 
 using namespace std;
 
@@ -25,12 +26,22 @@ class ScriptWindow : public Gtk::Window
  public: 
   ScriptWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
   virtual ~ScriptWindow();
+
+  void set_my_title(void);
+  void set_status(const std::string& txt);
+  void set_progress(double percentage);
+  void load_file(const std::string& fname);
   
  protected:
+  bool dirty; // File has changed ?
+  string filename;
+
   Glib::RefPtr<Gtk::Builder> myGlade;
   Gtk::TextView* text_script;
   Glib::RefPtr<Gtk::TextBuffer> text_buffer;
   Glib::RefPtr<Gtk::Clipboard> refClipboard;
+  Gtk::Statusbar* sbar;
+  Gtk::ProgressBar* pbar;
 
   void _on_new_activate();
   void _on_open_activate();
@@ -38,9 +49,17 @@ class ScriptWindow : public Gtk::Window
   void _on_save_as_activate();
   void _on_prefs_activate();
   void _on_quit_activate();
+
   void _on_cut_activate();
   void _on_copy_activate();
   void _on_paste_activate();
+  void _on_clear_activate();
+  void _on_select_all_activate();
+
+  void _on_render_curve_activate();
+  void _on_render_surface_activate();
+  void _on_execute_activate();
+
   void _on_about_activate();
 };
 

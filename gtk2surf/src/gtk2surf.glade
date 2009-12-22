@@ -234,6 +234,8 @@
                 <child>
                   <object class="GtkToolButton" id="button_open">
                     <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Open script...</property>
                     <property name="label" translatable="yes">Open</property>
                     <property name="use_underline">True</property>
                     <property name="stock_id">gtk-open</property>
@@ -246,9 +248,51 @@
                 <child>
                   <object class="GtkToolButton" id="button_save">
                     <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Save script</property>
                     <property name="label" translatable="yes">Save</property>
                     <property name="use_underline">True</property>
                     <property name="stock_id">gtk-save</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="button_render_curve">
+                    <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Render curve</property>
+                    <property name="label" translatable="yes">Render curve</property>
+                    <property name="use_underline">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="button_render_surface">
+                    <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Render surface</property>
+                    <property name="label" translatable="yes">Render Surface</property>
+                    <property name="use_underline">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="button_execute">
+                    <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Execute script</property>
+                    <property name="label" translatable="yes">Execute</property>
+                    <property name="use_underline">True</property>
+                    <property name="stock_id">gtk-media-play</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -284,8 +328,6 @@
             <child>
               <object class="GtkStatusbar" id="statusbar_script"/>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -294,6 +336,8 @@
                 <property name="adjustment">adjustment39</property>
               </object>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
