@@ -32,17 +32,16 @@ About::About(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade
 
 About::~About()
 {
-  hide();
 }
 
 bool About::_on_delete_event(GdkEventAny* event)
 {
-  hide();
+  hide_all();
   return true;
 }
 
 bool About::_on_button_press_event(GdkEventButton* event)
 {
-  hide();
+  hide_all();
   return true;
 }

@@ -36,15 +36,13 @@ main (int argc, char *argv[])
     }
 
   ScriptWindow* script_win = 0;
-  About* about_win = 0;
   refGlade->get_widget_derived("window_script", script_win);
-  refGlade->get_widget_derived("window_about", about_win);
-  if (about_win) {
-    about_win->show_all();
-    kit.run(*about_win);
+  if (script_win) {
+    script_win->show_all();
+    kit.run(*script_win);
   }
   
-  delete about_win;
+  delete script_win;
 
   return 0;
 }

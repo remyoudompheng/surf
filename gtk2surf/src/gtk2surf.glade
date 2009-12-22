@@ -11,177 +11,195 @@
       <object class="GtkVBox" id="vbox1">
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkHandleBox" id="handlebox1">
+          <object class="GtkMenuBar" id="menubar1">
             <child>
-              <object class="GtkMenuBar" id="menubar1">
-                <child>
-                  <object class="GtkMenuItem" id="file">
-                    <property name="label" translatable="yes">_File</property>
-                    <child type="submenu">
-                      <object class="GtkMenu" id="file_menu">
-                        <child>
-                          <object class="GtkMenuItem" id="new">
-                            <property name="label" translatable="yes">_New</property>
-                            <accelerator key="N" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                            <signal name="activate" handler="on_new_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="open">
-                            <property name="label" translatable="yes">_Open...</property>
-                            <accelerator key="O" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                            <signal name="activate" handler="on_open_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="separator1"/>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="save">
-                            <property name="label" translatable="yes">_Save</property>
-                            <accelerator key="S" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                            <signal name="activate" handler="on_save_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="save_as">
-                            <property name="label" translatable="yes">Save _As...</property>
-                            <signal name="activate" handler="on_save_as_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="separator2"/>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="preferences">
-                            <property name="label" translatable="yes">_Preferences...</property>
-                            <signal name="activate" handler="on_preferences_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="separator7"/>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="quit">
-                            <property name="label" translatable="yes">_Quit</property>
-                            <accelerator key="Q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                            <signal name="activate" handler="on_quit_activate"/>
-                          </object>
-                        </child>
+              <object class="GtkMenuItem" id="file">
+                <property name="label" translatable="yes">_File</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="file_menu">
+                    <child>
+                      <object class="GtkMenuItem" id="new">
+                        <property name="label" translatable="yes">_New</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="N" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <signal name="activate" handler="on_new_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="open">
+                        <property name="label" translatable="yes">_Open...</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="O" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <signal name="activate" handler="on_open_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="separator1"/>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="save">
+                        <property name="label" translatable="yes">_Save</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="S" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <signal name="activate" handler="on_save_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="save_as">
+                        <property name="label" translatable="yes">Save _As...</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_save_as_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="separator2"/>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="preferences">
+                        <property name="label" translatable="yes">_Preferences...</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_preferences_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="separator7"/>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="quit">
+                        <property name="label" translatable="yes">_Quit</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="Q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <signal name="activate" handler="on_quit_activate"/>
                       </object>
                     </child>
                   </object>
                 </child>
-                <child>
-                  <object class="GtkMenuItem" id="edit">
-                    <property name="label" translatable="yes">_Edit</property>
-                    <child type="submenu">
-                      <object class="GtkMenu" id="edit_menu">
-                        <child>
-                          <object class="GtkMenuItem" id="cut">
-                            <property name="label" translatable="yes">C_ut</property>
-                            <accelerator key="X" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                            <signal name="activate" handler="on_cut_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="copy">
-                            <property name="label" translatable="yes">_Copy</property>
-                            <accelerator key="C" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                            <signal name="activate" handler="on_copy_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="paste">
-                            <property name="label" translatable="yes">_Paste</property>
-                            <accelerator key="V" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                            <signal name="activate" handler="on_paste_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="clear">
-                            <property name="label" translatable="yes">C_lear</property>
-                            <signal name="activate" handler="on_clear_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="separator11"/>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="select_all">
-                            <property name="label" translatable="yes">_Select All</property>
-                            <signal name="activate" handler="on_select_all_activate"/>
-                          </object>
-                        </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="edit">
+                <property name="label" translatable="yes">_Edit</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="edit_menu">
+                    <child>
+                      <object class="GtkMenuItem" id="cut">
+                        <property name="label" translatable="yes">C_ut</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="X" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <signal name="activate" handler="on_cut_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="copy">
+                        <property name="label" translatable="yes">_Copy</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="C" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <signal name="activate" handler="on_copy_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="paste">
+                        <property name="label" translatable="yes">_Paste</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="V" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <signal name="activate" handler="on_paste_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="clear">
+                        <property name="label" translatable="yes">C_lear</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_clear_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="separator11"/>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="select_all">
+                        <property name="label" translatable="yes">_Select All</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_select_all_activate"/>
                       </object>
                     </child>
                   </object>
                 </child>
-                <child>
-                  <object class="GtkMenuItem" id="command">
-                    <property name="label" translatable="yes">_Command</property>
-                    <child type="submenu">
-                      <object class="GtkMenu" id="command_menu">
-                        <child>
-                          <object class="GtkMenuItem" id="render_curve">
-                            <property name="label" translatable="yes">_Render Curve</property>
-                            <accelerator key="F6" signal="activate"/>
-                            <signal name="activate" handler="on_render_curve_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="render_surface">
-                            <property name="label" translatable="yes">Render _Surface...</property>
-                            <accelerator key="F7" signal="activate"/>
-                            <signal name="activate" handler="on_render_surface_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="separator5"/>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="execute">
-                            <property name="label" translatable="yes">_Execute</property>
-                            <accelerator key="F8" signal="activate"/>
-                            <signal name="activate" handler="on_execute_activate"/>
-                          </object>
-                        </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="command">
+                <property name="label" translatable="yes">_Command</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="command_menu">
+                    <child>
+                      <object class="GtkMenuItem" id="render_curve">
+                        <property name="label" translatable="yes">_Render Curve</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="F6" signal="activate"/>
+                        <signal name="activate" handler="on_render_curve_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="render_surface">
+                        <property name="label" translatable="yes">Render _Surface...</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="F7" signal="activate"/>
+                        <signal name="activate" handler="on_render_surface_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="separator5"/>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="execute">
+                        <property name="label" translatable="yes">_Execute</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="F8" signal="activate"/>
+                        <signal name="activate" handler="on_execute_activate"/>
                       </object>
                     </child>
                   </object>
                 </child>
-                <child>
-                  <object class="GtkMenuItem" id="tools1">
-                    <property name="label" translatable="yes">_Tools</property>
-                    <child type="submenu">
-                      <object class="GtkMenu" id="tools1_menu">
-                        <child>
-                          <object class="GtkMenuItem" id="curve_properties">
-                            <property name="label" translatable="yes">_Curve Properties...</property>
-                            <signal name="activate" handler="on_curve_properties_activate"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkMenuItem" id="surface_properties">
-                            <property name="label" translatable="yes">_Surface Properties...</property>
-                            <signal name="activate" handler="on_surface_properties_activate"/>
-                          </object>
-                        </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="tools1">
+                <property name="label" translatable="yes">_Tools</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="tools1_menu">
+                    <child>
+                      <object class="GtkMenuItem" id="curve_properties">
+                        <property name="label" translatable="yes">_Curve Properties...</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_curve_properties_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="surface_properties">
+                        <property name="label" translatable="yes">_Surface Properties...</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_surface_properties_activate"/>
                       </object>
                     </child>
                   </object>
                 </child>
-                <child>
-                  <object class="GtkMenuItem" id="help">
-                    <property name="label" translatable="yes">_Help</property>
-                    <child type="submenu">
-                      <object class="GtkMenu" id="help_menu">
-                        <child>
-                          <object class="GtkMenuItem" id="about">
-                            <property name="label" translatable="yes">_About...</property>
-                            <signal name="activate" handler="on_about_activate"/>
-                          </object>
-                        </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="help">
+                <property name="label" translatable="yes">_Help</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="help_menu">
+                    <child>
+                      <object class="GtkMenuItem" id="about">
+                        <property name="label" translatable="yes">_About...</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_about_activate"/>
                       </object>
                     </child>
                   </object>
@@ -191,7 +209,6 @@
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">False</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -200,6 +217,44 @@
             <child>
               <object class="GtkToolbar" id="toolbar">
                 <property name="toolbar_style">icons</property>
+                <child>
+                  <object class="GtkToolButton" id="button_new">
+                    <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">New Script...</property>
+                    <property name="label" translatable="yes">New</property>
+                    <property name="use_underline">True</property>
+                    <property name="stock_id">gtk-new</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="button_open">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Open</property>
+                    <property name="use_underline">True</property>
+                    <property name="stock_id">gtk-open</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="button_save">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Save</property>
+                    <property name="use_underline">True</property>
+                    <property name="stock_id">gtk-save</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
               </object>
             </child>
           </object>
@@ -216,7 +271,6 @@
             <property name="shadow_type">in</property>
             <child>
               <object class="GtkTextView" id="text_script">
-                <property name="editable">False</property>
                 <property name="wrap_mode">word</property>
               </object>
             </child>

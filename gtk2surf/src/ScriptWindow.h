@@ -28,6 +28,9 @@ class ScriptWindow : public Gtk::Window
   
  protected:
   Glib::RefPtr<Gtk::Builder> myGlade;
+  Gtk::TextView* text_script;
+  Glib::RefPtr<Gtk::TextBuffer> text_buffer;
+  Glib::RefPtr<Gtk::Clipboard> refClipboard;
 
   void _on_new_activate();
   void _on_open_activate();
@@ -41,5 +44,5 @@ class ScriptWindow : public Gtk::Window
   void _on_about_activate();
 };
 
-#endif //!ABOUT_H                                                                                             
+#endif //!SCRIPT_WINDOW_H       
 
