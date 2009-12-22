@@ -2,6 +2,7 @@
 #include <iostream>
 
 // Widgets
+#include "ScriptWindow.h"
 #include "About.h"
 
 using namespace std;
@@ -34,7 +35,9 @@ main (int argc, char *argv[])
       return 1;
     }
 
+  ScriptWindow* script_win = 0;
   About* about_win = 0;
+  refGlade->get_widget_derived("window_script", script_win);
   refGlade->get_widget_derived("window_about", about_win);
   if (about_win) {
     about_win->show_all();
