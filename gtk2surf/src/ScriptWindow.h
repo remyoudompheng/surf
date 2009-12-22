@@ -61,6 +61,8 @@ class ScriptWindow : public Gtk::Window
   void _on_execute_activate();
 
   void _on_about_activate();
+
+  void _on_script_changed();
 };
 
 #endif //!SCRIPT_WINDOW_H       

@@ -14,6 +14,10 @@
 
 #include<fstream>
 
+static char modified_txt[] = 
+  "The current script has been modified.\n"
+  "Do you want to save it?";
+
 ScriptWindow::ScriptWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)
   : Gtk::Window(cobject),
     myGlade(refGlade),
@@ -106,6 +110,7 @@ ScriptWindow::ScriptWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
   myGlade->get_widget("progressbar_script", pbar);
   myGlade->get_widget("text_script", text_script);
   text_buffer = text_script->get_buffer();
+  text_buffer->signal_changed().connect( sigc::mem_fun(*this, &ScriptWindow::_on_script_changed) );
   refClipboard = Gtk::Clipboard::get();
 
 }
@@ -173,19 +178,49 @@ void ScriptWindow::load_file(const std::string& fname)
 // GTK callbacks
 // =============
 
-void ScriptWindow::_on_new_activate() {}
+void ScriptWindow::_on_script_changed() 
+{
+  dirty = true;
+}
+
+void ScriptWindow::_on_new_activate() 
+{
+  if(dirty) {
+    Gtk::MessageDialog dialog(*this, "Unsaved changes",
+			      false, Gtk::MESSAGE_QUESTION,
+			      Gtk::BUTTONS_YES_NO);
+    dialog.set_secondary_text(modified_txt);
+    int result = dialog.run();
+    if (result == Gtk::RESPONSE_YES) {
+      _on_save_activate();
+    }
+  }
+
+  filename.erase();
+  set_my_title();
+  text_script->set_editable(false);
+  text_buffer->erase(text_buffer->begin(), text_buffer->end());
+  text_script->set_editable(true);
+
+  dirty = false;
+}
 
 void ScriptWindow::_on_open_activate()
 {
-  /*  if(dirty) {
-    if(Glade::ask_user(modified_txt)) {
-      on_save_activate();
+  if(dirty) {
+    Gtk::MessageDialog dialog(*this, "Unsaved changes",
+			      false, Gtk::MESSAGE_QUESTION,
+			      Gtk::BUTTONS_YES_NO);
+    dialog.set_secondary_text(modified_txt);
+    int result = dialog.run();
+    if (result == Gtk::RESPONSE_YES) {
+      _on_save_activate();
     }
-    } */
+  }
 
   set_status("Open Script...");
 
-  Gtk::FileChooserDialog dialog("Please choose a file",
+  Gtk::FileChooserDialog dialog("Open script...",
 				Gtk::FILE_CHOOSER_ACTION_OPEN);
   dialog.set_transient_for(*this);
 
@@ -197,8 +232,50 @@ void ScriptWindow::_on_open_activate()
   if (result == Gtk::RESPONSE_OK) load_file(dialog.get_filename());
 }
 
-void ScriptWindow::_on_save_activate() {}
-void ScriptWindow::_on_save_as_activate() {}
+void ScriptWindow::_on_save_activate() {
+  if(filename.length() == 0) {
+    _on_save_as_activate();
+    return;
+  }
+
+  set_status("Save Script...");
+  Glib::ustring scr = text_buffer->get_text();
+  {
+    std::ofstream file(filename.c_str());
+    if(!file) {
+      set_status("Saving failed: Couldn't open file!\n");
+      Gdk::Display::get_default()->beep();
+      return;
+    }
+    file << scr;
+  }
+
+  dirty = false;
+
+  set_status("Script saved.");
+}
+
+void ScriptWindow::_on_save_as_activate() 
+{
+
+  set_status("Save script as...");
+
+  Gtk::FileChooserDialog dialog("Save script as...",
+				Gtk::FILE_CHOOSER_ACTION_SAVE);
+  dialog.set_transient_for(*this);
+
+  //Add response buttons the the dialog:
+  dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+  dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
+
+  int result = dialog.run();
+
+  if (result == Gtk::RESPONSE_OK) {
+    filename = dialog.get_filename();
+    _on_save_activate();
+  }
+}
+
 void ScriptWindow::_on_prefs_activate() {}
 
 void ScriptWindow::_on_quit_activate() 
