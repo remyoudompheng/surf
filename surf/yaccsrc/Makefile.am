@@ -3,6 +3,9 @@ include $(top_srcdir)/Makefile.global
 EXTRA_DIST = polyyacc.h
 YACC = @YACC@ -d
 
+polylex.c: polyyacc.c
+lexfunc.cc: polyyacc.c
+
 addDefaultSymbols.cc: $(top_srcdir)/defaults.pic
 	perl $(top_srcdir)/tools/convertScript.pl $< >$@
 

@@ -33,7 +33,7 @@
 #include <AvailableImageFormats.h>
 
 #include<cstdio>
-#include<string>
+#include<cstring>
 
 using namespace ScriptVar;
 

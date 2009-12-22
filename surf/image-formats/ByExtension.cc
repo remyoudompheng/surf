@@ -27,6 +27,7 @@
 #include <AvailableImageFormats.h>
 
 #include<iostream>
+#include<cstring>
 
 namespace ImageFormats {
 
@@ -87,7 +88,7 @@ namespace ImageFormats {
 		}
 		
 		// just look for "*.extension"
-		char* ext = strrchr(filename, '.');
+		const char* ext = strrchr(filename, '.');
 		if (ext == 0) {
 			return 0;
 		}

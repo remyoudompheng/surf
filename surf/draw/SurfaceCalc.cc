@@ -22,7 +22,7 @@
  *
  */
 
-
+#include <cstring>
 
 #include <SurfaceCalc.h>
 #include <RgbBuffer.h>
