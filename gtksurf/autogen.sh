@@ -1,9 +1,9 @@
 #!/bin/sh
 
-automake -a --foreign
 aclocal
-autoconf
 autoheader
+autoconf
+automake -a --foreign
 
 echo "running ./configure $*"
 ./configure $*
