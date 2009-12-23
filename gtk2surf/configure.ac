@@ -67,13 +67,19 @@ m4_ifndef([PKG_PROG_PKG_CONFIG],
   ACLOCAL="aclocal -I/other/macro/dir" before running autoreconf.])])
 PKG_PROG_PKG_CONFIG()
 
-dnl check for libglade:
+dnl check for gtkmm:
 dnl ===================
 
 if test -n "$PKG_CONFIG"; then
-  PKG_CHECK_MODULES([LIBGLADE], [libglademm-2.4])
-  CPPFLAGS="$CPPFLAGS $LIBGLADE_CFLAGS"
-  LIBS="$LIBS $LIBGLADE_LIBS"
+  PKG_CHECK_MODULES([GTK2], [gtk+-2.0 >= 2.12])
+  CPPFLAGS="$CPPFLAGS $GTK2_CFLAGS"
+  LIBS="$LIBS $GTK2_LIBS"
+fi
+
+if test -n "$PKG_CONFIG"; then
+  PKG_CHECK_MODULES([GTKMM], [gtkmm-2.4 >= 2.12])
+  CPPFLAGS="$CPPFLAGS $GTKMM_CFLAGS"
+  LIBS="$LIBS $GTKMM_LIBS"
 fi
 
 AM_MISSING_PROG(HELP2MAN, help2man, $missing_dir)

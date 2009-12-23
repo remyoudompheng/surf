@@ -403,65 +403,6 @@
       </object>
     </child>
   </object>
-  <object class="GtkDialog" id="dialog_yesno">
-    <property name="border_width">8</property>
-    <property name="title" translatable="yes">surf</property>
-    <property name="type_hint">normal</property>
-    <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox1">
-        <child>
-          <object class="GtkLabel" id="label_yesno">
-            <property name="label" translatable="yes">This is a yes/no dialog.</property>
-            <property name="justify">center</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="padding">8</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area1">
-            <child>
-              <object class="GtkButton" id="button_yes">
-                <property name="label" translatable="yes">Yes</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="button_no">
-                <property name="label" translatable="yes">No</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="0">button_yes</action-widget>
-      <action-widget response="0">button_no</action-widget>
-    </action-widgets>
-  </object>
   <object class="GtkWindow" id="window_image">
     <property name="title" translatable="yes">surf</property>
     <child>
@@ -479,52 +420,6 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkDialog" id="dialog_ok">
-    <property name="border_width">8</property>
-    <property name="title" translatable="yes">surf</property>
-    <property name="type_hint">normal</property>
-    <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox2">
-        <child>
-          <object class="GtkLabel" id="label_ok">
-            <property name="label" translatable="yes">This is an ok dialog.</property>
-            <property name="justify">center</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="padding">8</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area2">
-            <child>
-              <object class="GtkButton" id="button_ok">
-                <property name="label" translatable="yes">Okay.</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="0">button_ok</action-widget>
-    </action-widgets>
   </object>
   <object class="GtkMenu" id="menu_image">
     <child>

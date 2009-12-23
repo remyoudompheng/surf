@@ -10,6 +10,7 @@
  */
 
 #include "ScriptWindow.h"
+#include "ImageWindow.h"
 #include "About.h"
 
 #include<fstream>
@@ -266,7 +267,7 @@ void ScriptWindow::_on_save_as_activate()
 
   //Add response buttons the the dialog:
   dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-  dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
+  dialog.add_button(Gtk::Stock::SAVE, Gtk::RESPONSE_OK);
 
   int result = dialog.run();
 
@@ -304,7 +305,14 @@ void ScriptWindow::_on_select_all_activate() {
 }
 
 void ScriptWindow::_on_render_curve_activate() {}
-void ScriptWindow::_on_render_surface_activate() {}
+
+void ScriptWindow::_on_render_surface_activate() {
+  ImageWindow* image_win = 0;
+  myGlade->get_widget_derived("window_image", image_win);
+  image_win->show_all();
+  image_win->raise();
+}
+
 void ScriptWindow::_on_execute_activate() {}
 
 void ScriptWindow::_on_about_activate() {
