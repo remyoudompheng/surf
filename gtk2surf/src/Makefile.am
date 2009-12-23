@@ -6,5 +6,7 @@ gtk2surf_SOURCES = main.cc \
 		  About.h About.cc \
 		  ScriptWindow.h ScriptWindow.cc \
 		  ImageWindow.h ImageWindow.cc \
+		  DitherWindow.h DitherWindow.cc \
+		  Misc.h Misc.cc \
 		  Kernel.h Kernel.cc
 
