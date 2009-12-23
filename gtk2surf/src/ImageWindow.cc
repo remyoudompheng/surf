@@ -11,8 +11,15 @@
 
 #include "ScriptWindow.h"
 #include "ImageWindow.h"
+#include "Kernel.h"
 
 #include<fstream>
+
+#ifdef HAVE_SSTREAM
+#  include<sstream>
+#else
+#  include<strstream>
+#endif
 
 ImageWindow::ImageWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)
   : Gtk::Window(cobject),
@@ -75,6 +82,40 @@ void ImageWindow::clear()
 			       8, width, height);
   show();
 }
+
+void ImageWindow::read_data()
+{
+  if (pixbuf) pixbuf.reset();
+
+  std::string whstring = Kernel::receive_line();
+#ifdef HAVE_SSTREAM
+  std::istringstream is(whstring);
+#else
+  std::istrstream is(whstring.c_str());
+#endif
+  is >> width >> height;
+
+  Kernel::receive_line(); // eat up "255\n" line
+
+  int rowstride = 3*width;
+  int length = rowstride*height;
+  char* pixdata = new char[length];
+  for(int y = 0; y != height; y++) {
+    Kernel::receive_bytes(pixdata + y*rowstride, rowstride);
+    Gtk::Main::iteration(false);
+  }
+  
+  pixbuf = Gdk::Pixbuf::create_from_data(reinterpret_cast<guint8*>(pixdata),
+					 Gdk::COLORSPACE_RGB, false, 8,
+					 width, height, rowstride);
+  delete pixdata;
+  
+  drawingarea->set_size_request(width, height);
+  set_size_request(width, height);
+
+  show();
+}
+
 
 // GTK callbacks
 // =============

@@ -147,6 +147,13 @@ void ScriptWindow::set_progress(double percentage)
   pbar->show();
 }
 
+void ScriptWindow::progress_mode(bool mode) const
+{
+  if(!mode) {
+    pbar->set_fraction(0);
+  }
+}
+
 void ScriptWindow::load_file(const std::string& fname)
 {
   std::ifstream file(fname.c_str());
@@ -176,6 +183,31 @@ void ScriptWindow::load_file(const std::string& fname)
   filename.assign(fname);
   set_my_title();
   set_status("Script loaded.");
+}
+
+void ScriptWindow::select_region(int from, int to)
+{
+  from -= prelude_length;
+  to -= prelude_length;
+
+  // catch the error cases
+  if(to < 0) {
+    to = 0;
+    from = 0;
+  }
+  if(from < 0) {
+    from = 0;
+  }
+  int last_pos = text_buffer->size() - 1;
+  if(to > last_pos) {
+    to = last_pos;
+  }
+
+  text_buffer->place_cursor(text_buffer->get_iter_at_offset(to));
+  if(from < to) {
+    text_buffer->select_range(text_buffer->get_iter_at_offset(from),
+			      text_buffer->get_iter_at_offset(to));
+  }
 }
 
 

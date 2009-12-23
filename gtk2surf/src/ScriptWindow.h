@@ -30,11 +30,14 @@ class ScriptWindow : public Gtk::Window
   void set_my_title(void);
   void set_status(const std::string& txt);
   void set_progress(double percentage);
+  void progress_mode(bool mode) const;
+  void select_region(int from, int to);
   void load_file(const std::string& fname);
   
  protected:
   bool dirty; // File has changed ?
   string filename;
+  size_t prelude_length;
 
   Glib::RefPtr<Gtk::Builder> myGlade;
   Gtk::TextView* text_script;

@@ -35,7 +35,8 @@ class ImageWindow : public Gtk::Window
   }
   
   void clear();
-  
+  void read_data();
+
  protected:
   // widgets
   Glib::RefPtr<Gtk::Builder> myGlade;

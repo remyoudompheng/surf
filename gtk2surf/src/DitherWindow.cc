@@ -11,6 +11,7 @@
 
 #include "ScriptWindow.h"
 #include "DitherWindow.h"
+#include "Kernel.h"
 
 #include<fstream>
 
@@ -71,6 +72,10 @@ void DitherWindow::clear()
   pixbuf = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false,
 			       8, width, height);
   show();
+}
+
+void DitherWindow::read_data() 
+{
 }
 
 // GTK callbacks

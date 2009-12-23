@@ -25,6 +25,7 @@ class DitherWindow : public Gtk::Window
   DitherWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
   virtual ~DitherWindow();
   void clear();
+  void read_data();
   
  protected:
   // widgets
