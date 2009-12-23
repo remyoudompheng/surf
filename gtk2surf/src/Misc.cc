@@ -11,7 +11,9 @@
 
 #include <Misc.h>
 
-#include <errno.h>
+#include <cstring>
+#include <cstdlib>
+#include <cerrno>
 #include<iostream>
 
 void Misc::syscall_failed(const std::string& txt, bool fatal)

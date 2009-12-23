@@ -27,6 +27,8 @@
 #include <signal.h>
 #include <fcntl.h>
 
+#include <cstring>
+
 int Kernel::kernel_pid;
 int Kernel::kernel_input_fd;
 FILE* Kernel::kernel_input;
@@ -176,7 +178,7 @@ std::string Kernel::get_string(const std::string& name)
 	send("variable = \"" + name + "\";\n"
 	     "print_variable;\n");
 	std::string line = receive_line();
-#ifdef HAVE_STRINGSTREAM
+#ifdef HAVE_SSTREAM
 	std::istringstream is(line);
 #else
 	std::istrstream is(line);
@@ -199,7 +201,7 @@ int Kernel::get_int(const std::string& name)
 	send("variable = \"" + name + "\";\n"
 	     "print_variable;\n");
 	std::string line = receive_line();
-#ifdef HAVE_STRINGSTREAM
+#ifdef HAVE_SSTREAM
 	std::istringstream is(line);
 #else
 	std::istrstream is(line);
@@ -222,7 +224,7 @@ double Kernel::get_double(const std::string& name)
 	send("variable = \"" + name + "\";\n"
 	     "print_variable;\n");
 	std::string line = receive_line();
-#ifdef HAVE_STRINGSTREAM
+#ifdef HAVE_SSTREAM
 	std::istringstream is(line);
 #else
 	std::istrstream is(line);
@@ -266,7 +268,7 @@ void Kernel::process_output()
 			scriptwin->progress_mode(false);
 			scriptwin->set_status("Aborted.");
 		} else {
-#ifdef HAVE_STRINGSTREAM
+#ifdef HAVE_SSTREAM
 			std::istringstream iss(s);
 #else
 			std::istrstream iss(s.c_str());
@@ -288,7 +290,7 @@ void Kernel::process_output()
 		gdk_beep();
 	} else if(s == "error") {
 		std::string errorregion = receive_line();
-#ifdef HAVE_STRINGSTREAM
+#ifdef HAVE_SSTREAM
 		std::istringstream is(errorregion);
 #else
 		std::istrstream is(errorregion.c_str());
