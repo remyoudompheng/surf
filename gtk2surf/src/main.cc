@@ -31,6 +31,8 @@
 
 // Widgets
 #include "ScriptWindow.h"
+#include "ImageWindow.h"
+#include "DitherWindow.h"
 
 // Resources
 #define KERNEL_BINARY BINDIR "/surf"
@@ -138,7 +140,14 @@ main (int argc, char *argv[])
     }
 
   ScriptWindow* script_win = 0;
+  ImageWindow* image_win = 0;
+  DitherWindow* dither_win = 0;
   refGlade->get_widget_derived("window_script", script_win);
+  refGlade->get_widget_derived("window_image", image_win);
+  refGlade->get_widget_derived("window_dither", dither_win);
+  Kernel::set_scriptwin(script_win);
+  Kernel::set_imagewin(image_win);
+  Kernel::set_ditherwin(dither_win);
   if (script_win) {
     if(optind < argc) script_win->load_file(argv[optind]);
     script_win->show_all();

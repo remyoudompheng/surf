@@ -100,7 +100,7 @@ void ImageWindow::read_data()
   int rowstride = 3*width;
   int length = rowstride*height;
   char* pixdata = new char[length];
-  for(int y = 0; y != height; y++) {
+  for(int y = 0; y<height; y++) {
     Kernel::receive_bytes(pixdata + y*rowstride, rowstride);
     Gtk::Main::iteration(false);
   }
@@ -113,7 +113,8 @@ void ImageWindow::read_data()
   drawingarea->set_size_request(width, height);
   set_size_request(width, height);
 
-  show();
+  show_all();
+  raise();
 }
 
 

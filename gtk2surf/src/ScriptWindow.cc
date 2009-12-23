@@ -371,7 +371,7 @@ void ScriptWindow::_on_render_surface_activate() {
   prelude_length = script.length();
   script += text_buffer->get_text();
   script += "surface_run_commands = 1;\n"
-    "draw_surface;";
+    "draw_surface;\n";
   image_win->set_mode(ImageWindow::SURFACE);
   Kernel::send(script);
 }

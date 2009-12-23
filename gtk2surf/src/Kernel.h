@@ -30,7 +30,7 @@
 
 #include<list>
 
-#include <gtk/gtk.h>
+#include <gtkmm.h>
 
 class ScriptWindow;
 class ImageWindow;
@@ -56,16 +56,20 @@ public:
 //	}
 
 	static void connect_handler() {
-		handler_id = gtk_input_add_full(kernel_output_fd, GDK_INPUT_READ,
-						_process_output, 0, 0, 0);
+	  handler_id = Glib::IOSource::create(kernel_output_fd, Glib::IO_IN);
+	  handler_id->connect(sigc::ptr_fun(_process_output));
+	  handler_id->attach(Glib::MainContext::get_default());
 	}
 	static void disconnect_handler() {
-		gtk_input_remove(handler_id);
+	  handler_id->destroy();
 	}
 
 	static void send(const char* txt) {
+#ifdef DEBUG
+	        std::cout << "Script sent:\n" << txt;
+#endif
 		fputs(txt, kernel_input);
-		fputs("\nexecute\n", kernel_input);
+		fputs("execute\n", kernel_input);
 		fflush(kernel_input);
 	}
 	static void send(const std::string& txt) {
@@ -173,10 +177,11 @@ private:
 
 	static void check_version(const std::string& v);
 
-	static guint handler_id;
+	static Glib::RefPtr<Glib::IOSource> handler_id;
 	static void process_output();
-	static void _process_output(gpointer d, gint, GdkInputCondition) {
-		process_output();
+	static bool _process_output(Glib::IOCondition c) {
+	  process_output();
+	  return true;
 	}
 };
 

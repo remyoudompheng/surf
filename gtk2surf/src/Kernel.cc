@@ -46,7 +46,7 @@ std::list<std::string> Kernel::color_image_formats;
 std::list<std::string> Kernel::dither_image_formats;
 //std::list<std::string> Kernel::three_d_image_formats;
 
-guint Kernel::handler_id;
+Glib::RefPtr<Glib::IOSource> Kernel::handler_id;
 
 
 namespace {
@@ -115,7 +115,7 @@ void Kernel::init(const std::string& kernel_path)
 
 	// send("set_kernel_mode;");
 
-	send("print_defaults;");
+	send("print_defaults;\n");
 	defaults.assign("");
 	std::string line = receive_line();
 	while(line.length() > 0) {
@@ -124,7 +124,7 @@ void Kernel::init(const std::string& kernel_path)
 		line = receive_line();
 	}
 
-	send("print_color_image_formats;");
+	send("print_color_image_formats;\n");
 	line = receive_line();
 	while(line.length() > 0) {
 		color_image_formats.push_back(line); // push name
@@ -132,7 +132,7 @@ void Kernel::init(const std::string& kernel_path)
 		line = receive_line();
 	}
 
-	send("print_dither_image_formats;");
+	send("print_dither_image_formats;\n");
 	line = receive_line();
 	while(line.length() > 0) {
 		dither_image_formats.push_back(line); // name
@@ -251,7 +251,9 @@ void Kernel::process_output()
 	disconnect_handler();
 	
 	std::string s = receive_line();
-
+#ifdef DEBUG
+	std::cout << s << "\n";
+#endif
 	if(s.length() == 0) {
 		connect_handler();
 		return;
