@@ -21,6 +21,8 @@
 
 using namespace std;
 
+class ImageWindow;
+
 class ScriptWindow : public Gtk::Window 
 {
  public: 
@@ -45,6 +47,8 @@ class ScriptWindow : public Gtk::Window
   Glib::RefPtr<Gtk::Clipboard> refClipboard;
   Gtk::Statusbar* sbar;
   Gtk::ProgressBar* pbar;
+
+  ImageWindow* image_win;
 
   void _on_new_activate();
   void _on_open_activate();

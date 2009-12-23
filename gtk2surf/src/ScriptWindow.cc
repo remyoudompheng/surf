@@ -11,6 +11,7 @@
 
 #include "ScriptWindow.h"
 #include "ImageWindow.h"
+#include "Kernel.h"
 #include "About.h"
 
 #include<fstream>
@@ -25,7 +26,8 @@ ScriptWindow::ScriptWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
     myGlade(refGlade),
     text_script(0),
     sbar(0),
-    pbar(0)
+    pbar(0),
+    dirty(false)
 {
   // File Menu item callbacks
   Gtk::MenuItem* mi_new = 0;
@@ -116,6 +118,7 @@ ScriptWindow::ScriptWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
   text_buffer->signal_changed().connect( sigc::mem_fun(*this, &ScriptWindow::_on_script_changed) );
   refClipboard = Gtk::Clipboard::get();
 
+  myGlade->get_widget_derived("window_image", image_win);
 }
 
 ScriptWindow::~ScriptWindow()
@@ -349,13 +352,28 @@ void ScriptWindow::_on_select_all_activate() {
   text_buffer->select_range(text_buffer->begin(), text_buffer->end());
 }
 
-void ScriptWindow::_on_render_curve_activate() {}
+void ScriptWindow::_on_render_curve_activate() 
+{
+  Kernel::reset();
+  std::string script = "surface_run_commands = 0;\n";
+  prelude_length = script.length();
+  script += text_buffer->get_text();
+  script += "surface_run_commands = 1;\n"
+    "clear_screen;\n"
+    "draw_curve;\n";
+  image_win->set_mode(ImageWindow::CURVE);
+  Kernel::send(script);
+}
 
 void ScriptWindow::_on_render_surface_activate() {
-  ImageWindow* image_win = 0;
-  myGlade->get_widget_derived("window_image", image_win);
-  image_win->show_all();
-  image_win->raise();
+  Kernel::reset();
+  std::string script = "surface_run_commands = 0;\n";
+  prelude_length = script.length();
+  script += text_buffer->get_text();
+  script += "surface_run_commands = 1;\n"
+    "draw_surface;";
+  image_win->set_mode(ImageWindow::SURFACE);
+  Kernel::send(script);
 }
 
 void ScriptWindow::_on_execute_activate() {}

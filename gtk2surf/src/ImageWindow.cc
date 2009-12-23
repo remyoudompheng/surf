@@ -26,7 +26,7 @@ ImageWindow::ImageWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
     myGlade(refGlade)
 {
   // Parent widget
-  myGlade->get_widget_derived("window_script", script_window);
+  myGlade->get_widget_derived("window_script", script_win);
   // Child widgets
   myGlade->get_widget("menu_image", popup_menu);
   popup_menu->show_all();
@@ -137,7 +137,6 @@ bool ImageWindow::_on_button_press_event(GdkEventButton* e)
       && (e->button == 3))
     {
       popup_menu->popup(e->button, e->time);
-      script_window->set_status("Popup!");
       return true;
     }
   else 

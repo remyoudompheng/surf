@@ -118,6 +118,7 @@ main (int argc, char *argv[])
     }
   }
 
+  Kernel::init(kernel_path);
   Gtk::Main kit(argc, argv);
   Glib::RefPtr<Gtk::Builder> refGlade = Gtk::Builder::create();
 
@@ -145,6 +146,7 @@ main (int argc, char *argv[])
   }
   
   delete script_win;
+  Kernel::deinit();
 
   return 0;
 }

@@ -17,6 +17,7 @@
 #endif
 
 #include <gtkmm.h>
+#include "ScriptWindow.h"
 #include <string>
 
 class ImageWindow : public Gtk::Window 
@@ -40,7 +41,7 @@ class ImageWindow : public Gtk::Window
  protected:
   // widgets
   Glib::RefPtr<Gtk::Builder> myGlade;
-  ScriptWindow* script_window;
+  ScriptWindow* script_win;
   Gtk::Menu* popup_menu;
   Gtk::DrawingArea* drawingarea;
 
