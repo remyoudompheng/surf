@@ -1,3 +1,5 @@
+CPPFLAGS += -DPKGDATADIR=\"$(pkgdatadir)\" -DBINDIR=\"$(bindir)\"
+
 bin_PROGRAMS = gtk2surf
 
 gtk2surf_SOURCES = main.cc \
