@@ -20,7 +20,7 @@ DitherWindow::DitherWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
     myGlade(refGlade)
 {
   // Parent widget
-  myGlade->get_widget_derived("window_script", script_window);
+  myGlade->get_widget_derived("window_script", script_win);
   // Child widgets
   myGlade->get_widget("menu_dither", popup_menu);
   popup_menu->show_all();
@@ -138,7 +138,7 @@ bool DitherWindow::_on_button_press_event(GdkEventButton* e)
       && (e->button == 3))
     {
       popup_menu->popup(e->button, e->time);
-      script_window->set_status("Popup!");
+      script_win->set_status("Popup!");
       return true;
     }
   else 
@@ -149,14 +149,41 @@ bool DitherWindow::_on_button_press_event(GdkEventButton* e)
 
 void DitherWindow::_on_save_activate(void)
 {
+  if(filename.length() == 0) {
+    _on_save_as_activate();
+    return;
+  }
+
+  std::string s = "filename = \"";
+  s += filename + "\";\n";
+  if(filetype.length() > 0) {
+    s += "dither_file_format = ";
+    s += filetype + ";\n";
+  }
+  s += "save_dithered_image;\n";
+  Kernel::send(s);
 }
 
 void DitherWindow::_on_save_as_activate(void)
 {
-}
+  // TODO: implement filetype choice
+  script_win->set_status("Save dither image as...");
+  Gtk::FileChooserDialog dialog("Save dither image as...",
+				Gtk::FILE_CHOOSER_ACTION_SAVE);
+  dialog.set_transient_for(*this);
 
-void DitherWindow::_on_dither_activate(void)
-{
+  //Add response buttons the the dialog:
+  dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+  dialog.add_button(Gtk::Stock::SAVE, Gtk::RESPONSE_OK);
+
+  int result = dialog.run();
+
+  if (result == Gtk::RESPONSE_OK) {
+    filetype = "pbm";
+    filename = dialog.get_filename();
+    set_my_title();
+    _on_save_activate();
+  }
 }
 
 void DitherWindow::_on_close_activate(void)

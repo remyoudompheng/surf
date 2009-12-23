@@ -30,7 +30,7 @@ class DitherWindow : public Gtk::Window
  protected:
   // widgets
   Glib::RefPtr<Gtk::Builder> myGlade;
-  ScriptWindow* script_window;
+  ScriptWindow* script_win;
   Gtk::Menu* popup_menu;
   Gtk::DrawingArea* drawingarea;
 
@@ -47,7 +47,6 @@ class DitherWindow : public Gtk::Window
   bool _on_button_press_event(GdkEventButton* e);
   void _on_save_activate(void);
   void _on_save_as_activate(void);
-  void _on_dither_activate(void);
   void _on_close_activate(void);
 };
 
