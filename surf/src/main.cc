@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
 	bool kernel_mode = false;
 	
 	int c;
-	while((c = getopt_long(argc, argv, "qhV", longopts, 0)) != -1) {
+	while((c = getopt_long(argc, argv, "qhVk", longopts, 0)) != -1) {
 
 		switch(c) {
                 case 'q':
