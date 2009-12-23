@@ -96,7 +96,7 @@ void DitherWindow::read_data()
     Kernel::receive_bytes(buf, bwidth);
     for (int z = 0; z<width; z++) {
       origin = pixdata + y*rowstride + z*3;
-      value = (buf[z >> 3] >> (z%8)) & 0x01;
+      value = (buf[z >> 3] >> (7-z%8)) & 0x01;
       origin[0] = origin[1] = origin[2] = 255*value;
     }
     Gtk::Main::iteration(false);
