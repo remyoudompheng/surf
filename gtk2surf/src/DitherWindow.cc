@@ -14,6 +14,7 @@
 #include "Kernel.h"
 
 #include<fstream>
+#include<cstring>
 
 DitherWindow::DitherWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)
   : Gtk::Window(cobject),
@@ -65,32 +66,18 @@ void DitherWindow::set_my_title()
 
 void DitherWindow::clear()
 {
-  if (!bitmap) {
+  if (!pixbuf) {
     return;
   }
-  bitmap.reset();
-  bitmap = Gdk::Bitmap::create(drawingarea->get_window(),
-			       0, width, height);
+  pixbuf.reset();
+  pixbuf = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false,
+			       8, width, height);
   show();
 }
 
-namespace {
-  guint8 reverse_bits(guint8 b)
-  {
-    return    (b >> 7) & 0x01
-      | (b >> 5) & 0x02
-      | (b >> 3) & 0x04
-      | (b >> 1) & 0x08
-      | (b << 1) & 0x10
-      | (b << 3) & 0x20
-      | (b << 5) & 0x40
-      | (b << 7) & 0x80;
-  }
-}
-
-void DitherWindow::read_data() 
+void DitherWindow::read_data()
 {
-  if (bitmap) bitmap.reset();
+  if (pixbuf) pixbuf.reset();
 
   std::string whstring = Kernel::receive_line();
 #ifdef HAVE_SSTREAM
@@ -100,17 +87,25 @@ void DitherWindow::read_data()
 #endif
   is >> width >> height;
 
-  size_t bwidth = width/8 + (width%8 ? 1 : 0); // width in bytes
-  size_t length = bwidth*height;
-  guint8* data = new guint8[length];
-  for(size_t i = 0; i < length; i++) {
-    data[i] = reverse_bits(Kernel::receive_byte());
+  int rowstride = 3*width;
+  char* pixdata = new char[rowstride*height];
+  size_t bwidth = width/8 + (width%8 ? 1 : 0);
+  char* buf = new char[bwidth];
+  char* origin; char value;
+  for(int y = 0; y<height; y++) {
+    Kernel::receive_bytes(buf, bwidth);
+    for (int z = 0; z<width; z++) {
+      origin = pixdata + y*rowstride + z*3;
+      value = (buf[z >> 3] >> (z%8)) & 0x01;
+      origin[0] = origin[1] = origin[2] = 255*value;
+    }
+    Gtk::Main::iteration(false);
   }
   
-  bitmap = Gdk::Bitmap::create(drawingarea->get_window(),
-		  reinterpret_cast<gchar*>(data),
-		  width, height);
-  delete data;
+  pixbuf = Gdk::Pixbuf::create_from_data(reinterpret_cast<guint8*>(pixdata),
+					 Gdk::COLORSPACE_RGB, false, 8,
+					 width, height, rowstride);
+  delete pixdata;
   
   drawingarea->set_size_request(width, height);
   set_size_request(width, height);
@@ -124,11 +119,12 @@ void DitherWindow::read_data()
 
 bool DitherWindow::_on_expose_event(GdkEventExpose *e) 
 {
-  if (!bitmap) return true;
-  drawingarea->get_window()->draw_drawable(drawingarea->get_style()->get_fg_gc(Gtk::STATE_NORMAL),
-					   bitmap, e->area.x, e->area.y,
-					   e->area.x, e->area.y,
-					   width, height);
+  if (!pixbuf) return true;
+  drawingarea->get_window()->draw_pixbuf(drawingarea->get_style()->get_fg_gc(Gtk::STATE_NORMAL),
+					 pixbuf, e->area.x, e->area.y,
+					 e->area.x, e->area.y,
+					 width, height, Gdk::RGB_DITHER_NONE,
+					 0, 0);
   return true;
 }
 
@@ -189,5 +185,5 @@ void DitherWindow::_on_save_as_activate(void)
 void DitherWindow::_on_close_activate(void)
 { 
   hide();
-  bitmap.reset();
+  pixbuf.reset();
 }

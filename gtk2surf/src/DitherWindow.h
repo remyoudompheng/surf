@@ -37,7 +37,7 @@ class DitherWindow : public Gtk::Window
   // Data
   int width;
   int height;
-  Glib::RefPtr<Gdk::Bitmap> bitmap;
+  Glib::RefPtr<Gdk::Pixbuf> pixbuf;
   std::string filename;
   std::string filetype;
   void set_my_title();
