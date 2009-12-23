@@ -111,6 +111,7 @@ ScriptWindow::ScriptWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
   myGlade->get_widget("statusbar_script", sbar);
   myGlade->get_widget("progressbar_script", pbar);
   myGlade->get_widget("text_script", text_script);
+  text_script->modify_font(Pango::FontDescription("monospace"));
   text_buffer = text_script->get_buffer();
   text_buffer->signal_changed().connect( sigc::mem_fun(*this, &ScriptWindow::_on_script_changed) );
   refClipboard = Gtk::Clipboard::get();

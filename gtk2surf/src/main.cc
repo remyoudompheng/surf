@@ -27,6 +27,7 @@
 #endif
 
 #include <iostream>
+#include "Kernel.h"
 
 // Widgets
 #include "ScriptWindow.h"
