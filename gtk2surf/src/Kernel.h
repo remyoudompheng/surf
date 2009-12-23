@@ -65,7 +65,7 @@ public:
 
 	static void send(const char* txt) {
 		fputs(txt, kernel_input);
-		fputs("\nexecute;\n", kernel_input);
+		fputs("\nexecute\n", kernel_input);
 		fflush(kernel_input);
 	}
 	static void send(const std::string& txt) {

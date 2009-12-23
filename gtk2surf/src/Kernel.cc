@@ -94,7 +94,7 @@ void Kernel::init(const std::string& kernel_path)
 			Misc::syscall_failed("dup2()");
 		}
 
-		execl(kernel_path.c_str(), kernel_path.c_str(), 0);
+		execl(kernel_path.c_str(), kernel_path.c_str(), "-k", 0);
 		std::cerr << "\nERROR: Did you install the surf kernel properly?\n\n";
 		std::string s = "execl(\"";
 		s += kernel_path.c_str();
@@ -113,7 +113,7 @@ void Kernel::init(const std::string& kernel_path)
 	receive_line();
 
 
-	send("set_kernel_mode;");
+	// send("set_kernel_mode;");
 
 	send("print_defaults;");
 	defaults.assign("");
