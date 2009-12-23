@@ -14,6 +14,7 @@
 #include "About.h"
 
 #include<fstream>
+#include<iostream>
 
 static char modified_txt[] = 
   "The current script has been modified.\n"
@@ -156,16 +157,17 @@ void ScriptWindow::load_file(const std::string& fname)
 
   text_script->set_editable(false);
   text_buffer->erase(text_buffer->begin(), text_buffer->end());
-
-  char buf[256];
-  gint pos = 0;
-  while(file.getline(buf, sizeof(buf) - 1, '\n')) {
-    size_t len = strlen(buf);
-    buf[len] = '\n';
-    buf[len + 1] = 0;
-    text_buffer->insert_at_cursor(Glib::ustring(buf, len+1));
+  std::string buf;
+  while (getline(file,buf)) {
+    try {
+      text_buffer->insert_at_cursor(Glib::locale_to_utf8(buf + '\n'));
+    }
+    catch (const Glib::ConvertError& ex)
+      {
+	std::cerr << "ConvertError: " << ex.what()  << std::endl;
+      }
   }
-
+  
   text_buffer->place_cursor(text_buffer->begin());
   text_script->set_editable(true);
 
@@ -258,7 +260,6 @@ void ScriptWindow::_on_save_activate() {
 
 void ScriptWindow::_on_save_as_activate() 
 {
-
   set_status("Save script as...");
 
   Gtk::FileChooserDialog dialog("Save script as...",
@@ -281,6 +282,17 @@ void ScriptWindow::_on_prefs_activate() {}
 
 void ScriptWindow::_on_quit_activate() 
 {
+  if(dirty) {
+    Gtk::MessageDialog dialog(*this, "Unsaved changes",
+			      false, Gtk::MESSAGE_QUESTION,
+			      Gtk::BUTTONS_YES_NO);
+    dialog.set_secondary_text(modified_txt);
+    int result = dialog.run();
+    if (result == Gtk::RESPONSE_YES) {
+      _on_save_activate();
+    }
+  }
+
   Gtk::Main::quit();
 }
 
