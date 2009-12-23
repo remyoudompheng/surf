@@ -148,14 +148,55 @@ bool ImageWindow::_on_button_press_event(GdkEventButton* e)
 
 void ImageWindow::_on_save_activate(void)
 {
+  if(filename.length() == 0) {
+    _on_save_as_activate();
+    return;
+  }
+
+  std::string s = "filename = \"";
+  s += filename + "\";\n";
+  if(filetype.length() > 0) {
+    s += "color_file_format = ";
+    s += filetype + ";\n";
+  }
+  s += "save_color_image;\n";
+  Kernel::send(s);
 }
 
 void ImageWindow::_on_save_as_activate(void)
 {
+  // TODO: implement filetype choice
+  script_win->set_status("Save color image as...");
+  Gtk::FileChooserDialog dialog("Save color image as...",
+				Gtk::FILE_CHOOSER_ACTION_SAVE);
+  dialog.set_transient_for(*this);
+
+  //Add response buttons the the dialog:
+  dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+  dialog.add_button(Gtk::Stock::SAVE, Gtk::RESPONSE_OK);
+
+  int result = dialog.run();
+
+  if (result == Gtk::RESPONSE_OK) {
+    filetype = "png";
+    filename = dialog.get_filename();
+    set_my_title();
+    _on_save_activate();
+  }
 }
 
 void ImageWindow::_on_dither_activate(void)
 {
+  std::string script = "surface_run_commands = 1;\n";
+  if(mode == SURFACE) {
+    script += "dither_surface;\n";
+  } else {
+    script += "dither_curve;\n";
+  }
+  script += "filename = \"-\";\n"
+    "dither_file_format = pbm;\n"
+    "save_dithered_image;\n";
+  Kernel::send(script);
 }
 
 void ImageWindow::_on_close_activate(void)
