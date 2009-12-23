@@ -17,7 +17,6 @@ AC_ISC_POSIX
 AC_MINIX
 AC_HEADER_STDC
 
-
 dnl check if C++ compiler really works:
 dnl -----------------------------------
 
@@ -47,7 +46,10 @@ dnl standard headers:
 dnl =================
 
 AC_CHECK_HEADERS(unistd.h)
-
+AC_LANG_SAVE
+AC_LANG(C++)
+AC_CHECK_HEADERS(sstream)
+AC_LANG_RESTORE
 
 dnl do we have getopt() and (optionally) GNU getopt_long()?
 dnl =======================================================

@@ -21,7 +21,7 @@
 
 #include<string>
 
-#ifdef HAVE_STRINGSTREAM
+#ifdef HAVE_SSTREAM
 #  include<sstream>
 #else
 #  include<strstream>
@@ -98,7 +98,7 @@ public:
 	}
 	static int receive_int() {
 		std::string s = receive_string();
-#ifdef HAVE_STRINGSTREAM
+#ifdef HAVE_SSTREAM
 		std::istringstream iss(s);
 #else
 		std::istrstream iss(s.c_str());
@@ -109,7 +109,7 @@ public:
 	}
 	static float receive_float() {
 		std::string s = receive_string();
-#ifdef HAVE_STRINGSTREAM
+#ifdef HAVE_SSTREAM
 		std::istringstream iss(s);
 #else
 		std::istrstream iss(s.c_str());
