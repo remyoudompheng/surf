@@ -90,4 +90,5 @@ AM_MISSING_PROG(SED, sed, $missing_dir)
 AC_SUBST(CPPFLAGS)
 
 AC_OUTPUT(Makefile
-          src/Makefile)
+          src/Makefile
+          pkgdata/Makefile)

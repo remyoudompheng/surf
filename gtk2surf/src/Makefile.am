@@ -1,4 +1,4 @@
-CPPFLAGS += -DPKGDATADIR=\"$(pkgdatadir)\" -DBINDIR=\"$(bindir)\"
+AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -DBINDIR=\"$(bindir)\"
 
 bin_PROGRAMS = gtk2surf
 
