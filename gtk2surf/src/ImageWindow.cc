@@ -45,7 +45,9 @@ ImageWindow::ImageWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
   myGlade->get_widget("drawingarea", drawingarea);
   // Self
   drawingarea->signal_expose_event().connect( sigc::mem_fun(*this, &ImageWindow::_on_expose_event) );
+  signal_key_press_event().connect( sigc::mem_fun(*this, &ImageWindow::_on_key_press_event) );
   signal_button_press_event().connect( sigc::mem_fun(*this, &ImageWindow::_on_button_press_event) );
+  add_events(Gdk::BUTTON_PRESS_MASK);
 
   // Menu item callbacks
   Gtk::MenuItem* mi_save = 0;
@@ -105,6 +107,9 @@ void ImageWindow::read_data()
 #else
   std::istrstream is(whstring.c_str());
 #endif
+#ifdef DEBUG
+  std::cout << whstring + "\n";
+#endif
   is >> width >> height;
 
   Kernel::receive_line(); // eat up "255\n" line
@@ -116,17 +121,14 @@ void ImageWindow::read_data()
     Kernel::receive_bytes(pixdata + y*rowstride, rowstride);
     Gtk::Main::iteration(false);
   }
-  
+
   pixbuf = Gdk::Pixbuf::create_from_data(reinterpret_cast<guint8*>(pixdata),
 					 Gdk::COLORSPACE_RGB, false, 8,
 					 width, height, rowstride);
-  delete pixdata;
-  
-  drawingarea->set_size_request(width, height);
-  set_size_request(width, height);
 
-  show_all();
-  raise();
+  drawingarea->set_size_request(width, height);
+  set_default_size(width, height);
+  show_all(); raise();
 }
 
 
@@ -135,13 +137,37 @@ void ImageWindow::read_data()
 
 bool ImageWindow::_on_expose_event(GdkEventExpose *e) 
 {
-  if (!pixbuf) return true;
+  if (!pixbuf) return false;
+#if GTK_VERSION_GE(2,14)
+  drawingarea->get_window()->draw_pixbuf(pixbuf, e->area.x, e->area.y,
+					 e->area.x, e->area.y,
+					 -1, -1,
+					 Gdk::RGB_DITHER_NONE, 0, 0);
+#else
   drawingarea->get_window()->draw_pixbuf(drawingarea->get_style()->get_fg_gc(Gtk::STATE_NORMAL),
 					 pixbuf, e->area.x, e->area.y,
 					 e->area.x, e->area.y,
-					 width, height, Gdk::RGB_DITHER_NONE,
-					 0, 0);
+					 -1, -1,
+					 Gdk::RGB_DITHER_NONE, 0, 0);
+#endif
   return true;
+}
+
+bool ImageWindow::_on_key_press_event(GdkEventKey* e)
+{
+  if (e->state == GDK_CONTROL_MASK) {
+    switch(e->keyval) {
+    case GDK_s:
+      _on_save_activate();
+      break;
+    case GDK_d:
+      _on_dither_activate();
+      break;
+    case GDK_w:
+      _on_close_activate();
+      break;
+    }
+  }
 }
 
 bool ImageWindow::_on_button_press_event(GdkEventButton* e)

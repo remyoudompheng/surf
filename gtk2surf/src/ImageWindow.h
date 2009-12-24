@@ -68,6 +68,7 @@ class ImageWindow : public Gtk::Window
 
   // Callbacks
   bool _on_expose_event(GdkEventExpose *e);
+  bool _on_key_press_event(GdkEventKey* e);
   bool _on_button_press_event(GdkEventButton* e);
   void _on_save_activate(void);
   void _on_save_as_activate(void);

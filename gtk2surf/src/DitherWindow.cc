@@ -97,7 +97,7 @@ void DitherWindow::read_data()
     for (int z = 0; z<width; z++) {
       origin = pixdata + y*rowstride + z*3;
       value = (buf[z >> 3] >> (7-z%8)) & 0x01;
-      origin[0] = origin[1] = origin[2] = 255*value;
+      origin[0] = origin[1] = origin[2] = 255*(1-value);
     }
     Gtk::Main::iteration(false);
   }
@@ -105,13 +105,9 @@ void DitherWindow::read_data()
   pixbuf = Gdk::Pixbuf::create_from_data(reinterpret_cast<guint8*>(pixdata),
 					 Gdk::COLORSPACE_RGB, false, 8,
 					 width, height, rowstride);
-  delete pixdata;
-  
   drawingarea->set_size_request(width, height);
-  set_size_request(width, height);
-
-  show_all();
-  raise();
+  set_default_size(width, height);
+  show_all(); raise();
 }
 
 // GTK callbacks
@@ -123,7 +119,7 @@ bool DitherWindow::_on_expose_event(GdkEventExpose *e)
   drawingarea->get_window()->draw_pixbuf(drawingarea->get_style()->get_fg_gc(Gtk::STATE_NORMAL),
 					 pixbuf, e->area.x, e->area.y,
 					 e->area.x, e->area.y,
-					 width, height, Gdk::RGB_DITHER_NONE,
+					 -1, -1, Gdk::RGB_DITHER_NONE,
 					 0, 0);
   return true;
 }
