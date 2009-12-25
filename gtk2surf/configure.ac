@@ -5,7 +5,7 @@ dnl ------------------------
 AC_PREREQ(2.13)
 AC_INIT(src/main.cc)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gtk2surf, 0.01)
+AM_INIT_AUTOMAKE(gtk2surf, 0.1)
 
 dnl some standard checks:
 dnl ---------------------

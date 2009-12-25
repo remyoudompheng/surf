@@ -1,0 +1,47 @@
+gtk2surf 
+
+Version 0.01
+
+Copyright (C) 2009 Rémy Oudompheng
+Author: Rémy Oudompheng <oudomphe@math.unice.fr>
+
+Overview
+--------
+
+gtk2surf is a graphical front-end for using surf, the command-line driven
+rendering tool for algebraic surfaces. It is a translation using GTK2
+(and the Gtk-- bindings) of the GTK frontend 'gtksurf' written 
+by Johannes Beigel. 
+
+See surf's homepage: http://surf.sourceforge.net
+and surf documentation for more information about surf 
+syntax and usage.
+
+Requirements
+------------
+
+- a C++ compiler, usually GCC 4.
+
+- a make tool, usually GNU make.
+
+- GTK+ 2.12 or later. (http://www.gtk.org/)
+
+- the GTKMM C++ bindings for GTK (http://gtkmm.org/)
+
+- the surf kernel.
+
+Basic installation
+------------------
+
+Compilation steps are standard as in other autoconf-generated packages: 
+
+    ./configure
+    make
+    (become root)
+    make install
+
+License
+-------
+
+GPL version 2. See COPYING file.
+
